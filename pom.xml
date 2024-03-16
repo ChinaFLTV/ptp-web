@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-parent</artifactId>
+        <version>3.2.3</version>
+    </parent>
+    <groupId>ptp.fltv</groupId>
+    <artifactId>ptp-web</artifactId>
+    <version>${ptp.version}</version>
+    <packaging>pom</packaging>
+    <description>PTP全局依赖管理中心</description>
+    <url>http://www.ptp.ink</url>
+    <inceptionYear>2024</inceptionYear>
+    <developers>
+
+        <developer>
+            <id>ChinaFLTV</id>
+            <name>LiGuanda</name>
+            <email>236010069@qq.com</email>
+            <url>https://github.com/ChinaFLTV</url>
+            <roles>
+                <role>Project Manager</role>
+                <role>Project Developer</role>
+                <role>Project Tester</role>
+                <role>Architect</role>
+            </roles>
+            <organization>FLTV</organization>
+            <organizationUrl>http://www.ptp.ink</organizationUrl>
+            <timezone>+8</timezone>
+        </developer>
+
+    </developers>
+    <contributors>
+
+        <contributor>
+            <name>LiGuanqun</name>
+        </contributor>
+
+    </contributors>
+    <licenses>
+
+        <license>
+            <name>Apache 2</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>manual</distribution>
+            <comments>A business-friendly OSS listener</comments>
+        </license>
+
+    </licenses>
+
+    <modules>
+        <module>ptp-web-common</module>
+        <module>ptp-web-test</module>
+        <module>ptp-web-service</module>
+        <module>ptp-web-web</module>
+    </modules>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <ptp.version>1.0</ptp.version>
+
+        <knife4j.version>4.5.0</knife4j.version>
+        <mybatis.plus.version>3.5.5</mybatis.plus.version>
+        <lombok.version>1.18.30</lombok.version>
+        <bootstrap.version>4.1.1</bootstrap.version>
+
+    </properties>
+
+    <dependencyManagement>
+
+        <dependencies>
+
+            <dependency>
+                <groupId>ptp.fltv</groupId>
+                <artifactId>ptp-web-common</artifactId>
+                <version>${ptp.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ptp.fltv</groupId>
+                <artifactId>ptp-web-service</artifactId>
+                <version>${ptp.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ptp.fltv</groupId>
+                <artifactId>ptp-web-web</artifactId>
+                <version>${ptp.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ptp.fltv</groupId>
+                <artifactId>ptp-web-service-admin</artifactId>
+                <version>${ptp.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
+                <version>${knife4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+                <version>${mybatis.plus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-bootstrap</artifactId>
+                <version>${bootstrap.version}</version>
+            </dependency>
+
+        </dependencies>
+
+    </dependencyManagement>
+
+    <build>
+
+        <plugins>
+
+            <!--  2024-3-16  20:1-解决Maven3中不允许module的version为表达式的问题  -->
+            <!--            <plugin>-->
+            <!--                <groupId>org.codehaus.mojo</groupId>-->
+            <!--                <artifactId>versions-maven-plugin</artifactId>-->
+            <!--                <version>2.16.2</version>-->
+            <!--                <configuration>-->
+            <!--                    <generateBackupPoms>false</generateBackupPoms>-->
+            <!--                </configuration>-->
+            <!--            </plugin>-->
+
+        </plugins>
+
+    </build>
+
+</project>

@@ -1,0 +1,13 @@
+# 2024-3-16  19:34-项目基本配置
+spring:
+  application:
+    name: ptp-web-web
+server:
+  port: 8080
+
+# 2024-3-16  19:33-Knife4j配置
+knife4j:
+  # enable: true # 2024-3-16  19:42-WebFlux模式下无法增强，运行将报 java.lang.ClassNotFoundException: jakarta.servlet.Filter 异常
+  setting:
+    language: zh_cn
+  cors: true
