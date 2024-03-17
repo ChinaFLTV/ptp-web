@@ -18,21 +18,21 @@ public enum Role {
     VISITOR("游客", 7);
 
 
-    private final String title;
+    private final String comment;
     private final Integer roleCode;
 
 
-    Role(String title, Integer roleCode) {
+    Role(String comment, Integer roleCode) {
 
-        this.title = title;
+        this.comment = comment;
         this.roleCode = roleCode;
 
     }
 
 
-    public String getTitle() {
+    public String getComment() {
 
-        return title;
+        return comment;
 
     }
 
