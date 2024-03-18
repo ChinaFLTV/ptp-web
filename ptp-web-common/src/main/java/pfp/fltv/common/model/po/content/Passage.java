@@ -23,7 +23,7 @@ import pfp.fltv.common.model.base.content.BaseEntity;
 public class Passage extends BaseEntity {
 
 
-    @Schema(description = "内容引子")
+    @Schema(description = "内容引子", maxLength = 35)
     private String introduction;
 
 

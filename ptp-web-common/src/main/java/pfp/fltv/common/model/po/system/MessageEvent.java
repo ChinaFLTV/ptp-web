@@ -33,9 +33,8 @@ public class MessageEvent {
     private String title;
     @Schema(description = "事件说明", minLength = 16, maxLength = 1024)
     private String content;
-    // TODO 还需考虑单独查询某个参与者的流水信息
     @Schema(description = "流水参与者ID")
-    private Long[] participants;
+    private Long participantId;
     @Schema(description = "备注信息")
     private Map<String, String> remarks;
     @Schema(description = "流水状态")

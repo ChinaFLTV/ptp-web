@@ -12,20 +12,21 @@ public enum Role {
     USER("正常用户", 1),
     VIP_USER("VIP用户", 2),
     SVIP_USER("SVIP用户", 3),
-    ADMINISTRATOR("正常用户", 4),
     ABNORMAL_USER("状态异常用户", 5),
-    FORBIDDEN_USER("封禁用户", 6),
-    VISITOR("游客", 7);
+    BLOCKED_USER("封禁用户", 6),
+    VISITOR("游客", 7),
+    ADMINISTRATOR("管理员", 8),
+    SUPER_ADMINISTRATOR("超级管理员", 9);
 
 
     private final String comment;
-    private final Integer roleCode;
+    private final Integer code;
 
 
-    Role(String comment, Integer roleCode) {
+    Role(String comment, Integer code) {
 
         this.comment = comment;
-        this.roleCode = roleCode;
+        this.code = code;
 
     }
 
@@ -37,9 +38,9 @@ public enum Role {
     }
 
 
-    public Integer getRoleCode() {
+    public Integer getCode() {
 
-        return roleCode;
+        return code;
 
     }
 

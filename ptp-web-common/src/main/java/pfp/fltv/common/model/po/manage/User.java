@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pfp.fltv.common.enums.Gender;
 import pfp.fltv.common.enums.Role;
 import pfp.fltv.common.enums.UserStatus;
 import pfp.fltv.common.model.po.info.AddressInfo;
@@ -33,12 +34,18 @@ public class User implements Serializable {
     @Schema(description = "用户密码(加密)")
     private String password;
 
+    @Schema(description = "用户邮箱")
+    private String email;
+
     // TODO 随机生成昵称
     @Schema(description = "用户昵称")
     private String nickname;
 
     @Schema(description = "用户真实姓名(管理员必需)")
     private String realName;
+
+    @Schema(description = "用户性别)")
+    private Gender gender;
 
     @Schema(description = "用户的个性签名")
     private String idiograph = "这个家伙很懒，什么都没写> - <";
@@ -92,7 +99,7 @@ public class User implements Serializable {
     private UserStatus status;
 
     @Schema(description = "用户其他数据配置(JSON)")
-    private String config;
+    private String meta;
 
     @Schema(description = "用户角色")
     private Role role;

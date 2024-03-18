@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pfp.fltv.common.model.po.info.AddressInfo;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -35,7 +36,10 @@ public class BaseEntity implements Serializable {
     private Long uid;
 
     @Schema(description = "发布时间")
-    private Timestamp pubdate;
+    private Timestamp createTime;
+
+    @Schema(description = "(最后)更新时间")
+    private Timestamp updateTime;
 
     @Schema(description = "标题", minLength = 2, maxLength = 128)
     private String title;
@@ -58,20 +62,23 @@ public class BaseEntity implements Serializable {
     @Schema(description = "点赞量")
     private Integer likeNum;
 
+    @Schema(description = "倒赞量")
+    private Integer unlikeNum;
+
     @Schema(description = "评论量")
     private Integer commentNum;
 
     @Schema(description = "收藏量")
     private Integer starNum;
 
-    @Schema(description = "发布时用户所在的IP属地")
-    private String location;
+    @Schema(description = "发布时用户所在的地址信息")
+    private AddressInfo addressInfo;
 
     @Schema(description = "实例状态")
     private Integer status;
 
     @Schema(description = "其他数据配置(JSON)")
-    private String config;
+    private String meta;
 
     @Schema(description = "当前实体是否已被逻辑删除")
     @TableLogic

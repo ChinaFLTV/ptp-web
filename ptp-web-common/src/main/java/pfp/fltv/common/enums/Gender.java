@@ -2,26 +2,23 @@ package pfp.fltv.common.enums;
 
 /**
  * @author Lenovo/LiGuanda
- * @date 2024/3/17 下午 10:11:32
- * @description 用户状态枚举信息
- * @filename UserStatus.java
+ * @date 2024/3/18 上午 10:56:14
+ * @description 性别枚举常量
+ * @filename Gender.java
  */
 
-public enum UserStatus {
+public enum Gender {
 
-
-    NORMAL("正常", 300),
-    ABNORMAL("异常", 301),
-    LIMIT("限制", 302),
-    HIDDEN("不可见", 303),
-    BLOCK("锁定", 304);
+    MAN("男", 0),
+    WOMAN("女", 1),
+    SECRET("保密", 2);
 
 
     private final String comment;
     private final Integer code;
 
 
-    UserStatus(String comment, Integer code) {
+    Gender(String comment, Integer code) {
 
         this.comment = comment;
         this.code = code;

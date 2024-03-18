@@ -16,17 +16,18 @@ public enum ContentStatus {
     REJECT("打回", 103),
     LIMIT("限流", 104),
     BLOCK("锁定", 105),
-    FORBIDDEN("封禁", 106);
+    HIDDEN("隐藏", 106),
+    FORBIDDEN("封禁", 107);
 
 
     private final String comment;
-    private final Integer statusCode;
+    private final Integer code;
 
 
-    ContentStatus(String comment, Integer statusCode) {
+    ContentStatus(String comment, Integer code) {
 
         this.comment = comment;
-        this.statusCode = statusCode;
+        this.code = code;
 
     }
 
@@ -38,9 +39,9 @@ public enum ContentStatus {
     }
 
 
-    public Integer getStatusCode() {
+    public Integer getCode() {
 
-        return statusCode;
+        return code;
 
     }
 
