@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 /**
  * @author Lenovo/LiGuanda
  * @date 2024/3/17 下午 9:59:07
@@ -18,7 +20,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Asset {
+public class Asset implements Serializable {
 
 
     @Schema(description = "当前用户的余额")

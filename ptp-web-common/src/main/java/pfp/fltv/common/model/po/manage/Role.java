@@ -9,6 +9,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 /**
  * @author Lenovo/LiGuanda
  * @date 2024/3/18 上午 11:09:04
@@ -22,7 +24,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Schema(description = "用户角色")
-public class Role {
+public class Role implements Serializable {
 
 
     @Schema(description = "角色ID")

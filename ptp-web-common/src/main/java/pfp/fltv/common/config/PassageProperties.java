@@ -3,6 +3,7 @@ package pfp.fltv.common.config;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
 /**
  * @author Lenovo/LiGuanda
@@ -14,7 +15,11 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Data
 @NoArgsConstructor
 @ConfigurationProperties(prefix = "ptp.content.limit")
-public class ContentLimitAutoConfiguration {
+@Component
+public class PassageProperties {
+
+
+    private Integer passageIntroductionWordsMaxLength;
 
 
 }

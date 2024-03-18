@@ -98,7 +98,7 @@ public class User implements Serializable {
     @Schema(description = "用户当前状态")
     private UserStatus status;
 
-    @Schema(description = "用户其他数据配置(JSON)")
+    @Schema(description = "用户其他数据配置(JSON)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private String meta;
 
     @Schema(description = "用户角色")

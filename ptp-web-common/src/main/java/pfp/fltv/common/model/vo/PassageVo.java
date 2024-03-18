@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import pfp.fltv.common.model.po.info.AddressInfo;
 
+import java.io.Serializable;
+
 /**
  * @author Lenovo/LiGuanda
  * @date 2024/3/18 上午 11:37:53
@@ -19,8 +21,11 @@ import pfp.fltv.common.model.po.info.AddressInfo;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PassageVo {
+public class PassageVo implements Serializable {
 
+
+    @Schema(description = "发布者ID")
+    private Long uid;
 
     @Schema(accessMode = Schema.AccessMode.READ_WRITE, description = "用户填写的文章标题")
     private String title;

@@ -77,10 +77,10 @@ public class BaseEntity implements Serializable {
     @Schema(description = "实例状态")
     private Integer status;
 
-    @Schema(description = "其他数据配置(JSON)")
+    @Schema(description = "其他数据配置(JSON)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private String meta;
 
-    @Schema(description = "当前实体是否已被逻辑删除")
+    @Schema(description = "当前实体是否已被逻辑删除", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     @TableLogic
     private Integer isDeleted;
 

@@ -3,8 +3,7 @@ package ptp.fltv.web;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import pfp.fltv.common.config.ContentLimitAutoConfiguration;
+import org.springframework.context.annotation.ComponentScan;
 
 /**
  * @author Lenovo/LiGuanda
@@ -14,7 +13,7 @@ import pfp.fltv.common.config.ContentLimitAutoConfiguration;
  */
 
 
-@EnableConfigurationProperties(ContentLimitAutoConfiguration.class)// 2024-3-18  11:46-根据配置文件自动装填内容限制规则
+@ComponentScan("ptp.fltv")
 @SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
 public class MainApplication {
 
