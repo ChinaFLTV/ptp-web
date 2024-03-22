@@ -18,7 +18,7 @@ import java.io.Serializable;
 @Schema(description = "前端传过来的文章评论信息")
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
+//@AllArgsConstructor
 @Builder
 public class PassageCommentVo implements Serializable {
 

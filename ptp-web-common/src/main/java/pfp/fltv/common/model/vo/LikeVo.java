@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pfp.fltv.common.enums.Action;
+import pfp.fltv.common.enums.Scope;
 
 import java.io.Serializable;
 
@@ -26,13 +28,11 @@ public class LikeVo implements Serializable {
     @Schema(description = "动作发起者ID")
     private Long uid;
 
-    // TODO 该字段类型日后有可能改为枚举常量
     @Schema(description = "动作类型", examples = {"like", "unlike"})
-    private String type;
+    private Action type;
 
-    // TODO 该字段类型日后有可能改为枚举常量
     @Schema(description = "动作所在的作用域", examples = {"passage", "dialogue", "passage_comment"})
-    private String scope;
+    private Scope scope;
 
     @Schema(description = "目标对象ID")
     private Long toId;

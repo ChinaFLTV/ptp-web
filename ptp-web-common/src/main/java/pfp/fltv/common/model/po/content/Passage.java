@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import pfp.fltv.common.model.base.content.BaseEntity;
 
 /**
@@ -19,7 +20,7 @@ import pfp.fltv.common.model.base.content.BaseEntity;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 public class Passage extends BaseEntity {
 
 

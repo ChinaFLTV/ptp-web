@@ -1,0 +1,2 @@
+# 2024-3-20  10:03-引入PTP相关的自动配置类(SpringBoot3方式)
+pfp.fltv.common.config.PtpAutoConfiguration

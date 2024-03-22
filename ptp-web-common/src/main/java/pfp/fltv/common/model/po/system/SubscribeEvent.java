@@ -3,9 +3,10 @@ package pfp.fltv.common.model.po.system;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+import pfp.fltv.common.enums.Action;
 import pfp.fltv.common.model.base.system.BaseEntity;
 
 /**
@@ -20,13 +21,12 @@ import pfp.fltv.common.model.base.system.BaseEntity;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 public class SubscribeEvent extends BaseEntity {
 
 
-    // TODO 该字段类型日后有可能改为枚举常量
     @Schema(description = "动作类型", examples = {"subscribe", "unsubscribe"})
-    private String type;
+    private Action type;
 
     @Schema(description = "被订阅/取关者ID")
     private Long toUid;
