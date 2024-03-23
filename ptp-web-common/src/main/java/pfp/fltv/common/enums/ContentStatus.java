@@ -17,6 +17,7 @@ public enum ContentStatus {
     LIMIT("限流", 104),
     BLOCK("锁定", 105),
     HIDDEN("隐藏", 106),
+    DELETED("删除", 107),
     FORBIDDEN("封禁", 107);
 
 

@@ -24,7 +24,7 @@ public class User implements Serializable {
 
     @Schema(description = "用户ID号")
     @TableId(type = IdType.ASSIGN_ID)
-    private int id;
+    private Long id;
 
     // TODO 账号生成
     @Schema(description = "用户账号")
@@ -34,6 +34,9 @@ public class User implements Serializable {
     @Schema(description = "用户密码(加密)")
     private String password;
 
+    @Schema(description = "用户绑定的手机号")
+    private String phone;
+
     @Schema(description = "用户邮箱")
     private String email;
 
@@ -42,9 +45,9 @@ public class User implements Serializable {
     private String nickname;
 
     @Schema(description = "用户真实姓名(管理员必需)")
-    private String realName;
+    private String realname;
 
-    @Schema(description = "用户性别)")
+    @Schema(description = "用户性别")
     private Gender gender;
 
     @Schema(description = "用户的个性签名")
@@ -54,7 +57,7 @@ public class User implements Serializable {
     private String avatar;
 
     @Schema(description = "用户个人资料背景图片(JSON)(同上)")
-    private String backgroundPict;
+    private String backgroundPicture;
 
     @Schema(description = "用户被点赞数量")
     private Integer likeNum;
@@ -108,6 +111,7 @@ public class User implements Serializable {
 //    @Schema(description = "用户所有特权")
 //    private String privilege;
 
+    // TODO 单独分离出来形成一个user_asset表
     @Schema(description = "用户资产")
     private Asset asset;
 

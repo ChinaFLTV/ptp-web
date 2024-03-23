@@ -41,7 +41,7 @@
         </list>
       </option>
     </inspection_tool>
-    <inspection_tool class="JavadocDeclaration" enabled="true" level="WARNING" enabled_by_default="true">
+    <inspection_tool class="JavadocDeclaration" enabled="false" level="WARNING" enabled_by_default="false">
       <option name="ADDITIONAL_TAGS" value="date,filename,description" />
     </inspection_tool>
     <inspection_tool class="MapOrSetKeyShouldOverrideHashCodeEquals" enabled="true" level="WARNING" enabled_by_default="true" />

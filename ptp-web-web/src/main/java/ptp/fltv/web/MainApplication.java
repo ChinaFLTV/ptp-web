@@ -1,5 +1,6 @@
 package ptp.fltv.web;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -17,6 +18,7 @@ import javax.sql.DataSource;
 
 @ComponentScan("ptp.fltv")
 @SpringBootApplication(/*exclude = DataSourceAutoConfiguration.class*/)
+@MapperScan("ptp.fltv.web.mapper")
 public class MainApplication {
 
 

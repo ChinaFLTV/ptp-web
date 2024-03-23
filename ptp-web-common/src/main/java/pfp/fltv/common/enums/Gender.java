@@ -9,8 +9,8 @@ package pfp.fltv.common.enums;
 
 public enum Gender {
 
-    MAN("男", 0),
-    WOMAN("女", 1),
+    MALE("男", 0),
+    FEMALE("女", 1),
     SECRET("保密", 2);
 
 

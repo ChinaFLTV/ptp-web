@@ -23,8 +23,14 @@ import java.io.Serializable;
 public class Asset implements Serializable {
 
 
+    @Schema(description = "ID")
+    private Long id;
+
     @Schema(description = "当前用户的余额")
     private Double balance;
+
+    @Schema(description = "绑定的银行卡")
+    private String[] accounts;
 
     // TODO 用户交易记录
 

@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import pfp.fltv.common.enums.ContentStatus;
 import pfp.fltv.common.model.po.info.AddressInfo;
 
 import java.io.Serializable;
@@ -75,7 +76,7 @@ public class BaseEntity implements Serializable {
     private AddressInfo addressInfo;
 
     @Schema(description = "实例状态")
-    private Integer status;
+    private ContentStatus status;
 
     @Schema(description = "其他数据配置(JSON)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private String meta;
