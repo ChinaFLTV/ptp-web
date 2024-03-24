@@ -14,6 +14,8 @@ import pfp.fltv.common.enums.ContentStatus;
 import pfp.fltv.common.model.po.info.AddressInfo;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * @author Lenovo/LiGuanda
@@ -35,7 +37,7 @@ public class PassageComment implements Serializable {
     private Long id;
 
     @Schema(description = "评论的文章ID")
-    private Integer passageId;
+    private Long passageId;
 
     @Schema(description = "评论所属用户(发布者)ID")
     private Long fromUid;
@@ -49,6 +51,12 @@ public class PassageComment implements Serializable {
     @Schema(description = "所属主题ID(用于根据主题进行分库分表以减缓数据库压力),该ID的生成将由其他服务根据文章的分类和标签动态生成(一般是约定好了的)")
     private Long topicId;
 
+    @Schema(description = "标签")
+    private List<String> tags;
+
+    @Schema(description = "分类")
+    private List<String> category;
+
     @Schema(description = "浏览量")
     private Integer browseNum;
 
@@ -57,6 +65,9 @@ public class PassageComment implements Serializable {
 
     @Schema(description = "倒赞量")
     private Integer unlikeNum;
+
+    @Schema(description = "收藏量")
+    private Integer starNum;
 
     @Schema(description = "附加的其他类型的媒体内容(JSON格式)")
     private String accessary;
@@ -67,8 +78,14 @@ public class PassageComment implements Serializable {
     @Schema(description = "其他数据配置(JSON)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private String meta;
 
-    @Schema(description = "记录文章评论发布时的IP属地")
+    @Schema(description = "记录文章评论发布时的地址信息")
     private AddressInfo addressInfo;
+
+    @Schema(description = "内容创建时间")
+    private Timestamp createTime;
+
+    @Schema(description = "(最后)更新时间")
+    private Timestamp updateTime;
 
     @Schema(description = "文章评论是否已被逻辑删除", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     @TableLogic

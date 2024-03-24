@@ -1,5 +1,6 @@
 package pfp.fltv.common.model.po.info;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,12 +17,16 @@ import java.io.Serializable;
  */
 
 @Schema(description = "地址信息")
+@TableName("address_info")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class AddressInfo implements Serializable {
 
+
+    @Schema(description = "地址ID")
+    private Long id;
 
     @Schema(description = "海拔高度")
     private Double altitude;

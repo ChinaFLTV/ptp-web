@@ -38,11 +38,14 @@ public class BaseEntity implements Serializable {
     @Schema(description = "流水状态")
     private TaskStatus status;
 
+    @Schema(description = "其他数据配置(JSON)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    private String meta;
+
     @Schema(description = "动作产生时间")
     private Timestamp createTime;
 
-    @Schema(description = "其他数据配置(JSON)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-    private String meta;
+    @Schema(description = "(最后)修改时间")
+    private Timestamp updateTime;
 
     @TableLogic
     @Schema(description = "事件是否已被逻辑移除")

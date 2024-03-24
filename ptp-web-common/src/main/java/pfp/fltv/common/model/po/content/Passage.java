@@ -3,7 +3,6 @@ package pfp.fltv.common.model.po.content;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -24,7 +23,7 @@ import pfp.fltv.common.model.base.content.BaseEntity;
 public class Passage extends BaseEntity {
 
 
-    @Schema(description = "内容引子", maxLength = 35)
+    @Schema(description = "内容介绍", maxLength = 35)
     private String introduction;
 
 

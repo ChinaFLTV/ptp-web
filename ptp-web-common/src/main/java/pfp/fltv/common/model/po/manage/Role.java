@@ -10,6 +10,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * @author Lenovo/LiGuanda
@@ -30,8 +32,21 @@ public class Role implements Serializable {
     @Schema(description = "角色ID")
     @TableId(type = IdType.INPUT)
     private Long id;
+
     @Schema(description = "角色所具有的权限")
-    private String[] authorities;
+    private List<String> authorities;
+
+    @Schema(description = "角色所不被允许的权限")
+    private List<String> prohibition;
+
+    @Schema(description = "角色建立时间")
+    private Timestamp createTime;
+
+    @Schema(description = "(最后)修改时间")
+    private Timestamp updateTime;
+
+    @Schema(description = "角色是否已被删除")
+    private Integer isDeleted;
 
 
 }

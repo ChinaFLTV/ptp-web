@@ -13,6 +13,7 @@ import pfp.fltv.common.model.po.info.AddressInfo;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * @author Lenovo/LiGuanda
@@ -36,12 +37,6 @@ public class BaseEntity implements Serializable {
     @Schema(description = "发布者ID")
     private Long uid;
 
-    @Schema(description = "发布时间")
-    private Timestamp createTime;
-
-    @Schema(description = "(最后)更新时间")
-    private Timestamp updateTime;
-
     @Schema(description = "标题", minLength = 2, maxLength = 128)
     private String title;
 
@@ -52,10 +47,10 @@ public class BaseEntity implements Serializable {
     private String accessary;
 
     @Schema(description = "标签")
-    private String tags;
+    private List<String> tags;
 
     @Schema(description = "分类")
-    private String category;
+    private List<String> category;
 
     @Schema(description = "浏览量")
     private Integer browseNum;
@@ -80,6 +75,12 @@ public class BaseEntity implements Serializable {
 
     @Schema(description = "其他数据配置(JSON)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private String meta;
+
+    @Schema(description = "内容创建时间")
+    private Timestamp createTime;
+
+    @Schema(description = "(最后)更新时间")
+    private Timestamp updateTime;
 
     @Schema(description = "当前实体是否已被逻辑删除", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     @TableLogic

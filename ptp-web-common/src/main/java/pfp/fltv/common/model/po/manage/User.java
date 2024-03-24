@@ -8,12 +8,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pfp.fltv.common.enums.Gender;
-import pfp.fltv.common.enums.Role;
 import pfp.fltv.common.enums.UserStatus;
-import pfp.fltv.common.model.po.info.AddressInfo;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -65,9 +64,6 @@ public class User implements Serializable {
     @Schema(description = "用户等级")
     private Double userRank;
 
-    @Schema(description = "用户注册时间")
-    private Timestamp registerDate;
-
     @Schema(description = "用户出生年月")
     private Timestamp birthDate;
 
@@ -89,11 +85,11 @@ public class User implements Serializable {
 //    @Schema(description = "用户收藏的文章列表JSON串")
 //    private String collectList;
 
-    @Schema(description = "用户地址信息")
-    private AddressInfo addressInfo;
+    @Schema(description = "用户地址信息ID")
+    private Long addressInfoId;
 
     @Schema(description = "用户绑定的其他账号")
-    private String bindAccounts;
+    private List<String> bindAccounts;
 
     @Schema(description = "用户信誉积分")
     private Double credit;
@@ -104,16 +100,20 @@ public class User implements Serializable {
     @Schema(description = "用户其他数据配置(JSON)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private String meta;
 
-    @Schema(description = "用户角色")
-    private Role role;
+    @Schema(description = "用户角色ID")
+    private Long roleId;
 
-    // TODO 用户所有权与ROLE绑定
-//    @Schema(description = "用户所有特权")
-//    private String privilege;
+    @Schema(description = "用户资产ID")
+    private Long assetId;
 
-    // TODO 单独分离出来形成一个user_asset表
-    @Schema(description = "用户资产")
-    private Asset asset;
+    @Schema(description = "用户注册时间")
+    private Timestamp createTime;
+
+    @Schema(description = "用户资料修改时间")
+    private Timestamp updateTime;
+
+    @Schema(description = "用户是否已被删除")
+    private Integer isDeleted;
 
 
 }
