@@ -40,6 +40,9 @@ public class Asset implements Serializable {
     @Schema(description = "当前账户所允许的操作")
     private List<String> authorities;
 
+    @Schema(description = "当前账户的信誉积分")
+    private Double credit;
+
     @Schema(description = "当前账户状态")
     private AssetStatus status;
 

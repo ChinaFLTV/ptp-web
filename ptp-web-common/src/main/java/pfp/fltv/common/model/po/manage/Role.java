@@ -33,6 +33,9 @@ public class Role implements Serializable {
     @TableId(type = IdType.INPUT)
     private Long id;
 
+    @Schema(description = "角色名称")
+    private String name;
+
     @Schema(description = "角色所具有的权限")
     private List<String> authorities;
 

@@ -56,7 +56,7 @@ public class User implements Serializable {
     private String avatar;
 
     @Schema(description = "用户个人资料背景图片(JSON)(同上)")
-    private String backgroundPicture;
+    private String background;
 
     @Schema(description = "用户被点赞数量")
     private Integer likeNum;

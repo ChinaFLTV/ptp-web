@@ -1,6 +1,8 @@
 package ptp.fltv.web.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,7 +33,9 @@ public class DialogueController {
 
     @Operation(description = "根据ID查询单条对话数据")
     @GetMapping("/query/single/{id}")
-    public Result<Dialogue> querySingleDialogue(@PathVariable("id") Long id) {
+    public Result<Dialogue> querySingleDialogue(@Parameter(name = "id", description = "待查询的单条对话ID", in = ParameterIn.PATH)
+                                                @PathVariable("id")
+                                                Long id) {
 
         Dialogue dialogue = dialogueService.getById(id);
 
