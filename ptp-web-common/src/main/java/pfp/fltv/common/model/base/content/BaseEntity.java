@@ -1,8 +1,10 @@
 package pfp.fltv.common.model.base.content;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -47,9 +49,11 @@ public class BaseEntity implements Serializable {
     private String accessary;
 
     @Schema(description = "标签")
+    @TableField(typeHandler = JacksonTypeHandler.class)
     private List<String> tags;
 
     @Schema(description = "分类")
+    @TableField(typeHandler = JacksonTypeHandler.class)
     private List<String> category;
 
     @Schema(description = "浏览量")
@@ -68,9 +72,11 @@ public class BaseEntity implements Serializable {
     private Integer starNum;
 
     @Schema(description = "发布时用户所在的地址信息")
+    @TableField(typeHandler = JacksonTypeHandler.class)
     private AddressInfo addressInfo;
 
     @Schema(description = "实例状态")
+    @TableField(typeHandler = JacksonTypeHandler.class)
     private ContentStatus status;
 
     @Schema(description = "其他数据配置(JSON)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)

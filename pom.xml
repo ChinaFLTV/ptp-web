@@ -71,6 +71,7 @@
         <bootstrap.version>4.1.1</bootstrap.version>
         <druid.version>1.2.21</druid.version>
         <mysql-connector-java.version>8.0.33</mysql-connector-java.version>
+        <fastjson2.version>2.0.47</fastjson2.version>
 
     </properties>
 
@@ -128,6 +129,11 @@
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
                 <version>${mysql-connector-java.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.fastjson2</groupId>
+                <artifactId>fastjson2</artifactId>
+                <version>${fastjson2.version}</version>
             </dependency>
 
         </dependencies>

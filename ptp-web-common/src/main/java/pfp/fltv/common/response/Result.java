@@ -32,6 +32,21 @@ public class Result<T> implements Serializable {
 
 
     /**
+     * @return 返回的成功的空的响应数据
+     * @author Lenovo/LiGuanda
+     * @date 2024/3/26 上午 10:21:55
+     * @version 1.0.0
+     * @description 返回成功的响应数据
+     * @filename Result.java
+     */
+    public static <U> Result<U> success() {
+
+        return new Result<>(ResponseStatus.SUCCESS, null);
+
+    }
+
+
+    /**
      * @param data 响应数据
      * @return 返回的封装好的成功响应数据
      * @author Lenovo/LiGuanda
