@@ -1,7 +1,6 @@
-package pfp.fltv.common.model.po.manage;
+package pfp.fltv.common.model.vo;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -10,24 +9,22 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import pfp.fltv.common.enums.AssetStatus;
 
-import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.List;
 
 /**
  * @author Lenovo/LiGuanda
- * @date 2024/3/17 下午 9:59:07
- * @description 用户资产
- * @filename Asset.java
+ * @version 1.0.0
+ * @date 2024/3/27 下午 8:08:47
+ * @description 前端传输过来的Asset的部分数据
+ * @filename AssetVo.java
  */
 
-@Schema(description = "用户资产")
-@TableName(value = "asset", autoResultMap = true)
+@Schema(description = "前端传输过来的Asset的部分数据")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Asset implements Serializable {
+public class AssetVo {
 
 
     @Schema(description = "ID")
@@ -50,17 +47,6 @@ public class Asset implements Serializable {
     @Schema(description = "当前账户状态")
     @TableField(typeHandler = JacksonTypeHandler.class)
     private AssetStatus status;
-
-    @Schema(description = "资产创建时间")
-    private Timestamp createTime;
-
-    @Schema(description = "(最后)修改时间")
-    private Timestamp updateTime;
-
-    @Schema(description = "资产信息是否已被删除")
-    private Integer isDeleted;
-
-    // TODO 用户交易记录
 
 
 }

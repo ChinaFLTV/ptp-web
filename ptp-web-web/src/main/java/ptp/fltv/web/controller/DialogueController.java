@@ -95,7 +95,7 @@ public class DialogueController {
                                           @RequestBody
                                           DialogueVo dialogueVo) {
 
-        Dialogue dialogue = new Dialogue();
+        Dialogue dialogue = dialogueService.getById(dialogueVo.getId());
         BeanUtils.copyProperties(dialogueVo, dialogue);
 
         boolean isUpdated = dialogueService.updateById(dialogue);

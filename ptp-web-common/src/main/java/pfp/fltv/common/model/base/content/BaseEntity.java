@@ -76,7 +76,6 @@ public class BaseEntity implements Serializable {
     private AddressInfo addressInfo;
 
     @Schema(description = "实例状态")
-    @TableField(typeHandler = JacksonTypeHandler.class)
     private ContentStatus status;
 
     @Schema(description = "其他数据配置(JSON)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)

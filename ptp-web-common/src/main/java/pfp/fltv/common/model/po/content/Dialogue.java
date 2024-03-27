@@ -11,7 +11,7 @@ import pfp.fltv.common.model.base.content.BaseEntity;
  * @filename Dialogue.java
  */
 
-@TableName("dialogue")
+@TableName(value = "dialogue", autoResultMap = true)
 @Schema(description = "对话(PO实体类)")
 public class Dialogue extends BaseEntity {
 

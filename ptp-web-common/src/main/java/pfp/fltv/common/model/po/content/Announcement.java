@@ -11,7 +11,7 @@ import pfp.fltv.common.model.base.content.BaseEntity;
  * @filename Announcement.java
  */
 
-@TableName("announcement")
+@TableName(value = "announcement", autoResultMap = true)
 @Schema(description = "公告(PO实体类)")
 public class Announcement extends BaseEntity {
 

@@ -1,37 +1,39 @@
-package pfp.fltv.common.model.po.manage;
+package pfp.fltv.common.model.vo;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pfp.fltv.common.enums.Gender;
-import pfp.fltv.common.enums.UserStatus;
 
-import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
 
+/**
+ * @author Lenovo/LiGuanda
+ * @version 1.0.0
+ * @date 2024/3/27 下午 8:01:21
+ * @description 前端传输过来的User的部分数据
+ * @filename UserVo.java
+ */
+
+@Schema(description = "前端传输过来的User的部分数据")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName(value = "user", autoResultMap = true)
-public class User implements Serializable {
+@Builder
+public class UserVo {
 
 
     @Schema(description = "用户ID号")
-    @TableId(type = IdType.ASSIGN_ID)
     private Long id;
 
-    // TODO 账号生成
     @Schema(description = "用户账号")
     private String account;
 
-    // TODO 密码加密
     @Schema(description = "用户密码(加密)")
     private String password;
 
@@ -41,7 +43,6 @@ public class User implements Serializable {
     @Schema(description = "用户邮箱")
     private String email;
 
-    // TODO 随机生成昵称
     @Schema(description = "用户昵称")
     private String nickname;
 
@@ -70,24 +71,6 @@ public class User implements Serializable {
     @Schema(description = "用户出生年月")
     private Timestamp birthDate;
 
-    // TODO 设置用户关注的博主&被关注列表
-//    @Schema(description = "用户关注的用户列表JSON串")
-//    private String subscriberList;
-//    @Schema(description = "用户关注博主数量")
-//    private int subscribeNum;
-//    @Schema(description = "用户被关注粉丝数量")
-//    private int followNum;
-
-//    @Schema(description = "用户追随的用户列表JSON串")
-//    private String followerList;
-
-    // TODO 单独设置用户收藏文章
-//    @Schema(description = "用户收藏博文数量")
-//    private int collectNum;
-//
-//    @Schema(description = "用户收藏的文章列表JSON串")
-//    private String collectList;
-
     @Schema(description = "用户地址信息ID")
     private Long addressInfoId;
 
@@ -98,27 +81,11 @@ public class User implements Serializable {
     @Schema(description = "用户信誉积分")
     private Double credit;
 
-    @Schema(description = "用户当前状态")
-    @TableField(typeHandler = JacksonTypeHandler.class)
-    private UserStatus status;
-
-    @Schema(description = "用户其他数据配置(JSON)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-    private String meta;
-
     @Schema(description = "用户角色ID")
     private Long roleId;
 
     @Schema(description = "用户资产ID")
     private Long assetId;
-
-    @Schema(description = "用户注册时间")
-    private Timestamp createTime;
-
-    @Schema(description = "用户资料修改时间")
-    private Timestamp updateTime;
-
-    @Schema(description = "用户是否已被删除")
-    private Integer isDeleted;
 
 
 }

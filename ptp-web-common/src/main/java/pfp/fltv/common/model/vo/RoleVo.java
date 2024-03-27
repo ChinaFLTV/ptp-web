@@ -1,9 +1,6 @@
-package pfp.fltv.common.model.po.manage;
+package pfp.fltv.common.model.vo;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -11,28 +8,25 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.List;
 
 /**
  * @author Lenovo/LiGuanda
- * @date 2024/3/18 上午 11:09:04
- * @description 用户角色实体类(PO)
- * @filename Role.java
+ * @version 1.0.0
+ * @date 2024/3/27 下午 8:05:51
+ * @description 前端传输过来的角色的部分数据
+ * @filename RoleVo.java
  */
 
-@TableName(value = "role", autoResultMap = true)
+@Schema(description = "前端传输过来的Role的部分数据")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Schema(description = "用户角色")
-public class Role implements Serializable {
+public class RoleVo {
 
 
     @Schema(description = "角色ID")
-    @TableId(type = IdType.INPUT)
     private Long id;
 
     @Schema(description = "角色名称")
@@ -45,15 +39,6 @@ public class Role implements Serializable {
     @Schema(description = "角色所不被允许的权限")
     @TableField(typeHandler = JacksonTypeHandler.class)
     private List<String> prohibition;
-
-    @Schema(description = "角色建立时间")
-    private Timestamp createTime;
-
-    @Schema(description = "(最后)修改时间")
-    private Timestamp updateTime;
-
-    @Schema(description = "角色是否已被删除")
-    private Integer isDeleted;
 
 
 }

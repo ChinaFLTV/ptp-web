@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import pfp.fltv.common.model.po.info.AddressInfo;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author Lenovo/LiGuanda
@@ -24,6 +25,9 @@ import java.io.Serializable;
 public class PassageVo implements Serializable {
 
 
+    @Schema(description = "文章ID")
+    private Long id;
+
     @Schema(description = "发布者ID")
     private Long uid;
 
@@ -36,11 +40,14 @@ public class PassageVo implements Serializable {
     @Schema(accessMode = Schema.AccessMode.READ_WRITE, description = "用户填写的文章内容")
     private String content;
 
-    @Schema(accessMode = Schema.AccessMode.READ_WRITE, description = "文章分类")
-    private String category;
+    @Schema(description = "附加的其他类型的媒体内容(JSON格式)")
+    private String accessary;
 
     @Schema(accessMode = Schema.AccessMode.READ_WRITE, description = "文章标签")
-    private String tags;
+    private List<String> tags;
+
+    @Schema(accessMode = Schema.AccessMode.READ_WRITE, description = "文章分类")
+    private List<String> category;
 
     @Schema(description = "发布时用户所在的地址信息")
     private AddressInfo addressInfo;

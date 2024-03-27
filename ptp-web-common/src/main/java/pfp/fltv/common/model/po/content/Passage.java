@@ -15,7 +15,7 @@ import pfp.fltv.common.model.base.content.BaseEntity;
  * @filename Passage.java
  */
 
-@TableName("passage")
+@TableName(value = "passage", autoResultMap = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
