@@ -9,7 +9,7 @@
         <version>3.2.3</version>
     </parent>
     <groupId>ptp.fltv</groupId>
-    <artifactId>ptp-web</artifactId>
+    <artifactId>ptp-web-backend</artifactId>
     <version>${ptp.version}</version>
     <packaging>pom</packaging>
     <description>PTP全局依赖管理中心</description>

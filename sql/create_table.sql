@@ -28,7 +28,10 @@ CREATE TABLE `role`
     `prohibition` CHAR(255)          DEFAULT 'user_add,user_remove,role_add,role_remove,role_list,role_update' COMMENT '当前角色所禁止的操作',
     `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '角色创建时间',
     `update_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '(最后)修改时间' ON UPDATE CURRENT_TIMESTAMP,
-    `is_deleted`  INT                DEFAULT 0 COMMENT '角色是否已被删除'
+    `is_deleted`  INT                DEFAULT 0 COMMENT '角色是否已被删除',
+
+    UNIQUE KEY ix_code (code),
+    UNIQUE KEY ix_name (name)
 
 );
 
@@ -62,7 +65,13 @@ CREATE TABLE IF NOT EXISTS `user`
     `is_deleted`      INT                   DEFAULT 0 COMMENT '用户是否已被删除',
 
     FOREIGN KEY (role_id) REFERENCES role (id),
-    FOREIGN KEY (asset_id) REFERENCES asset (id)
+    FOREIGN KEY (asset_id) REFERENCES asset (id),
+
+    UNIQUE KEY un_idx_account (account),
+    UNIQUE KEY un_idx_nickname (nickname),
+    INDEX idx_realname (realname),
+    UNIQUE KEY un_idx_phone (phone),
+    UNIQUE KEY un_idx_email (email)
 
 );
 
@@ -88,9 +97,6 @@ CREATE TABLE IF NOT EXISTS `dialogue`
     `create_time`  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '内容创建时间',
     `update_time`  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '(最后)更新时间' ON UPDATE CURRENT_TIMESTAMP,
     `is_deleted`   INT                   DEFAULT 0 COMMENT '当前实体是否已被逻辑删除',
-    # INDEX idx_uid (uid),                                        -- 为uid字段创建索引
-    # INDEX idx_status (status),                                  -- 为status字段创建索引
-    # INDEX idx_is_deleted (isDeleted)                            -- 为isDeleted字段创建索引
 
     FOREIGN KEY (uid) REFERENCES user (id)
 
@@ -118,9 +124,6 @@ CREATE TABLE IF NOT EXISTS `announcement`
     `create_time`  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '内容创建时间',
     `update_time`  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '(最后)更新时间' ON UPDATE CURRENT_TIMESTAMP,
     `is_deleted`   INT                   DEFAULT 0 COMMENT '当前实体是否已被逻辑删除',
-    # INDEX idx_uid (uid),                                        -- 为uid字段创建索引
-    # INDEX idx_status (status),                                  -- 为status字段创建索引
-    # INDEX idx_is_deleted (isDeleted)                            -- 为isDeleted字段创建索引
 
     FOREIGN KEY (uid) REFERENCES user (id)
 
@@ -149,9 +152,6 @@ CREATE TABLE IF NOT EXISTS `passage`
     `create_time`  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '内容创建时间',
     `update_time`  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '(最后)更新时间' ON UPDATE CURRENT_TIMESTAMP,
     `is_deleted`   INT                   DEFAULT 0 COMMENT '当前实体是否已被逻辑删除',
-    # INDEX idx_uid (uid),                                        -- 为uid字段创建索引
-    # INDEX idx_status (status),                                  -- 为status字段创建索引
-    # INDEX idx_is_deleted (isDeleted)                            -- 为isDeleted字段创建索引
 
     FOREIGN KEY (uid) REFERENCES user (id)
 

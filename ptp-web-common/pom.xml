@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>ptp.fltv</groupId>
-        <artifactId>ptp-web</artifactId>
+        <artifactId>ptp-web-backend</artifactId>
         <version>${ptp.version}</version>
     </parent>
     <artifactId>ptp-web-common</artifactId>
