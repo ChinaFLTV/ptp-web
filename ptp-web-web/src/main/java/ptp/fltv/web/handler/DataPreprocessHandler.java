@@ -1,4 +1,4 @@
-package ptp.fltv.web.aop;
+package ptp.fltv.web.handler;
 
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.web.bind.WebDataBinder;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  */
 
 @RestControllerAdvice
-public class DataPreprocessController {
+public class DataPreprocessHandler {
 
 
     /**

@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -54,6 +56,30 @@ public class Role implements Serializable {
 
     @Schema(description = "角色是否已被删除")
     private Integer isDeleted;
+
+
+    /**
+     * @return 空的角色对象
+     * @author Lenovo/LiGuanda
+     * @date 2024/3/31 下午 8:32:53
+     * @version 1.0.0
+     * @description 返回一个安全的空的角色对象
+     * @filename Role.java
+     */
+    public static Role EMPTY_ROLE() {
+
+        Role role = new Role();
+        role.id = -1L;
+        role.name = "";
+        role.authorities = new ArrayList<>();
+        role.prohibition = new ArrayList<>();
+        role.createTime = Timestamp.from(Instant.now());
+        role.updateTime = Timestamp.from(Instant.now());
+        role.isDeleted = 0;
+
+        return role;
+
+    }
 
 
 }

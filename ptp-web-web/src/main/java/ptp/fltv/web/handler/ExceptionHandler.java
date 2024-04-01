@@ -1,6 +1,5 @@
-package ptp.fltv.web.aop;
+package ptp.fltv.web.handler;
 
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import pfp.fltv.common.response.Result;
 
@@ -13,7 +12,7 @@ import pfp.fltv.common.response.Result;
  */
 
 @RestControllerAdvice
-public class ExceptionController {
+public class ExceptionHandler {
 
 
     /**
@@ -23,7 +22,7 @@ public class ExceptionController {
      * @description 捕获全局异常
      * @filename ExceptionHandler.java
      */
-    @ExceptionHandler(Exception.class)
+    @org.springframework.web.bind.annotation.ExceptionHandler(Exception.class)
     public Result<Exception> error(Exception e) {
 
         e.printStackTrace();

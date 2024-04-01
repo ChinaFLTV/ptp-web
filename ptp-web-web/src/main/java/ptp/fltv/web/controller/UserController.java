@@ -7,6 +7,8 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import pfp.fltv.common.model.po.manage.User;
 import pfp.fltv.common.model.vo.UserVo;
@@ -34,6 +36,8 @@ public class UserController {
 
     @Resource
     private UserService userService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 
     @Operation(description = "根据ID查询用户信息")
@@ -88,6 +92,9 @@ public class UserController {
             @Parameter(name = "user", description = "待添加的用户信息")
             @RequestBody
             User user) {
+
+        // 2024-4-1  21:28-使用Spring Security配置中配置的密码加密验证器对用户原始密码进行加密
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         boolean isSaved = userService.save(user);
 

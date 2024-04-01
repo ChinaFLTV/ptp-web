@@ -1,6 +1,8 @@
 package ptp.fltv.web.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.NonNull;
 import org.springframework.stereotype.Service;
 import pfp.fltv.common.model.po.manage.User;
 import ptp.fltv.web.mapper.UserMapper;
@@ -16,6 +18,17 @@ import ptp.fltv.web.service.UserService;
 
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
+
+
+    @Override
+    public User getUserByNickname(@NonNull String nickname) {
+
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(User::getNickname, nickname);
+
+        return baseMapper.selectOne(queryWrapper);
+
+    }
 
 
 }
