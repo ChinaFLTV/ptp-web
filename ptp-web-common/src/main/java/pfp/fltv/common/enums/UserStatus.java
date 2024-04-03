@@ -1,5 +1,7 @@
 package pfp.fltv.common.enums;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 /**
  * @author Lenovo/LiGuanda
  * @date 2024/3/17 下午 10:11:32
@@ -36,6 +38,7 @@ public enum UserStatus {
     }
 
 
+    @JsonValue
     public Integer getCode() {
 
         return code;

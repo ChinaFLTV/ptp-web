@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import pfp.fltv.common.enums.AssetStatus;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -24,7 +25,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AssetVo {
+public class AssetVo implements Serializable {
 
 
     @Schema(description = "ID")

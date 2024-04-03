@@ -1,11 +1,7 @@
 package pfp.fltv.common.enums;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-
-import java.util.Objects;
 
 /**
  * @author Lenovo/LiGuanda
@@ -15,7 +11,6 @@ import java.util.Objects;
  */
 
 @AllArgsConstructor
-@Getter
 public enum Gender {
 
     MALE("男", "MALE", 0),
@@ -24,25 +19,14 @@ public enum Gender {
 
 
     private final String message;
-    @JsonValue
     private final String comment;
     private final Integer code;
 
 
-    @JsonCreator
-    public static Gender get(String comment) {
+    @JsonValue
+    public Integer getCode() {
 
-        for (Gender gender : values()) {
-
-            if (Objects.equals(gender.getComment(), comment)) {
-
-                return gender;
-
-            }
-
-        }
-
-        return null;
+        return code;
 
     }
 

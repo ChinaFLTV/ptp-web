@@ -1,7 +1,9 @@
 package pfp.fltv.common.model.po.content;
 
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -28,6 +30,10 @@ import java.util.List;
 @Builder
 public class PassageComment implements Serializable {
 
+
+    @TableId(type = IdType.ASSIGN_ID)
+    @Schema(description = "ID")
+    private Long id;
 
     @Schema(description = "评论的文章ID")
     private Long passageId;
