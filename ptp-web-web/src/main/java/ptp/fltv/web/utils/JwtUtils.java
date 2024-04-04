@@ -3,7 +3,9 @@ package ptp.fltv.web.utils;
 import com.alibaba.fastjson2.JSON;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import org.springframework.util.StringUtils;
 
 import java.time.Instant;
 import java.util.Date;
@@ -38,6 +40,12 @@ public class JwtUtils {
      */
     public static String encode(Object object) {
 
+        if (object == null) {
+
+            return null;
+
+        }
+
         Map<String, Object> header = new HashMap<>();
         header.put("type", "jwt");
         header.put("alg", "HS256");
@@ -58,13 +66,20 @@ public class JwtUtils {
     /**
      * @param token 用户传递的Token
      * @return 解密后的文本内容
+     * @throws JWTDecodeException 因用户给出的TOKEN格式非法或解码异常而导致的异常
      * @author Lenovo/LiGuanda
      * @date 2024/4/3 下午 7:57:04
      * @version 1.0.0
      * @description 用于根据所给的Token解析出对应的文本内容(不做对象解析处理)
      * @filename JwtUtils.java
      */
-    public static String decode(String token) {
+    public static String decode(String token) throws JWTDecodeException {
+
+        if (!StringUtils.hasLength(token)) {
+
+            return null;
+
+        }
 
         DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256(PRIVATE_KEY))
                 .withJWTId(OBJECT_JWT_KEY_ID)

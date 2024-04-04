@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import pfp.fltv.common.enums.ResponseStatus;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
+import java.time.Instant;
 
 /**
  * @param <T> 包装数据的类型
@@ -27,6 +29,8 @@ public class Result<T> implements Serializable {
 
     @Schema(description = "响应状态")
     private ResponseStatus status;
+    @Schema(description = "响应时间")
+    private Timestamp time;
     @Schema(description = "响应数据")
     private T data;
 
@@ -41,7 +45,7 @@ public class Result<T> implements Serializable {
      */
     public static <U> Result<U> success() {
 
-        return new Result<>(ResponseStatus.SUCCESS, null);
+        return new Result<>(ResponseStatus.SUCCESS, Timestamp.from(Instant.now()), null);
 
     }
 
@@ -57,7 +61,7 @@ public class Result<T> implements Serializable {
      */
     public static <U> Result<U> success(U data) {
 
-        return new Result<>(ResponseStatus.SUCCESS, data);
+        return new Result<>(ResponseStatus.SUCCESS, Timestamp.from(Instant.now()), data);
 
     }
 
@@ -73,7 +77,7 @@ public class Result<T> implements Serializable {
      */
     public static <U> Result<U> failure(U data) {
 
-        return new Result<>(ResponseStatus.FAIL, data);
+        return new Result<>(ResponseStatus.FAIL, Timestamp.from(Instant.now()), data);
 
     }
 

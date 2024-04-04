@@ -71,6 +71,13 @@ spring:
         # IP黑名单（共同存在时，deny优先于allow）
         deny:
 
+        # 2024-4-4  20:30-集成Redis所需配置
+  data:
+    redis:
+      host: localhost
+      port: 7001
+
+
 
 # 2024-3-16  19:33-Knife4j配置
 knife4j:
