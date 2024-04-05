@@ -1,4 +1,4 @@
-package ptp.fltv.web.handler;
+package ptp.fltv.web.security.filter;
 
 import com.alibaba.fastjson2.JSON;
 import jakarta.annotation.Nonnull;
@@ -67,7 +67,7 @@ public class AuthorityCheckFilter extends OncePerRequestFilter {
         System.out.println("STORE_KEY = " + STORE_KEY);
 
         // 2024-4-4  21:35-无论认证是否通过，都要放行该请求到其他过滤器(大不了认证权限为空~)
-        doFilter(request, response, filterChain);
+        filterChain.doFilter(request, response);
 
     }
 

@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import pfp.fltv.common.model.po.manage.User;
@@ -40,6 +41,7 @@ public class UserController {
     private PasswordEncoder passwordEncoder;
 
 
+    @PreAuthorize("")
     @Operation(description = "根据ID查询用户信息")
     @GetMapping("/query/{userId}")
     public Result<User> queryUserById(

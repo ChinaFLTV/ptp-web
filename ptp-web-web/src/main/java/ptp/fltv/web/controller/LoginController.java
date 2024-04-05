@@ -36,6 +36,7 @@ public class LoginController {
     @GetMapping("/logout")
     public Result<String> logout() {
 
+        // 2024-4-5  21:21-这边登出的时候，前端那边也要同步清除用户SESSION TOKEN信息，不需要清除登录信息
         SecurityContextHolder.clearContext();
         return Result.success("期待与您的下一次相遇~");
 

@@ -1,5 +1,6 @@
 package ptp.fltv.web.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -10,9 +11,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import ptp.fltv.web.security.filter.AuthorityCheckFilter;
+import ptp.fltv.web.security.PtpAuthenticationEntryPoint;
 import ptp.fltv.web.service.PtpUserDetailService;
 
 import java.util.Arrays;
@@ -31,6 +35,10 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 @Configuration
 public class SpringSecurityConfig {
+
+
+    @Autowired
+    private AuthorityCheckFilter authorityCheckFilter;
 
 
     /**
@@ -76,16 +84,20 @@ public class SpringSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        http.authorizeHttpRequests(authorize -> authorize.requestMatchers("/gate/login", "/doc.html", "/v3/api-docs/**", "/webjars/**", "/swagger-ui.html", "/swagger-ui/**")
-                        .permitAll()
-                        .anyRequest()
-                        .authenticated())
+        http.authorizeHttpRequests(authorize ->
+                        authorize.requestMatchers("/gate/login",
+                                        "/doc.html", "/v3/api-docs/**", "/webjars/**",
+                                        "/swagger-ui.html", "/swagger-ui/**")
+                                .permitAll()
+                                .anyRequest()
+                                .authenticated())
                 .formLogin(withDefaults())
                 .httpBasic(withDefaults())
+                .addFilterBefore(authorityCheckFilter, UsernamePasswordAuthenticationFilter.class)
                 .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));// 2024-4-2  20:50-禁用session会话
-        // .cors(cors -> cors.init())
-        // .exceptionHandling(exceptionHandler -> exceptionHandler.authenticationEntryPoint(new PtpAuthenticationEntryPoint()))
+                .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))// 2024-4-2  20:50-禁用session会话
+                // .cors(cors -> cors.init())
+                .exceptionHandling(exceptionHandler -> exceptionHandler.authenticationEntryPoint(new PtpAuthenticationEntryPoint()));
 
         return http.build();
 

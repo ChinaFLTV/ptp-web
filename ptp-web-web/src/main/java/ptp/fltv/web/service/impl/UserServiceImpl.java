@@ -17,6 +17,8 @@ import ptp.fltv.web.service.RoleService;
 import ptp.fltv.web.service.UserService;
 import ptp.fltv.web.utils.JwtUtils;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -51,7 +53,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
 
     @Override
-    public Result<String> login(UserLoginVo userLoginVo) {
+    public Result<?> login(UserLoginVo userLoginVo) {
 
         if (userLoginVo == null) {
 
@@ -91,17 +93,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 .roleId(user.getId())
                 .build();
 
+        // 2024-4-5  22:17-先不要用ID+""的形式加密，这样做解密的时候会被转换为"ID"
         // TODO 目前先用用户ID作为key，日后将单独与远程随机ID生成服务进行交互获取
-        final String STORE_KEY = user.getId() + "";
+        final Long STORE_KEY = user.getId();
 
         redisTemplate.opsForValue().set(STORE_KEY + "-user", JSON.toJSONString(compactUser));
         redisTemplate.opsForValue().set(STORE_KEY + "-role", JSON.toJSONString(compactRole));
 
-        // userLoginVo.setPassword("");// 2024-4-3  20:51-清除用户敏感信息
-        String jwt = JwtUtils.encode(STORE_KEY);
+        Map<String, Object> result = new HashMap<>();
+        userLoginVo.setPassword(""); // 2024-4-3  20:51-清除用户敏感信息
+        String jwt1 = JwtUtils.encode(userLoginVo);
+        result.put("userLoginData", jwt1);
+        String jwt2 = JwtUtils.encode(STORE_KEY);
+        result.put("STORE_KEY", jwt2);
 
         // 2024-4-3  21:33-返回给前端，保存到LocalStorage那里，用的时候再让前端带过来
-        return Result.success(jwt);
+        return Result.success(result);
 
     }
 

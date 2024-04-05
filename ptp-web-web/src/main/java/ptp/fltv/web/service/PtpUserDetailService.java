@@ -9,8 +9,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import pfp.fltv.common.model.po.manage.Role;
 import pfp.fltv.common.model.po.manage.User;
 
-import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author Lenovo/LiGuanda
@@ -36,10 +37,10 @@ public class PtpUserDetailService implements UserDetailsService {
         if (user != null) {
 
             Role role = roleService.getRoleByUser(user);
-            List<GrantedAuthority> authorities = role.getAuthorities()
+            Set<GrantedAuthority> authorities = role.getAuthorities()
                     .stream()
                     .map((Function<String, GrantedAuthority>) SimpleGrantedAuthority::new)
-                    .toList();
+                    .collect(Collectors.toSet());
 
             return new org.springframework.security.core.userdetails.User(user.getNickname(), user.getPassword(),
                     true, true, true, true, authorities);
