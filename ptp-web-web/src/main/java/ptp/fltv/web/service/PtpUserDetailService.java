@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
  * @author Lenovo/LiGuanda
  * @version 1.0.0
  * @date 2024/3/31 下午 7:40:45
- * @description <code>{@UserDetailService}</code> 的自定义实现类
+ * @description {@link UserDetailsService} 的自定义实现类
  * @filename PtpUserDetailService.java
  */
 

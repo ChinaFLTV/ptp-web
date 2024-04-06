@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pfp.fltv.common.model.po.manage.Role;
 import pfp.fltv.common.model.vo.RoleVo;
@@ -28,6 +29,7 @@ import java.util.Map;
 
 @Tag(name = "角色操作接口")
 @RestController
+@PreAuthorize("@pc.hasAnyPermission('role:add','role:remove','role:list','role:update')")
 @RequestMapping("/content/user/role")
 public class RoleController {
 

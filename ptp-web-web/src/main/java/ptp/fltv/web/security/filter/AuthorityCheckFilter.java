@@ -63,9 +63,6 @@ public class AuthorityCheckFilter extends OncePerRequestFilter {
 
         }
 
-        System.out.println("---------------------------------AuthorityCheckFilter--------------------------------");
-        System.out.println("STORE_KEY = " + STORE_KEY);
-
         // 2024-4-4  21:35-无论认证是否通过，都要放行该请求到其他过滤器(大不了认证权限为空~)
         filterChain.doFilter(request, response);
 

@@ -28,7 +28,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
 
         }
 
-        Role role = baseMapper.selectById(user.getId());
+        Role role = baseMapper.selectById(user.getRoleId());
 
         return (role == null) ? Role.EMPTY_ROLE() : role;
 

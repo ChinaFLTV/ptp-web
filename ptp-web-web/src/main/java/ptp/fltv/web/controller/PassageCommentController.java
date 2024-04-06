@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pfp.fltv.common.model.po.content.PassageComment;
 import pfp.fltv.common.model.vo.PassageCommentVo;
@@ -28,6 +29,7 @@ import java.util.Map;
 
 @Tag(name = "文章评论操作接口")
 @RestController
+@PreAuthorize("@pc.hasAnyPermission('content:passage:comment:add','content:passage:comment:remove','content:passage:comment:list','content:passage:comment:update')")
 @RequestMapping("/content/passage/comment")
 public class PassageCommentController {
 

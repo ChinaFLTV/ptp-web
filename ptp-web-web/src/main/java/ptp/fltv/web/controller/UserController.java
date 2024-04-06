@@ -31,6 +31,7 @@ import java.util.Map;
 
 @Tag(name = "用户操作接口")
 @RestController
+@PreAuthorize("@pc.hasAnyPermission('user:add','user:remove','user:list','user:update')")
 @RequestMapping("/content/user")
 public class UserController {
 

@@ -17,6 +17,8 @@ public class PtpExceptionHandler {
 
 
     /**
+     * @param e 产生的异常
+     * @return 给前端的失败信息
      * @author Lenovo/LiGuanda
      * @date 2024/3/26 下午 7:10:23
      * @version 1.0.0
@@ -24,10 +26,10 @@ public class PtpExceptionHandler {
      * @filename PtpExceptionHandler.java
      */
     @ExceptionHandler(Exception.class)
-    public Result<Exception> error(Exception e) {
+    public Result<String> error(Exception e) {
 
         e.printStackTrace();
-        return Result.failure(e);
+        return Result.failure(e.getLocalizedMessage());
 
     }
 

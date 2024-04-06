@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pfp.fltv.common.model.po.content.Passage;
 import pfp.fltv.common.model.vo.PassageVo;
@@ -28,6 +29,7 @@ import java.util.Map;
 
 @Tag(name = "文章操作接口")
 @RestController
+@PreAuthorize("@pc.hasAnyPermission('content:passage:add','content:passage:remove','content:passage:list','content:passage:update')")
 @RequestMapping("/content/passage")
 public class PassageController {
 
