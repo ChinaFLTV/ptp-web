@@ -2,6 +2,7 @@ package pfp.fltv.common.enums;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
  * @author Lenovo/LiGuanda
@@ -10,6 +11,7 @@ import lombok.AllArgsConstructor;
  * @filename Gender.java
  */
 
+@Getter
 @AllArgsConstructor
 public enum Gender {
 
@@ -20,15 +22,8 @@ public enum Gender {
 
     private final String message;
     private final String comment;
-    private final Integer code;
-
-
     @JsonValue
-    public Integer getCode() {
-
-        return code;
-
-    }
+    private final Integer code;
 
 
 }

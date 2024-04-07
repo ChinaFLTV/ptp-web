@@ -1,5 +1,9 @@
 package pfp.fltv.common.enums;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 /**
  * @author Lenovo/LiGuanda
  * @version 1.0.0
@@ -8,6 +12,8 @@ package pfp.fltv.common.enums;
  * @filename AssetStatus.java
  */
 
+@Getter
+@AllArgsConstructor
 public enum AssetStatus {
 
 
@@ -19,29 +25,8 @@ public enum AssetStatus {
 
 
     private final String comment;
+    @JsonValue
     private final Integer code;
-
-
-    AssetStatus(String comment, Integer code) {
-
-        this.comment = comment;
-        this.code = code;
-
-    }
-
-
-    public String getComment() {
-
-        return comment;
-
-    }
-
-
-    public Integer getCode() {
-
-        return code;
-
-    }
 
 
 }

@@ -13,12 +13,13 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import ptp.fltv.web.security.PtpAuthenticationEntryPoint;
+import ptp.fltv.web.security.PtpUserDetailService;
 import ptp.fltv.web.security.filter.AuthorityCheckFilter;
-import ptp.fltv.web.service.PtpUserDetailService;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,7 +34,10 @@ import static org.springframework.security.config.Customizer.withDefaults;
  * @filename SpringSecurityConfig.java
  */
 
-@EnableMethodSecurity// 2024-4-6  22:30-开启全局方法安全机制
+// 2024-4-7  19:26-由于最早的方法拦截器（@PreFilter）被设置为100，设置为 0 意味着事务 advice 将在所有Spring Security advice 之前运行
+@EnableTransactionManagement(order = 0)
+// 2024-4-7  19:11-jsr250Enabled = true-授权注解为 @RolesAllowed、@PermitAll 和 @DenyAll 的方法、类和接口
+@EnableMethodSecurity(jsr250Enabled = true) // 2024-4-6  22:30-开启全局方法安全机制
 @EnableWebSecurity
 @Configuration
 public class SpringSecurityConfig {
@@ -87,7 +91,7 @@ public class SpringSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http.authorizeHttpRequests(authorize ->
-                        authorize.requestMatchers("/gate/login",
+                        authorize.requestMatchers("/gate/login", "/gate/login/oauth2/github",
                                         "/doc.html", "/v3/api-docs/**", "/webjars/**",
                                         "/swagger-ui.html", "/swagger-ui/**")
                                 .permitAll()
@@ -119,7 +123,7 @@ public class SpringSecurityConfig {
 
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("*"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
+        configuration.setAllowedMethods(List.of("*"));
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

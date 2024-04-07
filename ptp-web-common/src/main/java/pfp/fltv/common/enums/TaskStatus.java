@@ -1,5 +1,9 @@
 package pfp.fltv.common.enums;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 /**
  * @author Lenovo/LiGuanda
  * @date 2024/3/17 下午 10:12:40
@@ -7,6 +11,8 @@ package pfp.fltv.common.enums;
  * @filename TaskStatus.java
  */
 
+@Getter
+@AllArgsConstructor
 public enum TaskStatus {
 
 
@@ -21,29 +27,8 @@ public enum TaskStatus {
 
 
     private final String comment;
+    @JsonValue
     private final Integer code;
-
-
-    TaskStatus(String comment, Integer code) {
-
-        this.comment = comment;
-        this.code = code;
-
-    }
-
-
-    public String getComment() {
-
-        return comment;
-
-    }
-
-
-    public Integer getCode() {
-
-        return code;
-
-    }
 
 
 }

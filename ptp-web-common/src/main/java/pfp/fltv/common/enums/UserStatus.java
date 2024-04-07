@@ -1,6 +1,8 @@
 package pfp.fltv.common.enums;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
  * @author Lenovo/LiGuanda
@@ -9,6 +11,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * @filename UserStatus.java
  */
 
+@Getter
+@AllArgsConstructor
 public enum UserStatus {
 
 
@@ -20,30 +24,8 @@ public enum UserStatus {
 
 
     private final String comment;
-    private final Integer code;
-
-
-    UserStatus(String comment, Integer code) {
-
-        this.comment = comment;
-        this.code = code;
-
-    }
-
-
-    public String getComment() {
-
-        return comment;
-
-    }
-
-
     @JsonValue
-    public Integer getCode() {
-
-        return code;
-
-    }
+    private final Integer code;
 
 
 }

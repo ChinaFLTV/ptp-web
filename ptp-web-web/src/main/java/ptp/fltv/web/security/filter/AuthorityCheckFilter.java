@@ -51,15 +51,18 @@ public class AuthorityCheckFilter extends OncePerRequestFilter {
 
         if (STORE_KEY != null) {
 
-            User compactUser = JSON.parseObject(redisTemplate.opsForValue().get(STORE_KEY + "-user"), User.class);
-            Role compactRole = JSON.parseObject(redisTemplate.opsForValue().get(STORE_KEY + "-role"), Role.class);
+            User compactUser = JSON.parseObject(redisTemplate.opsForValue().get("user:login:" + STORE_KEY), User.class);
+            Role compactRole = JSON.parseObject(redisTemplate.opsForValue().get("user:role:" + STORE_KEY), Role.class);
 
+            // 2024-4-7  9:42-此时意味着用户SESSION KEY正常且未过期
             if (compactUser != null && compactRole != null) {
 
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(compactUser, compactUser.getPassword(), compactRole.getGrantedAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
             }
+
+            // 2024-4-7  9:43-用户凭证过期，啥也不做，后续访问受限方法时将引导至登录界面
 
         }
 

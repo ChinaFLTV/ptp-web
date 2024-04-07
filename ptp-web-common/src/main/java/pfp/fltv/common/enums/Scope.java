@@ -1,5 +1,9 @@
 package pfp.fltv.common.enums;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 /**
  * @author Lenovo/LiGuanda
  * @version 1.0.0
@@ -8,6 +12,8 @@ package pfp.fltv.common.enums;
  * @filename Scope.java
  */
 
+@Getter
+@AllArgsConstructor
 public enum Scope {
 
 
@@ -19,29 +25,8 @@ public enum Scope {
 
 
     private final String comment;
+    @JsonValue
     private final Integer code;
-
-
-    Scope(String comment, Integer code) {
-
-        this.comment = comment;
-        this.code = code;
-
-    }
-
-
-    public String getComment() {
-
-        return comment;
-
-    }
-
-
-    public Integer getCode() {
-
-        return code;
-
-    }
 
 
 }

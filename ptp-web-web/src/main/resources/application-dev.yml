@@ -2,3 +2,15 @@
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 2024-3-25  21:03-生产环境下需要关闭
+
+
+spring:
+  security:
+
+    # 2024-4-7  20:20-配置开发环境下的OAuth2登录
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: 4900da741269901ec6ca
+            client-secret: 36133e1b6cf952a636cab52b78d1eba24e214fda

@@ -76,7 +76,17 @@ spring:
     redis:
       host: localhost
       port: 7001
-
+      jedis:
+        pool:
+          max-active: 8 # 2024-4-7  9:29-连接池最大连接数
+          max-wait: -1 # 2024-4-7  9:30-连接池最大阻塞空闲时间(负数表示无限制)
+          max-idle: 8 # 2024-4-7  9:31-连接池最大空闲连接数
+          min-idle: 0 # 2024-4-7  9:31-连接池最小空闲连接数
+  cache:
+    redis:
+      time-to-live: 1800s
+    cache-names: redis_cache
+    type: redis
 
 
 # 2024-3-16  19:33-Knife4j配置

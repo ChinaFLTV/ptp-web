@@ -1,4 +1,4 @@
-package ptp.fltv.web.service;
+package ptp.fltv.web.security;
 
 import jakarta.annotation.Resource;
 import org.springframework.security.core.GrantedAuthority;
@@ -8,6 +8,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import pfp.fltv.common.model.po.manage.Role;
 import pfp.fltv.common.model.po.manage.User;
+import ptp.fltv.web.service.RoleService;
+import ptp.fltv.web.service.UserService;
 
 import java.util.Set;
 import java.util.function.Function;

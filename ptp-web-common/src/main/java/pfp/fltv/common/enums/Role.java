@@ -1,5 +1,9 @@
 package pfp.fltv.common.enums;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 /**
  * @author Lenovo/LiGuanda
  * @date 2024/3/14 下午 9:57:11
@@ -7,6 +11,8 @@ package pfp.fltv.common.enums;
  * @filename Role.java
  */
 
+@Getter
+@AllArgsConstructor
 public enum Role {
 
     USER("正常用户", 1),
@@ -20,29 +26,8 @@ public enum Role {
 
 
     private final String comment;
+    @JsonValue
     private final Integer code;
-
-
-    Role(String comment, Integer code) {
-
-        this.comment = comment;
-        this.code = code;
-
-    }
-
-
-    public String getComment() {
-
-        return comment;
-
-    }
-
-
-    public Integer getCode() {
-
-        return code;
-
-    }
 
 
 }

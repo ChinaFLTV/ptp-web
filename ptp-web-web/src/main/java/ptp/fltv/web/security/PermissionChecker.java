@@ -43,7 +43,7 @@ public class PermissionChecker {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         // 2024-4-7  22:02-其实这里Authentication几乎是不为空的，因为如果为空的话，早在过滤器链那边就给拦截下来了，当然，也有可能用户直接访问不是SS保护的路径，那这种情况下就需要判断是否为空了
-        // 2024-4-6  21:23-用户未登录的情况
+        // 2024-4-6  21:23-用户未登录的情况或者登录过期
         if (authentication == null) {
 
             // TODO 这里需要跳转到登录页面(通过抛出未登录异常的形式)

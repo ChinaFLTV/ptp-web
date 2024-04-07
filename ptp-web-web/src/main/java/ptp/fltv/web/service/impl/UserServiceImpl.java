@@ -1,5 +1,6 @@
 package ptp.fltv.web.service.impl;
 
+import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -8,10 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import pfp.fltv.common.constants.OAuth2LoginConstants;
+import pfp.fltv.common.constants.RedisConstants;
+import pfp.fltv.common.exceptions.PtpException;
 import pfp.fltv.common.model.po.manage.Role;
 import pfp.fltv.common.model.po.manage.User;
 import pfp.fltv.common.model.vo.UserLoginVo;
-import pfp.fltv.common.response.Result;
 import ptp.fltv.web.mapper.UserMapper;
 import ptp.fltv.web.service.RoleService;
 import ptp.fltv.web.service.UserService;
@@ -20,6 +23,7 @@ import ptp.fltv.web.utils.JwtUtils;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Lenovo/LiGuanda
@@ -53,11 +57,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
 
     @Override
-    public Result<?> login(UserLoginVo userLoginVo) {
+    public Map<String, Object> login(UserLoginVo userLoginVo) throws PtpException {
 
         if (userLoginVo == null) {
 
-            return Result.failure("登录数据受损！");
+            throw new PtpException(801, "登录数据受损！");
 
         }
 
@@ -65,11 +69,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         if (user == null) {
 
-            return Result.failure("用户名不存在！");
+            throw new PtpException(802, "用户名不存在！");
 
         } else if (!Objects.equals(passwordEncoder.encode(userLoginVo.getPassword()), user.getPassword())) {
 
-            return Result.failure("用户密码错误！");
+            throw new PtpException(803, "用户密码错误！");
 
         }
 
@@ -97,8 +101,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // TODO 目前先用用户ID作为key，日后将单独与远程随机ID生成服务进行交互获取
         final Long STORE_KEY = user.getId();
 
-        redisTemplate.opsForValue().set(STORE_KEY + "-user", JSON.toJSONString(compactUser));
-        redisTemplate.opsForValue().set(STORE_KEY + "-role", JSON.toJSONString(compactRole));
+        // 2024-4-7  9:39-缓存的超时时间暂定为24H
+        redisTemplate.opsForValue().set("user:login:" + STORE_KEY, JSON.toJSONString(compactUser), RedisConstants.CACHE_TIMEOUT, TimeUnit.MILLISECONDS);
+        redisTemplate.opsForValue().set("user:role:" + STORE_KEY, JSON.toJSONString(compactRole), RedisConstants.CACHE_TIMEOUT, TimeUnit.MILLISECONDS);
 
         Map<String, Object> result = new HashMap<>();
         userLoginVo.setPassword(""); // 2024-4-3  20:51-清除用户敏感信息
@@ -108,7 +113,32 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         result.put("STORE_KEY", jwt2);
 
         // 2024-4-3  21:33-返回给前端，保存到LocalStorage那里，用的时候再让前端带过来
-        return Result.success(result);
+        return result;
+
+    }
+
+
+    @Override
+    public String loginByGithub(String code) {
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("code", code);
+        params.put("client_id", OAuth2LoginConstants.GITHUB_CLIENT_ID);
+        params.put("client_secret", OAuth2LoginConstants.GITHUB_CLIENT_SECRET);
+
+        String credential = HttpUtil.createPost(OAuth2LoginConstants.GITHUB_ACCESS_TOKEN_URL)
+                .header("Accept", "application/json")
+                .form(params)
+                .execute()
+                .body();
+
+        String token = JSON.parseObject(credential).getString("access_token");
+
+        return HttpUtil.createGet(OAuth2LoginConstants.GITHUB_ACCESS_USER_INFO_URL)
+                .header("Accept", "application/json")
+                .header("Authorization", "token " + token)
+                .execute()
+                .body();
 
     }
 
