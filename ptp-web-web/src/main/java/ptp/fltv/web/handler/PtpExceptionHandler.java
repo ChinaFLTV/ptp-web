@@ -1,6 +1,7 @@
 package ptp.fltv.web.handler;
 
-import org.springframework.util.StringUtils;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import pfp.fltv.common.exceptions.PtpException;
@@ -26,10 +27,10 @@ public class PtpExceptionHandler {
      * @filename PtpExceptionHandler.java
      */
     @ExceptionHandler(PtpException.class)
-    public Result<String> handlePtpException(PtpException e) {
+    public Result<JSONObject> handlePtpException(PtpException e) {
 
         e.printStackTrace();
-        return Result.failure(StringUtils.hasLength(e.getMessage()) ? e.getMessage() : e.getLocalizedMessage());
+        return Result.failure(JSON.parseObject(JSON.toJSONString(e)));
 
     }
 

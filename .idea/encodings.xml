@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="Encoding">
-    <file url="file://$PROJECT_DIR$/ptp-web-common/ptp-web-common-core/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/ptp-web-common/ptp-web-common-core/src/main/resources" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/ptp-web-common/ptp-web-common-model/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/ptp-web-common/ptp-web-common-model/src/main/resources" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/ptp-web-common/ptp-web-common-service/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/ptp-web-common/ptp-web-common-service/src/main/resources" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/ptp-web-common/ptp-web-common-utils/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/ptp-web-common/ptp-web-common-utils/src/main/resources" charset="UTF-8" />
+  <component name="Encoding" defaultCharsetForPropertiesFiles="UTF-8">
     <file url="file://$PROJECT_DIR$/ptp-web-common/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ptp-web-common/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ptp-web-service/ptp-web-service-admin/src/main/java" charset="UTF-8" />

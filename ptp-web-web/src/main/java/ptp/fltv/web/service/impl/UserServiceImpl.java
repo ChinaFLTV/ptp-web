@@ -61,7 +61,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         if (userLoginVo == null) {
 
-            throw new PtpException(801, "登录数据受损！");
+            throw new PtpException(801);
 
         }
 
@@ -69,11 +69,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         if (user == null) {
 
-            throw new PtpException(802, "用户名不存在！");
+            throw new PtpException(802);
 
         } else if (!Objects.equals(passwordEncoder.encode(userLoginVo.getPassword()), user.getPassword())) {
 
-            throw new PtpException(803, "用户密码错误！");
+            throw new PtpException(803);
 
         }
 

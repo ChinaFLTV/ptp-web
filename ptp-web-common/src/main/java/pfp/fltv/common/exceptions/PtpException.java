@@ -1,10 +1,11 @@
 package pfp.fltv.common.exceptions;
 
-import com.fasterxml.jackson.annotation.JsonValue;
+import com.alibaba.fastjson2.annotation.JSONType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pfp.fltv.common.map.ExceptionMap;
 
 import java.io.Serializable;
 
@@ -16,6 +17,7 @@ import java.io.Serializable;
  * @filename PtpException.java
  */
 
+@JSONType(includes = {"code", "message", "additionalData"}) // 2024-4-8  18:36-指定只序列化子类字段，不去序列化父类Exception中冗长的字段
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,10 +25,17 @@ import java.io.Serializable;
 public class PtpException extends Exception implements Serializable {
 
 
-    @JsonValue
     private Integer code; // 2024-4-7  22:38-错误码为8xx
     private String message;
-    private String additionalData;
+    private Object additionalData;
+
+
+    public PtpException(Integer code) {
+
+        this.code = code;
+        this.message = ExceptionMap.MAP.get(code);
+
+    }
 
 
     public PtpException(Integer code, String message) {
