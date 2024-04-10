@@ -1,0 +1,142 @@
+# 2024-4-10  15:15-构建MySQL、Redis、ElasticSearch、Kibana容器
+version: "3.9"
+services:
+
+
+  # 2024-4-10  16:16-创建MySQL容器
+  mysql:
+    container_name: ptp-backend-mysql-1
+    labels:
+      name: ptp-backend-mysql-1
+      author: LiGuanda
+      description: "PTP的后台MySQL数据库集群的ID为1的数据库"
+    # build: .
+    image: mysql:8.3.0
+    dns: 8.8.8.8
+    hostname: ptp-backend-mysql-1
+    networks:
+      - ptp-network
+    ports:
+      - "4407:3306"
+    expose:
+      - 3306
+    volumes:
+      - ./volumes/mysql/etc/mysql/conf.d:/etc/mysql/conf.d:rw
+      - ./volumes/mysql/var/log:/var/log:rw
+      - ./volumes/mysql/var/lib/mysql:/var/lib/mysql:rw
+      - ./volumes/mysql/run/mysqld:/run/mysqld:rw
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      TZ: Asia/Shanghai
+    restart: on-failure
+    logging:
+      driver: json-file
+      options:
+        max-size: 256k
+        max-file: 64
+    pid: host
+
+
+  # 2024-4-10  16:46-创建Redis数据库
+  redis:
+    container_name: ptp-backend-redis-1
+    labels:
+      name: ptp-backend-redis-1
+      author: LiGuanda
+      description: "PTP的后台Redis数据库集群的ID为1的高速缓存数据库"
+      # build:
+      # context: .
+      # dockerfile: ./redis/Dockerfile
+    image: redis:7.2.4
+    dns: 8.8.8.8
+    hostname: ptp-backend-redis-1
+    networks:
+      - ptp-network
+    ports:
+      - "7001:6379"
+    expose:
+      - 6379
+    volumes:
+      - ./volumes/redis/data:/data:rw
+      - ./volumes/redis/root:/root:rw
+    restart: on-failure
+    logging:
+      driver: json-file
+      options:
+        max-size: 256k
+        max-file: 64
+    pid: host
+    # command:
+    # - sh -c redis-server && sleep 5 && redis-cli config set requirepass root && sh -c redis-cli quit
+
+
+  # 2024-4-10  19:44-安装ElasticSearch容器
+  elasticsearch:
+    container_name: ptp-backend-es-1
+    labels:
+      name: ptp-backend-es-1
+      author: LiGuanda
+      description: "PTP的后台ElasticSearch数据库集群的ID为1的分词搜索数据库"
+    image: elasticsearch:8.13.0
+    dns: 8.8.8.8
+    hostname: ptp-backend-es-1
+    networks:
+      ptp-network:
+        ipv4_address: 172.16.238.5
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    expose:
+      - 9200
+      - 9300
+    volumes:
+      - ./volumes/elasticsearch/config:/usr/share/elasticsearch/config:rw
+    environment:
+      discovery.type: single-node
+    restart: on-failure
+    logging:
+      driver: json-file
+      options:
+        max-size: 256k
+        max-file: 64
+    working_dir: /usr/share/elasticsearch
+    pid: host
+
+
+  # 2024-4-10  20:36-安装Kibana
+  kibana:
+    container_name: ptp-backend-kibana-1
+    labels:
+      name: ptp-backend-kibana-1
+      author: LiGuanda
+      description: "用于对ElasticSearch数据库中的数据进行可视化展现"
+    image: kibana:8.13.0
+    dns: 8.8.8.8
+    hostname: ptp-backend-kibana-1
+    networks:
+      ptp-network:
+        ipv4_address: 172.16.238.6
+    ports:
+      - "5601:5601"
+    expose:
+      - 5601
+    environment:
+      ELASTICSEARCH_HOSTS: https://172.16.238.5:9200
+    restart: on-failure
+    logging:
+      driver: json-file
+      options:
+        max-size: 256k
+        max-file: 64
+    depends_on:
+      - elasticsearch
+    pid: host
+
+
+    # 2024-4-10  15:28-新建一个自定义网络，将全部容器部署到同一个网络内，使其之间能够相互连通
+networks:
+  ptp-network:
+    driver: default
+    ipam:
+      config:
+        - subnet: 172.16.238.0/24
