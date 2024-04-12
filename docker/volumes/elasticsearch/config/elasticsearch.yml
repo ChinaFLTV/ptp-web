@@ -1,32 +1,27 @@
-cluster.name: "docker-cluster"
+cluster.name: "ptp-es-cluster"
 network.host: 0.0.0.0
 
 #----------------------- BEGIN SECURITY AUTO CONFIGURATION -----------------------
 #
 # The following settings, TLS certificates, and keys have been automatically      
-# generated to configure Elasticsearch security features on 10-04-2024 11:58:19
+# generated to configure Elasticsearch security features on 12-04-2024 13:13:10
 #
 # --------------------------------------------------------------------------------
 
 # Enable security features
-xpack.security.enabled: true
+xpack.security.enabled: false # true
 
-xpack.security.enrollment.enabled: true
+xpack.security.enrollment.enabled: false # true
 
 # Enable encryption for HTTP API client connections, such as Kibana, Logstash, and Agents
-xpack.security.http.ssl:
-  enabled: true
-  keystore.path: certs/http.p12
+# xpack.security.http.ssl:
+#   enabled: true
+#   keystore.path: certs/http.p12
 
 # Enable encryption and mutual authentication between cluster nodes
-xpack.security.transport.ssl:
-  enabled: true
-  verification_mode: certificate
-  keystore.path: certs/transport.p12
-  truststore.path: certs/transport.p12
+#xpack.security.transport.ssl:
+#   enabled: true
+#   verification_mode: certificate
+#   keystore.path: certs/transport.p12
+#   truststore.path: certs/transport.p12
 #----------------------- END SECURITY AUTO CONFIGURATION -------------------------
-
-# 2024-4-10  20:03-自定义配置
-http.cors:
-  enabled: true
-  allow-origin: "*"

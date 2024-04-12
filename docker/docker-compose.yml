@@ -14,6 +14,8 @@ services:
     image: mysql:8.3.0
     dns: 8.8.8.8
     hostname: ptp-backend-mysql-1
+    extra_hosts:
+      - "exthost:192.168.78.198"
     networks:
       - ptp-network
     ports:
@@ -23,8 +25,8 @@ services:
     volumes:
       - ./volumes/mysql/etc/mysql/conf.d:/etc/mysql/conf.d:rw
       - ./volumes/mysql/var/log:/var/log:rw
-      - ./volumes/mysql/var/lib/mysql:/var/lib/mysql:rw
-      - ./volumes/mysql/run/mysqld:/run/mysqld:rw
+      # - ./volumes/mysql/var/lib/mysql:/var/lib/mysql:rw
+      # - ./volumes/mysql/run/mysqld:/run/mysqld:rw
     environment:
       MYSQL_ROOT_PASSWORD: root
       TZ: Asia/Shanghai
@@ -34,7 +36,8 @@ services:
       options:
         max-size: 256k
         max-file: 64
-    pid: host
+    # pid: host
+    # privileged: true
 
 
   # 2024-4-10  16:46-创建Redis数据库
@@ -50,26 +53,35 @@ services:
     image: redis:7.2.4
     dns: 8.8.8.8
     hostname: ptp-backend-redis-1
+    extra_hosts:
+      - "exthost:192.168.78.198"
     networks:
       - ptp-network
     ports:
       - "7001:6379"
     expose:
       - 6379
+    # environment:
+    #   TZ: Asia/Shanghai
+    #   LANG: en_US.UTF-8
     volumes:
       - ./volumes/redis/data:/data:rw
       - ./volumes/redis/root:/root:rw
+      - ./volumes/redis/config/redis.conf:/etc/redis/redis.conf:rw
     restart: on-failure
+    command: redis-server /etc/redis/redis.conf
     logging:
       driver: json-file
       options:
         max-size: 256k
         max-file: 64
-    pid: host
+    # pid: host
+    # privileged: true
     # command:
     # - sh -c redis-server && sleep 5 && redis-cli config set requirepass root && sh -c redis-cli quit
 
 
+  # 2024-4-12  21:28-运行时需要手动添加.env为环境配置文件，或者执行docker-compose config指令生成最终docker-compose构建文件
   # 2024-4-10  19:44-安装ElasticSearch容器
   elasticsearch:
     container_name: ptp-backend-es-1
@@ -78,11 +90,16 @@ services:
       author: LiGuanda
       description: "PTP的后台ElasticSearch数据库集群的ID为1的分词搜索数据库"
     image: elasticsearch:8.13.0
+    env_file:
+      - .env
     dns: 8.8.8.8
     hostname: ptp-backend-es-1
+    extra_hosts:
+      - exthost:${EXTERNAL_LOCALHOST}
+      - kibanahost:${KIBANA_LOCALHOST}
     networks:
       ptp-network:
-        ipv4_address: 172.16.238.5
+        ipv4_address: ${ELASTICSEARCH_LOCALHOST}
     ports:
       - "9200:9200"
       - "9300:9300"
@@ -90,17 +107,24 @@ services:
       - 9200
       - 9300
     volumes:
-      - ./volumes/elasticsearch/config:/usr/share/elasticsearch/config:rw
+      - ./volumes/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:rw
+      - ./volumes/elasticsearch/config/jvm.options:/usr/share/elasticsearch/config/jvm.options:rw
+      - ./volumes/elasticsearch/plugins:/usr/share/elasticsearch/plugins:rw
     environment:
       discovery.type: single-node
     restart: on-failure
+    # command: "cd /usr/share/elasticsearch/bin && elasticsearch-reset-password -u elastic -i --url=https://localhost:9200"
     logging:
       driver: json-file
       options:
         max-size: 256k
         max-file: 64
     working_dir: /usr/share/elasticsearch
-    pid: host
+    # pid: host
+    # privileged: true
+    external_links:
+      - kibana:ptp-backend-kibana-1
+
 
 
   # 2024-4-10  20:36-安装Kibana
@@ -111,17 +135,27 @@ services:
       author: LiGuanda
       description: "用于对ElasticSearch数据库中的数据进行可视化展现"
     image: kibana:8.13.0
+    env_file:
+      - .env
     dns: 8.8.8.8
     hostname: ptp-backend-kibana-1
+    extra_hosts:
+      - exthost:${EXTERNAL_LOCALHOST}
+      - eshost:${ELASTICSEARCH_LOCALHOST}
     networks:
       ptp-network:
-        ipv4_address: 172.16.238.6
+        ipv4_address: ${KIBANA_LOCALHOST}
     ports:
       - "5601:5601"
     expose:
       - 5601
+    volumes:
+      - ./volumes/kibana/config:/usr/share/kibana/config:rw
     environment:
-      ELASTICSEARCH_HOSTS: https://172.16.238.5:9200
+      ELASTICSEARCH_HOSTS: http://${EXTERNAL_LOCALHOST}:9200
+      TZ: Asia/Shanghai
+      I18N_LOCALE: zh-CN
+      SERVER_HOST: ${KIBANA_LOCALHOST}
     restart: on-failure
     logging:
       driver: json-file
@@ -130,13 +164,16 @@ services:
         max-file: 64
     depends_on:
       - elasticsearch
-    pid: host
+    # pid: host
+    # privileged: true
+    external_links:
+      - elasticsearch:ptp-backend-elasticsearch-1
 
 
-    # 2024-4-10  15:28-新建一个自定义网络，将全部容器部署到同一个网络内，使其之间能够相互连通
+# 2024-4-10  15:28-新建一个自定义网络，将全部容器部署到同一个网络内，使其之间能够相互连通
 networks:
   ptp-network:
-    driver: default
+    driver: bridge
     ipam:
       config:
-        - subnet: 172.16.238.0/24
+        - subnet: 172.250.250.0/24

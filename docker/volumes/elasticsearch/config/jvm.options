@@ -78,6 +78,7 @@
 ## GC logging
 -Xlog:gc*,gc+age=trace,safepoint:file=logs/gc.log:utctime,level,pid,tags:filecount=32,filesize=64m
 
+
 # 2024-4-10  20:06-自定义配置
 -Xms1g
 -Xmx1g
