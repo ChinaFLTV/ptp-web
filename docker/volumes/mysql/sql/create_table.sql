@@ -1,6 +1,6 @@
-DROP DATABASE IF EXISTS ptp_web;
-CREATE DATABASE ptp_web;
-USE ptp_web;
+DROP DATABASE IF EXISTS `ptp_web`;
+CREATE DATABASE `ptp_web`;
+USE `ptp_web`;
 
 
 CREATE TABLE IF NOT EXISTS `asset`

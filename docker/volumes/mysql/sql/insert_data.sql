@@ -1,4 +1,4 @@
-USE ptp_web;
+USE `ptp_web`;
 
 # 2024-3-24  19:17-往asset表中插入模拟数据
 INSERT INTO `asset`(`id`, `balance`, `accounts`)

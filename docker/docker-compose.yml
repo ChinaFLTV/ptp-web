@@ -23,14 +23,20 @@ services:
     expose:
       - 3306
     volumes:
+      - ./volumes/mysql/docker-entrypoint.sh:/usr/local/bin/docker-entrypoint.sh:rw
       - ./volumes/mysql/etc/mysql/conf.d:/etc/mysql/conf.d:rw
       - ./volumes/mysql/var/log:/var/log:rw
       # - ./volumes/mysql/var/lib/mysql:/var/lib/mysql:rw
       # - ./volumes/mysql/run/mysqld:/run/mysqld:rw
+      - ./volumes/mysql/etc/my.cnf:/etc/my.cnf:rw
+      - ./volumes/mysql/sql:/var/local/mysql:rw
     environment:
       MYSQL_ROOT_PASSWORD: root
       TZ: Asia/Shanghai
+      SET_CONTAINER_TIMEZONE: true
+      CONTAINER_TIMEZONE: Asia/Shanghai
     restart: on-failure
+    # command: service mysqld start && sleep 5 && mysql -uroot -proot
     logging:
       driver: json-file
       options:
