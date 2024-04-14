@@ -12,12 +12,15 @@ services:
       description: "PTP的后台MySQL数据库集群的ID为1的数据库"
     # build: .
     image: mysql:8.3.0
+    env_file:
+      - .env
     dns: 8.8.8.8
     hostname: ptp-backend-mysql-1
     extra_hosts:
-      - "exthost:192.168.78.198"
+      - exthost:${EXTERNAL_LOCALHOST}
     networks:
-      - ptp-network
+      ptp-network:
+        ipv4_address: ${MYSQL_LOCALHOST}
     ports:
       - "4407:3306"
     expose:
@@ -58,12 +61,15 @@ services:
       # context: .
       # dockerfile: ./redis/Dockerfile
     image: redis:7.2.4
+    env_file:
+      - .env
     dns: 8.8.8.8
     hostname: ptp-backend-redis-1
     extra_hosts:
-      - "exthost:192.168.78.198"
+      - exthost:${EXTERNAL_LOCALHOST}
     networks:
-      - ptp-network
+      ptp-network:
+        ipv4_address: ${REDIS_LOCALHOST}
     ports:
       - "7001:6379"
     expose:
