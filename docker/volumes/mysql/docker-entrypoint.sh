@@ -2,8 +2,8 @@
 set -eo pipefail
 shopt -s nullglob
 
-MYSQL_USER=root
-MYSQL_PASSWORD=root
+CUSTOM_MYSQL_USER=root
+CUSTOM_MYSQL_PASSWORD=root
 
 # 2024-4-13  20:50-修改配置文件权限，防止Warning: World-writable config file '/etc/mysql/my.cnf' is ignored
                               #ERROR 2002 (HY000): Can't connect to local MySQL server through socket '/var/run/mysqld/mysqld.sock'的情况
@@ -12,6 +12,7 @@ if [ "$(id -u)" -eq 0 ]; then
   echo "当前用户为ROOT用户，开始执行配置文件权限变更操作"
   chmod 644 /etc/my.cnf
   chmod 644 /etc/mysql/conf.d/my.cnf
+  chmod a+x /docker-entrypoint-initdb.d/init.sh
 
 else
 
@@ -423,11 +424,11 @@ _main() {
 			echo
 
 			# 2024-4-13  22:24-加载并执行编写好的SQL脚本
-      echo "开始执行SQL脚本"
-      mysql -u${MYSQL_USER} -p${MYSQL_PASSWORD} -e "source /var/local/mysql/create_table.sql"
-      mysql -u${MYSQL_USER} -p${MYSQL_PASSWORD} -e "source /var/local/mysql/config_mysql.sql"
-      mysql -u${MYSQL_USER} -p${MYSQL_PASSWORD} -e "source /var/local/mysql/insert_data.sql"
-      echo "执行SQL脚本完毕"
+      # echo "开始执行SQL脚本"
+      # mysql -u${CUSTOM_MYSQL_USER} -p${CUSTOM_MYSQL_PASSWORD} -e "source /var/local/mysql/create_table.sql"
+      # mysql -u${CUSTOM_MYSQL_USER} -p${CUSTOM_MYSQL_PASSWORD} -e "source /var/local/mysql/config_mysql.sql"
+      # mysql -u${CUSTOM_MYSQL_USER} -p${CUSTOM_MYSQL_PASSWORD} -e "source /var/local/mysql/insert_data.sql"
+      # echo "执行SQL脚本完毕"
 
 		else
 			mysql_socket_fix

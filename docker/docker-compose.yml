@@ -29,14 +29,15 @@ services:
       # - ./volumes/mysql/var/lib/mysql:/var/lib/mysql:rw
       # - ./volumes/mysql/run/mysqld:/run/mysqld:rw
       - ./volumes/mysql/etc/my.cnf:/etc/my.cnf:rw
-      - ./volumes/mysql/sql:/var/local/mysql:rw
+      - ./volumes/mysql/sql:/docker-entrypoint-initdb.d/sql/:rw
+      - ./volumes/mysql/script:/docker-entrypoint-initdb.d/:rw
     environment:
       MYSQL_ROOT_PASSWORD: root
       TZ: Asia/Shanghai
       SET_CONTAINER_TIMEZONE: true
       CONTAINER_TIMEZONE: Asia/Shanghai
     restart: on-failure
-    # command: service mysqld start && sleep 5 && mysql -uroot -proot
+    # command: echo 6666666666666666 && mysql -uroot -proot
     logging:
       driver: json-file
       options:
