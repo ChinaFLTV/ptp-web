@@ -1,9 +1,11 @@
 package ptp.fltv.web.config;
 
 import jakarta.annotation.Nonnull;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.elasticsearch.client.ClientConfiguration;
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchConfiguration;
+import org.springframework.data.elasticsearch.core.convert.ElasticsearchCustomConversions;
 
 /**
  * @author Lenovo/LiGuanda
@@ -26,6 +28,13 @@ public class ElasticSearchConfig extends ElasticsearchConfiguration {
                 .build();
 
     }
+
+
+    /*@Bean
+    public ElasticsearchCustomConversions elasticsearchCustomConversions() {
+
+
+    }*/
 
 
 }

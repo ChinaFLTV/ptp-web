@@ -2,6 +2,7 @@ package ptp.fltv.web.handler;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import pfp.fltv.common.exceptions.PtpException;
@@ -15,6 +16,7 @@ import pfp.fltv.common.response.Result;
  * @filename PtpExceptionHandler.java
  */
 
+@Slf4j
 @RestControllerAdvice
 public class PtpExceptionHandler {
 
@@ -29,7 +31,7 @@ public class PtpExceptionHandler {
     @ExceptionHandler(PtpException.class)
     public Result<JSONObject> handlePtpException(PtpException e) {
 
-        e.printStackTrace();
+        log.error(e.getLocalizedMessage());
         return Result.failure(JSON.parseObject(JSON.toJSONString(e)));
 
     }
@@ -47,7 +49,7 @@ public class PtpExceptionHandler {
     @ExceptionHandler(Exception.class)
     public Result<String> handleException(Exception e) {
 
-        e.printStackTrace();
+        log.error(e.getLocalizedMessage());
         return Result.failure(e.getLocalizedMessage());
 
     }

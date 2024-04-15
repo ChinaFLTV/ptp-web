@@ -24,7 +24,7 @@ public class DataPreprocessHandler {
      * @author Lenovo/LiGuanda
      * @date 2024/3/27 上午 9:40:13
      * @version 1.0.0
-     * @description 进行输入参数的预处理
+     * @description 对前端传递过来的参数进行预处理
      * @filename DataPreprocessController.java
      */
     @InitBinder

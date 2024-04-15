@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Setting;
 import pfp.fltv.common.model.base.content.BaseEntity;
 
 /**
@@ -15,6 +17,8 @@ import pfp.fltv.common.model.base.content.BaseEntity;
  * @filename Passage.java
  */
 
+@Setting(sortOrders = Setting.SortOrder.desc)
+@Document(indexName = "passage")
 @TableName(value = "passage", autoResultMap = true)
 @Data
 @NoArgsConstructor
