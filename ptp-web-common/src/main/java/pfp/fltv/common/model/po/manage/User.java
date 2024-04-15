@@ -34,13 +34,13 @@ public class User implements Serializable {
 
 
     @Id
-    @Field(type = FieldType.Long)
+    @Field(type = FieldType.Constant_Keyword)
     @Schema(description = "用户ID号")
     @TableId(type = IdType.ASSIGN_ID)
     private Long id;
 
     // TODO 账号生成
-    @Field(type = FieldType.Text)
+    @Field(type = FieldType.Constant_Keyword)
     @Schema(description = "用户账号")
     private String account;
 
@@ -66,6 +66,7 @@ public class User implements Serializable {
     @Schema(description = "用户真实姓名(管理员必需)")
     private String realname;
 
+    @Field(type = FieldType.Keyword)
     @Schema(description = "用户性别")
     @TableField(typeHandler = JacksonTypeHandler.class)
     private Gender gender;
@@ -74,7 +75,7 @@ public class User implements Serializable {
     @Schema(description = "用户的个性签名")
     private String idiograph;
 
-    @Field(type = FieldType.Text)
+    @Field(type = FieldType.Keyword)// 2024-4-15  22:46-这里将该字段类型设置为Keyword是为了避免ElasticSearch对其进行分词而产生不必要且没有意义的分词开销
     @Schema(description = "用户头像(JSON)", example = "{'type':'url','uri':'&**^&%&...'}")
     private String avatar;
 
@@ -112,7 +113,7 @@ public class User implements Serializable {
 //    @Schema(description = "用户收藏的文章列表JSON串")
 //    private String collectList;
 
-    @Field(name = "address_info_id", type = FieldType.Long)
+    @Field(name = "address_info_id", type = FieldType.Constant_Keyword)
     @Schema(description = "用户地址信息ID")
     private Long addressInfoId;
 
@@ -125,6 +126,7 @@ public class User implements Serializable {
     @Schema(description = "用户信誉积分")
     private Double credit;
 
+    @Field(type = FieldType.Keyword)
     @Schema(description = "用户当前状态")
     @TableField(typeHandler = JacksonTypeHandler.class)
     private UserStatus status;
@@ -133,11 +135,11 @@ public class User implements Serializable {
     @Schema(description = "用户其他数据配置(JSON)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private String meta;
 
-    @Field(name = "role_id", type = FieldType.Long)
+    @Field(name = "role_id", type = FieldType.Constant_Keyword)
     @Schema(description = "用户角色ID")
     private Long roleId;
 
-    @Field(name = "asset_id", type = FieldType.Long)
+    @Field(name = "asset_id", type = FieldType.Constant_Keyword)
     @Schema(description = "用户资产ID")
     private Long assetId;
 
@@ -149,7 +151,7 @@ public class User implements Serializable {
     @Schema(description = "用户资料修改时间")
     private Timestamp updateTime;
 
-    @Field(name = "is_deleted", type = FieldType.Integer)
+    @Field(name = "is_deleted", type = FieldType.Keyword)
     @Schema(description = "用户是否已被删除")
     private Integer isDeleted;
 

@@ -1,12 +1,10 @@
 package pfp.fltv.common.model.base.content;
 
-import com.alibaba.fastjson2.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
-import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -39,12 +37,12 @@ public class BaseEntity implements Serializable {
 
 
     @Id
-    @Field(type = FieldType.Long)
+    @Field(type = FieldType.Constant_Keyword)
     @TableId(type = IdType.ASSIGN_ID)
     @Schema(description = "ID")
     private Long id;
 
-    @Field(type = FieldType.Long)
+    @Field(type = FieldType.Constant_Keyword)
     @Schema(description = "发布者ID")
     private Long uid;
 
@@ -95,7 +93,7 @@ public class BaseEntity implements Serializable {
     @TableField(typeHandler = JacksonTypeHandler.class)
     private AddressInfo addressInfo;
 
-    @Field(type = FieldType.Text)
+    @Field(type = FieldType.Keyword)
     @Schema(description = "实例状态")
     @TableField(typeHandler = JacksonTypeHandler.class)
     private ContentStatus status;
@@ -112,7 +110,7 @@ public class BaseEntity implements Serializable {
     @Schema(description = "(最后)更新时间")
     private Timestamp updateTime;
 
-    @Field(name = "is_deleted", type = FieldType.Integer)
+    @Field(name = "is_deleted", type = FieldType.Keyword)
     @Schema(description = "当前实体是否已被逻辑删除", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     @TableLogic
     private Integer isDeleted;
