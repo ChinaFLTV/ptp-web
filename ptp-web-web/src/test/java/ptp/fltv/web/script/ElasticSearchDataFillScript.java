@@ -30,7 +30,8 @@ import java.util.List;
  * @filename ElasticSearchDataFillScript.java
  */
 
-@Slf4j
+@SuppressWarnings("NewClassNamingConvention")
+@Slf4j(topic = "test_elasticsearch_filldata")
 @SpringBootTest
 @ContextConfiguration(classes = MainApplication.class)
 public class ElasticSearchDataFillScript {
@@ -65,7 +66,6 @@ public class ElasticSearchDataFillScript {
 
         try {
 
-            System.out.println();
             flushDB();
 
             List<Announcement> announcements = announcementService.list();
@@ -79,15 +79,6 @@ public class ElasticSearchDataFillScript {
             elasticsearchOperations.save(passages);
             elasticsearchOperations.save(passageComments);
             elasticsearchOperations.save(users);
-
-            Criteria criteria = new Criteria("title").matches("生活");
-            SearchHits<Announcement> searchHits = searchOperations.search(new CriteriaQuery(criteria), Announcement.class);
-            for (SearchHit<Announcement> searchHit : searchHits) {
-
-                System.out.println("-----------------------------------------------------------------");
-                System.out.println(searchHit);
-
-            }
 
         } catch (RuntimeException e) {
 

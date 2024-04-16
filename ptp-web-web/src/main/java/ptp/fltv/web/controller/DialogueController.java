@@ -7,6 +7,9 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.query.Criteria;
+import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pfp.fltv.common.model.po.content.Dialogue;
@@ -36,6 +39,8 @@ public class DialogueController {
 
     @Resource
     private DialogueService dialogueService;
+    @Resource
+    private ElasticsearchOperations elasticsearchOperations;
 
 
     @Operation(description = "根据ID查询单条对话数据")
@@ -83,6 +88,11 @@ public class DialogueController {
         BeanUtils.copyProperties(dialogueVo, dialogue);
 
         boolean isSaved = dialogueService.save(dialogue);
+        if (isSaved) {
+
+            elasticsearchOperations.save(dialogue);
+
+        }
 
         Map<String, Object> map = new HashMap<>();
         map.put("isSaved", isSaved);
@@ -101,6 +111,11 @@ public class DialogueController {
         BeanUtils.copyProperties(dialogueVo, dialogue);
 
         boolean isUpdated = dialogueService.updateById(dialogue);
+        if (isUpdated) {
+
+            elasticsearchOperations.update(dialogue);
+
+        }
 
         Map<String, Object> map = new HashMap<>();
         map.put("isUpdated", isUpdated);
@@ -116,6 +131,12 @@ public class DialogueController {
                                           Long id) {
 
         boolean isDeleted = dialogueService.removeById(id);
+        if (isDeleted) {
+
+            Criteria criteria = new Criteria("id").is(id);
+            elasticsearchOperations.delete(new CriteriaQuery(criteria), Dialogue.class);
+
+        }
 
         Map<String, Object> map = new HashMap<>();
         map.put("isDeleted", isDeleted);

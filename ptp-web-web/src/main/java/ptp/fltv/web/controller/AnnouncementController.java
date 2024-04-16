@@ -7,6 +7,11 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.query.Criteria;
+import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pfp.fltv.common.model.po.content.Announcement;
@@ -36,6 +41,8 @@ public class AnnouncementController {
 
     @Resource
     private AnnouncementService announcementService;
+    @Resource
+    private ElasticsearchOperations elasticsearchOperations;
 
 
     @Operation(description = "根据ID查询单条公告数据")
@@ -75,6 +82,43 @@ public class AnnouncementController {
     }
 
 
+    @Operation(description = "根据给定的关键词分页查询符合条件的公告数据")
+    @PostMapping("/fuzzy_query/page/{offset}/{limit}")
+    public Result<List<AnnouncementVo>> fuzzyQueryAnnouncementPage(
+            @Parameter(name = "keywords", description = "查询文章数据用到的关键词", in = ParameterIn.DEFAULT) @RequestParam("keywords") List<String> keywords,
+            @Parameter(name = "offset", description = "查询的一页公告数据的起始偏移量", in = ParameterIn.PATH) @PathVariable("offset") Long offset,
+            @Parameter(name = "limit", description = "查询的这一页公告数据的数量", in = ParameterIn.PATH) @PathVariable("limit") Long limit) {
+
+        List<AnnouncementVo> announcementVos = new ArrayList<>();
+
+        if (!keywords.isEmpty()) {
+
+            Criteria criteria = new Criteria("title")
+                    .matches(keywords.get(0));
+
+            for (int i = 1; i < keywords.size(); i++) {
+
+                criteria.and("title")
+                        .matches(keywords.get(i));
+
+            }
+
+            SearchHits<Announcement> searchHits = elasticsearchOperations.search(new CriteriaQuery(criteria), Announcement.class);
+            for (SearchHit<Announcement> searchHit : searchHits.getSearchHits()) {
+
+                AnnouncementVo announcementVo = new AnnouncementVo();
+                BeanUtils.copyProperties(searchHit.getContent(), announcementVo);
+                announcementVos.add(announcementVo);
+
+            }
+
+        }
+
+        return Result.success(announcementVos);
+
+    }
+
+
     @Operation(description = "添加单条公告数据")
     @PostMapping("/insert/single")
     public Result<?> insertSingleAnnouncement(
@@ -86,6 +130,11 @@ public class AnnouncementController {
         BeanUtils.copyProperties(announcementVo, announcement);
 
         boolean isSaved = announcementService.save(announcement);
+        if (isSaved) {
+
+            elasticsearchOperations.save(announcement);
+
+        }
 
         Map<String, Object> map = new HashMap<>();
         map.put("isSaved", isSaved);
@@ -105,6 +154,11 @@ public class AnnouncementController {
         BeanUtils.copyProperties(announcementVo, announcement);
 
         boolean isUpdated = announcementService.updateById(announcement);
+        if (isUpdated) {
+
+            elasticsearchOperations.update(announcement);
+
+        }
 
         Map<String, Object> map = new HashMap<>();
         map.put("isUpdated", isUpdated);
@@ -121,6 +175,13 @@ public class AnnouncementController {
             Long id) {
 
         boolean isDeleted = announcementService.removeById(id);
+        if (isDeleted) {
+
+            Criteria criteria = new Criteria("id").is(id);
+            // TODO 还需要判断ElasticSearch这边是否成功执行了操作，否则还得回滚
+            elasticsearchOperations.delete(new CriteriaQuery(criteria), Announcement.class);
+
+        }
 
         Map<String, Object> map = new HashMap<>();
         map.put("isDeleted", isDeleted);

@@ -8,6 +8,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.query.Criteria;
+import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -40,6 +43,8 @@ public class UserController {
     private UserService userService;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Resource
+    private ElasticsearchOperations elasticsearchOperations;
 
 
     @PreAuthorize("")
@@ -100,6 +105,11 @@ public class UserController {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         boolean isSaved = userService.save(user);
+        if (isSaved) {
+
+            elasticsearchOperations.save(user);
+
+        }
 
         Map<String, Object> map = new HashMap<>();
         map.put("isSaved", isSaved);
@@ -116,6 +126,11 @@ public class UserController {
             User user) {
 
         boolean isUpdated = userService.updateById(user);
+        if (isUpdated) {
+
+            elasticsearchOperations.update(user);
+
+        }
 
         Map<String, Object> map = new HashMap<>();
         map.put("isUpdated", isUpdated);
@@ -132,6 +147,12 @@ public class UserController {
             Long userId) {
 
         boolean isDeleted = userService.removeById(userId);
+        if (isDeleted) {
+
+            Criteria criteria = new Criteria("id").is(userId);
+            elasticsearchOperations.delete(new CriteriaQuery(criteria), User.class);
+
+        }
 
         Map<String, Object> map = new HashMap<>();
         map.put("isDeleted", isDeleted);

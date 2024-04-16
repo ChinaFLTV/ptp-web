@@ -7,6 +7,9 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.query.Criteria;
+import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pfp.fltv.common.model.po.content.Passage;
@@ -36,6 +39,8 @@ public class PassageController {
 
     @Resource
     private PassageService passageService;
+    @Resource
+    private ElasticsearchOperations elasticsearchOperations;
 
 
     @Operation(description = "根据ID查询单条文章数据")
@@ -83,6 +88,11 @@ public class PassageController {
         BeanUtils.copyProperties(passageVo, passage);
 
         boolean isSaved = passageService.save(passage);
+        if (isSaved) {
+
+            elasticsearchOperations.save(passage);
+
+        }
 
         Map<String, Object> map = new HashMap<>();
         map.put("isSaved", isSaved);
@@ -102,6 +112,11 @@ public class PassageController {
         BeanUtils.copyProperties(passageVo, passage);
 
         boolean isUpdated = passageService.updateById(passage);
+        if (isUpdated) {
+
+            elasticsearchOperations.update(passage);
+
+        }
 
         Map<String, Object> map = new HashMap<>();
         map.put("isUpdated", isUpdated);
@@ -117,6 +132,12 @@ public class PassageController {
                                          Long id) {
 
         boolean isDeleted = passageService.removeById(id);
+        if (isDeleted) {
+
+            Criteria criteria = new Criteria("id").is(id);
+            elasticsearchOperations.delete(new CriteriaQuery(criteria), Passage.class);
+
+        }
 
         Map<String, Object> map = new HashMap<>();
         map.put("isDeleted", isDeleted);

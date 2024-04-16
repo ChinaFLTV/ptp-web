@@ -7,6 +7,9 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.query.Criteria;
+import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pfp.fltv.common.model.po.content.PassageComment;
@@ -36,6 +39,8 @@ public class PassageCommentController {
 
     @Resource
     private PassageCommentService passageCommentService;
+    @Resource
+    private ElasticsearchOperations elasticsearchOperations;
 
 
     @Operation(description = "根据ID查询单条文章评论数据")
@@ -86,6 +91,11 @@ public class PassageCommentController {
         BeanUtils.copyProperties(passageCommentVo, passageComment);
 
         boolean isSaved = passageCommentService.save(passageComment);
+        if (isSaved) {
+
+            elasticsearchOperations.save(passageComment);
+
+        }
 
         Map<String, Object> map = new HashMap<>();
         map.put("isSaved", isSaved);
@@ -105,6 +115,11 @@ public class PassageCommentController {
         BeanUtils.copyProperties(passageCommentVo, passageComment);
 
         boolean isUpdated = passageCommentService.updateById(passageComment);
+        if (isUpdated) {
+
+            elasticsearchOperations.update(passageComment);
+
+        }
 
         Map<String, Object> map = new HashMap<>();
         map.put("isUpdated", isUpdated);
@@ -121,6 +136,12 @@ public class PassageCommentController {
             Long id) {
 
         boolean isDeleted = passageCommentService.removeById(id);
+        if (isDeleted) {
+
+            Criteria criteria = new Criteria("id").is(id);
+            elasticsearchOperations.delete(new CriteriaQuery(criteria), PassageComment.class);
+
+        }
 
         Map<String, Object> map = new HashMap<>();
         map.put("isDeleted", isDeleted);
