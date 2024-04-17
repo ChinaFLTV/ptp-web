@@ -112,6 +112,10 @@ public class AnnouncementController {
 
             }
 
+
+
+            return Result.success(announcementVos);
+
         }
 
         return Result.success(announcementVos);

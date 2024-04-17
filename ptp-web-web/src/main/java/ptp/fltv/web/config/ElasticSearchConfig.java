@@ -9,6 +9,7 @@ import org.springframework.data.elasticsearch.client.ClientConfiguration;
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchConfiguration;
 import org.springframework.data.elasticsearch.core.convert.ElasticsearchCustomConversions;
 import org.springframework.data.elasticsearch.core.convert.GeoConverters;
+import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 import ptp.fltv.web.extersion.DateToTimeStampConverter;
 
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ import java.util.List;
  */
 
 @Configuration
+@EnableElasticsearchRepositories(basePackages = "ptp.fltv.web.repository") // 2024-4-17  21:13-启用ElasticSearch存储库
 public class ElasticSearchConfig extends ElasticsearchConfiguration {
 
 
