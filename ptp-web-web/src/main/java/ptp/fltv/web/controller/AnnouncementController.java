@@ -8,8 +8,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.SearchHit;
-import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.Criteria;
 import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,6 +16,7 @@ import pfp.fltv.common.model.po.content.Announcement;
 import pfp.fltv.common.model.vo.AnnouncementVo;
 import pfp.fltv.common.response.Result;
 import ptp.fltv.web.service.AnnouncementService;
+import ptp.fltv.web.service.EsSearchService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,6 +42,8 @@ public class AnnouncementController {
     private AnnouncementService announcementService;
     @Resource
     private ElasticsearchOperations elasticsearchOperations;
+    @Resource
+    private EsSearchService esSearchService;
 
 
     @Operation(description = "根据ID查询单条公告数据")
@@ -89,32 +90,14 @@ public class AnnouncementController {
             @Parameter(name = "offset", description = "查询的一页公告数据的起始偏移量", in = ParameterIn.PATH) @PathVariable("offset") Long offset,
             @Parameter(name = "limit", description = "查询的这一页公告数据的数量", in = ParameterIn.PATH) @PathVariable("limit") Long limit) {
 
+        List<Announcement> announcements = esSearchService.pagingQueryByKeywords(keywords, "title", offset, limit);
+
         List<AnnouncementVo> announcementVos = new ArrayList<>();
+        for (Announcement announcement : announcements) {
 
-        if (!keywords.isEmpty()) {
-
-            Criteria criteria = new Criteria("title")
-                    .matches(keywords.get(0));
-
-            for (int i = 1; i < keywords.size(); i++) {
-
-                criteria.and("title")
-                        .matches(keywords.get(i));
-
-            }
-
-            SearchHits<Announcement> searchHits = elasticsearchOperations.search(new CriteriaQuery(criteria), Announcement.class);
-            for (SearchHit<Announcement> searchHit : searchHits.getSearchHits()) {
-
-                AnnouncementVo announcementVo = new AnnouncementVo();
-                BeanUtils.copyProperties(searchHit.getContent(), announcementVo);
-                announcementVos.add(announcementVo);
-
-            }
-
-
-
-            return Result.success(announcementVos);
+            AnnouncementVo announcementVo = new AnnouncementVo();
+            BeanUtils.copyProperties(announcement, announcementVo);
+            announcementVos.add(announcementVo);
 
         }
 
