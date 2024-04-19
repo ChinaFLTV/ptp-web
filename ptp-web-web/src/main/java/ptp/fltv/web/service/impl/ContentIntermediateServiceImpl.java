@@ -9,8 +9,6 @@ import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.stereotype.Service;
 import ptp.fltv.web.service.EsSearchService;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,22 +29,24 @@ public class ContentIntermediateServiceImpl implements EsSearchService {
 
 
     @Override
-    public <D> List<D> pagingQueryByKeywords(List<String> keywords, String field, Long offset, Long limit) {
+    public <D> List<D> pagingQueryByKeywords(List<String> keywords, String field, Long offset, Long limit, Class<D> clazz) {
 
         List<D> ds = new ArrayList<>();
 
         if (keywords != null && !keywords.isEmpty()) {
 
-            Criteria criteria = new Criteria(field).contains(keywords.get(0));
+            Criteria criteria = new Criteria(field).matchesAll(keywords);
 
-            for (int i = 1; i < keywords.size(); i++) {
+            SearchHits<D> searchHits = elasticsearchOperations.search(new CriteriaQuery(criteria), clazz);
+            for (SearchHit<D> searchHit : searchHits.getSearchHits()) {
 
-                criteria.and(field)
-                        .contains(keywords.get(i));
+                D content = searchHit.getContent();
+                ds.add(content);
 
             }
 
             // 2024-4-18  22:17-之前强行获取泛型的真实类型的遗址~
+            /*GenericTypeResolver.resolveTypeArgument(ds.getClass(), ArrayList.class);
             Type type = ds.getClass().getGenericSuperclass();
             if (type instanceof ParameterizedType parameterizedType) {
 
@@ -68,7 +68,7 @@ public class ContentIntermediateServiceImpl implements EsSearchService {
 
                 }
 
-            }
+            }*/
 
 
         }

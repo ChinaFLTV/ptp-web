@@ -59,6 +59,13 @@ public class PermissionChecker {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toSet());
 
+        // 2024-4-19  22:13-调试开发所用
+        if (grantedPermissions.contains("all")) {
+
+            return true;
+
+        }
+
         // 2024-4-6  21:31-求取所需权限集合和已持有权限集合的交集，交集意味着用户所持有权限在所需权限中的候选权限的集合，若不为空，则证明用户可以访问该方法
         grantedPermissions.retainAll(requiredPermissions);
 

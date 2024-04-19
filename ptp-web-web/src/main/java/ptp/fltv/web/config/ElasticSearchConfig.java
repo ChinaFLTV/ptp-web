@@ -10,7 +10,7 @@ import org.springframework.data.elasticsearch.client.elc.ElasticsearchConfigurat
 import org.springframework.data.elasticsearch.core.convert.ElasticsearchCustomConversions;
 import org.springframework.data.elasticsearch.core.convert.GeoConverters;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
-import ptp.fltv.web.extersion.DateToTimeStampConverter;
+import ptp.fltv.web.extension.DateToTimeStampConverter;
 
 import java.util.ArrayList;
 import java.util.Arrays;

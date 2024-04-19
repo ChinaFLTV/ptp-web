@@ -24,7 +24,7 @@ CREATE TABLE `role`
     `id`          BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT COMMENT '用户角色ID',
     `code`        INT UNSIGNED NOT NULL COMMENT '角色对应的序号',
     `name`        CHAR(255)    NOT NULL COMMENT '角色对应的名称',
-    `authorities` CHAR(255)             DEFAULT 'content_list,content_add,content_remove,content_update' COMMENT '当前角色所允许的操作',
+    `authorities` VARCHAR(1024)         DEFAULT 'content_list,content_add,content_remove,content_update' COMMENT '当前角色所允许的操作',
     `prohibition` CHAR(255)             DEFAULT 'user_add,user_remove,role_add,role_remove,role_list,role_update' COMMENT '当前角色所禁止的操作',
     `create_time` TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '角色创建时间',
     `update_time` TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '(最后)修改时间' ON UPDATE CURRENT_TIMESTAMP,

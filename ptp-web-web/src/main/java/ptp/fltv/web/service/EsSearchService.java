@@ -19,6 +19,7 @@ public interface EsSearchService {
      * @param field    要查询的字段
      * @param offset   查询到的内容的起始偏移量
      * @param limit    查询内容实体的数量
+     * @param clazz    查询的实体类类型
      * @param <D>      要查询的实体类型
      * @return 查询到的符合条件的内容实体页
      * @author Lenovo/LiGuanda
@@ -27,7 +28,7 @@ public interface EsSearchService {
      * @description 根据关键词组进行分页查询
      * @filename ContentIntermediateService.java
      */
-    <D> List<D> pagingQueryByKeywords(List<String> keywords, String field, Long offset, Long limit);
+    <D> List<D> pagingQueryByKeywords(List<String> keywords, String field, Long offset, Long limit, Class<D> clazz);
 
 
 }

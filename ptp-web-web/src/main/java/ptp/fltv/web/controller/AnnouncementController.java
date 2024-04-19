@@ -86,11 +86,11 @@ public class AnnouncementController {
     @Operation(description = "根据给定的关键词分页查询符合条件的公告数据")
     @PostMapping("/fuzzy_query/page/{offset}/{limit}")
     public Result<List<AnnouncementVo>> fuzzyQueryAnnouncementPage(
-            @Parameter(name = "keywords", description = "查询文章数据用到的关键词", in = ParameterIn.DEFAULT) @RequestParam("keywords") List<String> keywords,
+            @Parameter(name = "keywords", description = "查询公告数据用到的关键词", in = ParameterIn.DEFAULT) @RequestParam("keywords") List<String> keywords,
             @Parameter(name = "offset", description = "查询的一页公告数据的起始偏移量", in = ParameterIn.PATH) @PathVariable("offset") Long offset,
             @Parameter(name = "limit", description = "查询的这一页公告数据的数量", in = ParameterIn.PATH) @PathVariable("limit") Long limit) {
 
-        List<Announcement> announcements = esSearchService.pagingQueryByKeywords(keywords, "title", offset, limit);
+        List<Announcement> announcements = esSearchService.pagingQueryByKeywords(keywords, "title", offset, limit, Announcement.class);
 
         List<AnnouncementVo> announcementVos = new ArrayList<>();
         for (Announcement announcement : announcements) {

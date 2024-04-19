@@ -3,6 +3,7 @@ package ptp.fltv.web.security;
 import com.alibaba.fastjson2.JSON;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import pfp.fltv.common.response.Result;
@@ -18,13 +19,14 @@ import java.io.PrintWriter;
  * @filename PtpAuthenticationEntryPoint.java
  */
 
+@Slf4j
 public class PtpAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
 
-        authException.printStackTrace();
+        log.error(authException.getLocalizedMessage());
 
         response.setContentType("application/json;charset=utf-8");
         PrintWriter out = response.getWriter();

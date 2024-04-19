@@ -17,7 +17,7 @@ VALUES (1, 1000.00, '7758521,1212121'),
 # 2024-3-25  9:18-往role表中插入模拟数据
 INSERT INTO `role` (`id`, `code`, `name`, `authorities`, `prohibition`)
 VALUES (1, 801, 'administrator',
-        '["content:list","content:add","content:remove","content:update","user:add","user:remove","role:add","role:remove","role:list","role:update"]',
+        '["all","content:list","content:add","content:remove","content:update","user:add","user:remove","role:add","role:remove","role:list","role:update"]',
         '[]'),
        (2, 802, 'manager', '["content:list","content:add","content:remove","user:add","user:remove"]',
         '["role:add","role:remove","role:list","role:update"]'),
