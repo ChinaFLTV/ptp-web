@@ -12,7 +12,9 @@
     <packaging>pom</packaging>
     <description>PTP后台服务管理中心</description>
     <modules>
+        <module>ptp-web-service-admin</module>
         <module>ptp-web-service-gateway</module>
+        <module>ptp-web-service-store</module>
     </modules>
 
 </project>

@@ -80,6 +80,7 @@
         <hutool.version>5.8.26</hutool.version>
         <springboot.elasticsearch.version>3.2.3</springboot.elasticsearch.version>
         <spring.data.elasticsearch.version>5.2.3</spring.data.elasticsearch.version>
+        <minio.version>8.5.9</minio.version>
 
     </properties>
 
@@ -105,6 +106,11 @@
             <dependency>
                 <groupId>ptp.fltv</groupId>
                 <artifactId>ptp-web-service-admin</artifactId>
+                <version>${ptp.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ptp.fltv</groupId>
+                <artifactId>ptp-web-service-store</artifactId>
                 <version>${ptp.version}</version>
             </dependency>
 
@@ -184,6 +190,11 @@
                 <groupId>org.springframework.data</groupId>
                 <artifactId>spring-data-elasticsearch</artifactId>
                 <version>${spring.data.elasticsearch.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.minio</groupId>
+                <artifactId>minio</artifactId>
+                <version>${minio.version}</version>
             </dependency>
 
         </dependencies>

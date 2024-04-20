@@ -18,6 +18,10 @@
             <groupId>ptp.fltv</groupId>
             <artifactId>ptp-web-common</artifactId>
         </dependency>
+        <dependency>
+            <groupId>ptp.fltv</groupId>
+            <artifactId>ptp-web-service-store</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
