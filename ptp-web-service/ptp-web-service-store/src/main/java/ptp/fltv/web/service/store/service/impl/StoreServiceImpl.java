@@ -1,19 +1,22 @@
 package ptp.fltv.web.service.store.service.impl;
 
-import io.minio.MakeBucketArgs;
+import io.minio.GetObjectArgs;
 import io.minio.MinioClient;
-import io.minio.RemoveBucketArgs;
+import io.minio.PutObjectArgs;
 import io.minio.errors.*;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ptp.fltv.web.service.store.service.StoreService;
+import ptp.fltv.web.service.store.utils.FileUtils;
 
-import java.io.IOException;
+import java.io.*;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Map;
 
 /**
  * @author Lenovo/LiGuanda
@@ -33,22 +36,35 @@ public class StoreServiceImpl implements StoreService {
 
 
     @Override
-    public boolean createBucket(@NotNull String bucketName, @Nullable String region) {
+    public boolean getFile(@Nullable String region, @Nonnull String bucketName, @Nonnull String fileName, @Nonnull String storePath, @Nullable Map<String, Object> option) {
 
-        try {
+        try (
+                InputStream inputStream = minioClient.getObject(
 
-            minioClient.makeBucket(
-                    MakeBucketArgs.builder()
-                            .bucket(bucketName)
-                            .region(region)
-                            .build()
-            );
+                        GetObjectArgs.builder()
+                                .region(region)
+                                .bucket(bucketName)
+                                .object(fileName)
+                                .build()
+
+                );
+                FileOutputStream fileOutputStream = new FileOutputStream(storePath)
+
+        ) {
+
+            byte[] buffer = new byte[1024];
+            int availableBytes;
+            while ((availableBytes = inputStream.read(buffer)) != -1) {
+
+                fileOutputStream.write(buffer, 0, availableBytes);
+
+            }
 
             return true;
 
-        } catch (ErrorResponseException | InsufficientDataException | InternalException | IOException |
-                 NoSuchAlgorithmException | ServerException | XmlParserException | InvalidResponseException |
-                 InvalidKeyException e) {
+        } catch (RuntimeException | ErrorResponseException | InsufficientDataException | InternalException |
+                 InvalidKeyException | InvalidResponseException | IOException | NoSuchAlgorithmException |
+                 ServerException | XmlParserException e) {
 
             log.error(e.getLocalizedMessage());
             return false;
@@ -59,22 +75,29 @@ public class StoreServiceImpl implements StoreService {
 
 
     @Override
-    public boolean removeBucket(@NotNull String bucketName, @Nullable String region) {
+    public boolean uploadFile(@Nullable String region, @NotNull String bucketName, @NotNull String storePath, @NotNull File file, @Nullable Map<String, Object> option) {
 
-        try {
+        try (FileInputStream fileInputStream = new FileInputStream(file)) {
 
-            minioClient.removeBucket(
-                    RemoveBucketArgs.builder()
-                            .bucket(bucketName)
+            String fileExtension = FileUtils.fetchFileExtensionFromPath(file.getAbsolutePath(), true);
+
+            minioClient.putObject(
+
+                    PutObjectArgs.builder()
                             .region(region)
+                            .bucket(bucketName)
+                            .object(storePath)
+                            .stream(fileInputStream, file.length(), -1)
+                            .contentType(FileUtils.fileExtension2ContentType(String.valueOf(fileExtension)).getDefaultContentType())
                             .build()
+
             );
 
             return true;
 
-        } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidKeyException |
-                 InvalidResponseException | NoSuchAlgorithmException | IOException | ServerException |
-                 XmlParserException e) {
+        } catch (RuntimeException | IOException | ServerException | InsufficientDataException | ErrorResponseException |
+                 NoSuchAlgorithmException | InvalidKeyException | InvalidResponseException | XmlParserException |
+                 InternalException e) {
 
             log.error(e.getLocalizedMessage());
             return false;
@@ -82,6 +105,5 @@ public class StoreServiceImpl implements StoreService {
         }
 
     }
-
 
 }
