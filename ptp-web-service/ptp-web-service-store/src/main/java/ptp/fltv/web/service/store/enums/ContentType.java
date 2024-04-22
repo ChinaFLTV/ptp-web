@@ -1,8 +1,11 @@
 package ptp.fltv.web.service.store.enums;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import jakarta.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
+import ptp.fltv.web.service.store.utils.FileUtils;
 
 import java.util.Set;
 
@@ -31,6 +34,38 @@ public enum ContentType {
     private final Integer code;
     private final String defaultContentType;
     private final Set<String> candidateTypes;
+
+
+    /**
+     * @param fileName 文件名称(也可以是包含文件名称的文件路径)
+     * @return 较为准确的Content-Type
+     * @author Lenovo/LiGuanda
+     * @date 2024/4/22 PM 8:35:39
+     * @version 1.0.0
+     * @description 根据文件的拓展名获取确切的Content-Type
+     * @filename ContentType.java
+     */
+    public String getExactContentType(@Nonnull String fileName) {
+
+        if (StringUtils.isEmpty(fileName)) {
+
+            return defaultContentType;
+
+        }
+
+        String fileExtension = FileUtils.fetchFileExtensionFromPath(fileName, true);
+
+        if (candidateTypes.contains(fileExtension)) {
+
+            return "application/" + fileExtension;
+
+        } else {
+
+            return defaultContentType;
+
+        }
+
+    }
 
 
 }

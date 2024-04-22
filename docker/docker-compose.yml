@@ -206,13 +206,13 @@ services:
       - 9000
       - 9001
     volumes:
-      - /volumes/minio/config/config.env:/etc/config.env:rw
-      - /volumes/minio/data:/data:rw
+      - /volumes/minio/config/:/etc/minio/:rw
+      - /volumes/minio/data:/mnt/data:rw
     environment:
-      MINIO_CONFIG_ENV_FILE: /etc/config.env
+      MINIO_CONFIG_ENV_FILE: /etc/minio/config.env
       MINIO_ACCESS_KEY: ptp_minio_access_key
       MINIO_SECRET_KEY: ptp_minio_secret_key
-    # command: server /data --console-address ":9001"
+    command: server --console-address ":9001"
     restart: on-failure
     logging:
       driver: json-file
