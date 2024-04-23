@@ -2,7 +2,7 @@ package ptp.fltv.web.service.store.utils;
 
 import jakarta.annotation.Nonnull;
 import org.apache.commons.lang3.StringUtils;
-import ptp.fltv.web.service.store.enums.ContentType;
+import pfp.fltv.common.enums.ContentType;
 
 import java.util.Set;
 
@@ -72,6 +72,38 @@ public class FileUtils {
         }
 
         return ContentType.UNKNOWN;
+
+    }
+
+
+    /**
+     * @param storePath           文件的URI
+     * @param retainFileExtension 是否保留文件的拓展名
+     * @return 提取出来的文件名称(无法提取则返回一个与当前时间相关的字符串)
+     * @author Lenovo/LiGuanda
+     * @date 2024/4/23 PM 9:37:20
+     * @version 1.0.0
+     * @description 从指定文件URI中获取文件名
+     * @filename FileUtils.java
+     */
+    public static String fetchFileName(@Nonnull String storePath, boolean retainFileExtension) {
+
+        int lastSlashIndex = storePath.lastIndexOf('/');
+        int lastPointIndex = storePath.lastIndexOf('.');
+
+        if (lastSlashIndex == -1) {
+
+            return String.format("download-file-%d", System.currentTimeMillis());
+
+        }
+
+        if (lastPointIndex == -1) {
+
+            return storePath.substring(lastSlashIndex + 1);
+
+        }
+
+        return retainFileExtension ? storePath.substring(lastSlashIndex + 1) : storePath.substring(lastSlashIndex + 1, lastPointIndex);
 
     }
 

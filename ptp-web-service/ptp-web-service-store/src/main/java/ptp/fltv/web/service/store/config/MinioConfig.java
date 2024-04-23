@@ -1,6 +1,7 @@
 package ptp.fltv.web.service.store.config;
 
 import io.minio.MinioClient;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,6 +17,18 @@ import org.springframework.context.annotation.Configuration;
 public class MinioConfig {
 
 
+    @Value("${minio.endpoint}")
+    private String endpoint;
+    @Value("${minio.port}")
+    private Integer port;
+    @Value("${minio.secure}")
+    private Boolean secure;
+    @Value("${minio.access-key}")
+    private String accessKey;
+    @Value("${minio.secret-key}")
+    private String secretKey;
+
+
     /**
      * @return 自定义的minion操作客户端
      * @author Lenovo/LiGuanda
@@ -28,8 +41,8 @@ public class MinioConfig {
     public MinioClient minioClient() {
 
         return MinioClient.builder()
-                .endpoint("127.0.0.1", 9000, true)
-                .credentials("ptp_minio_access_key", "ptp_minio_secret_key")
+                .endpoint(endpoint, port, secure)
+                .credentials(accessKey, secretKey)
                 .build();
 
     }

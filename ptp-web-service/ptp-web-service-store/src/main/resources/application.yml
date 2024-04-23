@@ -9,3 +9,21 @@ spring:
     name: ptp-web-service-store
   profiles:
     active: dev
+
+
+# 2024-4-23  20:38-Knife4j相关配置
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+  cors: true
+
+
+# 2024-4-23  21:28-minio相关配置
+minio:
+  endpoint: 127.0.0.1
+  port: 9000
+  secure: false
+  access-key: ptp_minio_access_key
+  secret-key: ptp_minio_secret_key
+
