@@ -17,16 +17,16 @@ import lombok.Getter;
 public enum ResponseStatus {
 
 
-    SUCCESS("响应成功", 601),
-    FAIL("响应失败", 602),
-    ABNORMAL("响应被终止", 603),
-    INTERRUPTED("响应被拦截", 604),
-    BLOCKED("响应被阻止", 605);
+    SUCCESS(601, "响应成功"),
+    FAIL(602, "响应失败"),
+    ABNORMAL(603, "响应被终止"),
+    INTERRUPTED(604, "响应被拦截"),
+    BLOCKED(605, "响应被阻止");
 
 
-    private final String comment;
     @JsonValue
     private final Integer code;
+    private final String comment;
 
 
 }

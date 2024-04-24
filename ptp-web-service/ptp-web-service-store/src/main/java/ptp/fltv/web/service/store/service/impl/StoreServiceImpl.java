@@ -16,10 +16,7 @@ import pfp.fltv.common.enums.ContentType;
 import ptp.fltv.web.service.store.service.StoreService;
 import ptp.fltv.web.service.store.utils.FileUtils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -66,7 +63,7 @@ public class StoreServiceImpl implements StoreService {
                  InvalidKeyException | InvalidResponseException | IOException | NoSuchAlgorithmException |
                  ServerException | XmlParserException e) {
 
-            log.error(e.getLocalizedMessage());
+            log.error(e.getCause() == null ? e.getLocalizedMessage() : e.getCause().getMessage());
             return null;
 
         }
@@ -97,7 +94,7 @@ public class StoreServiceImpl implements StoreService {
                  NoSuchAlgorithmException | InvalidKeyException | InvalidResponseException | XmlParserException |
                  InternalException e) {
 
-            log.error(e.getLocalizedMessage());
+            log.error(e.getCause() == null ? e.getLocalizedMessage() : e.getCause().getMessage());
             return false;
 
         }
@@ -107,23 +104,25 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     public boolean uploadFile(@Nullable String region, @NotNull String bucketName, @NotNull String
-            storePath, @NotNull File file, ContentType contentType, @Nullable Map<String, Object> option) {
+            storePath, @NotNull InputStream inputStream, ContentType contentType, @Nullable Map<String, Object> option) {
 
-        try (FileInputStream fileInputStream = new FileInputStream(file)) {
+        try (inputStream) {
 
-            String fileExtension = FileUtils.fetchFileExtensionFromPath(file.getAbsolutePath(), true);
+            String fileExtension = FileUtils.fetchFileExtensionFromPath(storePath, true);
 
-            minioClient.putObject(
+            PutObjectArgs.Builder builder = PutObjectArgs.builder()
+                    .bucket(bucketName)
+                    .object(storePath)
+                    .stream(inputStream, option == null ? inputStream.available() : (Long) option.getOrDefault("size", inputStream.available()), -1)
+                    .contentType(contentType.getDefaultContentType());
 
-                    PutObjectArgs.builder()
-                            .region(region)
-                            .bucket(bucketName)
-                            .object(storePath)
-                            .stream(fileInputStream, file.length(), -1)
-                            .contentType(contentType.getDefaultContentType())
-                            .build()
+            if (StringUtils.hasLength(region)) {
 
-            );
+                builder.region(region);
+
+            }
+
+            minioClient.putObject(builder.build());
 
             return true;
 
@@ -132,7 +131,7 @@ public class StoreServiceImpl implements StoreService {
                  NoSuchAlgorithmException | InvalidKeyException | InvalidResponseException | XmlParserException |
                  InternalException e) {
 
-            log.error(e.getLocalizedMessage());
+            log.error(e.getCause() == null ? e.getLocalizedMessage() : e.getCause().getMessage());
             return false;
 
         }
@@ -143,13 +142,13 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public boolean uploadFiles(@Nullable String region, @Nonnull String
             bucketName, @Nonnull List<String> storePaths, @Nonnull List<File> files, ContentType
-                                       contentType, @Nullable Map<String, Object> option) {
+                                       contentType, @Nullable Map<String, Object> option) throws FileNotFoundException {
 
         if (!CollectionUtils.isEmpty(storePaths) && !CollectionUtils.isEmpty(files) && storePaths.size() == files.size()) {
 
             for (int i = 0; i < storePaths.size(); i++) {
 
-                boolean isUploadSuccessfully = uploadFile(region, bucketName, storePaths.get(i), files.get(i), contentType, option);
+                boolean isUploadSuccessfully = uploadFile(region, bucketName, storePaths.get(i), new FileInputStream(files.get(i)), contentType, option);
                 if (!isUploadSuccessfully) {
 
                     return false;
@@ -189,15 +188,17 @@ public class StoreServiceImpl implements StoreService {
 
                 }
 
-                Iterable<Result<DeleteError>> results = minioClient.removeObjects(
+                RemoveObjectsArgs.Builder builder = RemoveObjectsArgs.builder()
+                        .bucket(bucketName)
+                        .objects(deleteObjects);
 
-                        RemoveObjectsArgs.builder()
-                                .region(region)
-                                .bucket(bucketName)
-                                .objects(deleteObjects)
-                                .build()
+                if (StringUtils.hasLength(region)) {
 
-                );
+                    builder.region(region);
+
+                }
+
+                Iterable<Result<DeleteError>> results = minioClient.removeObjects(builder.build());
 
                 if (results.iterator().hasNext()) {
 
@@ -219,7 +220,7 @@ public class StoreServiceImpl implements StoreService {
                      InvalidResponseException |
                      InternalException e) {
 
-                log.error(e.getLocalizedMessage());
+                log.error(e.getCause() == null ? e.getLocalizedMessage() : e.getCause().getMessage());
                 return false;
 
             }
@@ -233,16 +234,53 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     public boolean updateFile(@Nullable String region, @Nonnull String bucketName, @Nonnull String
-            storePath, @Nonnull File file, ContentType contentType, @Nullable Map<String, Object> option) {
+            storePath, @Nonnull InputStream inputStream, ContentType contentType, @Nullable Map<String, Object> option) {
 
         boolean isDeleteSuccessfully = deleteFiles(region, bucketName, List.of(storePath), option);
         if (isDeleteSuccessfully) {
 
-            return uploadFile(region, bucketName, storePath, file, contentType, option);
+            return uploadFile(region, bucketName, storePath, inputStream, contentType, option);
 
         }
 
         return false;
+
+    }
+
+
+    @Override
+    public StatObjectResponse getFileInformation(@Nullable String region, @NotNull String bucketName, @NotNull String storePath, @Nullable Map<String, Object> option) {
+
+        try {
+
+            StatObjectArgs.Builder builder = StatObjectArgs.builder()
+                    .bucket(bucketName)
+                    .object(storePath);
+
+            if (StringUtils.hasLength(region)) {
+
+                builder.region(region);
+
+            }
+
+            return minioClient.statObject(builder.build());
+
+        } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidKeyException |
+                 InvalidResponseException | IOException | NoSuchAlgorithmException | ServerException |
+                 XmlParserException e) {
+
+            log.error(e.getCause() == null ? e.getLocalizedMessage() : e.getCause().getMessage());
+            return null;
+
+        }
+
+    }
+
+
+    @Override
+    public boolean isFileExist(@Nullable String region, @NotNull String bucketName, @NotNull String storePath, @Nullable Map<String, Object> option) {
+
+        return getFileInformation(region, bucketName, storePath, option) != null;
 
     }
 

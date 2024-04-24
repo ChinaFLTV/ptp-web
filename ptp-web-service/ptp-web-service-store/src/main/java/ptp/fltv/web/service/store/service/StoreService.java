@@ -1,10 +1,13 @@
 package ptp.fltv.web.service.store.service;
 
+import io.minio.StatObjectResponse;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
 import pfp.fltv.common.enums.ContentType;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +58,7 @@ public interface StoreService {
      * @param region      区域
      * @param bucketName  存储桶名称
      * @param storePath   云端存储路径(相对于存储桶)
-     * @param file        待上传的文件
+     * @param inputStream 待上传的文件的输入流
      * @param contentType 文件所属的媒体类型
      * @param option      其他配置选项(可选)
      * @return 是否成功上传对象
@@ -65,7 +68,7 @@ public interface StoreService {
      * @description 上传对象到指定区域的指定存储桶的指定位置处
      * @filename StoreService.java
      */
-    boolean uploadFile(@Nullable String region, @Nonnull String bucketName, @Nonnull String storePath, @Nonnull File file, ContentType contentType, @Nullable Map<String, Object> option);
+    boolean uploadFile(@Nullable String region, @Nonnull String bucketName, @Nonnull String storePath, @NotNull InputStream inputStream, ContentType contentType, @Nullable Map<String, Object> option);
 
 
     /**
@@ -76,13 +79,15 @@ public interface StoreService {
      * @param contentType 文件所属的媒体类型
      * @param option      其他配置选项(可选)
      * @return 是否成功上传全部的指定对象
+     * @throws FileNotFoundException 输入流为空时将会抛出该异常
      * @author Lenovo/LiGuanda
      * @date 2024/4/22 PM 10:04:31
      * @version 1.0.0
      * @description 批量上传对象到指定区域的指定存储桶的指定位置处(目前只支持批量上传同类型的文件)
      * @filename StoreService.java
      */
-    boolean uploadFiles(@Nullable String region, @Nonnull String bucketName, @Nonnull List<String> storePaths, @Nonnull List<File> files, ContentType contentType, @Nullable Map<String, Object> option);
+    @Deprecated
+    boolean uploadFiles(@Nullable String region, @Nonnull String bucketName, @Nonnull List<String> storePaths, @Nonnull List<File> files, ContentType contentType, @Nullable Map<String, Object> option) throws FileNotFoundException;
 
 
     /**
@@ -119,17 +124,47 @@ public interface StoreService {
      * @param region      区域
      * @param bucketName  存储桶名称
      * @param storePath   云端存储路径(相对于存储桶)
-     * @param file        待上传以进行更新的文件
      * @param contentType 文件所属的媒体类型
      * @param option      其他配置选项(可选)
      * @return 是否成功更新对象
+     * @throws FileNotFoundException 输入流为空时将会抛出该异常
      * @author Lenovo/LiGuanda
      * @date 2024/4/22 PM 9:55:45
      * @version 1.0.0
      * @description 更新指定区域的指定存储桶中的指定对象
      * @filename StoreService.java
      */
-    boolean updateFile(@Nullable String region, @Nonnull String bucketName, @Nonnull String storePath, @Nonnull File file, ContentType contentType, @Nullable Map<String, Object> option);
+    boolean updateFile(@Nullable String region, @Nonnull String bucketName, @Nonnull String storePath, @Nonnull InputStream inputStream, ContentType contentType, @Nullable Map<String, Object> option) throws FileNotFoundException;
+
+
+    /**
+     * @param region     区域
+     * @param bucketName 存储桶名称
+     * @param storePath  云端存储路径(相对于存储桶)
+     * @param option     其他配置选项(可选)
+     * @return 云端媒体对象的详细信息
+     * @author Lenovo/LiGuanda
+     * @date 2024/4/24 PM 9:13:34
+     * @version 1.0.0
+     * @description 获取指定区域的指定存储桶的指定对象的元信息
+     * @filename StoreService.java
+     */
+    StatObjectResponse getFileInformation(@Nullable String region, @Nonnull String bucketName, @Nonnull String storePath, @Nullable Map<String, Object> option);
+
+
+    /**
+     * @param region     区域
+     * @param bucketName 存储桶名称
+     * @param storePath  云端存储路径(相对于存储桶)
+     * @param option     其他配置选项(可选)
+     * @return 云端媒体对象是否存在
+     * @author Lenovo/LiGuanda
+     * @date 2024/4/24 PM 10:21:08
+     * @version 1.0.0
+     * @description 判断指定区域的指定存储桶的指定对象是否存在
+     * @filename StoreService.java
+     */
+    boolean isFileExist(@Nullable String region, @Nonnull String bucketName, @Nonnull String storePath, @Nullable Map<String, Object> option);
 
 
 }

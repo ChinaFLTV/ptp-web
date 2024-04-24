@@ -106,6 +106,16 @@ knife4j:
   cors: true
 
 
+# 2024-4-24  20:23-OpenAPI文档相关配置
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    csrf:
+      enabled: true
+    path: /swagger-ui.html
+
+
 ptp:
   content:
     limit:
@@ -122,3 +132,11 @@ mybatis-plus:
       logic-delete-value: 1 # 逻辑已删除值（默认为 1）
       logic-not-delete-value: 0 # 逻辑未删除值（默认为 0）
 
+
+# 2024-4-24  10:14-minio相关配置
+minio:
+  endpoint: 127.0.0.1
+  port: 9000
+  secure: false
+  access-key: ptp_minio_access_key
+  secret-key: ptp_minio_secret_key

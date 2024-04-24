@@ -26,7 +26,7 @@ public class PtpAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
 
-        log.error(authException.getLocalizedMessage());
+        log.error(authException.getCause() == null ? authException.getLocalizedMessage() : authException.getCause().getMessage());
 
         response.setContentType("application/json;charset=utf-8");
         PrintWriter out = response.getWriter();

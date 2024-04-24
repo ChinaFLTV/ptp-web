@@ -31,7 +31,7 @@ public class PtpExceptionHandler {
     @ExceptionHandler(PtpException.class)
     public Result<JSONObject> handlePtpException(PtpException e) {
 
-        log.error(e.getLocalizedMessage());
+        log.error(e.getCause() == null ? e.getLocalizedMessage() : e.getCause().getMessage());
         return Result.failure(JSON.parseObject(JSON.toJSONString(e)));
 
     }
@@ -49,8 +49,8 @@ public class PtpExceptionHandler {
     @ExceptionHandler(Exception.class)
     public Result<String> handleException(Exception e) {
 
-        log.error(e.getLocalizedMessage());
-        return Result.failure(e.getLocalizedMessage());
+        log.error(e.getCause() == null ? e.getLocalizedMessage() : e.getCause().getMessage());
+        return Result.failure(e.getCause() == null ? e.getLocalizedMessage() : e.getCause().getMessage());
 
     }
 
