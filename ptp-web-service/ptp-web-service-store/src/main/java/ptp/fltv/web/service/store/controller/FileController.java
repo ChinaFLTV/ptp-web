@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pfp.fltv.common.enums.ContentType;
 import pfp.fltv.common.response.Result;
-import ptp.fltv.web.service.store.service.StoreService;
+import ptp.fltv.web.service.store.service.FileService;
 import ptp.fltv.web.service.store.utils.FileUtils;
 import ptp.fltv.web.service.store.utils.ReflectUtils;
 
@@ -30,22 +30,22 @@ import java.util.Objects;
  * @author Lenovo/LiGuanda
  * @version 1.0.0
  * @date 2024/4/23 PM 8:43:20
- * @description 媒体内容上传控制器
+ * @description 文件操作的控制器
  * @filename FileController.java
  */
 
-@Tag(name = "媒体OSS服务接口")
+@Tag(name = "OSS文件服务接口")
 @RestController
 @RequestMapping("/service/store/file")
 public class FileController {
 
 
     @Autowired
-    private StoreService storeService;
+    private FileService fileService;
 
 
     @Operation(description = "下载一个文件")
-    @GetMapping("/download/file")
+    @GetMapping("/download")
     public void downloadFile(
 
             @Parameter(name = "region", description = "媒体对象所在的区域") @RequestParam(name = "region", required = false) String region,
@@ -55,8 +55,7 @@ public class FileController {
 
     ) throws IOException {
 
-        InputStream inputStream = storeService.getFileInputStream(region, bucketName, storePath, null);
-
+        InputStream inputStream = fileService.getFileInputStream(region, bucketName, storePath, null);
         String fileName = FileUtils.fetchFileName(storePath, true);
 
         httpServletResponse.setHeader("Content-Disposition", String.format("attachment;filename=%s", URLEncoder.encode(fileName, StandardCharsets.UTF_8)));
@@ -68,7 +67,7 @@ public class FileController {
 
 
     @Operation(description = "上传一个文件")
-    @PostMapping("/upload/file")
+    @PostMapping("/upload")
     public Result<String> uploadFile(
 
             @Parameter(name = "file", description = "用户上传的媒体对象文件", required = true) @RequestPart("file") MultipartFile multipartFile,
@@ -82,16 +81,14 @@ public class FileController {
         options.put("size", multipartFile.getSize());
 
         ContentType contentType = FileUtils.fileExtension2ContentType(Objects.requireNonNull(FileUtils.fetchFileExtensionFromPath(Objects.requireNonNull(multipartFile.getOriginalFilename()), true)));
-
-        boolean isUploadSuccessfully = storeService.uploadFile(region, bucketName, storePath, multipartFile.getInputStream(), contentType, options);
-
+        boolean isUploadSuccessfully = fileService.uploadFile(region, bucketName, storePath, multipartFile.getInputStream(), contentType, options);
         return isUploadSuccessfully ? Result.success("File uploaded successfully!") : Result.failure("Failed to upload a file");
 
     }
 
 
     @Operation(description = "上传多个文件")
-    @PostMapping("/upload/files")
+    @PostMapping("/upload/batch")
     public Result<String> uploadFiles(
 
             @Parameter(name = "files", description = "用户上传的多个媒体对象文件", required = true) @RequestPart("files") List<MultipartFile> multipartFiles,
@@ -117,10 +114,8 @@ public class FileController {
         for (int i = 0; i < multipartFiles.size(); i++) {
 
             options.put("size", multipartFiles.get(i).getSize());
-
             ContentType contentType = FileUtils.fileExtension2ContentType(Objects.requireNonNull(FileUtils.fetchFileExtensionFromPath(Objects.requireNonNull(storePaths.get(i)), true)));
-
-            isUploadSuccessfully = storeService.uploadFile(region, bucketName, storePaths.get(i), multipartFiles.get(i).getInputStream(), contentType, options);
+            isUploadSuccessfully = fileService.uploadFile(region, bucketName, storePaths.get(i), multipartFiles.get(i).getInputStream(), contentType, options);
             if (!isUploadSuccessfully) {
 
                 return Result.failure("An exception occurred during file uploading!");
@@ -135,7 +130,7 @@ public class FileController {
 
 
     @Operation(description = "删除一个文件")
-    @DeleteMapping("/delete/file")
+    @DeleteMapping("/delete")
     public Result<String> deleteFile(
 
             @Parameter(name = "region", description = "媒体对象所在的区域") @RequestParam(name = "region", required = false) String region,
@@ -144,15 +139,14 @@ public class FileController {
 
     ) {
 
-        boolean isDeleteSuccessfully = storeService.deleteFile(region, bucketName, storePath, null);
-
+        boolean isDeleteSuccessfully = fileService.deleteFile(region, bucketName, storePath, null);
         return isDeleteSuccessfully ? Result.success("Delete file successfully!") : Result.failure("Failed to delete a file!");
 
     }
 
 
     @Operation(description = "删除多个文件")
-    @DeleteMapping("/delete/files")
+    @DeleteMapping("/delete/batch")
     public Result<String> deleteFiles(
 
             @Parameter(name = "region", description = "媒体对象所在的区域") @RequestParam(name = "region", required = false) String region,
@@ -167,17 +161,14 @@ public class FileController {
 
         }
 
-        boolean isUploadSuccessfully;
-
-        boolean isDeleteSuccessfully = storeService.deleteFiles(region, bucketName, storePaths, null);
-
+        boolean isDeleteSuccessfully = fileService.deleteFiles(region, bucketName, storePaths, null);
         return isDeleteSuccessfully ? Result.success("All files were deleted successfully!") : Result.failure("Failed to delete all files!");
 
     }
 
 
     @Operation(description = "更新一个文件")
-    @PutMapping("/update/file")
+    @PutMapping("/update")
     public Result<String> updateFile(
 
             @Parameter(name = "file", description = "用户上传的媒体对象文件") @RequestPart("file") MultipartFile multipartFile,
@@ -188,15 +179,14 @@ public class FileController {
     ) throws IOException {
 
         ContentType contentType = FileUtils.fileExtension2ContentType(Objects.requireNonNull(FileUtils.fetchFileExtensionFromPath(Objects.requireNonNull(storePath), true)));
-
-        boolean isUpdateSuccessfully = storeService.updateFile(region, bucketName, storePath, multipartFile.getInputStream(), contentType, null);
+        boolean isUpdateSuccessfully = fileService.updateFile(region, bucketName, storePath, multipartFile.getInputStream(), contentType, null);
         return isUpdateSuccessfully ? Result.success("Update file successfully!") : Result.failure("Failed to update a file!");
 
     }
 
 
     @Operation(description = "获取一个文件的元信息")
-    @GetMapping("/get/file/information")
+    @GetMapping("/get/information")
     public Result<JSONObject> getFileInformation(
 
             @Parameter(name = "region", description = "媒体对象所在的区域") @RequestParam(name = "region", required = false) String region,
@@ -206,16 +196,14 @@ public class FileController {
     ) {
 
         ContentType contentType = FileUtils.fileExtension2ContentType(Objects.requireNonNull(FileUtils.fetchFileExtensionFromPath(Objects.requireNonNull(storePath), true)));
-
-        StatObjectResponse fileInformation = storeService.getFileInformation(region, bucketName, storePath, null);
-
+        StatObjectResponse fileInformation = fileService.getFileInformation(region, bucketName, storePath, null);
         return Result.success(ReflectUtils.toJSONObjectForcibly(fileInformation, null));
 
     }
 
 
     @Operation(description = "判断一个文件是否存在")
-    @GetMapping("/predicate/file/exist")
+    @GetMapping("/exist")
     public Result<Boolean> isFileExist(
 
             @Parameter(name = "region", description = "媒体对象所在的区域") @RequestParam(name = "region", required = false) String region,
@@ -225,9 +213,7 @@ public class FileController {
     ) {
 
         ContentType contentType = FileUtils.fileExtension2ContentType(Objects.requireNonNull(FileUtils.fetchFileExtensionFromPath(Objects.requireNonNull(storePath), true)));
-
-        boolean isFileExist = storeService.isFileExist(region, bucketName, storePath, null);
-
+        boolean isFileExist = fileService.isFileExist(region, bucketName, storePath, null);
         return Result.success(isFileExist);
 
     }

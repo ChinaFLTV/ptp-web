@@ -16,11 +16,11 @@ import java.util.Map;
  * @author Lenovo/LiGuanda
  * @version 1.0.0
  * @date 2024/4/20 PM 9:36:12
- * @description 存储服务的接口
+ * @description 存储服务(文件)的接口
  * @filename StoreService.java
  */
 
-public interface StoreService {
+public interface FileService {
 
 
     /**
@@ -85,6 +85,7 @@ public interface StoreService {
      * @version 1.0.0
      * @description 批量上传对象到指定区域的指定存储桶的指定位置处(目前只支持批量上传同类型的文件)
      * @filename StoreService.java
+     * @deprecated 鸡肋的服务方法，不要也罢
      */
     @Deprecated
     boolean uploadFiles(@Nullable String region, @Nonnull String bucketName, @Nonnull List<String> storePaths, @Nonnull List<File> files, ContentType contentType, @Nullable Map<String, Object> option) throws FileNotFoundException;

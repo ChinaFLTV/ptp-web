@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import pfp.fltv.common.enums.ContentType;
-import ptp.fltv.web.service.store.service.StoreService;
+import ptp.fltv.web.service.store.service.FileService;
 import ptp.fltv.web.service.store.utils.FileUtils;
 
 import java.io.*;
@@ -28,13 +28,13 @@ import java.util.Map;
  * @author Lenovo/LiGuanda
  * @version 1.0.0
  * @date 2024/4/20 PM 9:36:45
- * @description 存储服务实现
+ * @description 存储服务(文件)的接口实现
  * @filename StoreServiceImpl.java
  */
 
 @Slf4j
 @Service
-public class StoreServiceImpl implements StoreService {
+public class FileServiceImpl implements FileService {
 
 
     @Autowired
@@ -46,15 +46,9 @@ public class StoreServiceImpl implements StoreService {
 
         try {
 
-            GetObjectArgs.Builder builder = GetObjectArgs.builder();
-
-            if (StringUtils.hasLength(region)) {
-
-                builder.region(region);
-
-            }
-
-            builder.bucket(bucketName)
+            GetObjectArgs.Builder builder = GetObjectArgs.builder()
+                    .region(StringUtils.hasLength(region) ? region : null)
+                    .bucket(bucketName)
                     .object(storePath);
 
             return minioClient.getObject(builder.build());
@@ -77,16 +71,13 @@ public class StoreServiceImpl implements StoreService {
 
         try {
 
-            minioClient.downloadObject(
+            DownloadObjectArgs.Builder builder = DownloadObjectArgs.builder()
+                    .region(StringUtils.hasLength(region) ? region : null)
+                    .bucket(bucketName)
+                    .object(fileName)
+                    .filename(storePath);
 
-                    DownloadObjectArgs.builder()
-                            .region(region)
-                            .bucket(bucketName)
-                            .object(fileName)
-                            .filename(storePath)
-                            .build()
-
-            );
+            minioClient.downloadObject(builder.build());
 
             return true;
 
@@ -111,16 +102,11 @@ public class StoreServiceImpl implements StoreService {
             String fileExtension = FileUtils.fetchFileExtensionFromPath(storePath, true);
 
             PutObjectArgs.Builder builder = PutObjectArgs.builder()
+                    .region(StringUtils.hasLength(region) ? region : null)
                     .bucket(bucketName)
                     .object(storePath)
                     .stream(inputStream, option == null ? inputStream.available() : (Long) option.getOrDefault("size", inputStream.available()), -1)
                     .contentType(contentType.getDefaultContentType());
-
-            if (StringUtils.hasLength(region)) {
-
-                builder.region(region);
-
-            }
 
             minioClient.putObject(builder.build());
 
@@ -189,14 +175,9 @@ public class StoreServiceImpl implements StoreService {
                 }
 
                 RemoveObjectsArgs.Builder builder = RemoveObjectsArgs.builder()
+                        .region(StringUtils.hasLength(region) ? region : null)
                         .bucket(bucketName)
                         .objects(deleteObjects);
-
-                if (StringUtils.hasLength(region)) {
-
-                    builder.region(region);
-
-                }
 
                 Iterable<Result<DeleteError>> results = minioClient.removeObjects(builder.build());
 
@@ -254,14 +235,9 @@ public class StoreServiceImpl implements StoreService {
         try {
 
             StatObjectArgs.Builder builder = StatObjectArgs.builder()
+                    .region(StringUtils.hasLength(region) ? region : null)
                     .bucket(bucketName)
                     .object(storePath);
-
-            if (StringUtils.hasLength(region)) {
-
-                builder.region(region);
-
-            }
 
             return minioClient.statObject(builder.build());
 
