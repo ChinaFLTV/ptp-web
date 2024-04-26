@@ -1,5 +1,6 @@
 package ptp.fltv.web.service.store.service.impl;
 
+import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import io.minio.*;
 import io.minio.errors.*;
@@ -16,6 +17,8 @@ import ptp.fltv.web.service.store.utils.ReflectUtils;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -152,20 +155,138 @@ public class BucketServiceImpl implements BucketService {
                     .region(StringUtils.hasLength(region) ? region : null)
                     .bucket(bucketName);
 
-            SseConfiguration config1 = minioClient.getBucketEncryption(builder1.build());
-            LifecycleConfiguration config2 = minioClient.getBucketLifecycle(builder2.build());
-            NotificationConfiguration config3 = minioClient.getBucketNotification(builder3.build());
-            String config4 = minioClient.getBucketPolicy(builder4.build());
-            ReplicationConfiguration config5 = minioClient.getBucketReplication(builder5.build());
-            Tags config6 = minioClient.getBucketTags(builder6.build());
-            VersioningConfiguration config7 = minioClient.getBucketVersioning(builder7.build());
-            ObjectLockConfiguration config8 = minioClient.getObjectLockConfiguration(builder8.build());
+            SseConfiguration config1;
+            try {
 
-            return ReflectUtils.toJSONObjectForciblyInBulk(null, false, config1, config2, config3, config4, config5, config6, config7, config8);
+                config1 = minioClient.getBucketEncryption(builder1.build());
+
+            } catch (Exception e) {
+
+                config1 = null;
+
+            }
+            LifecycleConfiguration config2;
+            try {
+
+                config2 = minioClient.getBucketLifecycle(builder2.build());
+
+            } catch (Exception e) {
+
+                config2 = null;
+
+            }
+
+            NotificationConfiguration config3;
+            try {
+
+                config3 = minioClient.getBucketNotification(builder3.build());
+
+            } catch (Exception e) {
+
+                config3 = null;
+
+            }
+
+            String config4;
+            try {
+
+                config4 = minioClient.getBucketPolicy(builder4.build());
+
+            } catch (Exception e) {
+
+                config4 = null;
+
+            }
+
+            ReplicationConfiguration config5;
+            try {
+
+                config5 = minioClient.getBucketReplication(builder5.build());
+
+            } catch (Exception e) {
+
+                config5 = null;
+
+            }
+
+            Tags config6;
+            try {
+
+                config6 = minioClient.getBucketTags(builder6.build());
+
+            } catch (Exception e) {
+
+                config6 = null;
+
+            }
+
+            VersioningConfiguration config7;
+            try {
+
+                config7 = minioClient.getBucketVersioning(builder7.build());
+
+            } catch (Exception e) {
+
+                config7 = null;
+
+            }
+
+            ObjectLockConfiguration config8;
+            try {
+
+                config8 = minioClient.getObjectLockConfiguration(builder8.build());
+
+            } catch (Exception e) {
+
+                config8 = null;
+
+            }
+
+            if (options == null) {
+
+                options = new HashMap<>();
+
+            } else {
+
+                // 2024-4-28  17:48-清除用户传入的已使用完毕的冗余参数，以免产生副作用
+                options.clear();
+
+            }
+            String[] defaultFieldNames = {"SseConfiguration", "LifecycleConfiguration", "NotificationConfiguration", "BucketPolicy",
+                    "ReplicationConfiguration", "Tags", "VersioningConfiguration", "ObjectLockConfiguration"};
+
+            return ReflectUtils.toJSONObjectForciblyInBulk(options, false, config1, config2, config3, config4, config5, config6, config7, config8);
+
+        } catch (Exception e) {
+
+            log.error(e.getCause() == null ? e.getLocalizedMessage() : e.getCause().getMessage());
+            return null;
+
+        }
+
+    }
+
+
+    @Override
+    public JSONArray getAllBucketsInformation(@Nullable Map<String, Object> options) {
+
+        try {
+
+            ListBucketsArgs.Builder builder = ListBucketsArgs.builder();
+            JSONArray jsonArray = new JSONArray();
+
+            List<Bucket> bucketList = minioClient.listBuckets(builder.build());
+            for (Bucket bucket : bucketList) {
+
+                jsonArray.add(ReflectUtils.toJSONObjectForcibly(bucket, null));
+
+            }
+
+            return jsonArray;
 
         } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidKeyException |
                  InvalidResponseException | IOException | NoSuchAlgorithmException | ServerException |
-                 XmlParserException | BucketPolicyTooLargeException e) {
+                 XmlParserException e) {
 
             log.error(e.getCause() == null ? e.getLocalizedMessage() : e.getCause().getMessage());
             return null;

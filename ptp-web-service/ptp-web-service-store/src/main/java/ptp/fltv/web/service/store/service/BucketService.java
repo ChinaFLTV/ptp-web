@@ -1,5 +1,6 @@
 package ptp.fltv.web.service.store.service;
 
+import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -72,6 +73,18 @@ public interface BucketService {
      * @filename BucketService.java
      */
     JSONObject getBucketInformation(@Nullable String region, @Nonnull String bucketName, @Nullable Map<String, Object> options);
+
+
+    /**
+     * @param options 其他附加配置(可选)
+     * @return 获取到的全部区域下的全部存储桶的信息
+     * @author Lenovo/LiGuanda
+     * @date 2024/4/26 PM 4:50:44
+     * @version 1.0.0
+     * @description 获取全部区域中的全部存储桶的信息
+     * @filename BucketService.java
+     */
+    JSONArray getAllBucketsInformation(@Nullable Map<String, Object> options);
 
 
 }

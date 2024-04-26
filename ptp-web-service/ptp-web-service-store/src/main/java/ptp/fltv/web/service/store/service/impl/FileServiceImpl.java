@@ -1,5 +1,6 @@
 package ptp.fltv.web.service.store.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.minio.*;
 import io.minio.errors.*;
 import io.minio.messages.DeleteError;
@@ -39,6 +40,22 @@ public class FileServiceImpl implements FileService {
 
     @Autowired
     private MinioClient minioClient;
+    private static ServerSideEncryptionKms SSE;
+
+    static {
+
+        try {
+
+            SSE = new ServerSideEncryptionKms("ptp-backend-minio-sse-key", null);
+
+        } catch (JsonProcessingException e) {
+
+            log.error(e.getCause() == null ? e.getLocalizedMessage() : e.getCause().getMessage());
+            SSE = null;
+
+        }
+
+    }
 
 
     @Override
@@ -66,16 +83,15 @@ public class FileServiceImpl implements FileService {
 
 
     @Override
-    public boolean downloadFile(@Nullable String region, @Nonnull String bucketName, @Nonnull String
-            fileName, @Nonnull String storePath, @Nullable Map<String, Object> option) {
+    public boolean downloadFile(@Nullable String region, @NotNull String bucketName, @Nonnull String fileName, @Nonnull String storePath, @Nullable Map<String, Object> option) {
 
         try {
 
             DownloadObjectArgs.Builder builder = DownloadObjectArgs.builder()
                     .region(StringUtils.hasLength(region) ? region : null)
                     .bucket(bucketName)
-                    .object(fileName)
-                    .filename(storePath);
+                    .object(storePath)
+                    .filename(fileName);
 
             minioClient.downloadObject(builder.build());
 
@@ -94,6 +110,36 @@ public class FileServiceImpl implements FileService {
 
 
     @Override
+    public byte[] downloadFilePartition(@Nullable String region, @Nonnull String bucketName, @Nonnull String storePath, @Nonnull Long downloadedLength, @Nonnull Long partitionLength, @Nullable Map<String, Object> option) {
+
+        try {
+
+            GetObjectArgs.Builder builder = GetObjectArgs.builder()
+                    .region(StringUtils.hasLength(region) ? region : null)
+                    .bucket(bucketName)
+                    .object(storePath)
+                    .offset(downloadedLength)
+                    .length(partitionLength);
+
+            GetObjectResponse objectResponse = minioClient.getObject(builder.build());
+
+            byte[] buffer = new byte[1024];
+            int readByteSize = -1;
+            return objectResponse.readAllBytes();
+
+        } catch (ServerException | InsufficientDataException | ErrorResponseException | IOException |
+                 NoSuchAlgorithmException | InvalidKeyException | InvalidResponseException | XmlParserException |
+                 InternalException e) {
+
+            log.error(e.getCause() == null ? e.getLocalizedMessage() : e.getCause().getMessage());
+            return new byte[0];
+
+        }
+
+    }
+
+
+    @Override
     public boolean uploadFile(@Nullable String region, @NotNull String bucketName, @NotNull String
             storePath, @NotNull InputStream inputStream, ContentType contentType, @Nullable Map<String, Object> option) {
 
@@ -104,6 +150,38 @@ public class FileServiceImpl implements FileService {
             PutObjectArgs.Builder builder = PutObjectArgs.builder()
                     .region(StringUtils.hasLength(region) ? region : null)
                     .bucket(bucketName)
+                    // .sse(SSE)
+                    .object(storePath)
+                    .stream(inputStream, option == null ? inputStream.available() : (Long) option.getOrDefault("size", inputStream.available()), -1)
+                    .contentType(contentType.getDefaultContentType());
+
+            minioClient.putObject(builder.build());
+
+            return true;
+
+        } catch (RuntimeException | IOException | ServerException | InsufficientDataException |
+                 ErrorResponseException |
+                 NoSuchAlgorithmException | InvalidKeyException | InvalidResponseException | XmlParserException |
+                 InternalException e) {
+
+            log.error(e.getCause() == null ? e.getLocalizedMessage() : e.getCause().getMessage());
+            return false;
+
+        }
+
+    }
+
+    @Override
+    public boolean uploadFilePartition(@Nullable String region, @NotNull String bucketName, @NotNull String storePath, @NotNull InputStream inputStream, @NotNull Long uploadedLength, @NotNull Long partitionLength, ContentType contentType, @Nullable Map<String, Object> option) {
+
+        try (inputStream) {
+
+            String fileExtension = FileUtils.fetchFileExtensionFromPath(storePath, true);
+
+            PutObjectArgs.Builder builder = PutObjectArgs.builder()
+                    .region(StringUtils.hasLength(region) ? region : null)
+                    .bucket(bucketName)
+                    // .sse(SSE)
                     .object(storePath)
                     .stream(inputStream, option == null ? inputStream.available() : (Long) option.getOrDefault("size", inputStream.available()), -1)
                     .contentType(contentType.getDefaultContentType());

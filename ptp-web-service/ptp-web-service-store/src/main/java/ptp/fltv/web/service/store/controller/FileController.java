@@ -66,6 +66,30 @@ public class FileController {
     }
 
 
+    @Operation(description = "分片下载一个文件")
+    @GetMapping("/download/partition")
+    public void downloadFilePartition(
+
+            @Parameter(name = "region", description = "媒体对象所在的区域") @RequestParam(name = "region", required = false) String region,
+            @Parameter(name = "bucketName", description = "媒体对象所在的存储桶", required = true) @RequestParam("bucketName") String bucketName,
+            @Parameter(name = "storePath", description = "媒体对象所在桶内的相对路径", required = true) @RequestParam("storePath") String storePath,
+            @Parameter(name = "downloadedLength", description = "先前以下载好的字节数(本次分片下载的偏移量)", required = true) @RequestParam("downloadedLength") Long downloadedLength,
+            @Parameter(name = "partitionLength", description = "本次分片下载的字节数", required = true) @RequestParam("partitionLength") Long partitionLength,
+            HttpServletResponse httpServletResponse
+
+    ) throws IOException {
+
+        byte[] bytes = fileService.downloadFilePartition(region, bucketName, storePath, downloadedLength, partitionLength, null);
+        String fileName = FileUtils.fetchFileName(storePath, true);
+
+        httpServletResponse.setHeader("Content-Disposition", String.format("attachment;filename=%s", URLEncoder.encode(fileName, StandardCharsets.UTF_8)));
+        httpServletResponse.setContentType("application/octet-stream");
+        httpServletResponse.setCharacterEncoding("UTF-8");
+        httpServletResponse.getOutputStream().write(bytes);
+
+    }
+
+
     @Operation(description = "上传一个文件")
     @PostMapping("/upload")
     public Result<String> uploadFile(

@@ -18,6 +18,7 @@
       <option name="ignoredUrls">
         <list>
           <option value="http://${EXTERNAL_LOCALHOST}" />
+          <option value="http://${KES_LOCALHOST}" />
           <option value="http://0.0.0.0" />
           <option value="http://127.0.0.1" />
           <option value="http://activemq.apache.org/schema/" />

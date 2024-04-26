@@ -1,5 +1,6 @@
 package ptp.fltv.web.service.store.controller;
 
+import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -85,6 +86,15 @@ public class BucketController {
     ) {
 
         return Result.success(bucketService.getBucketInformation(region, bucketName, null));
+
+    }
+
+
+    @Operation(description = "查看全部区域的全部存储桶的信息")
+    @PostMapping("/get/information/all")
+    public Result<JSONArray> getAllBucketInformation() {
+
+        return Result.success(bucketService.getAllBucketsInformation(null));
 
     }
 
