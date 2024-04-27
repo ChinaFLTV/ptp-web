@@ -7,16 +7,17 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.query.Criteria;
 import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import pfp.fltv.common.model.po.content.Announcement;
 import pfp.fltv.common.model.vo.AnnouncementVo;
 import pfp.fltv.common.response.Result;
 import ptp.fltv.web.service.AnnouncementService;
-import ptp.fltv.web.service.EsSearchService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,8 +43,9 @@ public class AnnouncementController {
     private AnnouncementService announcementService;
     @Resource
     private ElasticsearchOperations elasticsearchOperations;
+    @LoadBalanced
     @Resource
-    private EsSearchService esSearchService;
+    private RestTemplate restTemplate;
 
 
     @Operation(description = "根据ID查询单条公告数据")
@@ -71,29 +73,6 @@ public class AnnouncementController {
 
         List<AnnouncementVo> announcementVos = new ArrayList<>();
         for (Announcement announcement : announcementPage.getRecords()) {
-
-            AnnouncementVo announcementVo = new AnnouncementVo();
-            BeanUtils.copyProperties(announcement, announcementVo);
-            announcementVos.add(announcementVo);
-
-        }
-
-        return Result.success(announcementVos);
-
-    }
-
-
-    @Operation(description = "根据给定的关键词分页查询符合条件的公告数据")
-    @PostMapping("/fuzzy_query/page/{offset}/{limit}")
-    public Result<List<AnnouncementVo>> fuzzyQueryAnnouncementPage(
-            @Parameter(name = "keywords", description = "查询公告数据用到的关键词", in = ParameterIn.DEFAULT) @RequestParam("keywords") List<String> keywords,
-            @Parameter(name = "offset", description = "查询的一页公告数据的起始偏移量", in = ParameterIn.PATH) @PathVariable("offset") Long offset,
-            @Parameter(name = "limit", description = "查询的这一页公告数据的数量", in = ParameterIn.PATH) @PathVariable("limit") Long limit) {
-
-        List<Announcement> announcements = esSearchService.pagingQueryByKeywords(keywords, "title", offset, limit, Announcement.class);
-
-        List<AnnouncementVo> announcementVos = new ArrayList<>();
-        for (Announcement announcement : announcements) {
 
             AnnouncementVo announcementVo = new AnnouncementVo();
             BeanUtils.copyProperties(announcement, announcementVo);

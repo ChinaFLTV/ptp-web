@@ -1,4 +1,4 @@
-package ptp.fltv.web.service;
+package ptp.fltv.web.service.elasticsearch.service;
 
 import java.util.List;
 

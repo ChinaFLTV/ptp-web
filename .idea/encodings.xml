@@ -5,8 +5,12 @@
     <file url="file://$PROJECT_DIR$/ptp-web-common/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ptp-web-service/ptp-web-service-admin/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ptp-web-service/ptp-web-service-admin/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ptp-web-service/ptp-web-service-elasticsearch/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ptp-web-service/ptp-web-service-elasticsearch/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ptp-web-service/ptp-web-service-gateway/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ptp-web-service/ptp-web-service-gateway/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ptp-web-service/ptp-web-service-registry/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ptp-web-service/ptp-web-service-registry/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ptp-web-service/ptp-web-service-store/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ptp-web-service/ptp-web-service-store/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ptp-web-service/src/main/java" charset="UTF-8" />

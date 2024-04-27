@@ -1,4 +1,4 @@
-package ptp.fltv.web.service.impl;
+package ptp.fltv.web.service.elasticsearch.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
@@ -7,7 +7,7 @@ import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.Criteria;
 import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.stereotype.Service;
-import ptp.fltv.web.service.EsSearchService;
+import ptp.fltv.web.service.elasticsearch.service.EsSearchService;
 
 import java.util.ArrayList;
 import java.util.List;

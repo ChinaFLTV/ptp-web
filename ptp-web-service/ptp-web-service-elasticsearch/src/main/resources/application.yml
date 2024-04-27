@@ -1,0 +1,31 @@
+server:
+  port: 8120
+  servlet:
+    context-path: /api/v1
+
+
+# 2024-4-14  19:29-配置ElasticSearch
+spring:
+  elasticsearch:
+    uris: http://127.0.0.1:9200
+    # 2024-4-14  19:36-由于关闭了ElasticSearch的安全设置，因此这边无需使用用户名+密码的方式登录
+    # username: elastic
+    # password: # 2024-4-14  19:36-在容器中运行elasticsearch-reset-password -u elastic -i --url=http://localhost:9200生成(PS：没开安全配置，则为http协议，反之则为https)
+
+
+# 2024-4-27  20:15-Knife4j相关配置
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+  cors: true
+
+
+# 2024-4-27  20:15-OpenAPI文档相关配置
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    csrf:
+      enabled: true
+    path: /swagger-ui.html

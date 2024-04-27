@@ -6,18 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.SearchHit;
-import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.SearchOperations;
-import org.springframework.data.elasticsearch.core.query.Criteria;
-import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.test.context.ContextConfiguration;
 import pfp.fltv.common.model.po.content.Announcement;
 import pfp.fltv.common.model.po.content.Dialogue;
 import pfp.fltv.common.model.po.content.Passage;
 import pfp.fltv.common.model.po.content.PassageComment;
 import pfp.fltv.common.model.po.manage.User;
-import ptp.fltv.web.MainApplication;
+import ptp.fltv.web.WebApplication;
 import ptp.fltv.web.service.*;
 
 import java.util.List;
@@ -33,7 +29,7 @@ import java.util.List;
 @SuppressWarnings("NewClassNamingConvention")
 @Slf4j(topic = "test_elasticsearch_filldata")
 @SpringBootTest
-@ContextConfiguration(classes = MainApplication.class)
+@ContextConfiguration(classes = WebApplication.class)
 public class ElasticSearchDataFillScript {
 
 

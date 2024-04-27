@@ -1,4 +1,4 @@
-package ptp.fltv.web.extension;
+package ptp.fltv.web.service.elasticsearch.extension;
 
 
 import org.springframework.core.convert.converter.Converter;

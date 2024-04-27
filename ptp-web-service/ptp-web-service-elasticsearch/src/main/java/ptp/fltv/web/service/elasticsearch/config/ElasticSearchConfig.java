@@ -1,4 +1,4 @@
-package ptp.fltv.web.config;
+package ptp.fltv.web.service.elasticsearch.config;
 
 import jakarta.annotation.Nonnull;
 import org.springframework.context.annotation.Bean;
@@ -10,8 +10,9 @@ import org.springframework.data.elasticsearch.client.elc.ElasticsearchConfigurat
 import org.springframework.data.elasticsearch.core.convert.ElasticsearchCustomConversions;
 import org.springframework.data.elasticsearch.core.convert.GeoConverters;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
-import ptp.fltv.web.extension.DateToTimeStampConverter;
+import ptp.fltv.web.service.elasticsearch.extension.DateToTimeStampConverter;
 
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -25,7 +26,8 @@ import java.util.List;
  */
 
 @Configuration
-@EnableElasticsearchRepositories(basePackages = "ptp.fltv.web.repository") // 2024-4-17  21:13-启用ElasticSearch存储库
+// 2024-4-17  21:13-启用ElasticSearch存储库
+@EnableElasticsearchRepositories(basePackages = "ptp.fltv.web.service.elasticsearch.repository")
 public class ElasticSearchConfig extends ElasticsearchConfiguration {
 
 
@@ -34,7 +36,7 @@ public class ElasticSearchConfig extends ElasticsearchConfiguration {
     public ClientConfiguration clientConfiguration() {
 
         return ClientConfiguration.builder()
-                .connectedTo("127.0.0.1:9200")
+                .connectedTo(new InetSocketAddress("127.0.0.1", 9200))
                 .build();
 
     }

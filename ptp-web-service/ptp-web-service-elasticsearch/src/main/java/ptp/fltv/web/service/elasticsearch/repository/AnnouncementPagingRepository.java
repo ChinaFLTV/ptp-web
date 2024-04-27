@@ -1,4 +1,4 @@
-package ptp.fltv.web.repository;
+package ptp.fltv.web.service.elasticsearch.repository;
 
 import pfp.fltv.common.model.po.content.Announcement;
 

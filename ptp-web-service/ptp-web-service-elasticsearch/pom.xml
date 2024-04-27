@@ -9,8 +9,8 @@
         <artifactId>ptp-web-service</artifactId>
         <version>${ptp.version}</version>
     </parent>
-    <artifactId>ptp-web-service-store</artifactId>
-    <description>PTP内容数据存储服务</description>
+    <artifactId>ptp-web-service-elasticsearch</artifactId>
+    <description>PTP的搜索服务中心</description>
 
     <dependencies>
 
@@ -24,10 +24,6 @@
                     <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>org.springframework.data</groupId>
-                    <artifactId>spring-data-elasticsearch</artifactId>
-                </exclusion>
-                <exclusion>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-starter-security</artifactId>
                 </exclusion>
@@ -36,12 +32,12 @@
         </dependency>
 
         <dependency>
-            <groupId>io.minio</groupId>
-            <artifactId>minio</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.xiaoymin</groupId>
-            <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-elasticsearch</artifactId>
         </dependency>
         <dependency>
             <groupId>com.alibaba.cloud</groupId>

@@ -68,7 +68,7 @@
         <knife4j.version>4.5.0</knife4j.version>
         <mybatis.plus.version>3.5.5</mybatis.plus.version>
         <lombok.version>1.18.30</lombok.version>
-        <bootstrap.version>4.1.1</bootstrap.version>
+        <bootstrap.version>4.1.2</bootstrap.version>
         <druid.version>1.2.21</druid.version>
         <mysql-connector-java.version>8.0.33</mysql-connector-java.version>
         <fastjson2.version>2.0.47</fastjson2.version>
@@ -81,6 +81,8 @@
         <springboot.elasticsearch.version>3.2.3</springboot.elasticsearch.version>
         <spring.data.elasticsearch.version>5.2.3</spring.data.elasticsearch.version>
         <minio.version>8.5.9</minio.version>
+        <nacos.version>2023.0.0.0-RC1</nacos.version>
+        <!--<ribbon.version>2.2.10.RELEASE</ribbon.version>-->
 
     </properties>
 
@@ -111,6 +113,11 @@
             <dependency>
                 <groupId>ptp.fltv</groupId>
                 <artifactId>ptp-web-service-store</artifactId>
+                <version>${ptp.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ptp.fltv</groupId>
+                <artifactId>ptp-web-service-elasticsearch</artifactId>
                 <version>${ptp.version}</version>
             </dependency>
 
@@ -196,6 +203,21 @@
                 <artifactId>minio</artifactId>
                 <version>${minio.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+                <version>${nacos.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+                <version>${nacos.version}</version>
+            </dependency>
+            <!--<dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
+                <version>${ribbon.version}</version>
+            </dependency>-->
 
         </dependencies>
 

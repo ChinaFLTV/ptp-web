@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import pfp.fltv.common.model.po.manage.User;
 import pfp.fltv.common.model.vo.UserVo;
 import pfp.fltv.common.response.Result;
-import ptp.fltv.web.service.EsSearchService;
 import ptp.fltv.web.service.UserService;
 
 import java.util.ArrayList;
@@ -46,11 +45,8 @@ public class UserController {
     private PasswordEncoder passwordEncoder;
     @Resource
     private ElasticsearchOperations elasticsearchOperations;
-    @Resource
-    private EsSearchService esSearchService;
 
 
-    @PreAuthorize("")
     @Operation(description = "根据ID查询用户信息")
     @GetMapping("/query/{userId}")
     public Result<User> queryUserById(
@@ -75,29 +71,6 @@ public class UserController {
 
         List<UserVo> userVos = new ArrayList<>();
         for (User user : userPage.getRecords()) {
-
-            UserVo userVo = new UserVo();
-            BeanUtils.copyProperties(user, userVo);
-            userVos.add(userVo);
-
-        }
-
-        return Result.success(userVos);
-
-    }
-
-
-    @Operation(description = "根据给定的关键词分页查询符合条件的用户数据")
-    @PostMapping("/fuzzy_query/page/{offset}/{limit}")
-    public Result<List<UserVo>> fuzzyQueryUserPage(
-            @Parameter(name = "keywords", description = "查询用户数据用到的关键词", in = ParameterIn.DEFAULT) @RequestParam("keywords") List<String> keywords,
-            @Parameter(name = "offset", description = "查询的一页用户数据的起始偏移量", in = ParameterIn.PATH) @PathVariable("offset") Long offset,
-            @Parameter(name = "limit", description = "查询的这一页用户数据的数量", in = ParameterIn.PATH) @PathVariable("limit") Long limit) {
-
-        List<User> users = esSearchService.pagingQueryByKeywords(keywords, "nickname", offset, limit, User.class);
-
-        List<UserVo> userVos = new ArrayList<>();
-        for (User user : users) {
 
             UserVo userVo = new UserVo();
             BeanUtils.copyProperties(user, userVo);

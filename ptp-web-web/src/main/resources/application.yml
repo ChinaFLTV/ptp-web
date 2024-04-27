@@ -90,13 +90,6 @@ spring:
     cache-names: redis_cache
     type: redis
 
-  # 2024-4-14  19:29-配置ElasticSearch
-  elasticsearch:
-    uris: http://127.0.0.1:9200
-    # 2024-4-14  19:36-由于关闭了ElasticSearch的安全设置，因此这边无需使用用户名+密码的方式登录
-    # username: elastic
-    # password: # 2024-4-14  19:36-在容器中运行elasticsearch-reset-password -u elastic -i --url=http://localhost:9200生成(PS：没开安全配置，则为http协议，反之则为https)
-
 
 # 2024-3-16  19:33-Knife4j配置
 knife4j:

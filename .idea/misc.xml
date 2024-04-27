@@ -15,6 +15,7 @@
         <option value="$PROJECT_DIR$/ptp-web-common/ptp-web-common-model/pom.xml" />
         <option value="$PROJECT_DIR$/ptp-web-common/ptp-web-common-service/pom.xml" />
         <option value="$PROJECT_DIR$/ptp-web-common/ptp-web-common-utils/pom.xml" />
+        <option value="$PROJECT_DIR$/ptp-web-service/ptp-web-service-registry/pom.xml" />
       </set>
     </option>
   </component>

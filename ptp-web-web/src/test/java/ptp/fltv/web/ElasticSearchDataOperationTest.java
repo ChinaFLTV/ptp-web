@@ -7,7 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import pfp.fltv.common.model.po.content.Announcement;
 import pfp.fltv.common.model.po.content.Dialogue;
-import ptp.fltv.web.repository.AnnouncementPagingRepository;
+import ptp.fltv.web.service.elasticsearch.repository.AnnouncementPagingRepository;
 import ptp.fltv.web.service.DialogueService;
 
 import java.util.List;
