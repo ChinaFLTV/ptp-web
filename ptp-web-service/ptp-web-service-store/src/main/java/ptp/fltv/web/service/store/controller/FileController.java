@@ -14,8 +14,8 @@ import org.springframework.web.multipart.MultipartFile;
 import pfp.fltv.common.enums.ContentType;
 import pfp.fltv.common.response.Result;
 import ptp.fltv.web.service.store.service.FileService;
-import ptp.fltv.web.service.store.utils.FileUtils;
-import ptp.fltv.web.service.store.utils.ReflectUtils;
+import pfp.fltv.common.utils.FileUtils;
+import pfp.fltv.common.utils.ReflectUtils;
 
 import java.io.IOException;
 import java.io.InputStream;

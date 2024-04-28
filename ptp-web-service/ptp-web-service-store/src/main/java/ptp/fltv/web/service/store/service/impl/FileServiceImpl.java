@@ -15,7 +15,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import pfp.fltv.common.enums.ContentType;
 import ptp.fltv.web.service.store.service.FileService;
-import ptp.fltv.web.service.store.utils.FileUtils;
+import pfp.fltv.common.utils.FileUtils;
 
 import java.io.*;
 import java.security.InvalidKeyException;

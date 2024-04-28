@@ -1,4 +1,4 @@
-package ptp.fltv.web.service.store.utils;
+package pfp.fltv.common.utils;
 
 import jakarta.annotation.Nonnull;
 import org.apache.commons.lang3.StringUtils;

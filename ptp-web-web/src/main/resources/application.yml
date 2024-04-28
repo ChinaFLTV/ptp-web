@@ -89,6 +89,10 @@ spring:
       time-to-live: 1800s
     cache-names: redis_cache
     type: redis
+  jackson:
+    serialization:
+      # 2024-4-28  22:39-解决采用Jackson默认序列化方式序列化响应结果的时候序列化空字段对象时报错的问题
+      fail-on-empty-beans: false
 
 
 # 2024-3-16  19:33-Knife4j配置

@@ -1,7 +1,7 @@
 server:
   port: 8120
   servlet:
-    context-path: /api/v1
+    context-path: /api/v1/es
 
 
 # 2024-4-14  19:29-配置ElasticSearch

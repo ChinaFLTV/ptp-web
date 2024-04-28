@@ -38,3 +38,4 @@ target/
 docker/volumes/mysql/var/**
 docker/volumes/minio/data/**
 docker/volumes/nacos/standalone-logs/**
+docker/volumes/redis/data/**

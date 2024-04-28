@@ -7,16 +7,14 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
-import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.query.Criteria;
-import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import pfp.fltv.common.model.po.content.Announcement;
 import pfp.fltv.common.model.vo.AnnouncementVo;
 import pfp.fltv.common.response.Result;
+import ptp.fltv.web.constants.WebConstants;
 import ptp.fltv.web.service.AnnouncementService;
 
 import java.util.ArrayList;
@@ -39,11 +37,16 @@ import java.util.Map;
 public class AnnouncementController {
 
 
+    private static final String ES_PREFIX_ANNOUNCEMENT_URL = WebConstants.ES_BASE_URL + WebConstants.ES_CONTEXT_URL + WebConstants.ES_BASE_ANNOUNCEMENT_URL;
+    private static final String ES_INSERT_ANNOUNCEMENT_URL = ES_PREFIX_ANNOUNCEMENT_URL + "/insert/single";
+    private static final String ES_UPDATE_ANNOUNCEMENT_URL = ES_PREFIX_ANNOUNCEMENT_URL + "/update/single";
+    private static final String ES_DELETE_ANNOUNCEMENT_URL = ES_PREFIX_ANNOUNCEMENT_URL + "/delete/single/{id}";
+
+
     @Resource
     private AnnouncementService announcementService;
     @Resource
     private ElasticsearchOperations elasticsearchOperations;
-    @LoadBalanced
     @Resource
     private RestTemplate restTemplate;
 
@@ -96,15 +99,20 @@ public class AnnouncementController {
         BeanUtils.copyProperties(announcementVo, announcement);
 
         boolean isSaved = announcementService.save(announcement);
+
+        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> mysqlResult = new HashMap<>();
+        mysqlResult.put("isSaved", isSaved);
+        map.put("mysql_result", mysqlResult);
+
         if (isSaved) {
 
-            elasticsearchOperations.save(announcement);
+            Result<?> result = restTemplate.postForObject(ES_INSERT_ANNOUNCEMENT_URL, announcement, Result.class);
+            map.put("es_result", result);
 
         }
 
-        Map<String, Object> map = new HashMap<>();
-        map.put("isSaved", isSaved);
-        return isSaved ? Result.success(map) : Result.failure(map);
+        return Result.neutral(map);
 
     }
 
@@ -120,15 +128,20 @@ public class AnnouncementController {
         BeanUtils.copyProperties(announcementVo, announcement);
 
         boolean isUpdated = announcementService.updateById(announcement);
+        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> mysqlResult = new HashMap<>();
+        mysqlResult.put("isUpdated", isUpdated);
+        map.put("mysql_result", mysqlResult);
+
         if (isUpdated) {
 
             elasticsearchOperations.update(announcement);
+            restTemplate.put(ES_UPDATE_ANNOUNCEMENT_URL, announcement);
+            map.put("es_result", Result.BLANK);
 
         }
 
-        Map<String, Object> map = new HashMap<>();
-        map.put("isUpdated", isUpdated);
-        return isUpdated ? Result.success(map) : Result.failure(map);
+        return Result.neutral(map);
 
     }
 
@@ -141,17 +154,22 @@ public class AnnouncementController {
             Long id) {
 
         boolean isDeleted = announcementService.removeById(id);
+
+        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> mysqlResult = new HashMap<>();
+        mysqlResult.put("isDeleted", isDeleted);
+        map.put("mysql_result", mysqlResult);
+
         if (isDeleted) {
 
-            Criteria criteria = new Criteria("id").is(id);
-            // TODO 还需要判断ElasticSearch这边是否成功执行了操作，否则还得回滚
-            elasticsearchOperations.delete(new CriteriaQuery(criteria), Announcement.class);
+            Map<String, Object> urlValues = new HashMap<>();
+            urlValues.put("id", id);
+            restTemplate.delete(ES_DELETE_ANNOUNCEMENT_URL, urlValues);
+            map.put("es_result", Result.BLANK);
 
         }
 
-        Map<String, Object> map = new HashMap<>();
-        map.put("isDeleted", isDeleted);
-        return isDeleted ? Result.success(map) : Result.failure(map);
+        return Result.neutral(map);
 
     }
 

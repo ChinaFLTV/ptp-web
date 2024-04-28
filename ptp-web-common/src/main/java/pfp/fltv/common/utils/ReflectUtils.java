@@ -1,4 +1,4 @@
-package ptp.fltv.web.service.store.utils;
+package pfp.fltv.common.utils;
 
 import com.alibaba.fastjson2.JSONObject;
 import jakarta.annotation.Nonnull;
@@ -52,6 +52,7 @@ public class ReflectUtils {
 
                 field.setAccessible(true);
                 Object value = field.get(object);
+                Class<?> valueClazz;
 
                 // 2024-4-26  17:01-对属性字段类型进行检测,分情况处理
                 if (value == null) {
@@ -59,18 +60,24 @@ public class ReflectUtils {
                     // 2024-4-26  1:14-如果该属性无效，则填充空值
                     jsonObject.put(field.getName(), null);
 
-                } else if ("java.base".equalsIgnoreCase(value.getClass().getModule().getName())) {
+                } else if ("java.base".equalsIgnoreCase((valueClazz = value.getClass()).getModule().getName())) {
 
                     // 2024-4-26  17:04-如果是系统类(Java 9)，则直接添加为一级属性
                     jsonObject.put(field.getName(), value);
 
-                } else if (Set.of(value.getClass().getInterfaces()).contains(Serializable.class)) {
+                } else if (Set.of(valueClazz.getInterfaces()).contains(Serializable.class)) {
 
                     // 2024-4-26  17:06-如果该属性可序列化，同样的直接添加为一级属性
                     jsonObject.put(field.getName(), value);
 
+                } else if (valueClazz.isEnum()) {
+
+                    // 2024-4-28  22:30-如果字段值是枚举类型，则直接返回其字面值
+                    jsonObject.put(field.getName(), value);
+
                 } else {
 
+                    // 2024-4-28  22:34-如果字段值是接口类型，由于接口可能存在公共类型的静态常量，因此还需要递归遍历获取(这种情况下的字段遍历是安全的)
                     // 2024-4-26  17:07-如果属性是不可序列化类，此时直接添加返回会丢失对象的全部属性，因此需要递归处理
                     jsonObject.put(field.getName(), toJSONObjectForcibly(value, options));
 
@@ -86,6 +93,12 @@ public class ReflectUtils {
             return null;
 
         }
+
+    }
+
+    interface Hehe {
+
+        String hehe = "jeje";
 
     }
 
