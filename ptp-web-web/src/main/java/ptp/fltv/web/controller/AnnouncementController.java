@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -45,8 +44,6 @@ public class AnnouncementController {
 
     @Resource
     private AnnouncementService announcementService;
-    @Resource
-    private ElasticsearchOperations elasticsearchOperations;
     @Resource
     private RestTemplate restTemplate;
 
@@ -128,6 +125,7 @@ public class AnnouncementController {
         BeanUtils.copyProperties(announcementVo, announcement);
 
         boolean isUpdated = announcementService.updateById(announcement);
+
         Map<String, Object> map = new HashMap<>();
         Map<String, Object> mysqlResult = new HashMap<>();
         mysqlResult.put("isUpdated", isUpdated);
@@ -135,7 +133,6 @@ public class AnnouncementController {
 
         if (isUpdated) {
 
-            elasticsearchOperations.update(announcement);
             restTemplate.put(ES_UPDATE_ANNOUNCEMENT_URL, announcement);
             map.put("es_result", Result.BLANK);
 

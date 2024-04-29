@@ -7,14 +7,14 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.query.Criteria;
-import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import pfp.fltv.common.model.po.content.PassageComment;
 import pfp.fltv.common.model.vo.PassageCommentVo;
 import pfp.fltv.common.response.Result;
+import ptp.fltv.web.constants.WebConstants;
 import ptp.fltv.web.service.PassageCommentService;
 
 import java.util.ArrayList;
@@ -37,10 +37,16 @@ import java.util.Map;
 public class PassageCommentController {
 
 
+    private static final String ES_PREFIX_PASSAGE_COMMENT_URL = WebConstants.ES_BASE_URL + WebConstants.ES_CONTEXT_URL + WebConstants.ES_BASE_PASSAGE_COMMENT_URL;
+    private static final String ES_INSERT_PASSAGE_COMMENT_URL = ES_PREFIX_PASSAGE_COMMENT_URL + "/insert/single";
+    private static final String ES_UPDATE_PASSAGE_COMMENT_URL = ES_PREFIX_PASSAGE_COMMENT_URL + "/update/single";
+    private static final String ES_DELETE_PASSAGE_COMMENT_URL = ES_PREFIX_PASSAGE_COMMENT_URL + "/delete/single/{id}";
+
+
     @Resource
     private PassageCommentService passageCommentService;
-    @Resource
-    private ElasticsearchOperations elasticsearchOperations;
+    @Autowired
+    private RestTemplate restTemplate;
 
 
     @Operation(description = "根据ID查询单条文章评论数据")
@@ -91,15 +97,20 @@ public class PassageCommentController {
         BeanUtils.copyProperties(passageCommentVo, passageComment);
 
         boolean isSaved = passageCommentService.save(passageComment);
+
+        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> mysqlResult = new HashMap<>();
+        mysqlResult.put("isSaved", isSaved);
+        map.put("mysql_result", mysqlResult);
+
         if (isSaved) {
 
-            elasticsearchOperations.save(passageComment);
+            Result<?> result = restTemplate.postForObject(ES_INSERT_PASSAGE_COMMENT_URL, passageComment, Result.class);
+            map.put("es_result", result);
 
         }
 
-        Map<String, Object> map = new HashMap<>();
-        map.put("isSaved", isSaved);
-        return isSaved ? Result.success(map) : Result.failure(map);
+        return Result.neutral(map);
 
     }
 
@@ -115,15 +126,20 @@ public class PassageCommentController {
         BeanUtils.copyProperties(passageCommentVo, passageComment);
 
         boolean isUpdated = passageCommentService.updateById(passageComment);
+
+        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> mysqlResult = new HashMap<>();
+        mysqlResult.put("isUpdated", isUpdated);
+        map.put("mysql_result", mysqlResult);
+
         if (isUpdated) {
 
-            elasticsearchOperations.update(passageComment);
+            restTemplate.put(ES_UPDATE_PASSAGE_COMMENT_URL, passageComment);
+            map.put("es_result", Result.BLANK);
 
         }
 
-        Map<String, Object> map = new HashMap<>();
-        map.put("isUpdated", isUpdated);
-        return isUpdated ? Result.success(map) : Result.failure(map);
+        return Result.neutral(map);
 
     }
 
@@ -136,16 +152,22 @@ public class PassageCommentController {
             Long id) {
 
         boolean isDeleted = passageCommentService.removeById(id);
+
+        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> mysqlResult = new HashMap<>();
+        mysqlResult.put("isDeleted", isDeleted);
+        map.put("mysql_result", mysqlResult);
+
         if (isDeleted) {
 
-            Criteria criteria = new Criteria("id").is(id);
-            elasticsearchOperations.delete(new CriteriaQuery(criteria), PassageComment.class);
+            Map<String, Object> urlValues = new HashMap<>();
+            urlValues.put("id", id);
+            restTemplate.delete(ES_DELETE_PASSAGE_COMMENT_URL, urlValues);
+            map.put("es_result", Result.BLANK);
 
         }
 
-        Map<String, Object> map = new HashMap<>();
-        map.put("isDeleted", isDeleted);
-        return isDeleted ? Result.success(map) : Result.failure(map);
+        return Result.neutral(map);
 
     }
 

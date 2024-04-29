@@ -1,16 +1,21 @@
 package ptp.fltv.web.service.elasticsearch.service.impl;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.query.ByQueryResponse;
 import org.springframework.data.elasticsearch.core.query.Criteria;
 import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
+import org.springframework.data.elasticsearch.core.query.UpdateResponse;
 import org.springframework.stereotype.Service;
 import ptp.fltv.web.service.elasticsearch.service.EsSearchService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Lenovo/LiGuanda
@@ -21,7 +26,7 @@ import java.util.List;
  */
 
 @Service
-public class ContentIntermediateServiceImpl implements EsSearchService {
+public class EsSearchServiceImpl implements EsSearchService {
 
 
     @Autowired
@@ -74,6 +79,32 @@ public class ContentIntermediateServiceImpl implements EsSearchService {
         }
 
         return ds;
+
+    }
+
+
+    @Override
+    public <T> T insertEntity(@Nonnull T entity, @Nullable Map<String, Object> options) {
+
+        return elasticsearchOperations.save(entity);
+
+    }
+
+
+    @Override
+    public <T> UpdateResponse updateEntity(@Nonnull T entity, @Nullable Map<String, Object> options) {
+
+        return elasticsearchOperations.update(entity);
+
+    }
+
+
+    @Override
+    public <T> ByQueryResponse deleteEntityById(@Nonnull Long id, @Nonnull Class<T> clazz, @Nullable Map<String, Object> options) {
+
+        Criteria criteria = new Criteria("id").is(id);
+        // TODO 还需要判断ElasticSearch这边是否成功执行了操作，否则还得回滚
+        return elasticsearchOperations.delete(new CriteriaQuery(criteria), clazz);
 
     }
 

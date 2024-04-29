@@ -6,10 +6,7 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.query.ByQueryResponse;
-import org.springframework.data.elasticsearch.core.query.Criteria;
-import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.data.elasticsearch.core.query.UpdateResponse;
 import org.springframework.web.bind.annotation.*;
 import pfp.fltv.common.model.po.manage.User;
@@ -40,8 +37,6 @@ public class UserController {
 
     @Resource
     private EsSearchService esSearchService;
-    @Resource
-    private ElasticsearchOperations elasticsearchOperations;
 
 
     @Operation(description = "根据给定的关键词分页查询符合条件的用户数据")
@@ -78,7 +73,7 @@ public class UserController {
 
     ) {
 
-        UpdateResponse response = elasticsearchOperations.update(user);
+        UpdateResponse response = esSearchService.updateEntity(user, null);
         return Result.neutral(ReflectUtils.toJSONObjectForcibly(response, null));
 
     }
@@ -92,7 +87,7 @@ public class UserController {
 
     ) {
 
-        User savedUser = elasticsearchOperations.save(user);
+        User savedUser = esSearchService.insertEntity(user, null);
         Map<String, Object> map = new HashMap<>();
         map.put("savedEntity", savedUser);
         return Result.neutral(map);
@@ -108,8 +103,7 @@ public class UserController {
 
     ) {
 
-        Criteria criteria = new Criteria("id").is(id);
-        ByQueryResponse response = elasticsearchOperations.delete(new CriteriaQuery(criteria), User.class);
+        ByQueryResponse response = esSearchService.deleteEntityById(id, User.class, null);
         return Result.neutral(ReflectUtils.toJSONObjectForcibly(response, null));
 
     }

@@ -6,10 +6,7 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.query.ByQueryResponse;
-import org.springframework.data.elasticsearch.core.query.Criteria;
-import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.data.elasticsearch.core.query.UpdateResponse;
 import org.springframework.web.bind.annotation.*;
 import pfp.fltv.common.model.po.content.Passage;
@@ -40,8 +37,6 @@ public class PassageController {
 
     @Resource
     private EsSearchService esSearchService;
-    @Resource
-    private ElasticsearchOperations elasticsearchOperations;
 
 
     @Operation(description = "根据给定的关键词分页查询符合条件的文章数据")
@@ -78,7 +73,7 @@ public class PassageController {
 
     ) {
 
-        UpdateResponse response = elasticsearchOperations.update(passage);
+        UpdateResponse response = esSearchService.updateEntity(passage, null);
         return Result.neutral(ReflectUtils.toJSONObjectForcibly(response, null));
 
     }
@@ -92,7 +87,7 @@ public class PassageController {
 
     ) {
 
-        Passage savedPassage = elasticsearchOperations.save(passage);
+        Passage savedPassage = esSearchService.insertEntity(passage, null);
         Map<String, Object> map = new HashMap<>();
         map.put("savedEntity", savedPassage);
         return Result.neutral(map);
@@ -108,8 +103,7 @@ public class PassageController {
 
     ) {
 
-        Criteria criteria = new Criteria("id").is(id);
-        ByQueryResponse response = elasticsearchOperations.delete(new CriteriaQuery(criteria), Passage.class);
+        ByQueryResponse response = esSearchService.deleteEntityById(id, Passage.class, null);
         return Result.neutral(ReflectUtils.toJSONObjectForcibly(response, null));
 
     }

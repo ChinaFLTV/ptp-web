@@ -3,6 +3,7 @@ package pfp.fltv.common.response;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import pfp.fltv.common.enums.ResponseStatus;
 
 import java.io.Serializable;
@@ -20,6 +21,7 @@ import java.time.Instant;
 
 @Data
 @Builder
+@NoArgsConstructor
 public class Result<T> implements Serializable {
 
 
@@ -111,7 +113,7 @@ public class Result<T> implements Serializable {
      * @description 在没有响应值的情况下使用，起到一个占位表示的作用
      * @filename Result.java
      */
-    private static class Blank implements Serializable {
+    public static class Blank implements Serializable {
 
 
         /**

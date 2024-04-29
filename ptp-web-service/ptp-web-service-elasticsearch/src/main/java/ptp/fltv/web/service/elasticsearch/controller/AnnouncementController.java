@@ -6,10 +6,7 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.query.ByQueryResponse;
-import org.springframework.data.elasticsearch.core.query.Criteria;
-import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.data.elasticsearch.core.query.UpdateResponse;
 import org.springframework.web.bind.annotation.*;
 import pfp.fltv.common.model.po.content.Announcement;
@@ -40,8 +37,6 @@ public class AnnouncementController {
 
     @Resource
     private EsSearchService esSearchService;
-    @Resource
-    private ElasticsearchOperations elasticsearchOperations;
 
 
     @Operation(description = "根据给定的关键词分页查询符合条件的公告数据")
@@ -78,7 +73,7 @@ public class AnnouncementController {
 
     ) {
 
-        UpdateResponse response = elasticsearchOperations.update(announcement);
+        UpdateResponse response = esSearchService.updateEntity(announcement, null);
         return Result.neutral(ReflectUtils.toJSONObjectForcibly(response, null));
 
     }
@@ -92,7 +87,7 @@ public class AnnouncementController {
 
     ) {
 
-        Announcement savedAnnouncement = elasticsearchOperations.save(announcement);
+        Announcement savedAnnouncement = esSearchService.insertEntity(announcement, null);
 
         Map<String, Object> map = new HashMap<>();
         map.put("savedEntity", savedAnnouncement);
@@ -109,10 +104,7 @@ public class AnnouncementController {
 
     ) {
 
-        Criteria criteria = new Criteria("id").is(id);
-        // TODO 还需要判断ElasticSearch这边是否成功执行了操作，否则还得回滚
-        ByQueryResponse response = elasticsearchOperations.delete(new CriteriaQuery(criteria), Announcement.class);
-
+        ByQueryResponse response = esSearchService.deleteEntityById(id, Announcement.class, null);
         return Result.neutral(ReflectUtils.toJSONObjectForcibly(response, null));
 
     }

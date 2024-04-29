@@ -6,10 +6,7 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.query.ByQueryResponse;
-import org.springframework.data.elasticsearch.core.query.Criteria;
-import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.data.elasticsearch.core.query.UpdateResponse;
 import org.springframework.web.bind.annotation.*;
 import pfp.fltv.common.model.po.content.Dialogue;
@@ -39,8 +36,7 @@ public class DialogueController {
 
     @Resource
     private EsSearchService esSearchService;
-    @Resource
-    private ElasticsearchOperations elasticsearchOperations;
+
 
     @Operation(description = "根据给定的关键词分页查询符合条件的对话数据")
     @PostMapping("/fuzzy_query/page/{offset}/{limit}")
@@ -76,7 +72,7 @@ public class DialogueController {
 
     ) {
 
-        UpdateResponse response = elasticsearchOperations.update(dialogue);
+        UpdateResponse response = esSearchService.updateEntity(dialogue, null);
         return Result.neutral(ReflectUtils.toJSONObjectForcibly(response, null));
 
     }
@@ -90,7 +86,7 @@ public class DialogueController {
 
     ) {
 
-        Dialogue savedDialogue = elasticsearchOperations.save(dialogue);
+        Dialogue savedDialogue = esSearchService.insertEntity(dialogue, null);
         Map<String, Object> map = new HashMap<>();
         map.put("savedEntity", savedDialogue);
         return Result.neutral(map);
@@ -106,8 +102,7 @@ public class DialogueController {
 
     ) {
 
-        Criteria criteria = new Criteria("id").is(id);
-        ByQueryResponse response = elasticsearchOperations.delete(new CriteriaQuery(criteria), Dialogue.class);
+        ByQueryResponse response = esSearchService.deleteEntityById(id, Dialogue.class, null);
         return Result.neutral(ReflectUtils.toJSONObjectForcibly(response, null));
 
     }

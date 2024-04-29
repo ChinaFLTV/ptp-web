@@ -6,10 +6,7 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.query.ByQueryResponse;
-import org.springframework.data.elasticsearch.core.query.Criteria;
-import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.data.elasticsearch.core.query.UpdateResponse;
 import org.springframework.web.bind.annotation.*;
 import pfp.fltv.common.model.po.content.PassageComment;
@@ -39,8 +36,6 @@ public class PassageCommentController {
 
     @Resource
     private EsSearchService esSearchService;
-    @Resource
-    private ElasticsearchOperations elasticsearchOperations;
 
 
     @Operation(description = "根据给定的关键词分页查询符合条件的文章评论数据")
@@ -77,7 +72,7 @@ public class PassageCommentController {
 
     ) {
 
-        UpdateResponse response = elasticsearchOperations.update(passageComment);
+        UpdateResponse response = esSearchService.updateEntity(passageComment, null);
         return Result.neutral(ReflectUtils.toJSONObjectForcibly(response, null));
 
     }
@@ -90,7 +85,7 @@ public class PassageCommentController {
 
     ) {
 
-        PassageComment savedPassageComment = elasticsearchOperations.save(passageComment);
+        PassageComment savedPassageComment = esSearchService.insertEntity(passageComment, null);
         Map<String, Object> map = new HashMap<>();
         map.put("savedEntity", savedPassageComment);
         return Result.neutral(map);
@@ -106,8 +101,7 @@ public class PassageCommentController {
 
     ) {
 
-        Criteria criteria = new Criteria("id").is(id);
-        ByQueryResponse response = elasticsearchOperations.delete(new CriteriaQuery(criteria), PassageComment.class);
+        ByQueryResponse response = esSearchService.deleteEntityById(id, PassageComment.class, null);
         return Result.neutral(ReflectUtils.toJSONObjectForcibly(response, null));
 
     }

@@ -7,14 +7,14 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.query.Criteria;
-import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import pfp.fltv.common.model.po.content.Passage;
 import pfp.fltv.common.model.vo.PassageVo;
 import pfp.fltv.common.response.Result;
+import ptp.fltv.web.constants.WebConstants;
 import ptp.fltv.web.service.PassageService;
 
 import java.util.ArrayList;
@@ -37,10 +37,16 @@ import java.util.Map;
 public class PassageController {
 
 
+    private static final String ES_PREFIX_PASSAGE_URL = WebConstants.ES_BASE_URL + WebConstants.ES_CONTEXT_URL + WebConstants.ES_BASE_PASSAGE_URL;
+    private static final String ES_INSERT_PASSAGE_URL = ES_PREFIX_PASSAGE_URL + "/insert/single";
+    private static final String ES_UPDATE_PASSAGE_URL = ES_PREFIX_PASSAGE_URL + "/update/single";
+    private static final String ES_DELETE_PASSAGE_URL = ES_PREFIX_PASSAGE_URL + "/delete/single/{id}";
+
+
     @Resource
     private PassageService passageService;
-    @Resource
-    private ElasticsearchOperations elasticsearchOperations;
+    @Autowired
+    private RestTemplate restTemplate;
 
 
     @Operation(description = "根据ID查询单条文章数据")
@@ -88,15 +94,20 @@ public class PassageController {
         BeanUtils.copyProperties(passageVo, passage);
 
         boolean isSaved = passageService.save(passage);
+
+        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> mysqlResult = new HashMap<>();
+        mysqlResult.put("isSaved", isSaved);
+        map.put("mysql_result", mysqlResult);
+
         if (isSaved) {
 
-            elasticsearchOperations.save(passage);
+            Result<?> result = restTemplate.postForObject(ES_INSERT_PASSAGE_URL, passage, Result.class);
+            map.put("es_result", result);
 
         }
 
-        Map<String, Object> map = new HashMap<>();
-        map.put("isSaved", isSaved);
-        return isSaved ? Result.success(map) : Result.failure(map);
+        return Result.neutral(map);
 
     }
 
@@ -112,15 +123,20 @@ public class PassageController {
         BeanUtils.copyProperties(passageVo, passage);
 
         boolean isUpdated = passageService.updateById(passage);
+
+        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> mysqlResult = new HashMap<>();
+        mysqlResult.put("isUpdated", isUpdated);
+        map.put("mysql_result", mysqlResult);
+
         if (isUpdated) {
 
-            elasticsearchOperations.update(passage);
+            restTemplate.put(ES_UPDATE_PASSAGE_URL, passage);
+            map.put("es_result", Result.BLANK);
 
         }
 
-        Map<String, Object> map = new HashMap<>();
-        map.put("isUpdated", isUpdated);
-        return isUpdated ? Result.success(map) : Result.failure(map);
+        return Result.neutral(map);
 
     }
 
@@ -132,16 +148,22 @@ public class PassageController {
                                          Long id) {
 
         boolean isDeleted = passageService.removeById(id);
+
+        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> mysqlResult = new HashMap<>();
+        mysqlResult.put("isDeleted", isDeleted);
+        map.put("mysql_result", mysqlResult);
+
         if (isDeleted) {
 
-            Criteria criteria = new Criteria("id").is(id);
-            elasticsearchOperations.delete(new CriteriaQuery(criteria), Passage.class);
+            Map<String, Object> urlValues = new HashMap<>();
+            urlValues.put("id", id);
+            restTemplate.delete(ES_DELETE_PASSAGE_URL, urlValues);
+            map.put("es_result", Result.BLANK);
 
         }
 
-        Map<String, Object> map = new HashMap<>();
-        map.put("isDeleted", isDeleted);
-        return isDeleted ? Result.success(map) : Result.failure(map);
+        return Result.neutral(map);
 
     }
 
