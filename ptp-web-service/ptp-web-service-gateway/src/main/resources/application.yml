@@ -33,6 +33,7 @@ spring:
   main:
     web-application-type: reactive # 2024-4-30  21:59-解决本模块服务启动报 Spring MVC found on classpath, which is incompatible with Spring Cloud Gateway 错误的问题
 
+
 # 2024-4-30  18:57-Knife4j相关配置
 knife4j:
   enable: true
