@@ -1,0 +1,53 @@
+server:
+  port: 8150
+  servlet:
+    context-path: /api/v1/gateway
+
+
+spring:
+  application:
+    name: ptp-web-service-gateway
+  profiles:
+    active: dev
+  cloud:
+    # 2024-4-30  19:04-spring.cloud.gateway网关配置
+    gateway:
+      discovery:
+        locator:
+          enabled: true # 2024-4-30  21:00-将网关配置为基于在 DiscoveryClient 兼容服务注册中心上注册的服务来创建路由
+      globalcors:
+        cors-configurations:
+          # 2024-4-30  21:0-对于所有GET/POST/PUT/DELETE请求的路径，允许来自所有路径的请求的跨域请求
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+        add-to-simple-url-handler-mapping: true # 2024-4-30  21:04-为未被某些网关路由谓词处理的请求提供相同的 CORS 配置
+      routes:
+        # 2024-4-30  21:18-用户登录应无条件放行，即使用户已经登录，依旧可以覆盖掉旧数据登录
+        # - id: user_login
+          # uri: http://127.0.0.1:8080/api/v1/gate/login
+  main:
+    web-application-type: reactive # 2024-4-30  21:59-解决本模块服务启动报 Spring MVC found on classpath, which is incompatible with Spring Cloud Gateway 错误的问题
+
+# 2024-4-30  18:57-Knife4j相关配置
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+  cors: true
+
+
+# 2024-4-30  18:58-OpenAPI文档相关配置
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    csrf:
+      enabled: true
+    path: /swagger-ui.html
+
+

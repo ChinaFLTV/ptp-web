@@ -83,6 +83,7 @@
         <minio.version>8.5.9</minio.version>
         <nacos.version>2023.0.0.0-RC1</nacos.version>
         <!--<ribbon.version>2.2.10.RELEASE</ribbon.version>-->
+        <spring.gateway.version>4.1.2</spring.gateway.version>
 
     </properties>
 
@@ -218,6 +219,11 @@
                 <artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
                 <version>${ribbon.version}</version>
             </dependency>-->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-gateway</artifactId>
+                <version>${spring.gateway.version}</version>
+            </dependency>
 
         </dependencies>
 
