@@ -1,15 +1,11 @@
 server:
   port: 8080
   servlet:
-    context-path: /api/v1
+    context-path: /api/v1/web
 
 
 # 2024-3-16  19:34-项目基本配置
 spring:
-  application:
-    name: ptp-web-web
-  profiles:
-    active: dev
   datasource:
     url: jdbc:mysql://127.0.0.1:4407/ptp_web?serverTimezone=UTC&useSSL=false&useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true # 2024-4-8  22:14-必须要加 allowPublicKeyRetrieval=true ，否则会报错
     driver-class-name: com.mysql.cj.jdbc.Driver

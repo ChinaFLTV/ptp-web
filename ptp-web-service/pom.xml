@@ -34,22 +34,4 @@
 
     </dependencies>
 
-    <profiles>
-
-        <!--  2024-4-30  21:41-解决大多数服务都需要引入web依赖，但偏偏Gateway用不了spring-web依赖但又不得不继承父POM的尴尬处境  -->
-        <profile>
-            <id>web-profile</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-web</artifactId>
-                </dependency>
-            </dependencies>
-        </profile>
-
-    </profiles>
-
 </project>

@@ -84,6 +84,7 @@
         <nacos.version>2023.0.0.0-RC1</nacos.version>
         <!--<ribbon.version>2.2.10.RELEASE</ribbon.version>-->
         <spring.gateway.version>4.1.2</spring.gateway.version>
+        <!--<javax.servlet-api.version>4.0.1</javax.servlet-api.version>-->
 
     </properties>
 

@@ -21,7 +21,6 @@ import ptp.fltv.web.security.PtpAuthenticationEntryPoint;
 import ptp.fltv.web.security.PtpUserDetailService;
 import ptp.fltv.web.security.filter.AuthorityCheckFilter;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -93,7 +92,8 @@ public class SpringSecurityConfig {
         http.authorizeHttpRequests(authorize ->
                         authorize.requestMatchers("/gate/login", "/gate/login/oauth2/github",
                                         "/doc.html", "/v3/api-docs/**", "/webjars/**",
-                                        "/swagger-ui.html", "/swagger-ui/**")
+                                        "/swagger-ui.html", "/swagger-ui/**",
+                                        "/exception/**")
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated())

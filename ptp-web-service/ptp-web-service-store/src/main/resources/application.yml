@@ -1,14 +1,10 @@
 server:
   port: 8090
   servlet:
-    context-path: /api/v1
+    context-path: /api/v1/service/store
 
 
 spring:
-  application:
-    name: ptp-web-service-store
-  profiles:
-    active: dev
   servlet:
     multipart:
       max-file-size: 100MB # 2024-4-24  18:07-单个上传的文件的最大大小
@@ -31,6 +27,7 @@ springdoc:
     csrf:
       enabled: true
     path: /swagger-ui.html
+
 
 # 2024-4-23  21:28-minio相关配置
 minio:

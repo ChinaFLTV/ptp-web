@@ -31,7 +31,7 @@ public class LoginController {
     private UserService userService;
 
 
-    @Operation(summary = "普通登录(用户名+密码)")
+    @Operation(description = "普通登录(用户名+密码)")
     @PermitAll
     @PostMapping("/login")
     public Result<?> login(@RequestBody UserLoginVo userLoginVo) throws PtpException {
@@ -45,7 +45,7 @@ public class LoginController {
     }
 
 
-    @Operation(summary = "登出账号")
+    @Operation(description = "登出账号")
     @GetMapping("/logout")
     public Result<String> logout() {
 

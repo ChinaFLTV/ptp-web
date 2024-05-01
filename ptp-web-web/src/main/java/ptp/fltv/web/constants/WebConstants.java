@@ -28,7 +28,7 @@ public class WebConstants {
      * @description ES服务的上下文基础路径
      * @filename WebConstants.java
      */
-    public static final String ES_CONTEXT_URL = "/api/v1/es";
+    public static final String ES_CONTEXT_URL = "/api/v1/service/es";
 
 
     /**
