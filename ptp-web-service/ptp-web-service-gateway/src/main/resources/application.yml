@@ -10,7 +10,8 @@ spring:
     gateway:
       discovery:
         locator:
-          enabled: false # 2024-4-30  21:00-将网关配置为基于在 DiscoveryClient 兼容服务注册中心上注册的服务来创建路由
+          enabled: false # 2024-4-30  21:00-将网关配置为基于在 DiscoveryClient 兼容服务注册中心上注册的服务来创建路由(禁用该功能，防止用户意外地直接访问到其他非web的微服务)
+
       globalcors:
         cors-configurations:
           # 2024-4-30  21:0-对于所有GET/POST/PUT/DELETE请求的路径，允许来自所有路径的请求的跨域请求
@@ -22,6 +23,7 @@ spring:
               - PUT
               - DELETE
         add-to-simple-url-handler-mapping: true # 2024-4-30  21:04-为未被某些网关路由谓词处理的请求提供相同的 CORS 配置
+
       routes:
         # 2024-4-30  21:18-用户登录应无条件放行，即使用户已经登录，依旧可以覆盖掉旧数据登录
         - id: baidu
@@ -29,10 +31,14 @@ spring:
           predicates:
             - Path=/index.html
             - Method=GET
-        - id: exception
+        # 2024-5-2  20:49-放行用户对web服务的直接访问
+        - id: web-web
           uri: http://127.0.0.1:8080
           predicates:
-            - Path=/api/v1/web/exception/**
+            - Path=/api/v1/web/**
+          metadata:
+            response-timeout: 5000
+            connect-timeout: 5000
 
     # main:
     # web-application-type: reactive # 2024-4-30  21:59-解决本模块服务启动报 Spring MVC found on classpath, which is incompatible with Spring Cloud Gateway 错误的问题

@@ -3,12 +3,12 @@ package ptp.fltv.web.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import pfp.fltv.common.model.po.content.Passage;
 import pfp.fltv.common.response.Result;
+import ptp.fltv.web.service.PassageService;
 
 /**
  * @author Lenovo/LiGuanda
@@ -22,6 +22,9 @@ import pfp.fltv.common.response.Result;
 @RestController
 @RequestMapping("/exception")
 public class ExceptionController {
+
+    @Autowired
+    private PassageService passageService;
 
 
     @Operation(description = "流量过载")
@@ -46,6 +49,31 @@ public class ExceptionController {
     ) {
 
         return Result.failure(StringUtils.hasLength(message) ? message : "The current service is abnormal , please try again later!");
+
+    }
+
+    @Operation(description = "根据ID获取某个文章数据(测试专用)")
+    @GetMapping("/get/{id}")
+    public Result<Passage> getMockData(
+
+            @Parameter(name = "id") @PathVariable("id") Long id
+
+    ) {
+
+        return Result.failure(passageService.getById(id));
+
+    }
+
+
+    @Operation(description = "呵呵")
+    @GetMapping("/hehe")
+    public Result<?> hehe(
+
+            @Parameter(name = "message") @RequestParam(name = "message", required = false) String message
+
+    ) {
+
+        return Result.failure("What can I say ?");
 
     }
 
