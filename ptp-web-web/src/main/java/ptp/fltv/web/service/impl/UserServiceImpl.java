@@ -7,7 +7,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pfp.fltv.common.constants.OAuth2LoginConstants;
 import pfp.fltv.common.constants.RedisConstants;
@@ -15,14 +14,13 @@ import pfp.fltv.common.exceptions.PtpException;
 import pfp.fltv.common.model.po.manage.Role;
 import pfp.fltv.common.model.po.manage.User;
 import pfp.fltv.common.model.vo.UserLoginVo;
+import pfp.fltv.common.utils.JwtUtils;
 import ptp.fltv.web.mapper.UserMapper;
 import ptp.fltv.web.service.RoleService;
 import ptp.fltv.web.service.UserService;
-import ptp.fltv.web.utils.JwtUtils;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -37,8 +35,6 @@ import java.util.concurrent.TimeUnit;
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
     @Autowired
     private StringRedisTemplate redisTemplate;
     @Autowired
@@ -71,7 +67,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
             throw new PtpException(802);
 
-        } else if (!Objects.equals(passwordEncoder.encode(userLoginVo.getPassword()), user.getPassword())) {
+            // 2024-5-3  22:24-TODO 同样的，也需要专门的密码加密器(这里暂时先进行直接比较)
+        } else if (userLoginVo.getPassword() != user.getPassword()/*!Objects.equals(passwordEncoder.encode(userLoginVo.getPassword()), user.getPassword())*/) {
 
             throw new PtpException(803);
 

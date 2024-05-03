@@ -70,7 +70,7 @@ spring:
         # 2024-4-4  20:30-集成Redis所需配置
   data:
     redis:
-      host: localhost
+      host: 127.0.0.1
       port: 7001
       username: default
       password: root

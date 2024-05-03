@@ -10,14 +10,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -81,33 +78,6 @@ public class Role implements Serializable {
         role.isDeleted = 0;
 
         return role;
-
-    }
-
-
-    /**
-     * @return 用户所具有的权限集合对应的GrantedAuthority集合
-     * @author Lenovo/LiGuanda
-     * @date 2024/4/4 下午 9:39:45
-     * @version 1.0.0
-     * @description 根据已有的权限集合生成对应的符合Spring规范的权限集合
-     * @filename Role.java
-     */
-    public List<GrantedAuthority> getGrantedAuthorities() {
-
-        List<GrantedAuthority> grantedAuthorities = new LinkedList<>();
-
-        if (this.authorities != null) {
-
-            for (String authorityStr : this.authorities) {
-
-                grantedAuthorities.add(new SimpleGrantedAuthority(authorityStr));
-
-            }
-
-        }
-
-        return grantedAuthorities;
 
     }
 

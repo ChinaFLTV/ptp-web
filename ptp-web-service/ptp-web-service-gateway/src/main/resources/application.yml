@@ -40,5 +40,29 @@ spring:
             response-timeout: 5000
             connect-timeout: 5000
 
-    # main:
-    # web-application-type: reactive # 2024-4-30  21:59-解决本模块服务启动报 Spring MVC found on classpath, which is incompatible with Spring Cloud Gateway 错误的问题
+      # main:
+      # web-application-type: reactive # 2024-4-30  21:59-解决本模块服务启动报 Spring MVC found on classpath, which is incompatible with Spring Cloud Gateway 错误的问题
+
+
+    # 2024-4-4  20:30-集成Redis所需配置
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 7001
+      username: default
+      password: root
+      jedis:
+        pool:
+          max-active: 8 # 2024-4-7  9:29-连接池最大连接数
+          max-wait: -1 # 2024-4-7  9:30-连接池最大阻塞空闲时间(负数表示无限制)
+          max-idle: 8 # 2024-4-7  9:31-连接池最大空闲连接数
+          min-idle: 0 # 2024-4-7  9:31-连接池最小空闲连接数
+
+# 2024-5-3  22:11-全局路径校验规则配置
+ptp:
+  web:
+    paths:
+      permitAll: # 2024-5-3  22:19-只能是末尾不带‘/’的路径前缀或全路径
+        - "/api/v1/web/gate"
+        - "/api/v1/web/doc.html"
+        - "/api/v1/web/v3/api-docs"

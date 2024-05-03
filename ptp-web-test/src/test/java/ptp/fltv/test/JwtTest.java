@@ -6,7 +6,7 @@ import pfp.fltv.common.model.po.info.DeviceInfo;
 import pfp.fltv.common.model.po.info.LoginInfo;
 import pfp.fltv.common.model.po.info.NetworkInfo;
 import pfp.fltv.common.model.vo.UserLoginVo;
-import ptp.fltv.web.utils.JwtUtils;
+import pfp.fltv.common.utils.JwtUtils;
 
 import java.sql.Timestamp;
 import java.time.Instant;

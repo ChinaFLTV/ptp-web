@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import pfp.fltv.common.model.po.content.Dialogue;
@@ -32,7 +31,6 @@ import java.util.Map;
 
 @Tag(name = "对话操作接口")
 @RestController
-@PreAuthorize("@pc.hasAnyPermission('content:dialogue:add','content:dialogue:remove','content:dialogue:list','content:dialogue:update')")
 @RequestMapping("/content/dialogue")
 public class DialogueController {
 

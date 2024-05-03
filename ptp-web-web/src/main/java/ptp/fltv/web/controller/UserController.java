@@ -8,8 +8,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import pfp.fltv.common.model.po.manage.User;
@@ -33,7 +31,6 @@ import java.util.Map;
 
 @Tag(name = "用户操作接口")
 @RestController
-@PreAuthorize("@pc.hasAnyPermission('user:add','user:remove','user:list','user:update')")
 @RequestMapping("/content/user")
 public class UserController {
 
@@ -46,8 +43,8 @@ public class UserController {
 
     @Resource
     private UserService userService;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    // @Autowired
+    // private PasswordEncoder passwordEncoder;
     @Autowired
     private RestTemplate restTemplate;
 
@@ -105,8 +102,9 @@ public class UserController {
             @RequestBody
             User user) {
 
+        // 2024-5-3  20:58-TODO 必须进行用户密码加密
         // 2024-4-1  21:28-使用Spring Security配置中配置的密码加密验证器对用户原始密码进行加密
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        // user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         boolean isSaved = userService.save(user);
 

@@ -1,4 +1,4 @@
-package ptp.fltv.web.utils;
+package pfp.fltv.common.utils;
 
 import com.alibaba.fastjson2.JSON;
 import com.auth0.jwt.JWT;
