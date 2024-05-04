@@ -3,10 +3,11 @@ package ptp.fltv.web.service.gateway.filter;
 import com.alibaba.fastjson2.JSON;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
+import org.springframework.core.env.Environment;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -17,9 +18,8 @@ import org.springframework.web.server.ServerWebExchange;
 import pfp.fltv.common.model.po.manage.Role;
 import pfp.fltv.common.model.po.manage.User;
 import pfp.fltv.common.utils.JwtUtils;
+import ptp.fltv.web.service.gateway.constants.SecurityConstants;
 import reactor.core.publisher.Mono;
-
-import java.util.List;
 
 /**
  * @author Lenovo/LiGuanda
@@ -35,9 +35,8 @@ public class CredentialCheckFilter implements GlobalFilter, Ordered {
 
     @Resource
     private StringRedisTemplate stringRedisTemplate;
-    @Value("${ptp.web.paths.permitAll:#{T(java.util.Collections).emptyList()}}")
-    private List<String> permitAllPaths;
-
+    @Autowired
+    private Environment environment;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -46,16 +45,14 @@ public class CredentialCheckFilter implements GlobalFilter, Ordered {
         ServerHttpResponse response = exchange.getResponse();
 
         log.info("=========================================================================");
-        log.info(String.format("IP为 %s 的用户访问了 %s 路径对应的服务", request.getRemoteAddress(), request.getPath()));
-        log.info("请求头信息:\n");
+        log.info(String.format("IP为 %s 的用户访问了 %s 路径上运行的服务提供的API", request.getRemoteAddress(), request.getPath()));
+        log.info("============请求头信息============");
         request.getHeaders().forEach((k, v) -> log.info(String.format("%s : %s", k, v.toString())));
-        log.info("请求Cookies信息:\n");
+        log.info("============请求Cookies信息============");
         log.info(request.getCookies().toString());
 
-        // 2024-5-3  22:14-如果在premitAll分类中的路径，则直接放行
+        // 2024-5-3  22:14-如果在permitAll分类中的路径，则直接放行
         String path = request.getPath().value();
-        System.out.println(path);
-        System.out.println(permitAllPaths);
         if (confirmPermitAllPath(path)) {
 
             return chain.filter(exchange);
@@ -76,12 +73,18 @@ public class CredentialCheckFilter implements GlobalFilter, Ordered {
 
                 // UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(compactUser, compactUser.getPassword(), compactRole.getGrantedAuthorities());
                 // SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                log.info("----> 校验通过，请求将被允许放行");
+                log.info("============请求用户信息============");
+                log.info(compactUser.toString());
+                log.info("============请求角色信息============");
+                log.info(compactRole.toString());
                 return chain.filter(exchange);
 
             }
 
         }
 
+        log.warn("----> 校验未通过，请求将被禁止放行");
         // 2024-5-3  21:50-用户凭证缺失、过期、其他原因失效，直接禁止访问
         // 2024-5-3  21:32-直接在SpringCloudGateway这边拦截
         response.setStatusCode(HttpStatus.FORBIDDEN);
@@ -93,6 +96,7 @@ public class CredentialCheckFilter implements GlobalFilter, Ordered {
     @Override
     public int getOrder() {
 
+        // 2024-5-4  21:07-赋予其最高优先级(请求发送进来第一个处理，响应送出去最后一个处理)
         return Integer.MIN_VALUE;
 
     }
@@ -115,7 +119,7 @@ public class CredentialCheckFilter implements GlobalFilter, Ordered {
 
         }
 
-        for (String permitAllPath : permitAllPaths) {
+        for (String permitAllPath : SecurityConstants.PERMIT_ALL_PATHS) {
 
             if (path.startsWith(permitAllPath)) {
 
