@@ -82,7 +82,7 @@ services:
       - ./volumes/redis/root:/root:rw
       - ./volumes/redis/config/redis.conf:/etc/redis/redis.conf:rw
     restart: on-failure
-    command: redis-server /etc/redis/redis.conf
+    command: redis-server /etc/redis/redis.conf # 2024-5-4  22:03-用户名:无 用户密码:root
     logging:
       driver: json-file
       options:

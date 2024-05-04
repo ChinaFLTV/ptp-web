@@ -21,12 +21,17 @@ public class SecurityConstants {
 
     static {
 
-        PERMIT_ALL_PATHS.add("/api/v1/web/gate");
-        PERMIT_ALL_PATHS.add("/api/v1/web/doc.html");
-        PERMIT_ALL_PATHS.add("/api/v1/web/v3/api-docs");
+        PERMIT_ALL_PATHS.add(String.format("%s/gate", WebConstants.WEB_CONTEXT_PATH));
+        PERMIT_ALL_PATHS.add(String.format("%s/doc.html", WebConstants.WEB_CONTEXT_PATH));
+        PERMIT_ALL_PATHS.add(String.format("%s/v3/api-docs", WebConstants.WEB_CONTEXT_PATH));
 
 
-        URL_AUTHENTICATION_MAP.put("", Set.of());
+        URL_AUTHENTICATION_MAP.put(String.format("%s/content/announcement", WebConstants.WEB_CONTEXT_PATH), Set.of("content:announcement:add", "content:announcement:remove", "content:announcement:list", "content:announcement:update"));
+        URL_AUTHENTICATION_MAP.put(String.format("%s/content/dialogue", WebConstants.WEB_CONTEXT_PATH), Set.of("content:dialogue:add", "content:dialogue:remove", "content:dialogue:list", "content:dialogue:update"));
+        URL_AUTHENTICATION_MAP.put(String.format("%s/content/passage", WebConstants.WEB_CONTEXT_PATH), Set.of("content:passage:add", "content:passage:remove", "content:passage:list", "content:passage:update"));
+        URL_AUTHENTICATION_MAP.put(String.format("%s/content/passage/comment", WebConstants.WEB_CONTEXT_PATH), Set.of("content:passage:comment:add", "content:passage:comment:remove", "content:passage:comment:list", "content:passage:comment:update"));
+        URL_AUTHENTICATION_MAP.put(String.format("%s/content/user", WebConstants.WEB_CONTEXT_PATH), Set.of("content:user:add", "content:user:remove", "content:user:list", "content:user:update"));
+        URL_AUTHENTICATION_MAP.put(String.format("%s/content/user/role", WebConstants.WEB_CONTEXT_PATH), Set.of("content:user:role:add", "content:user:role:remove", "content:user:role:list", "content:user:role:update"));
 
     }
 

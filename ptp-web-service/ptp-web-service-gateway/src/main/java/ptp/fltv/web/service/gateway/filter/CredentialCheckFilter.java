@@ -35,8 +35,6 @@ public class CredentialCheckFilter implements GlobalFilter, Ordered {
 
     @Resource
     private StringRedisTemplate stringRedisTemplate;
-    @Autowired
-    private Environment environment;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
