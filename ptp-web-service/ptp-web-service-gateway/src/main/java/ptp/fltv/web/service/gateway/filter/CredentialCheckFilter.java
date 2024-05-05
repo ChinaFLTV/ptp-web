@@ -3,11 +3,9 @@ package ptp.fltv.web.service.gateway.filter;
 import com.alibaba.fastjson2.JSON;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
-import org.springframework.core.env.Environment;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -19,6 +17,7 @@ import pfp.fltv.common.model.po.manage.Role;
 import pfp.fltv.common.model.po.manage.User;
 import pfp.fltv.common.utils.JwtUtils;
 import ptp.fltv.web.service.gateway.constants.SecurityConstants;
+import ptp.fltv.web.service.gateway.model.ApplicationContext;
 import reactor.core.publisher.Mono;
 
 /**
@@ -39,8 +38,8 @@ public class CredentialCheckFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 
-        ServerHttpRequest request = exchange.getRequest();
-        ServerHttpResponse response = exchange.getResponse();
+        final ServerHttpRequest request = exchange.getRequest();
+        final ServerHttpResponse response = exchange.getResponse();
 
         log.info("=========================================================================");
         log.info(String.format("IP为 %s 的用户访问了 %s 路径上运行的服务提供的API", request.getRemoteAddress(), request.getPath()));
@@ -50,21 +49,24 @@ public class CredentialCheckFilter implements GlobalFilter, Ordered {
         log.info(request.getCookies().toString());
 
         // 2024-5-3  22:14-如果在permitAll分类中的路径，则直接放行
-        String path = request.getPath().value();
+        final String path = request.getPath().value();
         if (confirmPermitAllPath(path)) {
 
+            log.info("----> 访问路径没有安全防护，请求将被直接放行");
+            // 2024-5-5  21:05-不管之前有没有缓存信息，在这里拦截返回了都必须清理上下文信息，以便对后续请求造成干扰
+            ApplicationContext.clear();
             return chain.filter(exchange);
 
         }
 
 
-        String authorization = request.getHeaders().getFirst("Authorization");// 2024-5-3  21:17-取到用户登录后本次存储的JWT数据
-        String STORE_KEY = JwtUtils.decode(authorization);
+        final String authorization = request.getHeaders().getFirst("Authorization");// 2024-5-3  21:17-取到用户登录后本次存储的JWT数据
+        final String STORE_KEY = JwtUtils.decode(authorization);
 
         if (STORE_KEY != null) {
 
-            User compactUser = JSON.parseObject(stringRedisTemplate.opsForValue().get("user:login:" + STORE_KEY), User.class);
-            Role compactRole = JSON.parseObject(stringRedisTemplate.opsForValue().get("user:role:" + STORE_KEY), Role.class);
+            final User compactUser = JSON.parseObject(stringRedisTemplate.opsForValue().get("user:login:" + STORE_KEY), User.class);
+            final Role compactRole = JSON.parseObject(stringRedisTemplate.opsForValue().get("user:role:" + STORE_KEY), Role.class);
 
             // 2024-4-7  9:42-此时意味着用户SESSION KEY正常且未过期
             if (compactUser != null && compactRole != null) {
@@ -72,17 +74,36 @@ public class CredentialCheckFilter implements GlobalFilter, Ordered {
                 // UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(compactUser, compactUser.getPassword(), compactRole.getGrantedAuthorities());
                 // SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                 log.info("----> 校验通过，请求将被允许放行");
-                log.info("============请求用户信息============");
+                log.info("============请求用户信息[通过验证]============");
                 log.info(compactUser.toString());
-                log.info("============请求角色信息============");
+                log.info("============请求角色信息[通过验证]============");
                 log.info(compactRole.toString());
+
+                // 2024-5-5  21:00-缓存用户身份信息到ThreadLocal中，以便后续组件使用
+                ApplicationContext.USER.set(compactUser);
+                ApplicationContext.ROLE.set(compactRole);
+
                 return chain.filter(exchange);
+
+            } else {
+
+                log.warn("----> 用户凭证过期或无效");
+                log.warn("============请求用户信息[未通过验证]============");
+                log.warn(compactUser != null ? compactUser.toString() : null);
+                log.warn("============请求角色信息[未通过验证]============");
+                log.warn(compactRole != null ? compactRole.toString() : null);
 
             }
 
+        } else {
+
+            log.warn("----> 用户凭证数据受损");
+
         }
 
-        log.warn("----> 校验未通过，请求将被禁止放行");
+        log.warn("----> 校验未通过，请求将被拒绝");
+        // 2024-5-5  21:04-不管之前有没有缓存信息，在这里拦截返回了都必须清理上下文信息，以便对后续请求造成干扰
+        ApplicationContext.clear();
         // 2024-5-3  21:50-用户凭证缺失、过期、其他原因失效，直接禁止访问
         // 2024-5-3  21:32-直接在SpringCloudGateway这边拦截
         response.setStatusCode(HttpStatus.FORBIDDEN);
