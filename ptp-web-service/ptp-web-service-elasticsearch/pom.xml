@@ -47,6 +47,11 @@
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
         </dependency>
+        <!--  2024-5-6  21:58-解决 java.lang.NoClassDefFoundError: jakarta/servlet/Filter 的问题  -->
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-core</artifactId>
+        </dependency>
 
     </dependencies>
 

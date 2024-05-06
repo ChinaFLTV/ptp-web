@@ -4,7 +4,10 @@ import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import ptp.fltv.web.service.gateway.filter.AuthenticationCheckFilter;
+import reactor.core.publisher.Mono;
 
 /**
  * @author Lenovo/LiGuanda
@@ -33,8 +36,32 @@ public class GatewayConfig {
         return builder.routes()
                 // 2024-5-5  21:42-放行用户对web服务的直接访问
                 .route(r ->
-                        r.path("/api/v1/web/**")
+                        r.order(-1)
+                                .path("/api/v1/web/**")
                                 .filters(f -> f.filter(new AuthenticationCheckFilter()))
+                                .metadata("response-timeout", 5000)
+                                .metadata("connect-timeout", 5000)
+                                .uri("http://127.0.0.1:8080")
+                )
+                // 2024-5-6  21:06-禁止普通用户访问其他微服务(访问需带有内部员工凭证)(无需单独对内部微服务模块相互调用作特殊处理，因为它们之间的RPC不走微服务网关(想拦你也拦不住啊哈哈))
+                .route(r ->
+                        r.order(-1)
+                                /*.host("127.0.0.1").negate().and()*/.path("/api/v1/service/**")
+                                .filters(f ->
+                                        f.modifyRequestBody(String.class, String.class, MediaType.APPLICATION_JSON_VALUE,
+                                                        (exchange, content) -> {
+
+                                                            System.out.println("-----------------------------------------------------------------");
+                                                            System.out.println("content = " + content);
+                                                            System.out.println("exchange.getRequest().getMethod()1  = " + exchange.getRequest().getMethod());
+                                                            // 2024-5-6  22:31-由于Spring Cloud Gateway并没有直接提供修改请求方法的过滤器，因此，我们只能投机取巧，这这个地方进行修改
+                                                            exchange.mutate().request(req -> req.method(HttpMethod.GET).build()).build();
+                                                            System.out.println("exchange.getRequest().getMethod()2  = " + exchange.getRequest().getMethod());
+                                                            return content == null ? Mono.empty() : Mono.just(content);
+
+                                                        })
+                                                .rewritePath("/.*", "/api/v1/web/exception/authentication/fail")
+                                )
                                 .metadata("response-timeout", 5000)
                                 .metadata("connect-timeout", 5000)
                                 .uri("http://127.0.0.1:8080")

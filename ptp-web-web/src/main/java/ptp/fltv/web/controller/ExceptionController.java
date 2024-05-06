@@ -5,8 +5,10 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
-import pfp.fltv.common.model.po.content.Passage;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import pfp.fltv.common.response.Result;
 import ptp.fltv.web.service.PassageService;
 
@@ -52,28 +54,16 @@ public class ExceptionController {
 
     }
 
-    @Operation(description = "根据ID获取某个文章数据(测试专用)")
-    @GetMapping("/get/{id}")
-    public Result<Passage> getMockData(
 
-            @Parameter(name = "id") @PathVariable("id") Long id
-
-    ) {
-
-        return Result.failure(passageService.getById(id));
-
-    }
-
-
-    @Operation(description = "呵呵")
-    @GetMapping("/hehe")
-    public Result<?> hehe(
+    @Operation(description = "权限校验失败")
+    @GetMapping("/authentication/fail")
+    public Result<?> authenticationFail(
 
             @Parameter(name = "message") @RequestParam(name = "message", required = false) String message
 
     ) {
 
-        return Result.failure("What can I say ?");
+        return Result.failure(StringUtils.hasLength(message) ? message : "You are not authorized to access this page !");
 
     }
 
