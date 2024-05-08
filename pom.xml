@@ -54,7 +54,7 @@
 
     <modules>
         <module>ptp-web-common</module>
-        <module>ptp-web-test</module>
+        <module>ptp-web-test2</module>
         <module>ptp-web-service</module>
         <module>ptp-web-web</module>
     </modules>
