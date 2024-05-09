@@ -37,5 +37,5 @@ target/
 # 2024-4-10  22:21-忽略Docker挂载的卷中的容器产生的临时文件
 docker/volumes/mysql/var/**
 docker/volumes/minio/data/**
-docker/volumes/nacos/standalone-logs/**
+docker/volumes/nacos/standalone-logs/
 docker/volumes/redis/data/**

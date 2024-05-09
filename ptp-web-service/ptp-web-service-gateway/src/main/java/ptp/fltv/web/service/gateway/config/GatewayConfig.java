@@ -1,5 +1,7 @@
 package ptp.fltv.web.service.gateway.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.gateway.filter.ratelimit.RedisRateLimiter;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
@@ -7,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import ptp.fltv.web.service.gateway.filter.AuthenticationCheckFilter;
+import ptp.fltv.web.service.gateway.filter.IpKeyResolver;
 import reactor.core.publisher.Mono;
 
 /**
@@ -19,6 +22,10 @@ import reactor.core.publisher.Mono;
 
 @Configuration
 public class GatewayConfig {
+
+
+    @Autowired
+    private IpKeyResolver ipKeyResolver;
 
 
     /**
@@ -38,7 +45,19 @@ public class GatewayConfig {
                 .route(r ->
                         r.order(-1)
                                 .path("/api/v1/web/**")
-                                .filters(f -> f.filter(new AuthenticationCheckFilter()))
+                                .filters(f -> {
+
+                                    f.filter(new AuthenticationCheckFilter())
+                                            .requestRateLimiter(config ->
+
+                                                    config.setKeyResolver(ipKeyResolver)
+                                                            .setRateLimiter(redisRateLimiter())
+
+                                            );
+
+                                    return f;
+
+                                })
                                 .metadata("response-timeout", 5000)
                                 .metadata("connect-timeout", 5000)
                                 .uri("http://127.0.0.1:8080")
@@ -67,6 +86,22 @@ public class GatewayConfig {
                                 .uri("http://127.0.0.1:8080")
                 )
                 .build();
+
+    }
+
+
+    /**
+     * @return 自定义参数的Redis限流器
+     * @author Lenovo/LiGuanda
+     * @date 2024/5/9 PM 9:09:24
+     * @version 1.0.0
+     * @description 根据实际运行情况产生适合的Redis限流器
+     * @filename GatewayConfig.java
+     */
+    @Bean
+    public RedisRateLimiter redisRateLimiter() {
+
+        return new RedisRateLimiter(2, 5);
 
     }
 
