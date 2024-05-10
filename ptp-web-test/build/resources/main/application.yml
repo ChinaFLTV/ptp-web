@@ -1,21 +1,2 @@
 server:
   port: 8500
-  servlet:
-    context-path: /api/v1/test
-
-
-# 2024-5-8  22:37-Knife4j配置
-knife4j:
-  setting:
-    language: zh_cn
-  cors: true
-
-
-# 2024-5-8  22:37-OpenAPI文档相关配置
-springdoc:
-  api-docs:
-    path: /v3/api-docs
-  swagger-ui:
-    csrf:
-      enabled: true
-    path: /swagger-ui.html

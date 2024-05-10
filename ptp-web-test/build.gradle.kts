@@ -27,7 +27,7 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-bootstrap:3.2.4")
     implementation("com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config:2023.0.0.0-RC1")
     implementation("com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery:2023.0.0.0-RC1")
-    implementation("com.github.xiaoymin:knife4j-openapi3-jakarta-spring-boot-starter:4.5.0")
+    implementation("com.github.xiaoymin:knife4j-openapi3-jakarta-spring-boot-starter:4.5.0")// 2024-5-10  22:08-Knife4j尚未适配SpringBoot-WebFlux，这里引入仅是为了编写注解
     compileOnly("org.projectlombok:lombok:1.18.24")
     annotationProcessor("org.projectlombok:lombok:1.18.24")
     testCompileOnly("org.projectlombok:lombok:1.18.24")
