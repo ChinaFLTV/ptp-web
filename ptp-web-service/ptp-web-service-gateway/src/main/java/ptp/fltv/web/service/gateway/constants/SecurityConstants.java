@@ -24,6 +24,7 @@ public class SecurityConstants {
         PERMIT_ALL_PATHS.add(String.format("%s/gate", WebConstants.WEB_CONTEXT_PATH));
         PERMIT_ALL_PATHS.add(String.format("%s/doc.html", WebConstants.WEB_CONTEXT_PATH));
         PERMIT_ALL_PATHS.add(String.format("%s/v3/api-docs", WebConstants.WEB_CONTEXT_PATH));
+        PERMIT_ALL_PATHS.add(String.format("%s/test", WebConstants.WEB_CONTEXT_PATH)); // 2024-5-12  22:32-为了便于测试，test路径下的请求全部予以无条件放行
 
 
         URL_AUTHENTICATION_MAP.put(String.format("%s/content/announcement", WebConstants.WEB_CONTEXT_PATH), Set.of("content:announcement:add", "content:announcement:remove", "content:announcement:list", "content:announcement:update"));

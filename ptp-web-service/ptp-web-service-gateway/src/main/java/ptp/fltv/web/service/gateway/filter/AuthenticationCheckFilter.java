@@ -34,6 +34,13 @@ public class AuthenticationCheckFilter implements GatewayFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 
+        if (ApplicationContext.IS_PERMITTED_DIRECTLY.get()) {
+
+            log.info("----> 请求用户的请求路径状态被标记为 无条件放行 状态，请求将被放行");
+            return chain.filter(exchange);
+
+        }
+
         // 2024-5-4  21:20-这里不需要再打日志了(当然可以记录特色事件)，因为自定义的全局过滤器以及打了比较详细的日志了
         // 2024-5-4  21:23-因为这个时候请求还没打到对应web服务的某个控制器那边，因此在控制器上通过注解来表明操作权限以进行安全控制就不可能实现了
         // 2024-5-4  21:24-因此，我们需要在微服务网关这边就得提前部署好每条路径对应的权限(见 ptp.fltv.web.service.gateway.constants.URLConstants 类)

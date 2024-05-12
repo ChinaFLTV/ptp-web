@@ -4,10 +4,10 @@ import cn.hutool.http.HttpRequest
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withTimeoutOrNull
-import org.springframework.http.HttpHeaders
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController
 import ptp.fltv.web.test.constants.RequestMethod
 import reactor.core.publisher.Mono
 import java.nio.charset.StandardCharsets
@@ -48,12 +48,14 @@ class ConcurrentTestController {
             name = "url",
             required = true
         ) url: String,
-        @Parameter(name = "method", required = true) @RequestParam(
+        @Parameter(name = "method", required = false) @RequestParam(
             name = "method", defaultValue = "GET",
-            required = true
+            required = false
         ) method: RequestMethod = RequestMethod.GET,
-        @RequestHeader headers: HttpHeaders,
-        @RequestBody body: String
+        @Parameter(name = "postbody", required = false) @RequestParam(
+            name = "postbody", defaultValue = "",
+            required = false
+        ) postbody: String = ""
 
     ): Mono<Map<String, Any>> {
 
@@ -62,46 +64,74 @@ class ConcurrentTestController {
         val executors = Executors.newFixedThreadPool(threadCount)
 
         val request = HttpRequest.of(url, StandardCharsets.UTF_8)
-        request.header(headers)
 
-        println("-------------------------------pressureTestByUsingConcurrentThread----------------------------------")
-        println(headers)
-        println(url)
-        println(method)
-        println(concurrentThreadCount)
+        /*headers.run {
 
-        val count = AtomicLong()
+            for (header in entries) {
 
-        runBlocking {
-
-            withTimeoutOrNull(accessDuration) {
-
-                while (true) {
-
-                    executors.submit {
-
-                        when (method) {
-
-                            RequestMethod.GET -> request.execute()
-                            RequestMethod.POST -> request.body(body).execute()
-                            else -> Thread.sleep(500)
-
-                        }
-
-                        count.incrementAndGet()
-
-                    }
-
-                }
+                request.header(header.key, header.value)
 
             }
 
+        }*/
+        request.header(
+            "authorization",
+            "eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYiLCJ0eXAiOiJKV1QifQ.eyJzdWIiOiJwdHAtdXNlci1sb2dpbi1pbmZvIiwib2JqZWN0X2luZm8iOiI1IiwiaXNzIjoiSVNTIiwiaWF0IjoxNzE1NTIyNjY0LCJleHAiOjE3MTYxMjc0NjQsImp0aSI6InB0cC1vYmplY3Qtand0In0.dYA0WvO7luV3hiUcTfAalv1N0_Zcaq09ew8E0KctR74"
+        )
+
+        println("-------------------------------pressureTestByUsingConcurrentThread----------------------------------")
+        println("threadCount = $threadCount")
+        println("url = $url")
+        println("method = $method")
+        println("postbody = $postbody")
+        // println(headers)
+
+        val count = AtomicLong(0)
+
+        /*runBlocking {
+
+            withTimeoutOrNull(accessDuration) {
+
+
+
+            }
+
+        }*/
+
+        println("准备执行")
+
+        while (count.get() != 1000L) {
+
+            // executors.submit {
+
+            when (method) {
+
+                RequestMethod.GET -> request.execute()
+                RequestMethod.POST -> request.body(postbody).execute()
+                else -> Thread.sleep(100)
+
+            }
+
+            count.incrementAndGet()
+            println("执行了 ${count.get()} 次请求")
+
+            // }
+
         }
 
+        println("执行完毕~")
         executors.shutdown()
 
         val map = mapOf("msg" to "压力测试完毕", "time" to "${duration}ms", "压测次数" to count.get())
         return Mono.just(map)
+
+    }
+
+
+    @GetMapping("/hehe")
+    fun hehe(): Mono<String> {
+
+        return Mono.just("hehe")
 
     }
 

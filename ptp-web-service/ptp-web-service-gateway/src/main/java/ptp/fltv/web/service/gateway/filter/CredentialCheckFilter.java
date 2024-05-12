@@ -38,6 +38,10 @@ public class CredentialCheckFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 
+        // 2024-5-12  22:41-由于该过滤器优先级最高，最接近外界，也就最先接触到上一次请求的遗留内容，因此首要任务就是请求可能存在的遗留的上下文信息
+        // 2024-5-5  21:05-不管之前有没有缓存信息，在这里拦截返回了都必须清理上下文信息，以便对后续请求造成干扰
+        ApplicationContext.clear();
+
         final ServerHttpRequest request = exchange.getRequest();
         final ServerHttpResponse response = exchange.getResponse();
 
@@ -53,8 +57,8 @@ public class CredentialCheckFilter implements GlobalFilter, Ordered {
         if (confirmPermitAllPath(path)) {
 
             log.info("----> 访问路径没有安全防护，请求将被直接放行");
-            // 2024-5-5  21:05-不管之前有没有缓存信息，在这里拦截返回了都必须清理上下文信息，以便对后续请求造成干扰
-            ApplicationContext.clear();
+            // 2024-5-12  22:30-置无条件放行标志位为true
+            ApplicationContext.IS_PERMITTED_DIRECTLY.set(true);
             return chain.filter(exchange);
 
         }

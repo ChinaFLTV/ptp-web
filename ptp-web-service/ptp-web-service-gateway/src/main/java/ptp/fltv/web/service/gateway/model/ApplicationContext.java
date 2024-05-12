@@ -34,6 +34,16 @@ public class ApplicationContext {
 
     /**
      * @author Lenovo/LiGuanda
+     * @date 2024/5/12 PM 10:28:22
+     * @version 1.0.0
+     * @description 当前状态是否为直接无条件放行状态，如果是，这将导致后序的安全处理器全部逻辑失效
+     * @filename ApplicationContext.java
+     */
+    public static final ThreadLocal<Boolean> IS_PERMITTED_DIRECTLY = ThreadLocal.withInitial(() -> false);
+
+
+    /**
+     * @author Lenovo/LiGuanda
      * @date 2024/5/5 PM 9:02:25
      * @version 1.0.0
      * @description 清空当前所在线程缓存的上下文信息(建议响应返回时调用)
@@ -44,6 +54,7 @@ public class ApplicationContext {
         // 2024-5-5  22:29 TODO 别忘了在全局过滤器最终返回响应时进行该方法的调用!!!
         USER.remove();
         ROLE.remove();
+        IS_PERMITTED_DIRECTLY.remove();
 
     }
 

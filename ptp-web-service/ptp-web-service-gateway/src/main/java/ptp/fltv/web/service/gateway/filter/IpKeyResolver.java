@@ -23,8 +23,6 @@ public class IpKeyResolver implements KeyResolver {
     public Mono<String> resolve(ServerWebExchange exchange) {
 
         String address = Objects.requireNonNull(exchange.getRequest().getRemoteAddress()).getAddress().getHostAddress();
-        System.out.println("-----------------------------------------------------------------");
-        System.out.println("address = " + address);
         return Mono.just(address);
 
     }
