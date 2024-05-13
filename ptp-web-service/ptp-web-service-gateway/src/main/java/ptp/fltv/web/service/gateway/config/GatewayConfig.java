@@ -8,8 +8,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.web.servlet.function.RequestPredicates;
+import org.springframework.web.servlet.function.RouterFunction;
+import org.springframework.web.servlet.function.RouterFunctions;
 import ptp.fltv.web.service.gateway.filter.AuthenticationCheckFilter;
 import ptp.fltv.web.service.gateway.filter.IpKeyResolver;
+import ptp.fltv.web.service.gateway.handler.CircuitBreakerHandler;
 import reactor.core.publisher.Mono;
 
 /**
@@ -26,6 +30,8 @@ public class GatewayConfig {
 
     @Autowired
     private IpKeyResolver ipKeyResolver;
+    @Autowired
+    private CircuitBreakerHandler circuitBreakerHandler;
 
 
     /**
@@ -58,8 +64,8 @@ public class GatewayConfig {
                                     return f;
 
                                 })
-                                .metadata("response-timeout", 5000)
-                                .metadata("connect-timeout", 5000)
+                                .metadata("response-timeout", 10_000)
+                                .metadata("connect-timeout", 10_000)
                                 .uri("http://127.0.0.1:8080")
                 )
                 // 2024-5-6  21:06-禁止普通用户访问其他微服务(访问需带有内部员工凭证)(无需单独对内部微服务模块相互调用作特殊处理，因为它们之间的RPC不走微服务网关(想拦你也拦不住啊哈哈))
@@ -81,8 +87,8 @@ public class GatewayConfig {
                                                         })
                                                 .rewritePath("/.*", "/api/v1/web/exception/authentication/fail")
                                 )
-                                .metadata("response-timeout", 5000)
-                                .metadata("connect-timeout", 5000)
+                                .metadata("response-timeout", 10_000)
+                                .metadata("connect-timeout", 10_000)
                                 .uri("http://127.0.0.1:8080")
                 )
                 .build();
@@ -102,6 +108,23 @@ public class GatewayConfig {
     public RedisRateLimiter redisRateLimiter() {
 
         return new RedisRateLimiter(2, 5);
+
+    }
+
+
+    /**
+     * @return 自定义的路由功能
+     * @author Lenovo/LiGuanda
+     * @date 2024/5/13 PM 10:05:47
+     * @version 1.0.0
+     * @description 配置服务降级/熔断所需
+     * @filename GatewayConfig.java
+     */
+    @Bean
+    public RouterFunction<?> routerFunction() {
+
+        return RouterFunctions
+                .route(RequestPredicates.path("/api/v1/web/**"), circuitBreakerHandler);
 
     }
 

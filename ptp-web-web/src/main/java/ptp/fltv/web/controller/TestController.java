@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pfp.fltv.common.model.po.content.Passage;
 import pfp.fltv.common.response.Result;
 
 /**
@@ -29,6 +30,29 @@ public class TestController {
 
         Thread.sleep(300);// 2024-5-10  21:13-模拟耗时操作
         return Result.success("JuJingyi");
+
+    }
+
+
+    @Operation(description = "模拟超时获取达哥的女朋友")
+    @GetMapping("/get/dage/wife/timeout")
+    public Result<String> getDageWifeWithTimeoutOccurring() throws InterruptedException {
+
+        Thread.sleep(5000);
+        return Result.success("IU");
+
+    }
+
+
+    @SuppressWarnings("DataFlowIssue")
+    @Operation(description = "模拟获取达哥的女朋友出现内部异常")
+    @GetMapping("/get/dage/wife/exception")
+    public Result<String> getDageWifeWithExceptionOccurring() throws InterruptedException {
+
+        Thread.sleep(300);
+        Passage passage = null;
+        passage.setTitle("Breaking News");
+        return Result.success("IU");
 
     }
 

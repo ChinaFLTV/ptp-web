@@ -3,6 +3,7 @@ package ptp.fltv.web.service.gateway;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.netflix.hystrix.EnableHystrix;
 
 /**
  * @author Lenovo/LiGuanda
@@ -12,6 +13,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  * @filename GatewayApplication.java
  */
 
+@EnableHystrix
 @EnableDiscoveryClient // 2024-5-1  21:40-开启nacos服务注册发现功能
 @SpringBootApplication
 public class GatewayApplication {

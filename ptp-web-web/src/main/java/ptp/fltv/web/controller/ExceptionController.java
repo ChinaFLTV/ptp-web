@@ -55,6 +55,19 @@ public class ExceptionController {
     }
 
 
+    @Operation(description = "服务暂不可用")
+    @GetMapping("/service/unavailable")
+    public Result<?> serviceUnavailable(
+
+            @Parameter(name = "message") @RequestParam(name = "message", required = false) String message
+
+    ) {
+
+        return Result.failure(StringUtils.hasLength(message) ? message : "The current service is unavailable , please try again later!");
+
+    }
+
+
     @Operation(description = "权限校验失败")
     @GetMapping("/authentication/fail")
     public Result<?> authenticationFail(
