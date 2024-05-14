@@ -25,6 +25,9 @@ spring:
         add-to-simple-url-handler-mapping: true # 2024-4-30  21:04-为未被某些网关路由谓词处理的请求提供相同的 CORS 配置
       # main:
       # web-application-type: reactive # 2024-4-30  21:59-解决本模块服务启动报 Spring MVC found on classpath, which is incompatible with Spring Cloud Gateway 错误的问题
+    sentinel:
+      # 2024-5-14  21:18-Sentinel 网关流控默认的粒度是 route 维度以及自定义 API 分组维度，默认不支持 URL 粒度。若通过 Spring Cloud Alibaba 接入，请将 spring.cloud.sentinel.filter.enabled 配置项置为 false
+      enabled: false
 
 
     # 2024-4-4  20:30-集成Redis所需配置

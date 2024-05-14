@@ -85,6 +85,7 @@
         <spring.gateway.version>4.1.2</spring.gateway.version>
         <!--<javax.servlet-api.version>4.0.1</javax.servlet-api.version>-->
         <!--<spring.circuit-breaker.resilience4j.version>3.1.1</spring.circuit-breaker.resilience4j.version>-->
+        <sentinel.version>2023.0.1.0</sentinel.version>
 
     </properties>
 
@@ -230,6 +231,16 @@
                 <artifactId>spring-cloud-starter-circuit breaker-reactor-resilience4j</artifactId>
                 <version>${spring.circuit-breaker.resilience4j.version}</version>
             </dependency>-->
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+                <version>${sentinel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-sentinel-gateway</artifactId>
+                <version>${sentinel.version}</version>
+            </dependency>
 
         </dependencies>
 

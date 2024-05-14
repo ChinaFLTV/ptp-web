@@ -48,7 +48,7 @@ public class GatewayConfig {
 
         return builder.routes()
                 // 2024-5-5  21:42-放行用户对web服务的直接访问
-                .route(r ->
+                .route("ptp-web-web", r ->
                         r.order(-1)
                                 .path("/api/v1/web/**")
                                 .filters(f -> {
@@ -69,7 +69,7 @@ public class GatewayConfig {
                                 .uri("http://127.0.0.1:8080")
                 )
                 // 2024-5-6  21:06-禁止普通用户访问其他微服务(访问需带有内部员工凭证)(无需单独对内部微服务模块相互调用作特殊处理，因为它们之间的RPC不走微服务网关(想拦你也拦不住啊哈哈))
-                .route(r ->
+                .route("ptp-web-service", r ->
                         r.order(-1)
                                 /*.host("127.0.0.1").negate().and()*/.path("/api/v1/service/**")
                                 .filters(f ->
@@ -107,7 +107,7 @@ public class GatewayConfig {
     @Bean
     public RedisRateLimiter redisRateLimiter() {
 
-        return new RedisRateLimiter(2, 5);
+        return new RedisRateLimiter(200, 1000);
 
     }
 
