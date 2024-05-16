@@ -23,11 +23,13 @@ spring:
               - PUT
               - DELETE
         add-to-simple-url-handler-mapping: true # 2024-4-30  21:04-为未被某些网关路由谓词处理的请求提供相同的 CORS 配置
-      # main:
-      # web-application-type: reactive # 2024-4-30  21:59-解决本模块服务启动报 Spring MVC found on classpath, which is incompatible with Spring Cloud Gateway 错误的问题
+        # main:
+        # web-application-type: reactive # 2024-4-30  21:59-解决本模块服务启动报 Spring MVC found on classpath, which is incompatible with Spring Cloud Gateway 错误的问题
     sentinel:
       # 2024-5-14  21:18-Sentinel 网关流控默认的粒度是 route 维度以及自定义 API 分组维度，默认不支持 URL 粒度。若通过 Spring Cloud Alibaba 接入，请将 spring.cloud.sentinel.filter.enabled 配置项置为 false
-      enabled: false
+      # enabled: false
+      transport:
+        dashboard: 127.0.0.1:9888
 
 
     # 2024-4-4  20:30-集成Redis所需配置
@@ -43,5 +45,3 @@ spring:
           max-wait: -1 # 2024-4-7  9:30-连接池最大阻塞空闲时间(负数表示无限制)
           max-idle: 8 # 2024-4-7  9:31-连接池最大空闲连接数
           min-idle: 0 # 2024-4-7  9:31-连接池最小空闲连接数
-
-# 2024-5-13  21:36-Hystrix熔断器全局配置
