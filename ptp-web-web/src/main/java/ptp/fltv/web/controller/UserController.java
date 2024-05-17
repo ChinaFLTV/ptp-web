@@ -1,5 +1,6 @@
 package ptp.fltv.web.controller;
 
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -49,6 +50,7 @@ public class UserController {
     private RestTemplate restTemplate;
 
 
+    @SentinelResource("web-content-user-controller")
     @Operation(description = "根据ID查询用户信息")
     @GetMapping("/query/{userId}")
     public Result<User> queryUserById(
@@ -63,6 +65,7 @@ public class UserController {
     }
 
 
+    @SentinelResource("web-content-user-controller")
     @Operation(description = "批量(分页)查询多条用户数据")
     @GetMapping("/query/page/{offset}/{limit}")
     public Result<List<UserVo>> queryPassagePage(@Parameter(name = "offset", description = "查询的一页用户数据的起始偏移量", in = ParameterIn.PATH) @PathVariable("offset") Long offset,
@@ -85,6 +88,7 @@ public class UserController {
     }
 
 
+    @SentinelResource("web-content-user-controller")
     @Operation(description = "查询所有用户信息")
     @GetMapping("/query/all")
     public Result<List<User>> queryAllUsers() {
@@ -95,6 +99,7 @@ public class UserController {
     }
 
 
+    @SentinelResource("web-content-user-controller")
     @Operation(description = "添加用户信息")
     @PostMapping("/insert")
     public Result<?> insertUser(
@@ -125,6 +130,7 @@ public class UserController {
     }
 
 
+    @SentinelResource("web-content-user-controller")
     @Operation(description = "修改用户信息")
     @PutMapping("/update")
     public Result<?> updateUser(
@@ -151,6 +157,7 @@ public class UserController {
     }
 
 
+    @SentinelResource("web-content-user-controller")
     @Operation(description = "删除用户信息")
     @DeleteMapping("/delete/{userId}")
     public Result<?> deleteUser(

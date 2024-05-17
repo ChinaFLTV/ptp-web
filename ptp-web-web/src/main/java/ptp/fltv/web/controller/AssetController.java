@@ -1,5 +1,6 @@
 package ptp.fltv.web.controller;
 
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -40,6 +41,7 @@ public class AssetController {
     private UserService userService;
 
 
+    @SentinelResource("web-content-asset-controller")
     @Operation(description = "根据财产ID查询财产信息")
     @GetMapping("/query/{userId}")
     public Result<Asset> queryAssetByUserId(
@@ -55,6 +57,7 @@ public class AssetController {
     }
 
 
+    @SentinelResource("web-content-asset-controller")
     @Operation(description = "批量(分页)查询多条财产数据")
     @GetMapping("/query/page/{offset}/{limit}")
     public Result<List<AssetVo>> queryPassagePage(@Parameter(name = "offset", description = "查询的一页财产数据的起始偏移量", in = ParameterIn.PATH) @PathVariable("offset") Long offset,
@@ -77,6 +80,7 @@ public class AssetController {
     }
 
 
+    @SentinelResource("web-content-asset-controller")
     @Operation(description = "添加财产信息")
     @PostMapping("/insert")
     public Result<?> insertAsset(
@@ -93,6 +97,7 @@ public class AssetController {
     }
 
 
+    @SentinelResource("web-content-asset-controller")
     @Operation(description = "修改财产信息")
     @PutMapping("/update")
     public Result<?> updateAsset(
@@ -109,6 +114,7 @@ public class AssetController {
     }
 
 
+    @SentinelResource("web-content-asset-controller")
     @Operation(description = "删除财产信息")
     @DeleteMapping("/delete/{id}")
     public Result<?> deleteAsset(

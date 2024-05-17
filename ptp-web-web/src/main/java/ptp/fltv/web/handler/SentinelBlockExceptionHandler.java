@@ -25,8 +25,8 @@ public class SentinelBlockExceptionHandler implements BlockExceptionHandler {
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.setStatus(429);
-        response.getWriter().write(JSON.toJSONString(Result.failure("Requests are too frequent , please try again later !")));
+        response.setStatus(503);
+        response.getWriter().write(JSON.toJSONString(Result.failure("The service is current unavailable , please try again later !")));
 
     }
 

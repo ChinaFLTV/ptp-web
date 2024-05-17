@@ -25,6 +25,7 @@ import pfp.fltv.common.response.Result;
 public class TestController {
 
 
+    @SentinelResource("web-content-test")
     @Operation(description = "获取达哥的女朋友")
     @GetMapping("/get/dage/wife")
     public Result<String> getDageWife() throws InterruptedException {
@@ -35,6 +36,7 @@ public class TestController {
     }
 
 
+    @SentinelResource("web-content-test")
     @Operation(description = "模拟超时获取达哥的女朋友")
     @GetMapping("/get/dage/wife/timeout")
     public Result<String> getDageWifeWithTimeoutOccurring() throws InterruptedException {
@@ -46,6 +48,7 @@ public class TestController {
 
 
     @SuppressWarnings("DataFlowIssue")
+    @SentinelResource("web-content-test")
     @Operation(description = "模拟获取达哥的女朋友出现内部异常")
     @GetMapping("/get/dage/wife/exception")
     public Result<String> getDageWifeWithExceptionOccurring() throws InterruptedException {

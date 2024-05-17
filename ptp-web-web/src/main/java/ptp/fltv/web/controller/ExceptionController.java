@@ -1,5 +1,6 @@
 package ptp.fltv.web.controller;
 
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,6 +30,7 @@ public class ExceptionController {
     private PassageService passageService;
 
 
+    @SentinelResource("web-exception-controller")
     @Operation(description = "流量过载")
     @GetMapping("/flow/overload")
     public Result<?> flowOverload(
@@ -42,6 +44,7 @@ public class ExceptionController {
     }
 
 
+    @SentinelResource("web-exception-controller")
     @Operation(description = "服务异常")
     @GetMapping("/service/abnormal")
     public Result<?> serviceAbnormal(
@@ -55,6 +58,7 @@ public class ExceptionController {
     }
 
 
+    @SentinelResource("web-exception-controller")
     @Operation(description = "服务暂不可用")
     @GetMapping("/service/unavailable")
     public Result<?> serviceUnavailable(
@@ -68,6 +72,7 @@ public class ExceptionController {
     }
 
 
+    @SentinelResource("web-exception-controller")
     @Operation(description = "权限校验失败")
     @GetMapping("/authentication/fail")
     public Result<?> authenticationFail(

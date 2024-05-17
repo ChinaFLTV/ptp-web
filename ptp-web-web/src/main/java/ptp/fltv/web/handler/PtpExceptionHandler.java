@@ -1,9 +1,12 @@
 package ptp.fltv.web.handler;
 
+import com.alibaba.csp.sentinel.Tracer;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import pfp.fltv.common.exceptions.PtpException;
 import pfp.fltv.common.response.Result;
@@ -22,23 +25,28 @@ public class PtpExceptionHandler {
 
 
     /**
+     * @param ex 产生的异常
+     * @return 给前端的失败信息
      * @author Lenovo/LiGuanda
      * @date 2024/4/7 下午 10:41:19
      * @version 1.0.0
-     * @description 捕获全局的PtpException异常
+     * @description 捕获全局的PtpException异常(该异常一般由用户填写的数据非法导致的)
      * @filename PtpExceptionHandler.java
      */
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(PtpException.class)
-    public Result<JSONObject> handlePtpException(PtpException e) {
+    public Result<JSONObject> handlePtpException(PtpException ex) {
 
-        log.error(e.getCause() == null ? e.getLocalizedMessage() : e.getCause().getMessage());
-        return Result.failure(JSON.parseObject(JSON.toJSONString(e)));
+        log.error(ex.getCause() == null ? ex.getLocalizedMessage() : ex.getCause().getMessage());
+        Tracer.trace(ex);// 2024-5-17  20:29-上报异常信息到Sentinel
+
+        return Result.failure(JSON.parseObject(JSON.toJSONString(ex)));
 
     }
 
 
     /**
-     * @param e 产生的异常
+     * @param ex 产生的异常
      * @return 给前端的失败信息
      * @author Lenovo/LiGuanda
      * @date 2024/3/26 下午 7:10:23
@@ -46,11 +54,14 @@ public class PtpExceptionHandler {
      * @description 捕获全局异常
      * @filename PtpExceptionHandler.java
      */
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
-    public Result<String> handleException(Exception e) {
+    public Result<String> handleException(Exception ex) {
 
-        log.error(e.getCause() == null ? e.getLocalizedMessage() : e.getCause().getMessage());
-        return Result.failure(e.getCause() == null ? e.getLocalizedMessage() : e.getCause().getMessage());
+        log.error(ex.getCause() == null ? ex.getLocalizedMessage() : ex.getCause().getMessage());
+        Tracer.trace(ex);// 2024-5-17  20:31-上报异常信息到Sentinel
+
+        return Result.failure(ex.getCause() == null ? ex.getLocalizedMessage() : ex.getCause().getMessage());
 
     }
 

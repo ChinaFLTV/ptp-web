@@ -1,5 +1,6 @@
 package ptp.fltv.web.controller;
 
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.security.PermitAll;
@@ -8,8 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import pfp.fltv.common.exceptions.PtpException;
 import pfp.fltv.common.model.vo.UserLoginVo;
 import pfp.fltv.common.response.Result;
-import ptp.fltv.web.service.UserService;
 import pfp.fltv.common.utils.JwtUtils;
+import ptp.fltv.web.service.UserService;
 
 import java.util.Map;
 
@@ -30,6 +31,7 @@ public class LoginController {
     private UserService userService;
 
 
+    @SentinelResource("web-gate-controller")
     @Operation(description = "普通登录(用户名+密码)")
     @PermitAll
     @PostMapping("/login")
@@ -44,6 +46,7 @@ public class LoginController {
     }
 
 
+    @SentinelResource("web-gate-controller")
     @Operation(description = "登出账号")
     @GetMapping("/logout")
     public Result<String> logout() {
@@ -55,6 +58,7 @@ public class LoginController {
     }
 
 
+    @SentinelResource("web-gate-controller")
     @Operation(summary = "通过Github第三方客户端进行OAuth2登录", description = "想要被动地调用此方法，需要向 https://github.com/login/oauth/authorize?client_id=你的应用注册的ClientID 发送GET请求")
     @PermitAll
     @GetMapping("/login/oauth2/github")

@@ -1,5 +1,6 @@
 package ptp.fltv.web.controller;
 
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -47,6 +48,7 @@ public class PassageCommentController {
     private RestTemplate restTemplate;
 
 
+    @SentinelResource("web-content-passage-comment-controller")
     @Operation(description = "根据ID查询单条文章评论数据")
     @GetMapping("/query/single/{id}")
     public Result<PassageComment> querySinglePassageComment(
@@ -61,6 +63,7 @@ public class PassageCommentController {
     }
 
 
+    @SentinelResource("web-content-passage-comment-controller")
     @Operation(description = "批量(分页)查询多条文章评论数据")
     @GetMapping("/query/page/{offset}/{limit}")
     public Result<List<PassageCommentVo>> queryPassageCommentPage(
@@ -84,6 +87,7 @@ public class PassageCommentController {
     }
 
 
+    @SentinelResource("web-content-passage-comment-controller")
     @Operation(description = "添加单条文章评论数据")
     @PostMapping("/insert/single")
     public Result<?> insertSinglePassageComment(
@@ -113,6 +117,7 @@ public class PassageCommentController {
     }
 
 
+    @SentinelResource("web-content-passage-comment-controller")
     @Operation(description = "修改单条文章评论数据")
     @PutMapping("/update/single")
     public Result<?> updateSinglePassageComment(
@@ -142,6 +147,7 @@ public class PassageCommentController {
     }
 
 
+    @SentinelResource("web-content-passage-comment-controller")
     @Operation(description = "删除单条文章评论数据")
     @DeleteMapping("/delete/single/{id}")
     public Result<?> deleteSinglePassageComment(

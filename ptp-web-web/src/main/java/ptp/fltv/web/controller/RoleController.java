@@ -1,5 +1,6 @@
 package ptp.fltv.web.controller;
 
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -36,6 +37,7 @@ public class RoleController {
     private RoleService roleService;
 
 
+    @SentinelResource("web-content-user-role-controller")
     @Operation(description = "根据ID查询角色信息")
     @GetMapping("/query/{roleId}")
     public Result<Role> queryRoleById(
@@ -50,6 +52,7 @@ public class RoleController {
     }
 
 
+    @SentinelResource("web-content-user-role-controller")
     @Operation(description = "批量(分页)查询多条角色数据")
     @GetMapping("/query/page/{offset}/{limit}")
     public Result<List<RoleVo>> queryPassagePage(@Parameter(name = "offset", description = "查询的一页角色数据的起始偏移量", in = ParameterIn.PATH) @PathVariable("offset") Long offset,
@@ -72,6 +75,7 @@ public class RoleController {
     }
 
 
+    @SentinelResource("web-content-user-role-controller")
     @Operation(description = "查询所有角色信息")
     @GetMapping("/query/all")
     public Result<List<Role>> queryAllRoles() {
@@ -82,6 +86,7 @@ public class RoleController {
     }
 
 
+    @SentinelResource("web-content-user-role-controller")
     @Operation(description = "添加角色信息")
     @PostMapping("/insert")
     public Result<?> insertRole(
@@ -98,6 +103,7 @@ public class RoleController {
     }
 
 
+    @SentinelResource("web-content-user-role-controller")
     @Operation(description = "修改角色信息")
     @PutMapping("/update")
     public Result<?> updateRole(
@@ -114,6 +120,7 @@ public class RoleController {
     }
 
 
+    @SentinelResource("web-content-user-role-controller")
     @Operation(description = "删除角色信息")
     @DeleteMapping("/delete/{roleId}")
     public Result<?> deleteRole(
