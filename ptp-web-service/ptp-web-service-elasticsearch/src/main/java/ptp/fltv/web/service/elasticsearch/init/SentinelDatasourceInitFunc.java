@@ -1,4 +1,4 @@
-package ptp.fltv.web.init;
+package ptp.fltv.web.service.elasticsearch.init;
 
 import com.alibaba.csp.sentinel.datasource.ReadableDataSource;
 import com.alibaba.csp.sentinel.datasource.nacos.NacosDataSource;
@@ -15,10 +15,11 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
+
 /**
  * @author Lenovo/LiGuanda
  * @version 1.0.0
- * @date 2024/5/17 PM 10:17:00
+ * @date 2024/5/18 PM 9:55:32
  * @description 给Sentinel注册动态加载规则的数据源
  * @filename SentinelDatasourceInitFunc.java
  */
@@ -30,24 +31,17 @@ public class SentinelDatasourceInitFunc implements InitFunc {
     @Override
     public void init() {
 
-        System.out.println("-------------------------------SentinelDatasourceInitFunc----------------------------------");
-
-        ReadableDataSource<String, List<FlowRule>> flowRuleDatasource = new NacosDataSource<>("127.0.0.1:8848", "DEFAULT_GROUP", "ptp-web-web-flow-rules",
+        ReadableDataSource<String, List<FlowRule>> flowRuleDatasource = new NacosDataSource<>("127.0.0.1:8848", "DEFAULT_GROUP", "ptp-web-service-elasticsearch-flow-rules",
 
                 source ->
+                        JSON.parseObject(source, new TypeReference<>() {
+                                }
 
-                {
-                    System.out.println("-----------------------------------------------------------------");
-                    System.out.println(source);
-                    return JSON.parseObject(source, new TypeReference<>() {
-                            }
-
-                    );
-                });
+                        ));
 
         FlowRuleManager.register2Property(flowRuleDatasource.getProperty());
 
-        ReadableDataSource<String, List<DegradeRule>> degradationRuleDatasource = new NacosDataSource<>("127.0.0.1:8848", "DEFAULT_GROUP", "ptp-web-web-degradation-rules",
+        ReadableDataSource<String, List<DegradeRule>> degradationRuleDatasource = new NacosDataSource<>("127.0.0.1:8848", "DEFAULT_GROUP", "ptp-web-service-elasticsearch-degradation-rules",
 
                 source ->
                         JSON.parseObject(source, new TypeReference<>() {
@@ -57,11 +51,11 @@ public class SentinelDatasourceInitFunc implements InitFunc {
 
         DegradeRuleManager.register2Property(degradationRuleDatasource.getProperty());
 
-        // 2024-5-18  22:44-注册自定义的事件监听器监听熔断器状态变换事件
+        // 2024-5-18  22:48-注册自定义的事件监听器监听熔断器状态变换事件
         EventObserverRegistry.getInstance().addStateChangeObserver("logging",
                 (prevState, newState, rule, snapshotValue) ->
 
-                        log.warn("service [{}] status : {} -> {}, snapshotValue={}", "ptp-web-web", prevState.name(),
+                        log.warn("service [{}] status : {} -> {}, snapshotValue={}", "ptp-web-service-elasticsearch", prevState.name(),
                                 TimeUtil.currentTimeMillis(), snapshotValue)
 
         );

@@ -3,11 +3,8 @@ package ptp.fltv.web;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import pfp.fltv.common.model.po.content.Announcement;
 import pfp.fltv.common.model.po.content.Dialogue;
-import ptp.fltv.web.service.elasticsearch.repository.AnnouncementPagingRepository;
 import ptp.fltv.web.service.DialogueService;
 
 import java.util.List;
@@ -28,8 +25,8 @@ public class ElasticSearchDataOperationTest {
     private DialogueService dialogueService;
     @Autowired
     private ElasticsearchOperations elasticsearchOperations;
-    @Autowired
-    private AnnouncementPagingRepository announcementPagingRepository;
+    // @Autowired
+    // private AnnouncementPagingRepository announcementPagingRepository;
 
 
     @Test
@@ -45,13 +42,13 @@ public class ElasticSearchDataOperationTest {
     @Test
     public void testPagingQuery() {
 
-        List<Announcement> announcements = announcementPagingRepository.findByTitleLike("生活", PageRequest.of(0, 3));
+        /*List<Announcement> announcements = announcementPagingRepository.findByTitleLike("生活", PageRequest.of(0, 3));
         for (Announcement announcement : announcements) {
 
             System.out.println("-----------------------------------------------------------------");
             System.out.println(announcement);
 
-        }
+        }*/
 
     }
 

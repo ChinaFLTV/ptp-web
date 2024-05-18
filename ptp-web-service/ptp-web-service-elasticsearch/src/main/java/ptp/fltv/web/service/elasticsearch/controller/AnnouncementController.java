@@ -1,5 +1,6 @@
 package ptp.fltv.web.service.elasticsearch.controller;
 
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -39,6 +40,7 @@ public class AnnouncementController {
     private EsSearchService esSearchService;
 
 
+    @SentinelResource("service-elasticsearch-content-announcement-controller")
     @Operation(description = "根据给定的关键词分页查询符合条件的公告数据")
     @PostMapping("/fuzzy_query/page/{offset}/{limit}")
     public Result<List<AnnouncementVo>> fuzzyQueryAnnouncementPage(
@@ -65,6 +67,7 @@ public class AnnouncementController {
     }
 
 
+    @SentinelResource("service-elasticsearch-content-announcement-controller")
     @Operation(description = "修改单条公告数据(ES)")
     @PutMapping("/update/single")
     public Result<Map<String, Object>> updateSingleAnnouncement(
@@ -79,6 +82,7 @@ public class AnnouncementController {
     }
 
 
+    @SentinelResource("service-elasticsearch-content-announcement-controller")
     @Operation(description = "添加单条公告数据(ES)")
     @PostMapping("/insert/single")
     public Result<Map<String, Object>> insertSingleAnnouncement(
@@ -96,6 +100,7 @@ public class AnnouncementController {
     }
 
 
+    @SentinelResource("service-elasticsearch-content-announcement-controller")
     @Operation(description = "删除单条公告数据(ES)")
     @DeleteMapping("/delete/single/{id}")
     public Result<?> deleteSingleAnnouncement(

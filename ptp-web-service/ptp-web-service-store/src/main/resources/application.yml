@@ -9,6 +9,14 @@ spring:
     multipart:
       max-file-size: 100MB # 2024-4-24  18:07-单个上传的文件的最大大小
       max-request-size: 4096MB # 2024-4-24  18:07-总请求文件大小
+  cloud:
+    # 2024-5-18  21:52-sentinel相关配置
+    sentinel:
+      transport:
+        dashboard: 127.0.0.1:9888
+      log:
+        dir: D:\JavaProjects\ptp-web-backend\logs\sentinel\service\store
+        switch-pid: true
 
 
 # 2024-4-23  20:38-Knife4j相关配置

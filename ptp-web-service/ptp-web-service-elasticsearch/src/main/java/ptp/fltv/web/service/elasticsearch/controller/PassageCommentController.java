@@ -1,5 +1,6 @@
 package ptp.fltv.web.service.elasticsearch.controller;
 
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -38,6 +39,7 @@ public class PassageCommentController {
     private EsSearchService esSearchService;
 
 
+    @SentinelResource("service-elasticsearch-content-passage-comment-controller")
     @Operation(description = "根据给定的关键词分页查询符合条件的文章评论数据")
     @PostMapping("/fuzzy_query/page/{offset}/{limit}")
     public Result<List<PassageCommentVo>> fuzzyQueryPassageCommentPage(
@@ -64,6 +66,7 @@ public class PassageCommentController {
     }
 
 
+    @SentinelResource("service-elasticsearch-content-passage-comment-controller")
     @Operation(description = "修改单条文章评论数据(ES)")
     @PutMapping("/update/single")
     public Result<Map<String, Object>> updateSinglePassageComment(
@@ -77,6 +80,8 @@ public class PassageCommentController {
 
     }
 
+
+    @SentinelResource("service-elasticsearch-content-passage-comment-controller")
     @Operation(description = "添加单条文章评论数据(ES)")
     @PostMapping("/insert/single")
     public Result<Map<String, Object>> insertSinglePassageComment(
@@ -93,6 +98,7 @@ public class PassageCommentController {
     }
 
 
+    @SentinelResource("service-elasticsearch-content-passage-comment-controller")
     @Operation(description = "删除单条文章评论数据(ES)")
     @DeleteMapping("/delete/single/{id}")
     public Result<?> deleteSinglePassageComment(

@@ -1,0 +1,101 @@
+[
+  {
+    "clusterMode": false,
+    "controlBehavior": 0,
+    "count": 10.0,
+    "grade": 1,
+    "limitApp": "default",
+    "maxQueueingTimeMs": 500,
+    "resource": "web-content-test",
+    "strategy": 0,
+    "warmUpPeriodSec": 10
+  },
+  {
+    "clusterMode": false,
+    "controlBehavior": 0,
+    "count": 10.0,
+    "grade": 1,
+    "limitApp": "default",
+    "maxQueueingTimeMs": 500,
+    "resource": "web-content-announcement-controller",
+    "strategy": 0,
+    "warmUpPeriodSec": 10
+  },
+  {
+    "clusterMode": false,
+    "controlBehavior": 0,
+    "count": 10.0,
+    "grade": 1,
+    "limitApp": "default",
+    "maxQueueingTimeMs": 500,
+    "resource": "web-content-asset-controller",
+    "strategy": 0,
+    "warmUpPeriodSec": 10
+  },
+  {
+    "clusterMode": false,
+    "controlBehavior": 0,
+    "count": 10.0,
+    "grade": 1,
+    "limitApp": "default",
+    "maxQueueingTimeMs": 500,
+    "resource": "web-content-dialogue-controller",
+    "strategy": 0,
+    "warmUpPeriodSec": 10
+  },
+  {
+    "clusterMode": false,
+    "controlBehavior": 0,
+    "count": 10.0,
+    "grade": 1,
+    "limitApp": "default",
+    "maxQueueingTimeMs": 500,
+    "resource": "web-gate-controller",
+    "strategy": 0,
+    "warmUpPeriodSec": 10
+  },
+  {
+    "clusterMode": false,
+    "controlBehavior": 0,
+    "count": 10.0,
+    "grade": 1,
+    "limitApp": "default",
+    "maxQueueingTimeMs": 500,
+    "resource": "web-content-passage-comment-controller",
+    "strategy": 0,
+    "warmUpPeriodSec": 10
+  },
+  {
+    "clusterMode": false,
+    "controlBehavior": 0,
+    "count": 10.0,
+    "grade": 1,
+    "limitApp": "default",
+    "maxQueueingTimeMs": 500,
+    "resource": "web-content-passage-controller",
+    "strategy": 0,
+    "warmUpPeriodSec": 10
+  },
+  {
+    "clusterMode": false,
+    "controlBehavior": 0,
+    "count": 10.0,
+    "grade": 1,
+    "limitApp": "default",
+    "maxQueueingTimeMs": 500,
+    "resource": "web-content-user-role-controller",
+    "strategy": 0,
+    "warmUpPeriodSec": 10
+  },
+  {
+    "clusterMode": false,
+    "controlBehavior": 0,
+    "count": 10.0,
+    "grade": 1,
+    "limitApp": "default",
+    "maxQueueingTimeMs": 500,
+    "resource": "web-content-user-controller",
+    "strategy": 0,
+    "warmUpPeriodSec": 10
+  }
+]

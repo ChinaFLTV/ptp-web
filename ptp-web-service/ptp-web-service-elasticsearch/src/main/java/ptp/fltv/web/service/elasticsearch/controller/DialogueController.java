@@ -1,5 +1,6 @@
 package ptp.fltv.web.service.elasticsearch.controller;
 
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -38,6 +39,7 @@ public class DialogueController {
     private EsSearchService esSearchService;
 
 
+    @SentinelResource("service-elasticsearch-content-dialogue-controller")
     @Operation(description = "根据给定的关键词分页查询符合条件的对话数据")
     @PostMapping("/fuzzy_query/page/{offset}/{limit}")
     public Result<List<DialogueVo>> fuzzyQueryDialoguePage(
@@ -64,6 +66,7 @@ public class DialogueController {
     }
 
 
+    @SentinelResource("service-elasticsearch-content-dialogue-controller")
     @Operation(description = "修改单条对话数据(ES)")
     @PutMapping("/update/single")
     public Result<Map<String, Object>> updateSingleDialogue(
@@ -78,6 +81,7 @@ public class DialogueController {
     }
 
 
+    @SentinelResource("service-elasticsearch-content-dialogue-controller")
     @Operation(description = "添加单条对话数据(ES)")
     @PostMapping("/insert/single")
     public Result<Map<String, Object>> insertSingleDialogue(
@@ -94,6 +98,7 @@ public class DialogueController {
     }
 
 
+    @SentinelResource("service-elasticsearch-content-dialogue-controller")
     @Operation(description = "删除单条对话数据(ES)")
     @DeleteMapping("/delete/single/{id}")
     public Result<?> deleteSingleDialogue(

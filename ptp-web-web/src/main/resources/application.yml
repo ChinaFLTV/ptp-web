@@ -98,8 +98,8 @@ spring:
         # 因此需要关闭 context 整合，这样 sentinel 监控界面会单独展示出每种链路请求路径
         # web-context-unify: false
       log:
-        dir: D:\JavaProjects\ptp-web-backend\logs\sentinel\
-        switch-pid: true
+        dir: D:\JavaProjects\ptp-web-backend\logs\sentinel\web\
+        switch-pid: true # 2024-5-18  21:47-单机多模块必须启用该参数以区分各模块产生的日志
 
 
 # 2024-3-16  19:33-Knife4j配置

@@ -1,5 +1,6 @@
 package ptp.fltv.web.service.store.controller;
 
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,6 +32,7 @@ public class BucketController {
     private BucketService bucketService;
 
 
+    @SentinelResource("service-store-bucket-controller")
     @Operation(description = "创建一个存储桶")
     @PostMapping("/create")
     public Result<Boolean> createBucket(
@@ -46,6 +48,7 @@ public class BucketController {
     }
 
 
+    @SentinelResource("service-store-bucket-controller")
     @Operation(description = "判断存储桶是否存在")
     @PostMapping("/exist")
     public Result<Boolean> isBucketExist(
@@ -61,6 +64,7 @@ public class BucketController {
     }
 
 
+    @SentinelResource("service-store-bucket-controller")
     @Operation(description = "删除一个存储桶")
     @PostMapping("/remove")
     public Result<Boolean> removeBucket(
@@ -76,6 +80,7 @@ public class BucketController {
     }
 
 
+    @SentinelResource("service-store-bucket-controller")
     @Operation(description = "查看一个存储桶的信息")
     @PostMapping("/get/information")
     public Result<JSONObject> getBucketInformation(
@@ -90,6 +95,7 @@ public class BucketController {
     }
 
 
+    @SentinelResource("service-store-bucket-controller")
     @Operation(description = "查看全部区域的全部存储桶的信息")
     @PostMapping("/get/information/all")
     public Result<JSONArray> getAllBucketInformation() {

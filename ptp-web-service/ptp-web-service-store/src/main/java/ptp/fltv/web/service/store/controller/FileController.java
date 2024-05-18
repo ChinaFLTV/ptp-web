@@ -1,5 +1,6 @@
 package ptp.fltv.web.service.store.controller;
 
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.alibaba.fastjson2.JSONObject;
 import io.minio.StatObjectResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,9 +14,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pfp.fltv.common.enums.ContentType;
 import pfp.fltv.common.response.Result;
-import ptp.fltv.web.service.store.service.FileService;
 import pfp.fltv.common.utils.FileUtils;
 import pfp.fltv.common.utils.ReflectUtils;
+import ptp.fltv.web.service.store.service.FileService;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,6 +45,7 @@ public class FileController {
     private FileService fileService;
 
 
+    @SentinelResource("service-store-file-controller")
     @Operation(description = "下载一个文件")
     @GetMapping("/download")
     public void downloadFile(
@@ -66,6 +68,7 @@ public class FileController {
     }
 
 
+    @SentinelResource("service-store-file-controller")
     @Operation(description = "分片下载一个文件")
     @GetMapping("/download/partition")
     public void downloadFilePartition(
@@ -90,6 +93,7 @@ public class FileController {
     }
 
 
+    @SentinelResource("service-store-file-controller")
     @Operation(description = "上传一个文件")
     @PostMapping("/upload")
     public Result<String> uploadFile(
@@ -111,6 +115,7 @@ public class FileController {
     }
 
 
+    @SentinelResource("service-store-file-controller")
     @Operation(description = "上传多个文件")
     @PostMapping("/upload/batch")
     public Result<String> uploadFiles(
@@ -153,6 +158,7 @@ public class FileController {
     }
 
 
+    @SentinelResource("service-store-file-controller")
     @Operation(description = "删除一个文件")
     @DeleteMapping("/delete")
     public Result<String> deleteFile(
@@ -169,6 +175,7 @@ public class FileController {
     }
 
 
+    @SentinelResource("service-store-file-controller")
     @Operation(description = "删除多个文件")
     @DeleteMapping("/delete/batch")
     public Result<String> deleteFiles(
@@ -191,6 +198,7 @@ public class FileController {
     }
 
 
+    @SentinelResource("service-store-file-controller")
     @Operation(description = "更新一个文件")
     @PutMapping("/update")
     public Result<String> updateFile(
@@ -209,6 +217,7 @@ public class FileController {
     }
 
 
+    @SentinelResource("service-store-file-controller")
     @Operation(description = "获取一个文件的元信息")
     @GetMapping("/get/information")
     public Result<JSONObject> getFileInformation(
@@ -226,6 +235,7 @@ public class FileController {
     }
 
 
+    @SentinelResource("service-store-file-controller")
     @Operation(description = "判断一个文件是否存在")
     @GetMapping("/exist")
     public Result<Boolean> isFileExist(
