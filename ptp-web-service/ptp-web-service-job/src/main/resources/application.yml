@@ -1,0 +1,50 @@
+server:
+  port: 8180
+  servlet:
+    context-path: /api/v1/service/job
+
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 100MB # 2024-5-19  21:16-单个上传的文件的最大大小
+      max-request-size: 4096MB # 2024-5-19  21:16-总请求文件大小
+  cloud:
+    # 2024-5-19  21:16-sentinel相关配置
+    sentinel:
+      transport:
+        dashboard: 127.0.0.1:9888
+      log:
+        dir: D:\JavaProjects\ptp-web-backend\logs\sentinel\service\job
+        switch-pid: true
+  # 2024-5-19  21:47-集成Redis所需配置
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 7001
+      username: default
+      password: root
+      jedis:
+        pool:
+          max-active: 8 # 2024-5-19  21:47-连接池最大连接数
+          max-wait: -1 # 2024-5-19  21:47-连接池最大阻塞空闲时间(负数表示无限制)
+          max-idle: 8 # 2024-5-19  21:47-连接池最大空闲连接数
+          min-idle: 0 # 2024-5-19  21:47-连接池最小空闲连接数
+
+
+# 2024-5-19  21:16-Knife4j相关配置
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+  cors: true
+
+
+# 2024-5-19  21:16-OpenAPI文档相关配置
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    csrf:
+      enabled: true
+    path: /swagger-ui.html

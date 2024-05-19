@@ -126,6 +126,11 @@
                 <artifactId>ptp-web-service-elasticsearch</artifactId>
                 <version>${ptp.version}</version>
             </dependency>
+            <dependency>
+                <groupId>ptp.fltv</groupId>
+                <artifactId>ptp-web-service-job</artifactId>
+                <version>${ptp.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>

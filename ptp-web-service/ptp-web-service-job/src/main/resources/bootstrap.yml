@@ -1,0 +1,15 @@
+# 2024-5-19  21:17-配置nacos服务发现和配置中心所需配置
+spring:
+  application:
+    name: ptp-web-service-job
+  profiles:
+    active: dev
+
+
+  cloud:
+    nacos:
+      server-addr: 127.0.0.1:8848
+      config:
+        file-extension: yaml
+      discovery:
+        server-addr: 127.0.0.1:8848

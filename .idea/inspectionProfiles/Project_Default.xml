@@ -54,6 +54,7 @@
     <inspection_tool class="JavadocDeclaration" enabled="false" level="WARNING" enabled_by_default="false">
       <option name="ADDITIONAL_TAGS" value="date,filename,description" />
     </inspection_tool>
+    <inspection_tool class="LoggingSimilarMessage" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="MapOrSetKeyShouldOverrideHashCodeEquals" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="MavenPropertyInParent" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="SpringJavaAutowiredFieldsWarningInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />

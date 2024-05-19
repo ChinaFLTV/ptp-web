@@ -28,7 +28,7 @@ public class SentinelBlockExceptionHandler implements BlockExceptionHandler {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.setStatus(503);
-        response.getWriter().write(JSON.toJSONString(Result.failure(String.format("The service %s is current unavailable , please try again later !", "spring-web"))));
+        response.getWriter().write(JSON.toJSONString(Result.failure(String.format("The service %s is current unavailable , please try again later !", "ptp-web-service-web"))));
 
     }
 

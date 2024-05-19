@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="FrameworkDetectionExcludesConfiguration">
+    <file type="web" url="file://$PROJECT_DIR$/ptp-web-service/ptp-web-service-job" />
     <file type="web" url="file://$PROJECT_DIR$/ptp-web-test" />
   </component>
   <component name="MavenProjectsManager">
@@ -10,6 +11,7 @@
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/ptp-web-service/ptp-web-admin/pom.xml" />
         <option value="$PROJECT_DIR$/ptp-web-service/ptp-web-service-admin/pom.xml" />
+        <option value="$PROJECT_DIR$/ptp-web-service/ptp-web-service-job/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">

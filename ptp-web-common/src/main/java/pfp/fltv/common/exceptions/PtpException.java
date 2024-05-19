@@ -46,4 +46,19 @@ public class PtpException extends Exception implements Serializable {
     }
 
 
+    /**
+     * @return 详细的异常信息
+     * @author Lenovo/LiGuanda
+     * @date 2024/5/19 PM 10:30:25
+     * @version 1.0.0
+     * @description 获取详细的异常信息(非堆栈信息)
+     * @filename PtpException.java
+     */
+    public String getDetailedMessage() {
+
+        return getCause() == null ? getLocalizedMessage() : getCause().getMessage();
+
+    }
+
+
 }

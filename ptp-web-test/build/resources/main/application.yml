@@ -1,4 +1,0 @@
-server:
-  port: 8500
-    # servlet:
-  # context-path: /api/v1/test # 2024-5-11  22:23-WebFlux框架中这个选项设置了也白设置

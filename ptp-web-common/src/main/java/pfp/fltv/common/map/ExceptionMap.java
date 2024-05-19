@@ -31,7 +31,7 @@ public class ExceptionMap {
         log.info("---->\t\t\t开始加载异常映射文件到缓存中");
         InputStream inputStream = ExceptionMap.class.getClassLoader().getResourceAsStream("config/ptp_exception_reference.json");
         JSONArray jsonArray = JSON.parseArray(inputStream);
-        for (int i = 0; i < jsonArray.size(); i++) {
+        for (int i = 0; i < (jsonArray != null ? jsonArray.size() : 0); i++) {
 
             JSONObject jsonObject = jsonArray.getJSONObject(i);
             Integer code = jsonObject.getInteger("code");

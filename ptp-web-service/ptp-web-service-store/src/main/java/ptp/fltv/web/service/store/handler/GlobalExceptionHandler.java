@@ -1,7 +1,9 @@
 package ptp.fltv.web.service.store.handler;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import pfp.fltv.common.response.Result;
 
@@ -19,7 +21,7 @@ public class GlobalExceptionHandler {
 
 
     /**
-     * @param e 产生的异常
+     * @param ex 产生的异常
      * @return 给前端的失败信息
      * @author Lenovo/LiGuanda
      * @date 2024/4/24 PM 9:42:30
@@ -27,11 +29,12 @@ public class GlobalExceptionHandler {
      * @description 捕获全局异常
      * @filename GlobalExceptionHandler.java
      */
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
-    public Result<String> handleException(Exception e) {
+    public Result<String> handleException(Exception ex) {
 
-        log.error(e.getCause() == null ? e.getLocalizedMessage() : e.getCause().getMessage());
-        return Result.failure(e.getCause() == null ? e.getLocalizedMessage() : e.getCause().getMessage());
+        log.error("[{}] : {} occurred : {}", "ptp-web-service-store", "Exception", ex.getCause() == null ? ex.getLocalizedMessage() : ex.getCause().getMessage());
+        return Result.failure(ex.getCause() == null ? ex.getLocalizedMessage() : ex.getCause().getMessage());
 
     }
 

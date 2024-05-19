@@ -12,6 +12,9 @@ import com.alibaba.csp.sentinel.util.TimeUtil;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.TypeReference;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -23,27 +26,26 @@ import java.util.List;
  * @filename SentinelDatasourceInitFunc.java
  */
 
+@Component("hahaha")
 @Slf4j
 public class SentinelDatasourceInitFunc implements InitFunc {
+
+
+    @Autowired
+    private ApplicationContext context;
 
 
     @Override
     public void init() {
 
-        System.out.println("-------------------------------SentinelDatasourceInitFunc----------------------------------");
-
         ReadableDataSource<String, List<FlowRule>> flowRuleDatasource = new NacosDataSource<>("127.0.0.1:8848", "DEFAULT_GROUP", "ptp-web-web-flow-rules",
 
                 source ->
 
-                {
-                    System.out.println("-----------------------------------------------------------------");
-                    System.out.println(source);
-                    return JSON.parseObject(source, new TypeReference<>() {
-                            }
+                        JSON.parseObject(source, new TypeReference<>() {
+                                }
 
-                    );
-                });
+                        ));
 
         FlowRuleManager.register2Property(flowRuleDatasource.getProperty());
 
