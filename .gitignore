@@ -35,10 +35,10 @@ target/
 .DS_Store
 
 # 2024-4-10  22:21-忽略Docker挂载的卷中的容器产生的临时文件
-docker/volumes/mysql/var/**
-docker/volumes/minio/data/**
+docker/volumes/mysql/var/
+docker/volumes/minio/data/
 docker/volumes/nacos/standalone-logs/
-docker/volumes/redis/data/**
+docker/volumes/redis/data/
 
 
 # 2024-5-17  22:30-忽略各个微服务模块产生的日志文件
