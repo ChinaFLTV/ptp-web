@@ -16,7 +16,10 @@ CREATE TABLE IF NOT EXISTS `asset`
     `update_time` TIMESTAMP         DEFAULT CURRENT_TIMESTAMP COMMENT '(最后)修改时间' ON UPDATE CURRENT_TIMESTAMP,
     `is_deleted`  INT UNSIGNED      DEFAULT 0 COMMENT '资产是否已被删除'
 
-);
+)
+    ENGINE = InnoDB
+    DEFAULT CHARSET = utf8mb4
+    COMMENT = '用户资产';
 
 
 CREATE TABLE `role`
@@ -33,7 +36,10 @@ CREATE TABLE `role`
     UNIQUE KEY ix_code (code),
     UNIQUE KEY ix_name (name)
 
-);
+)
+    ENGINE = InnoDB
+    DEFAULT CHARSET = utf8mb4
+    COMMENT = '角色';
 
 
 # 2024-3-22  19:33-创建user表
@@ -73,7 +79,10 @@ CREATE TABLE IF NOT EXISTS `user`
     UNIQUE KEY un_idx_phone (phone),
     UNIQUE KEY un_idx_email (email)
 
-);
+)
+    ENGINE = InnoDB
+    DEFAULT CHARSET = utf8mb4
+    COMMENT = '用户';
 
 
 # 2024-3-22  19:16-创建dialogue表
@@ -100,7 +109,10 @@ CREATE TABLE IF NOT EXISTS `dialogue`
 
     FOREIGN KEY (uid) REFERENCES user (id)
 
-);
+)
+    ENGINE = InnoDB
+    DEFAULT CHARSET = utf8mb4
+    COMMENT = '对话';
 
 
 # 2024-3-24  16:18-创建announcement表
@@ -127,7 +139,10 @@ CREATE TABLE IF NOT EXISTS `announcement`
 
     FOREIGN KEY (uid) REFERENCES user (id)
 
-);
+)
+    ENGINE = InnoDB
+    DEFAULT CHARSET = utf8mb4
+    COMMENT = '公告';
 
 
 # 2024-3-24  16:18-创建passage表
@@ -155,11 +170,14 @@ CREATE TABLE IF NOT EXISTS `passage`
 
     FOREIGN KEY (uid) REFERENCES user (id)
 
-);
+)
+    ENGINE = InnoDB
+    DEFAULT CHARSET = utf8mb4
+    COMMENT = '文章';
 
 
 # 2024-3-24  16:26-创建passage_comment表
-CREATE TABLE `passage_comment`
+CREATE TABLE IF NOT EXISTS `passage_comment`
 (
     `id`           BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT COMMENT '文章评论ID',
     `passage_id`   BIGINT UNSIGNED NOT NULL COMMENT '评论的文章ID',
@@ -188,4 +206,60 @@ CREATE TABLE `passage_comment`
     FOREIGN KEY (to_uid) REFERENCES user (id),
     FOREIGN KEY (parent_uid) REFERENCES user (id)
 
-);
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+    COMMENT = '文章评论';
+
+
+# 2024-5-20  22:00-创建commodity表
+CREATE TABLE IF NOT EXISTS `commodity`
+(
+    `id`           BIGINT UNSIGNED PRIMARY KEY NOT NULL COMMENT '商品唯一标识符',
+    `user_id`      BIGINT UNSIGNED             NOT NULL COMMENT '商品卖家ID',
+    `name`         VARCHAR(255)                NOT NULL COMMENT '商品名称',
+    `description`  TEXT COMMENT '商品详细描述',
+    `tags`         CHAR(255) COMMENT '标签',
+    `category`     CHAR(255) COMMENT '分类',
+    `browse_num`   INT UNSIGNED COMMENT '浏览量',
+    `like_num`     INT UNSIGNED COMMENT '点赞量',
+    `unlike_num`   INT UNSIGNED COMMENT '倒赞量',
+    `comment_num`  INT UNSIGNED COMMENT '评论量',
+    `star_num`     INT UNSIGNED COMMENT '收藏量',
+    `price`        DOUBLE UNSIGNED COMMENT '商品售价',
+    `status`       VARCHAR(255) COMMENT '商品状态',
+    `meta`         TEXT COMMENT '其他数据配置(JSON)',
+    `address_info` TEXT COMMENT '记录文章评论发布时的地址信息',
+    `create_time`  TIMESTAMP COMMENT '商品发布时间',
+    `update_time`  TIMESTAMP COMMENT '商品信息(最后)更新时间',
+    `is_deleted`   INT UNSIGNED COMMENT '当前实体是否已被逻辑删除',
+
+    FOREIGN KEY (user_id) REFERENCES user (id)
+
+)
+    ENGINE = InnoDB
+    DEFAULT CHARSET = utf8mb4
+    COMMENT ='商品';
+
+
+# 2024-5-20  22:05-创建commodity_details表
+CREATE TABLE IF NOT EXISTS `commodity_details`
+(
+
+    `id`             BIGINT UNSIGNED PRIMARY KEY NOT NULL COMMENT '商品详情唯一标识符',
+    `commodity_id`   BIGINT UNSIGNED             NOT NULL COMMENT '商品ID',
+    `stock_quantity` INT UNSIGNED COMMENT '商品库存数量',
+    `brand`          VARCHAR(255) COMMENT '商品品牌',
+    `weight`         DOUBLE UNSIGNED COMMENT '商品重量',
+    `size`           VARCHAR(255) COMMENT '商品尺寸',
+    `color`          VARCHAR(255) COMMENT '商品颜色',
+    `material`       VARCHAR(255) COMMENT '商品材质',
+    `origin`         VARCHAR(255) COMMENT '商品产地',
+    `image_url`      TEXT COMMENT '商品图片URL',
+    `barcode`        VARCHAR(255) COMMENT '商品条形码',
+
+    FOREIGN KEY (commodity_id) REFERENCES commodity (id)
+
+)
+    ENGINE = InnoDB
+    DEFAULT CHARSET = utf8mb4
+    COMMENT ='商品详情';

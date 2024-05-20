@@ -17,16 +17,16 @@ import lombok.Getter;
 public enum Scope {
 
 
-    DIALOGUE("对话", 501),
-    PASSAGE("文章", 502),
-    PASSAGE_COMMENT("文章评论", 503),
-    PRIVATE_CHAT("私聊", 504),
-    GROUP_CHAT("群聊", 505);
+    DIALOGUE(501, "对话"),
+    PASSAGE(502, "文章"),
+    PASSAGE_COMMENT(503, "文章评论"),
+    PRIVATE_CHAT(504, "私聊"),
+    GROUP_CHAT(505, "群聊");
 
 
-    private final String comment;
     @JsonValue
     private final Integer code;
+    private final String comment;
 
 
 }

@@ -15,15 +15,16 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum Gender {
 
-    MALE("男", "MALE", 0),
-    FEMALE("女", "FEMALE", 1),
-    SECRET("保密", "SECRET", 2);
+
+    MALE(0, "男", "MALE"),
+    FEMALE(1, "女", "FEMALE"),
+    SECRET(2, "保密", "SECRET");
 
 
-    private final String message;
-    private final String comment;
     @JsonValue
     private final Integer code;
+    private final String message;
+    private final String comment;
 
 
 }

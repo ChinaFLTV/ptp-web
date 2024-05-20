@@ -16,16 +16,16 @@ import lombok.Getter;
 public enum UserStatus {
 
 
-    NORMAL("正常", 300),
-    ABNORMAL("异常", 301),
-    LIMIT("限制", 302),
-    HIDDEN("不可见", 303),
-    BLOCK("锁定", 304);
+    NORMAL(300, "正常"),
+    ABNORMAL(301, "异常"),
+    LIMIT(302, "限制"),
+    HIDDEN(303, "不可见"),
+    BLOCK(304, "锁定");
 
 
-    private final String comment;
     @JsonValue
     private final Integer code;
+    private final String comment;
 
 
 }

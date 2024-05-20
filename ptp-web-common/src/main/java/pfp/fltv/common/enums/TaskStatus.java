@@ -16,19 +16,19 @@ import lombok.Getter;
 public enum TaskStatus {
 
 
-    NORMAL("正常", 200),
+    NORMAL(200, "正常"),
 
-    SUSPEND("挂起", 201),
-    POSTPONE("推迟", 202),
-    TERMINATION("终止", 203),
-    HIDDEN("隐藏", 205),
-    ROLLBACK("回滚", 206),
-    UNDO("撤销", 207);
+    SUSPEND(201, "挂起"),
+    POSTPONE(202, "推迟"),
+    TERMINATION(203, "终止"),
+    HIDDEN(205, "隐藏"),
+    ROLLBACK(206, "回滚"),
+    UNDO(207, "撤销");
 
 
-    private final String comment;
     @JsonValue
     private final Integer code;
+    private final String comment;
 
 
 }

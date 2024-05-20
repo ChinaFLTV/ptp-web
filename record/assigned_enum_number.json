@@ -1,0 +1,67 @@
+[
+  {
+    "start": 0,
+    "end": 9,
+    "enum": "Gender"
+  },
+  {
+    "start": 10,
+    "end": 29,
+    "enum": "Role"
+  },
+  {
+    "start": 100,
+    "end": 199,
+    "enum": "ContentStatus"
+  },
+  {
+    "start": 200,
+    "end": 299,
+    "enum": "TaskStatus"
+  },
+  {
+    "start": 300,
+    "end": 399,
+    "enum": "UserStatus"
+  },
+  {
+    "start": 401,
+    "end": 499,
+    "enum": "Action"
+  },
+  {
+    "start": 500,
+    "end": 599,
+    "enum": "Scope"
+  },
+  {
+    "start": 600,
+    "end": 699,
+    "enum": "ResponseStatus"
+  },
+  {
+    "start": 700,
+    "end": 799,
+    "enum": "AssetStatus"
+  },
+  {
+    "start": 901,
+    "end": 999,
+    "enum": "ContentSearchType"
+  },
+  {
+    "start": 1000,
+    "end": 1099,
+    "enum": "ContentType"
+  },
+  {
+    "start": 1100,
+    "end": 1199,
+    "enum": "MediaOperationType"
+  },
+  {
+    "start": 1200,
+    "end": 1299,
+    "enum": "CommodityStatus"
+  }
+]

@@ -17,19 +17,19 @@ import lombok.Getter;
 public enum Action {
 
 
-    LIKE("点赞", 401),
-    UNLIKE("取消点赞", 402),
-    STAR("收藏", 403),
-    UNSTAR("取消收藏", 404),
-    BROWSE("浏览", 405),
-    COMMENT("评论", 406),
-    SUBSCRIBE("关注", 407),
-    UNSUBSCRIBE("取消关注", 408);
+    LIKE(401, "点赞"),
+    UNLIKE(402, "取消点赞"),
+    STAR(403, "收藏"),
+    UNSTAR(404, "取消收藏"),
+    BROWSE(405, "浏览"),
+    COMMENT(406, "评论"),
+    SUBSCRIBE(407, "关注"),
+    UNSUBSCRIBE(408, "取消关注");
 
 
-    private final String comment;
     @JsonValue
     private final Integer code;
+    private final String comment;
 
 
 }

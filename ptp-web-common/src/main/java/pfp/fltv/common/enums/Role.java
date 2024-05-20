@@ -15,19 +15,20 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum Role {
 
-    USER("正常用户", 1),
-    VIP_USER("VIP用户", 2),
-    SVIP_USER("SVIP用户", 3),
-    ABNORMAL_USER("状态异常用户", 5),
-    BLOCKED_USER("封禁用户", 6),
-    VISITOR("游客", 7),
-    ADMINISTRATOR("管理员", 8),
-    SUPER_ADMINISTRATOR("超级管理员", 9);
+
+    USER(11, "正常用户"),
+    VIP_USER(12, "VIP用户"),
+    SVIP_USER(13, "SVIP用户"),
+    ABNORMAL_USER(15, "状态异常用户"),
+    BLOCKED_USER(16, "封禁用户"),
+    VISITOR(17, "游客"),
+    ADMINISTRATOR(18, "管理员"),
+    SUPER_ADMINISTRATOR(19, "超级管理员");
 
 
-    private final String comment;
     @JsonValue
     private final Integer code;
+    private final String comment;
 
 
 }

@@ -16,20 +16,20 @@ import lombok.Getter;
 public enum ContentStatus {
 
 
-    NORMAL("正常", 100),
-    ABNORMAL("异常", 101),
-    ERROR("错误", 102),
-    REJECT("打回", 103),
-    LIMIT("限流", 104),
-    BLOCK("锁定", 105),
-    HIDDEN("隐藏", 106),
-    DELETED("删除", 107),
-    FORBIDDEN("封禁", 107);
+    NORMAL(100, "正常"),
+    ABNORMAL(101, "异常"),
+    ERROR(102, "错误"),
+    REJECT(103, "打回"),
+    LIMIT(104, "限流"),
+    BLOCK(105, "锁定"),
+    HIDDEN(106, "隐藏"),
+    DELETED(107, "删除"),
+    FORBIDDEN(107, "封禁");
 
 
-    private final String comment;
     @JsonValue
     private final Integer code;
+    private final String comment;
 
 
 }

@@ -1,5 +1,7 @@
 package pfp.fltv.common.enums;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
@@ -11,8 +13,18 @@ import lombok.Getter;
  */
 
 @Getter
+@AllArgsConstructor
 public enum CommodityStatus {
 
+
+    ON_SALE(1201, "售卖中"),
+    SOLD_OUT(1202, "售罄"),
+    ;
+
+
+    @JsonValue
+    private final Integer code;
+    private final String comment;
 
 
 }

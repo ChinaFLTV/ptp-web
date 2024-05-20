@@ -17,16 +17,16 @@ import lombok.Getter;
 public enum AssetStatus {
 
 
-    NORMAL("正常", 700),
-    ABNORMAL("异常", 701),
-    LIMIT("限制", 702),
-    WARN("警告", 703),
-    BLOCK("封禁", 704);
+    NORMAL(700, "正常"),
+    ABNORMAL(701, "异常"),
+    LIMIT(702, "限制"),
+    WARN(703, "警告"),
+    BLOCK(704, "封禁");
 
 
-    private final String comment;
     @JsonValue
     private final Integer code;
+    private final String comment;
 
 
 }
