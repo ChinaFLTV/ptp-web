@@ -1,4 +1,4 @@
-package pfp.fltv.common.model.po.finace;
+package pfp.fltv.common.model.po.finance;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;

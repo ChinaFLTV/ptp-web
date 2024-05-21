@@ -1,4 +1,4 @@
-package pfp.fltv.common.model.po.finace;
+package pfp.fltv.common.model.po.finance;
 
 import java.io.Serializable;
 
@@ -11,4 +11,6 @@ import java.io.Serializable;
  */
 
 public class TransactionRecord implements Serializable {
+
+
 }

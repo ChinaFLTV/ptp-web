@@ -177,6 +177,30 @@ CREATE TABLE IF NOT EXISTS `passage`
 
 
 # 2024-3-24  16:26-创建passage_comment表
+CREATE TABLE IF NOT EXISTS `commodity_details`
+(
+
+    `id`             BIGINT UNSIGNED PRIMARY KEY NOT NULL COMMENT '商品详情唯一标识符',
+    `commodity_id`   BIGINT UNSIGNED             NOT NULL COMMENT '商品ID',
+    `stock_quantity` INT UNSIGNED COMMENT '商品库存数量',
+    `brand`          VARCHAR(255) COMMENT '商品品牌',
+    `weight`         DOUBLE UNSIGNED COMMENT '商品重量',
+    `size`           VARCHAR(255) COMMENT '商品尺寸',
+    `color`          VARCHAR(255) COMMENT '商品颜色',
+    `material`       VARCHAR(255) COMMENT '商品材质',
+    `origin`         VARCHAR(255) COMMENT '商品产地',
+    `image_url`      TEXT COMMENT '商品图片URL',
+    `barcode`        VARCHAR(255) COMMENT '商品条形码',
+
+    FOREIGN KEY (commodity_id) REFERENCES commodity (id)
+
+)
+    ENGINE = InnoDB
+    DEFAULT CHARSET = utf8mb4
+    COMMENT ='商品详情';
+
+
+# 2024-5-20  22:00-创建commodity表
 CREATE TABLE IF NOT EXISTS `passage_comment`
 (
     `id`           BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT COMMENT '文章评论ID',
@@ -206,12 +230,13 @@ CREATE TABLE IF NOT EXISTS `passage_comment`
     FOREIGN KEY (to_uid) REFERENCES user (id),
     FOREIGN KEY (parent_uid) REFERENCES user (id)
 
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4
+)
+    ENGINE = InnoDB
+    DEFAULT CHARSET = utf8mb4
     COMMENT = '文章评论';
 
 
-# 2024-5-20  22:00-创建commodity表
+# 2024-5-20  22:05-创建commodity_details表
 CREATE TABLE IF NOT EXISTS `commodity`
 (
     `id`           BIGINT UNSIGNED PRIMARY KEY NOT NULL COMMENT '商品唯一标识符',
@@ -220,46 +245,24 @@ CREATE TABLE IF NOT EXISTS `commodity`
     `description`  TEXT COMMENT '商品详细描述',
     `tags`         CHAR(255) COMMENT '标签',
     `category`     CHAR(255) COMMENT '分类',
-    `browse_num`   INT UNSIGNED COMMENT '浏览量',
-    `like_num`     INT UNSIGNED COMMENT '点赞量',
-    `unlike_num`   INT UNSIGNED COMMENT '倒赞量',
-    `comment_num`  INT UNSIGNED COMMENT '评论量',
-    `star_num`     INT UNSIGNED COMMENT '收藏量',
-    `price`        DOUBLE UNSIGNED COMMENT '商品售价',
-    `status`       VARCHAR(255) COMMENT '商品状态',
+    `browse_num`   INT UNSIGNED    DEFAULT 0 COMMENT '浏览量',
+    `like_num`     INT UNSIGNED    DEFAULT 0 COMMENT '点赞量',
+    `unlike_num`   INT UNSIGNED    DEFAULT 0 COMMENT '倒赞量',
+    `comment_num`  INT UNSIGNED    DEFAULT 0 COMMENT '评论量',
+    `star_num`     INT UNSIGNED    DEFAULT 0 COMMENT '收藏量',
+    `price`        DOUBLE UNSIGNED DEFAULT 0 COMMENT '商品售价',
+    `status`       INT UNSIGNED    DEFAULT 1201 COMMENT '商品状态',
     `meta`         TEXT COMMENT '其他数据配置(JSON)',
     `address_info` TEXT COMMENT '记录文章评论发布时的地址信息',
     `create_time`  TIMESTAMP COMMENT '商品发布时间',
     `update_time`  TIMESTAMP COMMENT '商品信息(最后)更新时间',
-    `is_deleted`   INT UNSIGNED COMMENT '当前实体是否已被逻辑删除',
+    `is_deleted`   INT UNSIGNED    DEFAULT 0 COMMENT '当前实体是否已被逻辑删除',
 
     FOREIGN KEY (user_id) REFERENCES user (id)
+        ON UPDATE CASCADE -- 2024-5-21  23:08-级联删除都设置了，这个更新也一起设置得了
+        ON DELETE CASCADE -- 2024-5-21  23:08-我们采用级联删除的方式解决需要同时在两个表中删除同一个商品信息的情况，这样做是最简单的，既不需要动用事务，也不需要自己编写触发器、存储过程或者业务逻辑啥的
 
 )
     ENGINE = InnoDB
     DEFAULT CHARSET = utf8mb4
     COMMENT ='商品';
-
-
-# 2024-5-20  22:05-创建commodity_details表
-CREATE TABLE IF NOT EXISTS `commodity_details`
-(
-
-    `id`             BIGINT UNSIGNED PRIMARY KEY NOT NULL COMMENT '商品详情唯一标识符',
-    `commodity_id`   BIGINT UNSIGNED             NOT NULL COMMENT '商品ID',
-    `stock_quantity` INT UNSIGNED COMMENT '商品库存数量',
-    `brand`          VARCHAR(255) COMMENT '商品品牌',
-    `weight`         DOUBLE UNSIGNED COMMENT '商品重量',
-    `size`           VARCHAR(255) COMMENT '商品尺寸',
-    `color`          VARCHAR(255) COMMENT '商品颜色',
-    `material`       VARCHAR(255) COMMENT '商品材质',
-    `origin`         VARCHAR(255) COMMENT '商品产地',
-    `image_url`      TEXT COMMENT '商品图片URL',
-    `barcode`        VARCHAR(255) COMMENT '商品条形码',
-
-    FOREIGN KEY (commodity_id) REFERENCES commodity (id)
-
-)
-    ENGINE = InnoDB
-    DEFAULT CHARSET = utf8mb4
-    COMMENT ='商品详情';

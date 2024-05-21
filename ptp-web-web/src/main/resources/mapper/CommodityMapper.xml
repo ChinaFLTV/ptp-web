@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ptp.fltv.web.mapper.CommodityMapper">
+
+    <resultMap id="commodityMap" type="pfp.fltv.common.model.po.finance.Commodity">
+
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="user_id" property="userId" jdbcType="BIGINT"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="description" property="description" jdbcType="VARCHAR"/>
+        <result column="tags" property="tags" jdbcType="CHAR"
+                typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result column="category" property="category" jdbcType="CHAR"
+                typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result column="browse_num" property="browseNum" jdbcType="INTEGER"/>
+        <result column="like_num" property="likeNum" jdbcType="INTEGER"/>
+        <result column="unlike_num" property="unlikeNum" jdbcType="INTEGER"/>
+        <result column="comment_num" property="commentNum" jdbcType="INTEGER"/>
+        <result column="star_num" property="starNum" jdbcType="INTEGER"/>
+        <result column="price" property="price" jdbcType="DOUBLE"/>
+        <result column="stock_quantity" property="stockQuantity" jdbcType="INTEGER"/>
+        <result column="brand" property="brand" jdbcType="VARCHAR"/>
+        <result column="weight" property="weight" jdbcType="DOUBLE"/>
+        <result column="size" property="size" jdbcType="VARCHAR"/>
+        <result column="color" property="color" jdbcType="VARCHAR"/>
+        <result column="material" property="material" jdbcType="VARCHAR"/>
+        <result column="origin" property="origin" jdbcType="VARCHAR"/>
+        <result column="image_url" property="imageUrl" jdbcType="VARCHAR"/>
+        <result column="barcode" property="barcode" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="meta" property="meta" jdbcType="VARCHAR"/>
+        <result column="address_info" property="addressInfo" jdbcType="VARCHAR"
+                typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="is_deleted" property="isDeleted" jdbcType="INTEGER"/>
+
+    </resultMap>
+
+    <sql id="select_commodity_fields">
+
+        SELECT c.id,
+               c.user_id,
+               c.name,
+               c.description,
+               c.tags,
+               c.category,
+               c.browse_num,
+               c.like_num,
+               c.unlike_num,
+               c.comment_num,
+               c.star_num,
+               c.price,
+               c.status,
+               c.meta,
+               c.address_info,
+               c.create_time,
+               c.update_time,
+               c.is_deleted,
+               cd.stock_quantity,
+               cd.brand,
+               cd.weight,
+               cd.size,
+               cd.color,
+               cd.material,
+               cd.origin,
+               cd.image_url,
+               cd.barcode
+        FROM commodity AS c
+                 INNER JOIN commodity_details AS cd
+                            ON c.id = cd.commodity_id
+
+    </sql>
+
+    <select id="getOneById" parameterType="java.lang.Long" resultMap="commodityMap">
+
+        <include refid="select_commodity_fields"/>
+        WHERE c.id = #{id}
+        AND c.is_deleted = 0
+
+    </select>
+    <select id="getListByRange" parameterType="map" resultType="pfp.fltv.common.model.po.finance.Commodity">
+
+        <include refid="select_commodity_fields"/>
+        WHERE c.is_deleted = 0
+        ORDER BY c.id ${ isASC ? 'ASC':'DESC'}
+        LIMIT #{offset},#{length}
+
+    </select>
+
+
+</mapper>
