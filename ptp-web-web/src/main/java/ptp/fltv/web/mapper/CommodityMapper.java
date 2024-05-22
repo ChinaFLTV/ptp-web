@@ -55,7 +55,7 @@ public interface CommodityMapper extends BaseMapper<Commodity> {
      * @description 添加一条商品数据(不含商品详情)
      * @filename CommodityMapper.java
      */
-    int insertCommodity(@Nonnull @Param("commodity") Commodity commodity);
+    int insertCommodity(@Nonnull Commodity commodity);
 
 
     /**
@@ -67,7 +67,7 @@ public interface CommodityMapper extends BaseMapper<Commodity> {
      * @description 添加一条商品数据(只含商品详情)
      * @filename CommodityMapper.java
      */
-    int insertCommodityDetails(@Nonnull @Param("commodity") Commodity commodity);
+    int insertCommodityDetails(@Nonnull Commodity commodity);
 
 
     /**

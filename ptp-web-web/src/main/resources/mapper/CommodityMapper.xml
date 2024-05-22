@@ -97,9 +97,13 @@
         INSERT INTO commodity (id, user_id, name, description, tags, category, browse_num, like_num, unlike_num,
                                comment_num, star_num, price, status, meta, address_info, create_time, update_time,
                                is_deleted)
-        VALUES (#{id}, #{user_id}, #{name}, #{description}, #{tags}, #{category}, #{browse_num}, #{like_num},
-                #{unlike_num}, #{comment_num}, #{star_num}, #{price}, #{status}, #{meta}, #{address_info},
-                CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, #{is_deleted})
+        VALUES (#{id}, #{userId}, #{name}, #{description},
+                #{tags,typeHandler=com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler},
+                #{category,typeHandler=com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler},
+                #{browseNum}, #{likeNum},
+                #{unlikeNum}, #{commentNum}, #{starNum}, #{price}, #{status}, #{meta},
+                #{addressInfo,typeHandler=com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler},
+                CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, #{isDeleted})
 
     </insert>
 
@@ -108,8 +112,8 @@
 
         INSERT INTO commodity_details (id, commodity_id, stock_quantity, brand, weight, size, color, material, origin,
                                        image_url, barcode)
-        VALUES (#{id}, #{commodity_id}, #{stock_quantity}, #{brand}, #{weight}, #{size}, #{color}, #{material},
-                #{origin}, #{image_url}, #{barcode})
+        VALUES (#{id}, #{commodityId}, #{stockQuantity}, #{brand}, #{weight}, #{size}, #{color}, #{material},
+                #{origin}, #{imageUrl}, #{barcode})
 
     </insert>
 
@@ -117,20 +121,20 @@
     <update id="updateCommodity" parameterType="pfp.fltv.common.model.po.finance.Commodity">
 
         UPDATE commodity
-        SET user_id      = #{user_id},
+        SET user_id      = #{userId},
             name         = #{name},
             description  = #{description},
-            tags         = #{tags},
-            category     = #{category},
-            browse_num   = #{browse_num},
-            like_num     = #{like_num},
-            unlike_num   = #{unlike_num},
-            comment_num  = #{comment_num},
-            star_num     = #{star_num},
+            tags         = #{tags,typeHandler=com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler},
+            category     = #{category,typeHandler=com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler},
+            browse_num   = #{browseNum},
+            like_num     = #{likeNum},
+            unlike_num   = #{unlikeNum},
+            comment_num  = #{commentNum},
+            star_num     = #{starNum},
             price        = #{price},
             status       = #{status},
             meta         = #{meta},
-            address_info = #{address_info},
+            address_info = #{addressInfo,typeHandler=com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler},
             update_time  = CURRENT_TIMESTAMP
         WHERE id = #{id}
           AND is_deleted = 0
@@ -141,16 +145,16 @@
     <update id="updateCommodityDetails" parameterType="pfp.fltv.common.model.po.finance.Commodity">
 
         UPDATE commodity_details
-        SET stock_quantity = #{stock_quantity},
+        SET stock_quantity = #{stockQuantity},
             brand          = #{brand},
             weight         = #{weight},
             size           = #{size},
             color          = #{color},
             material       = #{material},
             origin         = #{origin},
-            image_url      = #{image_url},
+            image_url      = #{imageUrl},
             barcode        = #{barcode}
-        WHERE commodity_id = #{commodity_id}
+        WHERE commodity_id = #{commodityId}
 
     </update>
 
