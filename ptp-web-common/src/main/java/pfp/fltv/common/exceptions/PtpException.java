@@ -22,7 +22,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PtpException extends Exception implements Serializable {
+public class PtpException extends RuntimeException implements Serializable {
 
 
     private Integer code; // 2024-4-7  22:38-错误码为8xx

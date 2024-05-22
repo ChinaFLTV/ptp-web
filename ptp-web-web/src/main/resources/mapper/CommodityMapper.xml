@@ -72,6 +72,7 @@
 
     </sql>
 
+
     <select id="getOneById" parameterType="java.lang.Long" resultMap="commodityMap">
 
         <include refid="select_commodity_fields"/>
@@ -79,6 +80,8 @@
         AND c.is_deleted = 0
 
     </select>
+
+
     <select id="getListByRange" parameterType="map" resultType="pfp.fltv.common.model.po.finance.Commodity">
 
         <include refid="select_commodity_fields"/>
@@ -87,6 +90,80 @@
         LIMIT #{offset},#{length}
 
     </select>
+
+
+    <insert id="insertCommodity" parameterType="pfp.fltv.common.model.po.finance.Commodity">
+
+        INSERT INTO commodity (id, user_id, name, description, tags, category, browse_num, like_num, unlike_num,
+                               comment_num, star_num, price, status, meta, address_info, create_time, update_time,
+                               is_deleted)
+        VALUES (#{id}, #{user_id}, #{name}, #{description}, #{tags}, #{category}, #{browse_num}, #{like_num},
+                #{unlike_num}, #{comment_num}, #{star_num}, #{price}, #{status}, #{meta}, #{address_info},
+                CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, #{is_deleted})
+
+    </insert>
+
+
+    <insert id="insertCommodityDetails" parameterType="pfp.fltv.common.model.po.finance.Commodity">
+
+        INSERT INTO commodity_details (id, commodity_id, stock_quantity, brand, weight, size, color, material, origin,
+                                       image_url, barcode)
+        VALUES (#{id}, #{commodity_id}, #{stock_quantity}, #{brand}, #{weight}, #{size}, #{color}, #{material},
+                #{origin}, #{image_url}, #{barcode})
+
+    </insert>
+
+
+    <update id="updateCommodity" parameterType="pfp.fltv.common.model.po.finance.Commodity">
+
+        UPDATE commodity
+        SET user_id      = #{user_id},
+            name         = #{name},
+            description  = #{description},
+            tags         = #{tags},
+            category     = #{category},
+            browse_num   = #{browse_num},
+            like_num     = #{like_num},
+            unlike_num   = #{unlike_num},
+            comment_num  = #{comment_num},
+            star_num     = #{star_num},
+            price        = #{price},
+            status       = #{status},
+            meta         = #{meta},
+            address_info = #{address_info},
+            update_time  = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+          AND is_deleted = 0
+
+    </update>
+
+
+    <update id="updateCommodityDetails" parameterType="pfp.fltv.common.model.po.finance.Commodity">
+
+        UPDATE commodity_details
+        SET stock_quantity = #{stock_quantity},
+            brand          = #{brand},
+            weight         = #{weight},
+            size           = #{size},
+            color          = #{color},
+            material       = #{material},
+            origin         = #{origin},
+            image_url      = #{image_url},
+            barcode        = #{barcode}
+        WHERE commodity_id = #{commodity_id}
+
+    </update>
+
+
+    <update id="deleteOne" parameterType="java.lang.Long">
+
+        -- 2024-5-22  21:40-由于我们commodity_detail表的外键采用了级联删除的方式，因此，我们在删除一个商品时只需要删除主商品表即可，详情表将自动同步被删除
+        UPDATE commodity
+        SET is_deleted = 1
+        WHERE id = #{id}
+          AND is_deleted = 0
+
+    </update>
 
 
 </mapper>

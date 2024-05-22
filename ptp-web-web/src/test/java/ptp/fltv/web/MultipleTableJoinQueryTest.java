@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import pfp.fltv.common.model.po.finance.Commodity;
-import ptp.fltv.web.mapper.CommodityMapper;
+import ptp.fltv.web.service.CommodityService;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ public class MultipleTableJoinQueryTest {
 
 
     @Autowired
-    private CommodityMapper commodityMapper;
+    private CommodityService commodityService;
 
 
     @Test
@@ -40,7 +40,17 @@ public class MultipleTableJoinQueryTest {
             System.out.println(commodity);
 
         }*/
-
+        Commodity commodity = new Commodity().setName("The Greatest Work")
+                .setBrand("Jay")
+                .setUserId(6L)
+                .setColor("golden")
+                .setMaterial("plastic")
+                .setBarcode("489262519")
+                .setCategory(List.of("music", "album"))
+                .setDescription("Jay Chou's latest masterpiece")
+                .setPrice(99.99);
+        int insertedOne = commodityService.insertOne(commodity);
+        System.out.println("insertedOne = " + insertedOne);
 
     }
 

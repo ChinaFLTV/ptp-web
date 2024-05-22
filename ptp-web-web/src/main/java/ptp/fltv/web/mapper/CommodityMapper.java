@@ -47,27 +47,64 @@ public interface CommodityMapper extends BaseMapper<Commodity> {
 
 
     /**
+     * @param commodity 待插入的商品数据
+     * @return 插入成功所影响的行数
+     * @author Lenovo/LiGuanda
+     * @date 2024/5/22 PM 10:43:03
+     * @version 1.0.0
+     * @description 添加一条商品数据(不含商品详情)
+     * @filename CommodityMapper.java
+     */
+    int insertCommodity(@Nonnull @Param("commodity") Commodity commodity);
+
+
+    /**
+     * @param commodity 待插入的商品数据
+     * @return 插入成功所影响的行数
+     * @author Lenovo/LiGuanda
+     * @date 2024/5/22 PM 10:50:17
+     * @version 1.0.0
+     * @description 添加一条商品数据(只含商品详情)
+     * @filename CommodityMapper.java
+     */
+    int insertCommodityDetails(@Nonnull @Param("commodity") Commodity commodity);
+
+
+    /**
      * @param commodity 新的商品数据
-     * @return 是否更新成功
+     * @return 更新成功的行数
+     * @implNote 尽量不要更改返回值为布尔类型，因为整型不仅可以告诉我们是否更新成功，还可以告诉我们成功更新了几条数据
      * @author Lenovo/LiGuanda
      * @date 2024/5/21 PM 10:54:41
      * @version 1.0.0
-     * @description 更新单个商品
+     * @description 更新单个商品(不包含商品详情部分)
      * @filename CommodityMapper.java
      */
-    boolean updateOne(@Nonnull @Param("commodity") Commodity commodity);
+    int updateCommodity(@Nonnull @Param("commodity") Commodity commodity);
+
+
+    /**
+     * @param commodity 新的商品数据
+     * @return 更新成功的行数
+     * @author Lenovo/LiGuanda
+     * @date 2024/5/22 PM 9:43:50
+     * @version 1.0.0
+     * @description 更新单个商品(只包含商品详情部分)
+     * @filename CommodityMapper.java
+     */
+    int updateCommodityDetails(@Nonnull @Param("commodity") Commodity commodity);
 
 
     /**
      * @param id 待删除的商品ID
-     * @return 是否删除成功
+     * @return 删除成功的行数
      * @author Lenovo/LiGuanda
      * @date 2024/5/21 PM 10:55:50
      * @version 1.0.0
      * @description 根据ID删除单个商品
      * @filename CommodityMapper.java
      */
-    boolean deleteOne(@Nonnull @Param("id") Long id);
+    int deleteOne(@Nonnull @Param("id") Long id);
 
 
 }

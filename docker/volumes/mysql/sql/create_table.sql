@@ -177,30 +177,6 @@ CREATE TABLE IF NOT EXISTS `passage`
 
 
 # 2024-3-24  16:26-创建passage_comment表
-CREATE TABLE IF NOT EXISTS `commodity_details`
-(
-
-    `id`             BIGINT UNSIGNED PRIMARY KEY NOT NULL COMMENT '商品详情唯一标识符',
-    `commodity_id`   BIGINT UNSIGNED             NOT NULL COMMENT '商品ID',
-    `stock_quantity` INT UNSIGNED COMMENT '商品库存数量',
-    `brand`          VARCHAR(255) COMMENT '商品品牌',
-    `weight`         DOUBLE UNSIGNED COMMENT '商品重量',
-    `size`           VARCHAR(255) COMMENT '商品尺寸',
-    `color`          VARCHAR(255) COMMENT '商品颜色',
-    `material`       VARCHAR(255) COMMENT '商品材质',
-    `origin`         VARCHAR(255) COMMENT '商品产地',
-    `image_url`      TEXT COMMENT '商品图片URL',
-    `barcode`        VARCHAR(255) COMMENT '商品条形码',
-
-    FOREIGN KEY (commodity_id) REFERENCES commodity (id)
-
-)
-    ENGINE = InnoDB
-    DEFAULT CHARSET = utf8mb4
-    COMMENT ='商品详情';
-
-
-# 2024-5-20  22:00-创建commodity表
 CREATE TABLE IF NOT EXISTS `passage_comment`
 (
     `id`           BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT COMMENT '文章评论ID',
@@ -236,7 +212,7 @@ CREATE TABLE IF NOT EXISTS `passage_comment`
     COMMENT = '文章评论';
 
 
-# 2024-5-20  22:05-创建commodity_details表
+# 2024-5-20  22:00-创建commodity表
 CREATE TABLE IF NOT EXISTS `commodity`
 (
     `id`           BIGINT UNSIGNED PRIMARY KEY NOT NULL COMMENT '商品唯一标识符',
@@ -266,3 +242,27 @@ CREATE TABLE IF NOT EXISTS `commodity`
     ENGINE = InnoDB
     DEFAULT CHARSET = utf8mb4
     COMMENT ='商品';
+
+
+# 2024-5-20  22:05-创建commodity_details表
+CREATE TABLE IF NOT EXISTS `commodity_details`
+(
+
+    `id`             BIGINT UNSIGNED PRIMARY KEY NOT NULL COMMENT '商品详情唯一标识符',
+    `commodity_id`   BIGINT UNSIGNED             NOT NULL COMMENT '商品ID',
+    `stock_quantity` INT UNSIGNED COMMENT '商品库存数量',
+    `brand`          VARCHAR(255) COMMENT '商品品牌',
+    `weight`         DOUBLE UNSIGNED COMMENT '商品重量',
+    `size`           VARCHAR(255) COMMENT '商品尺寸',
+    `color`          VARCHAR(255) COMMENT '商品颜色',
+    `material`       VARCHAR(255) COMMENT '商品材质',
+    `origin`         VARCHAR(255) COMMENT '商品产地',
+    `image_url`      TEXT COMMENT '商品图片URL',
+    `barcode`        VARCHAR(255) COMMENT '商品条形码',
+
+    FOREIGN KEY (commodity_id) REFERENCES commodity (id)
+
+)
+    ENGINE = InnoDB
+    DEFAULT CHARSET = utf8mb4
+    COMMENT ='商品详情';

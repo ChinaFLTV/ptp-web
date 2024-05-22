@@ -18,5 +18,9 @@
   {
     "code": 805,
     "message": "获取到当前UNIX时间戳的秒杀ID序列号为null"
+  },
+  {
+    "code": 806,
+    "message": "执行多个SQL业务操作出现异常"
   }
 ]
