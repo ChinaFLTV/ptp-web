@@ -3,6 +3,7 @@ package ptp.fltv.web.config;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -13,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
  * @filename WebConfiguration.java
  */
 
+@EnableAspectJAutoProxy(exposeProxy = true)// 2024-5-23  22:55-使用 AopContext.currentProxy() 解决类内方法调用引发的事务失效问题 所需配置
 @Configuration
 public class WebConfiguration {
 

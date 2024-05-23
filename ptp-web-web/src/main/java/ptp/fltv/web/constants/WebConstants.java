@@ -43,6 +43,7 @@ public class WebConstants {
     public static final String ES_BASE_PASSAGE_URL = "/content/passage";
     public static final String ES_BASE_PASSAGE_COMMENT_URL = "/content/passage/comment";
     public static final String ES_BASE_USER_URL = "/content/user";
+    public static final String ES_BASE_COMMODITY_URL = "/finance/commodity";
 
 
 }

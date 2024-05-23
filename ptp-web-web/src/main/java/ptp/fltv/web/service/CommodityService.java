@@ -95,4 +95,30 @@ public interface CommodityService extends IService<Commodity> {
     int deleteOne(@Nonnull Long id);
 
 
+    /**
+     * @param count 补充的数量
+     * @param id    补充的商品ID
+     * @return 是否补货成功
+     * @author Lenovo/LiGuanda
+     * @date 2024/5/23 PM 10:43:31
+     * @version 1.0.0
+     * @description 根据ID补充单种商品的n个
+     * @filename CommodityService.java
+     */
+    boolean replenishOne(@Nonnull Long id, @Nonnull Integer count);
+
+
+    /**
+     * @param count 秒杀的数量
+     * @param id    秒杀的商品ID
+     * @return 是否秒杀成功
+     * @author Lenovo/LiGuanda
+     * @date 2024/5/23 PM 10:36:14
+     * @version 1.0.0
+     * @description 根据ID秒杀单种商品的n个
+     * @filename CommodityService.java
+     */
+    boolean seckillOne(@Nonnull Long id, @Nonnull Integer count);
+
+
 }

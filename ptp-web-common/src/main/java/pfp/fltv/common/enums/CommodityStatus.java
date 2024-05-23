@@ -25,7 +25,8 @@ public enum CommodityStatus {
     UNDERSTOCK(1205, "库存不足"),
     HOT_SALE(1206, "热卖中"),
     HIGHLY_PRAISE(1207, "超高评价"),
-    NEW_ARRIVAL(1208, "新品");
+    NEW_ARRIVAL(1208, "新品"),
+    REPLENISHING(1209, "补货中");
 
 
     @EnumValue
