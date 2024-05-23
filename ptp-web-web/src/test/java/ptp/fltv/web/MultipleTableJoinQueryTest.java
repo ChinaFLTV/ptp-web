@@ -4,10 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import pfp.fltv.common.model.po.finance.Commodity;
 import ptp.fltv.web.service.CommodityService;
-
-import java.util.List;
 
 /**
  * @author Lenovo/LiGuanda
@@ -40,7 +37,8 @@ public class MultipleTableJoinQueryTest {
             System.out.println(commodity);
 
         }*/
-        Commodity commodity = new Commodity().setName("The Greatest Work")
+
+        /*Commodity commodity = new Commodity().setName("The Greatest Work")
                 .setBrand("Jay")
                 .setUserId(6L)
                 .setColor("golden")
@@ -50,7 +48,25 @@ public class MultipleTableJoinQueryTest {
                 .setDescription("Jay Chou's latest masterpiece")
                 .setPrice(99.99);
         int insertedOne = commodityService.insertOne(commodity);
-        System.out.println("insertedOne = " + insertedOne);
+        System.out.println("insertedOne = " + insertedOne);*/
+
+        /*int deleteOne = commodityService.deleteOne(1793635090897141762L);
+        System.out.println("deleteOne = " + deleteOne);*/
+
+        /*Commodity commodity = commodityService.getOneById(1793635090897141762L);
+        System.out.println("commodity = " + commodity);
+
+        commodity.setName(commodity.getName() + " [pro]");
+        int updateOne = commodityService.updateOne(commodity);
+        System.out.println("updateOne = " + updateOne);*/
+
+        /*List<Commodity> commodities = commodityService.list();
+        for (Commodity commodity : commodities) {
+
+            System.out.println(commodity);
+
+        }*/
+
 
     }
 

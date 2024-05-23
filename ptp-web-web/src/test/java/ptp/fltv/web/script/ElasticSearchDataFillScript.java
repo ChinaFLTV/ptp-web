@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ApplicationContext;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchOperations;
 import org.springframework.test.context.ContextConfiguration;
@@ -12,6 +11,7 @@ import pfp.fltv.common.model.po.content.Announcement;
 import pfp.fltv.common.model.po.content.Dialogue;
 import pfp.fltv.common.model.po.content.Passage;
 import pfp.fltv.common.model.po.content.PassageComment;
+import pfp.fltv.common.model.po.finance.Commodity;
 import pfp.fltv.common.model.po.manage.User;
 import ptp.fltv.web.WebApplication;
 import ptp.fltv.web.service.*;
@@ -48,7 +48,8 @@ public class ElasticSearchDataFillScript {
     @Autowired
     private SearchOperations searchOperations;
     @Autowired
-    private ApplicationContext applicationContext;
+    private CommodityService commodityService;
+
 
     /**
      * @author Lenovo/LiGuanda
@@ -69,12 +70,14 @@ public class ElasticSearchDataFillScript {
             List<Passage> passages = passageService.list();
             List<PassageComment> passageComments = passageCommentService.list();
             List<User> users = userService.list();
+            List<Commodity> commodities = commodityService.list();
 
             elasticsearchOperations.save(announcements);
             elasticsearchOperations.save(dialogues);
             elasticsearchOperations.save(passages);
             elasticsearchOperations.save(passageComments);
             elasticsearchOperations.save(users);
+            elasticsearchOperations.save(commodities);
 
         } catch (RuntimeException e) {
 
@@ -101,6 +104,7 @@ public class ElasticSearchDataFillScript {
         elasticsearchOperations.indexOps(Passage.class).delete();
         elasticsearchOperations.indexOps(PassageComment.class).delete();
         elasticsearchOperations.indexOps(User.class).delete();
+        elasticsearchOperations.indexOps(Commodity.class).delete();
 
     }
 

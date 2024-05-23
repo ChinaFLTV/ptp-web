@@ -46,6 +46,18 @@ public interface CommodityService extends IService<Commodity> {
 
 
     /**
+     * @return 全部的商品数据
+     * @author Lenovo/LiGuanda
+     * @date 2024/5/23 PM 9:55:13
+     * @version 1.0.0
+     * @description 获取全部的商品数据
+     * @filename CommodityService.java
+     */
+    @Override
+    List<Commodity> list();
+
+
+    /**
      * @param commodity 待插入的商品数据
      * @return 插入成功所影响的行数
      * @throws PtpException 两次内部的插入操作部分或全部出现异常

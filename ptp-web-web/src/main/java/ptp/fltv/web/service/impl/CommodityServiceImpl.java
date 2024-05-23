@@ -39,6 +39,14 @@ public class CommodityServiceImpl extends ServiceImpl<CommodityMapper, Commodity
     }
 
 
+    @Override
+    public List<Commodity> list() {
+
+        return baseMapper.list();
+
+    }
+
+
     @Transactional
     @Override
     public int insertOne(@Nonnull Commodity commodity) throws PtpException {

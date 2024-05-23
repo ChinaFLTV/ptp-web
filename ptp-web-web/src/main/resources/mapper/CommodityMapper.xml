@@ -91,28 +91,33 @@
 
     </select>
 
+    <select id="list" resultType="pfp.fltv.common.model.po.finance.Commodity">
+
+        <include refid="select_commodity_fields"/>
+        WHERE c.is_deleted = 0
+
+    </select>
+
 
     <insert id="insertCommodity" parameterType="pfp.fltv.common.model.po.finance.Commodity">
 
-        INSERT INTO commodity (id, user_id, name, description, tags, category, browse_num, like_num, unlike_num,
-                               comment_num, star_num, price, status, meta, address_info, create_time, update_time,
-                               is_deleted)
+        INSERT INTO commodity (id, user_id, name, description, tags, category, price, meta, address_info,
+                               create_time, update_time)
         VALUES (#{id}, #{userId}, #{name}, #{description},
                 #{tags,typeHandler=com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler},
-                #{category,typeHandler=com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler},
-                #{browseNum}, #{likeNum},
-                #{unlikeNum}, #{commentNum}, #{starNum}, #{price}, #{status}, #{meta},
+                #{category,typeHandler=com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler}, #{price},
+                #{meta},
                 #{addressInfo,typeHandler=com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler},
-                CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, #{isDeleted})
+                CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 
     </insert>
 
 
     <insert id="insertCommodityDetails" parameterType="pfp.fltv.common.model.po.finance.Commodity">
 
-        INSERT INTO commodity_details (id, commodity_id, stock_quantity, brand, weight, size, color, material, origin,
+        INSERT INTO commodity_details (commodity_id, stock_quantity, brand, weight, size, color, material, origin,
                                        image_url, barcode)
-        VALUES (#{id}, #{commodityId}, #{stockQuantity}, #{brand}, #{weight}, #{size}, #{color}, #{material},
+        VALUES (#{id}, #{stockQuantity}, #{brand}, #{weight}, #{size}, #{color}, #{material},
                 #{origin}, #{imageUrl}, #{barcode})
 
     </insert>
@@ -154,7 +159,7 @@
             origin         = #{origin},
             image_url      = #{imageUrl},
             barcode        = #{barcode}
-        WHERE commodity_id = #{commodityId}
+        WHERE commodity_id = #{id}
 
     </update>
 

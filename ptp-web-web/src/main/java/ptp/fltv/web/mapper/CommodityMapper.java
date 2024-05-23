@@ -47,6 +47,17 @@ public interface CommodityMapper extends BaseMapper<Commodity> {
 
 
     /**
+     * @return 全部的商品数据
+     * @author Lenovo/LiGuanda
+     * @date 2024/5/23 PM 9:51:56
+     * @version 1.0.0
+     * @description 获取全部的商品数据
+     * @filename CommodityMapper.java
+     */
+    List<Commodity> list();
+
+
+    /**
      * @param commodity 待插入的商品数据
      * @return 插入成功所影响的行数
      * @author Lenovo/LiGuanda
@@ -80,7 +91,7 @@ public interface CommodityMapper extends BaseMapper<Commodity> {
      * @description 更新单个商品(不包含商品详情部分)
      * @filename CommodityMapper.java
      */
-    int updateCommodity(@Nonnull @Param("commodity") Commodity commodity);
+    int updateCommodity(@Nonnull Commodity commodity);
 
 
     /**
@@ -92,7 +103,7 @@ public interface CommodityMapper extends BaseMapper<Commodity> {
      * @description 更新单个商品(只包含商品详情部分)
      * @filename CommodityMapper.java
      */
-    int updateCommodityDetails(@Nonnull @Param("commodity") Commodity commodity);
+    int updateCommodityDetails(@Nonnull Commodity commodity);
 
 
     /**

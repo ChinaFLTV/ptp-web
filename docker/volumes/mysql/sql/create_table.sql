@@ -248,8 +248,8 @@ CREATE TABLE IF NOT EXISTS `commodity`
 CREATE TABLE IF NOT EXISTS `commodity_details`
 (
 
-    `id`             BIGINT UNSIGNED PRIMARY KEY NOT NULL COMMENT '商品详情唯一标识符',
-    `commodity_id`   BIGINT UNSIGNED             NOT NULL COMMENT '商品ID',
+    `id`             BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT NOT NULL COMMENT '商品详情唯一标识符', -- // 2024-5-23  21:13-对于商品详情ID，我们默认采用数据块自动主键类型，这样做不会产生副作用，因为商品详情ID不会流入到Java实体类和业务逻辑这里，因此也就不存在主键ID所出现的传统问题和风险
+    `commodity_id`   BIGINT UNSIGNED                            NOT NULL COMMENT '商品ID',
     `stock_quantity` INT UNSIGNED COMMENT '商品库存数量',
     `brand`          VARCHAR(255) COMMENT '商品品牌',
     `weight`         DOUBLE UNSIGNED COMMENT '商品重量',
