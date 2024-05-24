@@ -95,7 +95,7 @@ public class CommodityServiceImpl extends ServiceImpl<CommodityMapper, Commodity
 
 
     @Override
-    public boolean replenishOne(@Nonnull Long id, @Nonnull Integer count) {
+    public Commodity replenishOne(@Nonnull Long id, @Nonnull Integer count) {
 
         Commodity commodity = getOneById(id);
         if (commodity != null) {
@@ -108,17 +108,17 @@ public class CommodityServiceImpl extends ServiceImpl<CommodityMapper, Commodity
             // 2.通过获取代理对象来直接调用
             // 这里我们选择第二种，不过要在配置类上添加 @EnableAspectJAutoProxy(exposeProxy = true) 注解
             int updateItemCount = ((CommodityService) AopContext.currentProxy()).updateOne(commodity);
-            return updateItemCount > 0;
+            return updateItemCount > 0 ? commodity : null;
 
         }
 
-        return false;
+        return null;
 
     }
 
 
     @Override
-    public boolean seckillOne(@Nonnull Long id, @Nonnull Integer count) {
+    public Commodity seckillOne(@Nonnull Long id, @Nonnull Integer count) {
 
         Commodity commodity = getOneById(id);
         if (commodity != null && commodity.getStockQuantity() >= count) {
@@ -131,10 +131,11 @@ public class CommodityServiceImpl extends ServiceImpl<CommodityMapper, Commodity
 
             }
             int updateItemCount = ((CommodityService) AopContext.currentProxy()).updateOne(commodity);
-            return updateItemCount > 0;
+            return updateItemCount > 0 ? commodity : null;
 
         }
-        return false;
+
+        return null;
 
     }
 

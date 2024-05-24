@@ -89,11 +89,11 @@ public class Commodity implements Serializable {
     @Schema(description = "收藏量")
     private Integer starNum;
 
-    @Field(name = "browse_num", type = FieldType.Double)
+    @Field(type = FieldType.Double)
     @Schema(description = "商品售价")
     private double price;
 
-    @Field(name = "star_num", type = FieldType.Integer)
+    @Field(name = "stock_quantity", type = FieldType.Integer)
     @Schema(description = "商品库存数量")
     private int stockQuantity;
 
@@ -101,7 +101,7 @@ public class Commodity implements Serializable {
     @Schema(description = "商品品牌")
     private String brand;
 
-    @Field(name = "star_num", type = FieldType.Double)
+    @Field(type = FieldType.Double)
     @Schema(description = "商品重量")
     private double weight;
 

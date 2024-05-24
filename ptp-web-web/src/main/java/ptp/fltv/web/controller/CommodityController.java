@@ -6,8 +6,10 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import pfp.fltv.common.exceptions.PtpException;
 import pfp.fltv.common.model.po.finance.Commodity;
 import pfp.fltv.common.response.Result;
 import ptp.fltv.web.constants.WebConstants;
@@ -149,6 +151,10 @@ public class CommodityController {
             restTemplate.delete(ES_DELETE_COMMODITY_URL, urlValues);
             map.put("es_result", Result.BLANK);
 
+        } else {
+
+            throw new PtpException(807);
+
         }
 
         return Result.neutral(map);
@@ -156,9 +162,10 @@ public class CommodityController {
     }
 
 
+    @Transactional
     @SentinelResource("web-finance-commodity-controller")
     @Operation(description = "根据ID秒杀一个商品")
-    @PutMapping("/extension/seckill/single")
+    @PutMapping("/extension/seckill")
     public Result<?> seckillSingleCommodity(
 
             @Parameter(name = "id", description = "待秒杀的单个商品ID") @RequestParam("id") Long id,
@@ -166,16 +173,51 @@ public class CommodityController {
 
     ) {
 
-        boolean isSeckillSuccessfully = commodityService.seckillOne(id, count);
+        Commodity modifiedCommodity = commodityService.seckillOne(id, count);
 
         Map<String, Object> map = new HashMap<>();
         Map<String, Object> mysqlResult = new HashMap<>();
-        mysqlResult.put("isUpdated", isSeckillSuccessfully);
+        mysqlResult.put("isUpdated", modifiedCommodity != null);
         map.put("mysql_result", mysqlResult);
 
-        if (isSeckillSuccessfully) {
+        if (modifiedCommodity != null) {
 
-            restTemplate.put(ES_UPDATE_COMMODITY_URL, commodity);
+            restTemplate.put(ES_UPDATE_COMMODITY_URL, modifiedCommodity);
+            map.put("es_result", Result.BLANK);
+
+        } else {
+
+            // 2024-5-24  21:54-MySQL数据库部分执行失败则立即抛异常
+            throw new PtpException(807);
+
+        }
+
+        return Result.neutral(map);
+
+    }
+
+
+    @Transactional
+    @SentinelResource("web-finance-commodity-controller")
+    @Operation(description = "根据ID给一种商品补货")
+    @PutMapping("/extension/replenish")
+    public Result<?> replenishSingleCommodity(
+
+            @Parameter(name = "id", description = "待补货的单个商品ID") @RequestParam("id") Long id,
+            @Parameter(name = "count", description = "待补货的单个商品的数量") @RequestParam("count") Integer count
+
+    ) {
+
+        Commodity modifiedCommodity = commodityService.replenishOne(id, count);
+
+        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> mysqlResult = new HashMap<>();
+        mysqlResult.put("isUpdated", modifiedCommodity != null);
+        map.put("mysql_result", mysqlResult);
+
+        if (modifiedCommodity != null) {
+
+            restTemplate.put(ES_UPDATE_COMMODITY_URL, modifiedCommodity);
             map.put("es_result", Result.BLANK);
 
         }
