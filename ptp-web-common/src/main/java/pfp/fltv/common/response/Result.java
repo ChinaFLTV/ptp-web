@@ -101,7 +101,7 @@ public class Result<T> implements Serializable {
      */
     public static <U> Result<U> failure(U data) {
 
-        return new Result<>(ResponseStatus.FAIL, Timestamp.from(Instant.now()), data);
+        return new Result<>(ResponseStatus.FAILURE, Timestamp.from(Instant.now()), data);
 
     }
 

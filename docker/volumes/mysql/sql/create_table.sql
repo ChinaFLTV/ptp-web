@@ -266,3 +266,38 @@ CREATE TABLE IF NOT EXISTS `commodity_details`
     ENGINE = InnoDB
     DEFAULT CHARSET = utf8mb4
     COMMENT ='商品详情';
+
+
+# 2024-5-25  22:45-创建transaction_record表
+CREATE TABLE `transaction_record`
+(
+    `id`           BIGINT UNSIGNED PRIMARY KEY NOT NULL COMMENT 'ID',
+    `uid`          BIGINT UNSIGNED             NOT NULL COMMENT '交易者ID',
+    `commodity_id` BIGINT UNSIGNED             NOT NULL COMMENT '商品ID',
+    `remark`       TEXT                        NOT NULL COMMENT '交易备注',
+    `count`        INT(11)         DEFAULT 0   NOT NULL COMMENT '下单数量',
+    `total_price`  DOUBLE UNSIGNED DEFAULT 0   NOT NULL COMMENT '总价',
+    `discount`     DOUBLE UNSIGNED DEFAULT 0   NOT NULL COMMENT '折扣',
+    `payment_mode` TEXT                        NOT NULL COMMENT '支付方式',
+    `tags`         TEXT COMMENT '标签',
+    `category`     TEXT COMMENT '分类',
+    `browse_num`   INT UNSIGNED    DEFAULT 0 DEFAULT NULL COMMENT '浏览量',
+    `like_num`     INT UNSIGNED    DEFAULT 0 DEFAULT NULL COMMENT '点赞量',
+    `unlike_num`   INT UNSIGNED    DEFAULT 0 DEFAULT NULL COMMENT '倒赞量',
+    `comment_num`  INT UNSIGNED    DEFAULT 0 DEFAULT NULL COMMENT '评论量',
+    `star_num`     INT UNSIGNED    DEFAULT 0 DEFAULT NULL COMMENT '收藏量',
+    `processors`   TEXT COMMENT '中间处理该订单的人员ID',
+    `address_info` TEXT COMMENT '发布时用户所在的地址信息',
+    `status`       INT UNSIGNED    DEFAULT 1301 DEFAULT NULL COMMENT '实例状态',
+    `meta`         TEXT COMMENT '其他数据配置(JSON)',
+    `create_time`  TIMESTAMP                   NOT NULL COMMENT '流水创建时间',
+    `update_time`  TIMESTAMP                   NOT NULL COMMENT '（最后）更新时间',
+    `is_deleted`   INT UNSIGNED                NOT NULL DEFAULT 0 COMMENT '当前实体是否已被逻辑删除',
+
+    FOREIGN KEY (uid) REFERENCES user (id),
+    FOREIGN KEY (commodity_id) REFERENCES commodity (id)
+
+)
+    ENGINE = InnoDB
+    DEFAULT CHARSET = utf8mb4
+    COMMENT ='商品交易订单(PO实体类)';

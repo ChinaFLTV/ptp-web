@@ -63,5 +63,10 @@
     "start": 1200,
     "end": 1299,
     "enum": "CommodityStatus"
+  },
+  {
+    "start": 1300,
+    "end": 1399,
+    "enum": "RecordStatus"
   }
 ]

@@ -118,10 +118,18 @@ public class CommodityServiceImpl extends ServiceImpl<CommodityMapper, Commodity
 
 
     @Override
-    public Commodity seckillOne(@Nonnull Long id, @Nonnull Integer count) {
+    public Commodity seckillOne(@Nonnull Long id, @Nonnull Integer count) throws PtpException {
 
         Commodity commodity = getOneById(id);
         if (commodity != null && commodity.getStockQuantity() >= count) {
+
+            // 2024-5-25  21:49-若商品库存数量已经为空，则直接抛异常，比直接返回null还优雅
+            if (commodity.getStockQuantity() <= 0) {
+
+                // 2024-5-25  21:54-这里不能直接修正商品状态为售罄，有可能商品处于其他不可变状态！
+                throw new PtpException(808, "The stock of goods is empty !");
+
+            }
 
             commodity.setStockQuantity(commodity.getStockQuantity() - count);
             // 2024-5-2  22:40-秒杀后检查库存是否有剩余，若无，则置商品状态为售罄，也节省了一次单独更新的开销
