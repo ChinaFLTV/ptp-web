@@ -18,6 +18,7 @@
         <module>ptp-web-service-store</module>
         <module>ptp-web-service-elasticsearch</module>
         <module>ptp-web-service-job</module>
+        <module>ptp-web-service-mq</module>
     </modules>
 
     <dependencies>

@@ -40,7 +40,7 @@ services:
       SET_CONTAINER_TIMEZONE: true
       CONTAINER_TIMEZONE: Asia/Shanghai
     restart: on-failure
-    # command: echo 6666666666666666 && mysql -uroot -proot
+    # command: mysql -uroot -proot
     logging:
       driver: json-file
       options:
@@ -221,35 +221,35 @@ services:
         max-file: 64
 
   # 2024-4-26  20:45-安装kes
-  kes:
-    container_name: ptp-backend-kes-1
-    labels:
-      name: ptp-backend-kes-1
-      author: LiGuanda
-      description: "用于对用户提交上云的媒体数据提供安全服务保证"
-    image: minio/kes:${KES_VERSION}
-    env_file:
-      - .env
-    dns: 8.8.8.8
-    hostname: ptp-backend-kes-1
-    extra_hosts:
-      - exthost:${EXTERNAL_LOCALHOST}
-    networks:
-      ptp-network:
-        ipv4_address: ${KES_LOCALHOST}
-    ports:
-      - "7373:7373"
-    expose:
-      - 7373
-      # environment:
-      # KES_SERVER: http://${KES_LOCALHOST}:7373
-      # KES_API_KEY: kes:v1:AD9E7FSYWrMD+VjhI6q545cYT9YOyFxZb7UnjEepYDRc
-    restart: on-failure
-    logging:
-      driver: json-file
-      options:
-        max-size: 256k
-        max-file: 64
+#  kes:
+#    container_name: ptp-backend-kes-1
+#    labels:
+#      name: ptp-backend-kes-1
+#      author: LiGuanda
+#      description: "用于对用户提交上云的媒体数据提供安全服务保证"
+#    image: minio/kes:${KES_VERSION}
+#    env_file:
+#      - .env
+#    dns: 8.8.8.8
+#    hostname: ptp-backend-kes-1
+#    extra_hosts:
+#      - exthost:${EXTERNAL_LOCALHOST}
+#    networks:
+#      ptp-network:
+#        ipv4_address: ${KES_LOCALHOST}
+#    ports:
+#      - "7373:7373"
+#    expose:
+#      - 7373
+#      # environment:
+#      # KES_SERVER: http://${KES_LOCALHOST}:7373
+#      # KES_API_KEY: kes:v1:AD9E7FSYWrMD+VjhI6q545cYT9YOyFxZb7UnjEepYDRc
+#    restart: on-failure
+#    logging:
+#      driver: json-file
+#      options:
+#        max-size: 256k
+#        max-file: 64
 
   # 2024-4-27  18:32-安装nacos
   nacos:

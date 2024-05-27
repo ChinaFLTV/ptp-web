@@ -1,0 +1,33 @@
+server:
+  port: 8210
+  servlet:
+    context-path: /api/v1/service/mq
+
+
+spring:
+  cloud:
+    # 2024-5-27  22:16-sentinel相关配置
+    sentinel:
+      transport:
+        dashboard: 127.0.0.1:9888
+      log:
+        dir: D:\JavaProjects\ptp-web-backend\logs\sentinel\service\mq
+        switch-pid: true
+
+
+# 2024-5-27  22:16-Knife4j相关配置
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+  cors: true
+
+
+# 2024-5-27  22:16-OpenAPI文档相关配置
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    csrf:
+      enabled: true
+    path: /swagger-ui.html
