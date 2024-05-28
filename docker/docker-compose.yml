@@ -3,6 +3,19 @@ version: "3.9"
 services:
 
 
+  # 2024-5-28  17:42-启动MySQL容器失败请参照下面的方案进行修改：修改docker-entrypoint.sh和init.sh脚本文件的#!/bin/bash部分，重新写一遍
+#  我的头发与此非常相似。在我的情况下 /bin/bash 确实存在。但实际上问题是 Windows 行尾。
+#
+#  在我的例子中，git 存储库有一个带有 Unix 行尾 (\n) 的入口点脚本。但是当在 Windows 机器上签出存储库时，git 决定尝试并聪明地将文件中的行结尾替换为 Windows 行结尾 (\r\n)。
+#
+#  这意味着 shebang 不起作用，因为它不是在寻找 /bin/bash ，而是在寻找 /bin/bash\r 。
+#
+#  我的解决方案是禁用 git 的自动转换：
+#
+#  git config --global core.autocrlf input
+#
+#  然后再次检查存储库并重建。
+# 解决方案链接：https://segmentfault.com/q/1010000042803305
   # 2024-4-10  16:16-创建MySQL容器
   mysql:
     container_name: ptp-backend-mysql-1
@@ -26,14 +39,14 @@ services:
     expose:
       - 3306
     volumes:
-      - ./volumes/mysql/docker-entrypoint.sh:/usr/local/bin/docker-entrypoint.sh:rw
-      - ./volumes/mysql/etc/mysql/conf.d:/etc/mysql/conf.d:rw
+      - ./volumes/mysql/usr/local/bin/:/usr/local/bin/:r
+      - ./volumes/mysql/etc/mysql/conf.d:/etc/mysql/conf.d:r
       - ./volumes/mysql/var/log:/var/log:rw
       # - ./volumes/mysql/var/lib/mysql:/var/lib/mysql:rw
       # - ./volumes/mysql/run/mysqld:/run/mysqld:rw
-      - ./volumes/mysql/etc/my.cnf:/etc/my.cnf:rw
+      - ./volumes/mysql/etc/my.cnf:/etc/my.cnf:r
       - ./volumes/mysql/sql:/docker-entrypoint-initdb.d/sql/:rw
-      - ./volumes/mysql/script:/docker-entrypoint-initdb.d/:rw
+      - ./volumes/mysql/script:/docker-entrypoint-initdb.d/:r
     environment:
       MYSQL_ROOT_PASSWORD: root
       TZ: Asia/Shanghai
@@ -162,8 +175,8 @@ services:
       - "5601:5601"
     expose:
       - 5601
-    volumes:
-      - ./volumes/kibana/config:/usr/share/kibana/config:rw
+   # volumes:
+     # - ./volumes/kibana/config:/usr/share/kibana/config:rw
     environment:
       ELASTICSEARCH_HOSTS: http://${EXTERNAL_LOCALHOST}:9200
       TZ: Asia/Shanghai
@@ -221,35 +234,35 @@ services:
         max-file: 64
 
   # 2024-4-26  20:45-安装kes
-#  kes:
-#    container_name: ptp-backend-kes-1
-#    labels:
-#      name: ptp-backend-kes-1
-#      author: LiGuanda
-#      description: "用于对用户提交上云的媒体数据提供安全服务保证"
-#    image: minio/kes:${KES_VERSION}
-#    env_file:
-#      - .env
-#    dns: 8.8.8.8
-#    hostname: ptp-backend-kes-1
-#    extra_hosts:
-#      - exthost:${EXTERNAL_LOCALHOST}
-#    networks:
-#      ptp-network:
-#        ipv4_address: ${KES_LOCALHOST}
-#    ports:
-#      - "7373:7373"
-#    expose:
-#      - 7373
-#      # environment:
-#      # KES_SERVER: http://${KES_LOCALHOST}:7373
-#      # KES_API_KEY: kes:v1:AD9E7FSYWrMD+VjhI6q545cYT9YOyFxZb7UnjEepYDRc
-#    restart: on-failure
-#    logging:
-#      driver: json-file
-#      options:
-#        max-size: 256k
-#        max-file: 64
+  #  kes:
+  #    container_name: ptp-backend-kes-1
+  #    labels:
+  #      name: ptp-backend-kes-1
+  #      author: LiGuanda
+  #      description: "用于对用户提交上云的媒体数据提供安全服务保证"
+  #    image: minio/kes:${KES_VERSION}
+  #    env_file:
+  #      - .env
+  #    dns: 8.8.8.8
+  #    hostname: ptp-backend-kes-1
+  #    extra_hosts:
+  #      - exthost:${EXTERNAL_LOCALHOST}
+  #    networks:
+  #      ptp-network:
+  #        ipv4_address: ${KES_LOCALHOST}
+  #    ports:
+  #      - "7373:7373"
+  #    expose:
+  #      - 7373
+  #      # environment:
+  #      # KES_SERVER: http://${KES_LOCALHOST}:7373
+  #      # KES_API_KEY: kes:v1:AD9E7FSYWrMD+VjhI6q545cYT9YOyFxZb7UnjEepYDRc
+  #    restart: on-failure
+  #    logging:
+  #      driver: json-file
+  #      options:
+  #        max-size: 256k
+  #        max-file: 64
 
   # 2024-4-27  18:32-安装nacos
   nacos:
