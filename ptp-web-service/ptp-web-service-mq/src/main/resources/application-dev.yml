@@ -1,0 +1,4 @@
+# 2024-5-29  22:57-设置RocketMQ的日志级别
+logging:
+  level:
+    com.alibaba.cloud.stream.binder.rocketmq: info

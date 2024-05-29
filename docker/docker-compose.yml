@@ -4,18 +4,18 @@ services:
 
 
   # 2024-5-28  17:42-启动MySQL容器失败请参照下面的方案进行修改：修改docker-entrypoint.sh和init.sh脚本文件的#!/bin/bash部分，重新写一遍
-#  我的头发与此非常相似。在我的情况下 /bin/bash 确实存在。但实际上问题是 Windows 行尾。
-#
-#  在我的例子中，git 存储库有一个带有 Unix 行尾 (\n) 的入口点脚本。但是当在 Windows 机器上签出存储库时，git 决定尝试并聪明地将文件中的行结尾替换为 Windows 行结尾 (\r\n)。
-#
-#  这意味着 shebang 不起作用，因为它不是在寻找 /bin/bash ，而是在寻找 /bin/bash\r 。
-#
-#  我的解决方案是禁用 git 的自动转换：
-#
-#  git config --global core.autocrlf input
-#
-#  然后再次检查存储库并重建。
-# 解决方案链接：https://segmentfault.com/q/1010000042803305
+  #  我的头发与此非常相似。在我的情况下 /bin/bash 确实存在。但实际上问题是 Windows 行尾。
+  #
+  #  在我的例子中，git 存储库有一个带有 Unix 行尾 (\n) 的入口点脚本。但是当在 Windows 机器上签出存储库时，git 决定尝试并聪明地将文件中的行结尾替换为 Windows 行结尾 (\r\n)。
+  #
+  #  这意味着 shebang 不起作用，因为它不是在寻找 /bin/bash ，而是在寻找 /bin/bash\r 。
+  #
+  #  我的解决方案是禁用 git 的自动转换：
+  #
+  #  git config --global core.autocrlf input
+  #
+  #  然后再次检查存储库并重建。
+  # 解决方案链接：https://segmentfault.com/q/1010000042803305
   # 2024-4-10  16:16-创建MySQL容器
   mysql:
     container_name: ptp-backend-mysql-1
@@ -175,8 +175,8 @@ services:
       - "5601:5601"
     expose:
       - 5601
-   # volumes:
-     # - ./volumes/kibana/config:/usr/share/kibana/config:rw
+      # volumes:
+      # - ./volumes/kibana/config:/usr/share/kibana/config:rw
     environment:
       ELASTICSEARCH_HOSTS: http://${EXTERNAL_LOCALHOST}:9200
       TZ: Asia/Shanghai
@@ -301,6 +301,111 @@ services:
       options:
         max-size: 256k
         max-file: 64
+
+
+  # 2024-5-29  20:38-安装RocketMQ-NameServer
+  rocketmq-nameserver:
+    container_name: ptp-backend-rocketmq-nameserver-1
+    labels:
+      name: ptp-backend-rocketmq-nameserver-1
+      author: LiGuanda
+      description: "用于给RocketMQ的Broker提供服务发现与注册功能"
+    image: apache/rocketmq:${ROCKETMQ_VERSION}
+    env_file:
+      - .env
+    dns: 8.8.8.8
+    hostname: ptp-backend-rocketmq-nameserver-1
+    extra_hosts:
+      - exthost:${EXTERNAL_LOCALHOST}
+    networks:
+      ptp-network:
+        ipv4_address: ${ROCKETMQ_NAMESERVER_LOCALHOST}
+    ports:
+      - "9876:9876"
+    expose:
+      - 9876
+    volumes:
+      - "./volumes/rocketmq/logs:/home/rocketmq/logs:rw"
+      - "./volumes/rocketmq/conf/broker.conf:/home/rocketmq/rocketmq-5.2.0/conf/broker.conf:rw"
+    command: sh mqnamesrv
+    restart: on-failure
+    logging:
+      driver: json-file
+      options:
+        max-size: 256k
+        max-file: 64
+
+
+  # 2024-5-29  21:43-安装RocketMQ-Broker
+  rocketmq-broker:
+    container_name: ptp-backend-rocketmq-broker-1
+    labels:
+      name: ptp-backend-rocketmq-broker-1
+      author: LiGuanda
+      description: "用于真正提供消息收发功能"
+    image: apache/rocketmq:${ROCKETMQ_VERSION}
+    env_file:
+      - .env
+    dns: 8.8.8.8
+    hostname: ptp-backend-rocketmq-broker-1
+    extra_hosts:
+      - exthost:${EXTERNAL_LOCALHOST}
+    networks:
+      ptp-network:
+        ipv4_address: ${ROCKETMQ_BROKER_LOCALHOST}
+    ports:
+      - "10909:10909"
+      - "10911:10911"
+    expose:
+      - 10909
+      - 10911
+    volumes:
+      - "./volumes/rocketmq/logs:/home/rocketmq/logs:rw"
+      - "./volumes/rocketmq/conf/broker.conf:/home/rocketmq/rocketmq-5.2.0/conf/broker.conf:rw"
+    command: sh mqbroker -n ${ROCKETMQ_NAMESERVER_LOCALHOST}:9876 --enable-proxy autoCreateTopicEnable=true
+    restart: on-failure
+    logging:
+      driver: json-file
+      options:
+        max-size: 256k
+        max-file: 64
+    depends_on:
+      - rocketmq-nameserver
+
+
+  # 2024-5-29  21:43-安装RocketMQ-Dashboard
+  rocketmq-dashboard:
+    container_name: ptp-backend-rocketmq-dashboard-1
+    labels:
+      name: ptp-backend-rocketmq-dashboard-1
+      author: LiGuanda
+      description: "用于监控RocketMQ的各种事件、性能的统计信息"
+    image: apacherocketmq/rocketmq-dashboard:${ROCKETMQ_DASHBOARD_VERSION}
+    env_file:
+      - .env
+    dns: 8.8.8.8
+    hostname: ptp-backend-rocketmq-dashboard-1
+    extra_hosts:
+      - exthost:${EXTERNAL_LOCALHOST}
+    networks:
+      ptp-network:
+        ipv4_address: ${ROCKETMQ_DASHBOARD_LOCALHOST}
+    ports:
+      - "8280:8080"
+    expose:
+      - 8080
+    environment:
+      JAVA_OPTS: "-Drocketmq.namesrv.addr=${ROCKETMQ_NAMESERVER_LOCALHOST}:9876"
+    command: sh rocketmq-dashboard
+    restart: on-failure
+    logging:
+      driver: json-file
+      options:
+        max-size: 256k
+        max-file: 64
+    depends_on:
+      - rocketmq-nameserver
+      - rocketmq-broker
 
 
 # 2024-4-10  15:28-新建一个自定义网络，将全部容器部署到同一个网络内，使其之间能够相互连通

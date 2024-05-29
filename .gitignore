@@ -43,3 +43,4 @@ docker/volumes/redis/data/
 
 # 2024-5-17  22:30-忽略各个微服务模块产生的日志文件
 logs/
+docker/volumes/rocketmq/logs
