@@ -1,3 +1,9 @@
 mybatis-plus:
   configuration:
     log-impl: '' # 生产环境关闭日志
+
+
+# 2024-5-30  22:26-设置RocketMQ的生产环境下的日志级别
+logging:
+  level:
+    com.alibaba.cloud.stream.binder.rocketmq: info
