@@ -1,4 +1,4 @@
-package ptp.fltv.web.service;
+package ptp.fltv.web.service.mq.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import pfp.fltv.common.model.po.finance.TransactionRecord;

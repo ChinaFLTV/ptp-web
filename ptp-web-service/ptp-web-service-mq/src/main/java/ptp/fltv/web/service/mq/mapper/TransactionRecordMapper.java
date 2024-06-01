@@ -1,4 +1,4 @@
-package ptp.fltv.web.mapper;
+package ptp.fltv.web.service.mq.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import pfp.fltv.common.model.po.finance.TransactionRecord;

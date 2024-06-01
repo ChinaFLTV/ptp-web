@@ -113,7 +113,7 @@ public interface CommodityService extends IService<Commodity> {
      * @param id    秒杀的商品ID
      * @return 秒杀成功则返回修改后的商品数据，否则返回null
      * @throws PtpException 商品库存为空时抛出
-     * @implNote 这样做也方便后续ELasticSearch更新操作无需再去查询一遍，直接进行更新即可，节省了一次查询开销
+     * @implNote 这样做也方便后续ElasticSearch更新操作无需再去查询一遍，直接进行更新即可，节省了一次查询开销
      * @author Lenovo/LiGuanda
      * @date 2024/5/23 PM 10:36:14
      * @version 1.0.0

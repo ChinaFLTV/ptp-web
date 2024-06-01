@@ -1,10 +1,10 @@
-package ptp.fltv.web.service.impl;
+package ptp.fltv.web.service.mq.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import pfp.fltv.common.model.po.finance.TransactionRecord;
-import ptp.fltv.web.mapper.TransactionRecordMapper;
-import ptp.fltv.web.service.TransactionRecordService;
+import ptp.fltv.web.service.mq.mapper.TransactionRecordMapper;
+import ptp.fltv.web.service.mq.service.TransactionRecordService;
 
 /**
  * @author Lenovo/LiGuanda

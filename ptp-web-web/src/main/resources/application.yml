@@ -102,26 +102,6 @@ spring:
         switch-pid: true # 2024-5-18  21:47-单机多模块必须启用该参数以区分各模块产生的日志
 
 
-    # 2024-5-30  22:25-RocketMQ相关配置
-    stream:
-      function:
-        # 配置消息通道通用属性（适用于所有消息中间件）
-        bindings:
-          producer1-out-0:
-            destination: commodity-seckill-consume-topic # topic消息主题
-            contentType: application/json # 内容格式,默认是application/json
-            group: commodity-seckill-consumer-group # 消费者组
-          consumer1-out-0:
-            destination: commodity-seckill-consume-topic
-            contentType: application/json
-            group: commodity-seckill-consumer-group
-      rocketmq:
-        binder:
-          # 客户端接入点，必填rocketMQ的连接地址，binder高度抽象
-          name-server: 127.0.0.1:9876
-          vipChannelEnabled: true # 是否开启vip通道（兼容老版本使用。多监听一个端口用于接受处理消息，防止端口占用。）
-
-
 # 2024-3-16  19:33-Knife4j配置
 knife4j:
   # enable: true # 2024-3-16  19:42-WebFlux模式下无法增强，运行将报 java.lang.ClassNotFoundException: jakarta.servlet.Filter 异常
@@ -155,3 +135,10 @@ mybatis-plus:
       logic-delete-field: isDelete # 2024-3-26  8:08-全局逻辑删除的实体字段名
       logic-delete-value: 1 # 逻辑已删除值（默认为 1）
       logic-not-delete-value: 0 # 逻辑未删除值（默认为 0）
+
+
+# 2024-6-1  17:36-RocketMQ相关配置
+rocketmq:
+  name-server: 127.0.0.1:9876
+  producer:
+    group: commodity-seckill-record-producer-group

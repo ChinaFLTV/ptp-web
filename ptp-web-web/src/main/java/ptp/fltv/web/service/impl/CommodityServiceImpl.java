@@ -2,6 +2,7 @@ package ptp.fltv.web.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.annotation.Nonnull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,7 @@ import java.util.List;
  * @filename CommodityServiceImpl.java
  */
 
+@Slf4j
 @Service
 public class CommodityServiceImpl extends ServiceImpl<CommodityMapper, Commodity> implements CommodityService {
 
@@ -138,6 +140,7 @@ public class CommodityServiceImpl extends ServiceImpl<CommodityMapper, Commodity
                 commodity.setStatus(CommodityStatus.SOLD_OUT);
 
             }
+
             int updateItemCount = ((CommodityService) AopContext.currentProxy()).updateOne(commodity);
             return updateItemCount > 0 ? commodity : null;
 

@@ -19,6 +19,7 @@ import pfp.fltv.common.model.po.info.AddressInfo;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -61,15 +62,15 @@ public class TransactionRecord implements Serializable {
 
     @Field(type = FieldType.Integer)
     @Schema(description = "下单数量")
-    private Integer count;
+    private Integer count = 0;
 
     @Field(type = FieldType.Double)
     @Schema(description = "总价")
-    private Double totalPrice;
+    private Double totalPrice = 0D;
 
     @Field(type = FieldType.Double)
     @Schema(description = "折扣")
-    private Double discount;
+    private Double discount = 0D;
 
     @Field(type = FieldType.Text, analyzer = "analysis-ik")
     @Schema(description = "支付方式")
@@ -78,37 +79,37 @@ public class TransactionRecord implements Serializable {
     @Transient
     @Schema(description = "标签")
     @TableField(typeHandler = JacksonTypeHandler.class)
-    private List<String> tags;
+    private List<String> tags = new ArrayList<>();
 
     @Transient
     @Schema(description = "分类")
     @TableField(typeHandler = JacksonTypeHandler.class)
-    private List<String> category;
+    private List<String> category = new ArrayList<>();
 
     // 2024-5-25  22:38-以下五个字段供内部为交易订单评级或者加急处理使用
     @Field(name = "browse_num", type = FieldType.Integer)
     @Schema(description = "浏览量")
-    private Integer browseNum;
+    private Integer browseNum = 0;
 
     @Field(name = "like_num", type = FieldType.Integer)
     @Schema(description = "点赞量")
-    private Integer likeNum;
+    private Integer likeNum = 0;
 
     @Field(name = "unlike_num", type = FieldType.Integer)
     @Schema(description = "倒赞量")
-    private Integer unlikeNum;
+    private Integer unlikeNum = 0;
 
     @Field(name = "comment_num", type = FieldType.Integer)
     @Schema(description = "评论量")
-    private Integer commentNum;
+    private Integer commentNum = 0;
 
     @Field(name = "star_num", type = FieldType.Integer)
     @Schema(description = "收藏量")
-    private Integer starNum;
+    private Integer starNum = 0;
 
     @Schema(description = "中间处理该订单的人员ID")
     @TableField(typeHandler = JacksonTypeHandler.class)
-    private List<Long> processors;
+    private List<Long> processors = new ArrayList<>();
 
     @Transient
     @Schema(description = "发布时用户所在的地址信息")
@@ -118,7 +119,7 @@ public class TransactionRecord implements Serializable {
     @Field(type = FieldType.Keyword)
     @Schema(description = "实例状态")
     @TableField(typeHandler = JacksonTypeHandler.class)
-    private RecordStatus status;
+    private RecordStatus status = RecordStatus.NORMAL;
 
     @Transient
     @Schema(description = "其他数据配置(JSON)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)

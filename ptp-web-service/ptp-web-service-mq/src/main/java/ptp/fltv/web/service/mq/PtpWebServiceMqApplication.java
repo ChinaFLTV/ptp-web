@@ -1,5 +1,6 @@
 package ptp.fltv.web.service.mq;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
@@ -12,6 +13,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  * @filename PtpWebServiceMqApplication.java
  */
 
+@MapperScan("ptp.fltv.web.service.mq.mapper")
 @EnableDiscoveryClient // 2024-5-27  22:14-开启nacos服务注册发现功能
 @SpringBootApplication
 public class PtpWebServiceMqApplication {

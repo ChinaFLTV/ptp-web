@@ -5,16 +5,22 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.AllArgsConstructor;
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import pfp.fltv.common.exceptions.PtpException;
 import pfp.fltv.common.model.po.finance.Commodity;
+import pfp.fltv.common.model.po.finance.TransactionRecord;
 import pfp.fltv.common.response.Result;
 import ptp.fltv.web.constants.WebConstants;
+import ptp.fltv.web.mq.CommodityMqService;
 import ptp.fltv.web.service.CommodityService;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +33,7 @@ import java.util.Map;
  * @filename CommodityController.java
  */
 
+@AllArgsConstructor
 @Tag(name = "商品操作接口")
 @RestController
 @RequestMapping("/finance/commodity")
@@ -39,10 +46,10 @@ public class CommodityController {
     private static final String ES_DELETE_COMMODITY_URL = ES_PREFIX_COMMODITY_URL + "/delete/single/{id}";
 
 
-    @Resource
     private CommodityService commodityService;
-    @Resource
     private RestTemplate restTemplate;
+    private RocketMQTemplate rocketMQTemplate;
+    private CommodityMqService commodityMqService;
 
 
     @SentinelResource("web-finance-commodity-controller")
@@ -169,9 +176,17 @@ public class CommodityController {
     public Result<?> seckillSingleCommodity(
 
             @Parameter(name = "id", description = "待秒杀的单个商品ID") @RequestParam("id") Long id,
-            @Parameter(name = "count", description = "待秒杀的单个商品的数量") @RequestParam("count") Integer count
+            @Parameter(name = "count", description = "待秒杀的单个商品的数量") @RequestParam("count") Integer count,
+            HttpServletRequest request
 
     ) {
+
+        long uid = Long.parseLong(request.getHeader("uid") == null ? "-1" : request.getHeader("uid"));
+        if (uid < 0) {
+
+            throw new PtpException(809, "请求头部参数缺少UID");
+
+        }
 
         Commodity modifiedCommodity = commodityService.seckillOne(id, count);
 
@@ -184,6 +199,18 @@ public class CommodityController {
 
             restTemplate.put(ES_UPDATE_COMMODITY_URL, modifiedCommodity);
             map.put("es_result", Result.BLANK);
+
+            TransactionRecord record = new TransactionRecord()
+                    .setUid(uid)
+                    .setCommodityId(modifiedCommodity.getId())
+                    .setCount(count)
+                    .setTotalPrice(count * modifiedCommodity.getPrice())
+                    .setPaymentMode("Wechat")
+                    .setTags(modifiedCommodity.getTags())
+                    .setCategory(List.of("commodity", "seckill"))
+                    .setCreateTime(Timestamp.from(Instant.now()));
+
+            commodityMqService.asyncSendOrderAddMsg("commodity-seckill-record-add-topic", record, null, null);
 
         } else {
 
