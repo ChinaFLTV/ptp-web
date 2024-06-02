@@ -218,7 +218,7 @@ CREATE TABLE IF NOT EXISTS `commodity`
     `id`           BIGINT UNSIGNED PRIMARY KEY NOT NULL COMMENT '商品唯一标识符',
     `user_id`      BIGINT UNSIGNED             NOT NULL COMMENT '商品卖家ID',
     `name`         VARCHAR(255)                NOT NULL COMMENT '商品名称',
-    `description`  TEXT            DEFAULT '这个商家很懒，商品描述啥也没写。。。' COMMENT '商品详细描述',
+    `description`  TEXT            DEFAULT NULL COMMENT '商品详细描述',
     `tags`         CHAR(255)       DEFAULT NULL COMMENT '标签',
     `category`     CHAR(255)       DEFAULT NULL COMMENT '分类',
     `browse_num`   INT UNSIGNED    DEFAULT 0 COMMENT '浏览量',

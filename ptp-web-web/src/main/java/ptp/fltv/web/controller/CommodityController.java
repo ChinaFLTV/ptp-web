@@ -215,7 +215,7 @@ public class CommodityController {
         } else {
 
             // 2024-5-24  21:54-MySQL数据库部分执行失败则立即抛异常
-            throw new PtpException(807);
+            throw new PtpException(807, "商品秒杀失败");
 
         }
 
