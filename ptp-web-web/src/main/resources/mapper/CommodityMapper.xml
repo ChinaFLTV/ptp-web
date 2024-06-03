@@ -34,6 +34,8 @@
         <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
         <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
         <result column="is_deleted" property="isDeleted" jdbcType="INTEGER"/>
+        <result column="version1" property="version1" jdbcType="INTEGER"/>
+        <result column="version2" property="version2" jdbcType="INTEGER"/>
 
     </resultMap>
 
@@ -65,7 +67,9 @@
                cd.material,
                cd.origin,
                cd.image_url,
-               cd.barcode
+               cd.barcode,
+               c.version  AS version1,
+               cd.version AS version2
         FROM commodity AS c
                  INNER JOIN commodity_details AS cd
                             ON c.id = cd.commodity_id
@@ -102,13 +106,13 @@
     <insert id="insertCommodity" parameterType="pfp.fltv.common.model.po.finance.Commodity">
 
         INSERT INTO commodity (id, user_id, name, description, tags, category, price, meta, address_info,
-                               create_time, update_time)
+                               create_time, update_time, version)
         VALUES (#{id}, #{userId}, #{name}, #{description},
                 #{tags,typeHandler=com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler},
                 #{category,typeHandler=com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler}, #{price},
                 #{meta},
                 #{addressInfo,typeHandler=com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler},
-                CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+                CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, #{version1})
 
     </insert>
 
@@ -116,9 +120,9 @@
     <insert id="insertCommodityDetails" parameterType="pfp.fltv.common.model.po.finance.Commodity">
 
         INSERT INTO commodity_details (commodity_id, stock_quantity, brand, weight, size, color, material, origin,
-                                       image_url, barcode)
+                                       image_url, barcode, version)
         VALUES (#{id}, #{stockQuantity}, #{brand}, #{weight}, #{size}, #{color}, #{material},
-                #{origin}, #{imageUrl}, #{barcode})
+                #{origin}, #{imageUrl}, #{barcode}, #{version2})
 
     </insert>
 
@@ -140,7 +144,8 @@
             status       = #{status},
             meta         = #{meta},
             address_info = #{addressInfo,typeHandler=com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler},
-            update_time  = CURRENT_TIMESTAMP
+            update_time  = CURRENT_TIMESTAMP,
+            version      = #{version1}
         WHERE id = #{id}
           AND is_deleted = 0
 
@@ -158,7 +163,8 @@
             material       = #{material},
             origin         = #{origin},
             image_url      = #{imageUrl},
-            barcode        = #{barcode}
+            barcode        = #{barcode},
+            version        = #{version2}
         WHERE commodity_id = #{id}
 
     </update>

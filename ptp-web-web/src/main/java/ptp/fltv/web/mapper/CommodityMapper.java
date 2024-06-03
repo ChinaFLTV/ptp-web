@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import jakarta.annotation.Nonnull;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Update;
 import pfp.fltv.common.model.po.finance.Commodity;
 
 import java.util.List;
@@ -116,6 +117,21 @@ public interface CommodityMapper extends BaseMapper<Commodity> {
      * @filename CommodityMapper.java
      */
     int deleteOne(@Nonnull @Param("id") Long id);
+
+
+    /**
+     * @param id       待操作的商品ID
+     * @param version2 该商品的当前的版本号
+     * @param count    下调商品数量
+     * @return 该商品库存更新操作所影响的行数
+     * @author Lenovo/LiGuanda
+     * @date 2024/6/3 PM 10:10:40
+     * @version 1.0.0
+     * @description 以乐观锁的形式更新商品的库存容量(本次以注解的形式编写 ， 没必要转到mapper.xml中实现 ， 那样太麻烦了)
+     * @filename CommodityMapper.java
+     */
+    @Update("UPDATE commodity_details SET stock_quantity = stock_quantity - #{count} , version = version + 1 WHERE commodity_id = #{id} AND version = #{version2}")
+    int decreaseStockQuantityByIdAndVersion(@Nonnull @Param("id") Long id, @Nonnull @Param("count") Integer count, @Nonnull @Param("version2") Integer version2);
 
 
 }

@@ -136,7 +136,12 @@ public class TransactionRecord implements Serializable {
     @Field(name = "is_deleted", type = FieldType.Keyword)
     @Schema(description = "当前实体是否已被逻辑删除", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     @TableLogic
-    private Integer isDeleted;
+    private Integer isDeleted = 0;
+
+    @Transient
+    @Schema(description = "当前实体的版本(用于辅助实现乐观锁)")
+    @Version
+    private Integer version = 1;
 
 
 }

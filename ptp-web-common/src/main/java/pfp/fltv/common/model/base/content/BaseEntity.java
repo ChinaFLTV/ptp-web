@@ -1,9 +1,6 @@
 package pfp.fltv.common.model.base.content;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -20,6 +17,7 @@ import pfp.fltv.common.model.po.info.AddressInfo;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -63,32 +61,32 @@ public class BaseEntity implements Serializable {
     @Transient
     @Schema(description = "标签")
     @TableField(typeHandler = JacksonTypeHandler.class)
-    private List<String> tags;
+    private List<String> tags = new ArrayList<>();
 
     @Transient
     @Schema(description = "分类")
     @TableField(typeHandler = JacksonTypeHandler.class)
-    private List<String> category;
+    private List<String> category = new ArrayList<>();
 
     @Field(name = "browse_num", type = FieldType.Integer)
     @Schema(description = "浏览量")
-    private Integer browseNum;
+    private Integer browseNum = 0;
 
     @Field(name = "like_num", type = FieldType.Integer)
     @Schema(description = "点赞量")
-    private Integer likeNum;
+    private Integer likeNum = 0;
 
     @Field(name = "unlike_num", type = FieldType.Integer)
     @Schema(description = "倒赞量")
-    private Integer unlikeNum;
+    private Integer unlikeNum = 0;
 
     @Field(name = "comment_num", type = FieldType.Integer)
     @Schema(description = "评论量")
-    private Integer commentNum;
+    private Integer commentNum = 0;
 
     @Field(name = "star_num", type = FieldType.Integer)
     @Schema(description = "收藏量")
-    private Integer starNum;
+    private Integer starNum = 0;
 
     @Transient
     @Schema(description = "发布时用户所在的地址信息")
@@ -98,7 +96,7 @@ public class BaseEntity implements Serializable {
     @Field(type = FieldType.Keyword)
     @Schema(description = "实例状态")
     @TableField(typeHandler = JacksonTypeHandler.class)
-    private ContentStatus status;
+    private ContentStatus status = ContentStatus.NORMAL;
 
     @Transient
     @Schema(description = "其他数据配置(JSON)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
@@ -115,7 +113,12 @@ public class BaseEntity implements Serializable {
     @Field(name = "is_deleted", type = FieldType.Keyword)
     @Schema(description = "当前实体是否已被逻辑删除", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     @TableLogic
-    private Integer isDeleted;
+    private Integer isDeleted = 0;
+
+    @Transient
+    @Schema(description = "当前实体的版本(用于辅助实现乐观锁)")
+    @Version
+    private Integer version = 1;
 
 
 }

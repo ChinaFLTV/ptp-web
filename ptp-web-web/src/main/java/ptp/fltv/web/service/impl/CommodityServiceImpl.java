@@ -141,7 +141,7 @@ public class CommodityServiceImpl extends ServiceImpl<CommodityMapper, Commodity
 
             }
 
-            int updateItemCount = ((CommodityService) AopContext.currentProxy()).updateOne(commodity);
+            int updateItemCount = ((CommodityMapper) ((CommodityService) AopContext.currentProxy()).getBaseMapper()).decreaseStockQuantityByIdAndVersion(id, count, commodity.getVersion2());
             return updateItemCount > 0 ? commodity : null;
 
         }

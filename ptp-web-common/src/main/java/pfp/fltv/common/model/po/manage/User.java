@@ -1,9 +1,6 @@
 package pfp.fltv.common.model.po.manage;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -22,6 +19,7 @@ import pfp.fltv.common.enums.UserStatus;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 @Setting(sortOrders = Setting.SortOrder.desc)
@@ -71,7 +69,7 @@ public class User implements Serializable {
     @Field(type = FieldType.Keyword)
     @Schema(description = "用户性别")
     @TableField(typeHandler = JacksonTypeHandler.class)
-    private Gender gender;
+    private Gender gender = Gender.SECRET;
 
     @Field(type = FieldType.Text, analyzer = "analysis-ik")
     @Schema(description = "用户的个性签名")
@@ -87,11 +85,11 @@ public class User implements Serializable {
 
     @Field(name = "like_num", type = FieldType.Integer)
     @Schema(description = "用户被点赞数量")
-    private Integer likeNum;
+    private Integer likeNum = 0;
 
     @Field(name = "user_rank", type = FieldType.Double)
     @Schema(description = "用户等级")
-    private Double userRank;
+    private Double userRank = 0D;
 
     @Transient
     @Schema(description = "用户出生年月")
@@ -122,16 +120,16 @@ public class User implements Serializable {
     @Transient
     @Schema(description = "用户绑定的其他账号")
     @TableField(typeHandler = JacksonTypeHandler.class)
-    private List<String> bindAccounts;
+    private List<String> bindAccounts = new ArrayList<>();
 
     @Field(type = FieldType.Double)
     @Schema(description = "用户信誉积分")
-    private Double credit;
+    private Double credit = 100D;
 
     @Field(type = FieldType.Keyword)
     @Schema(description = "用户当前状态")
     @TableField(typeHandler = JacksonTypeHandler.class)
-    private UserStatus status;
+    private UserStatus status = UserStatus.NORMAL;
 
     @Transient
     @Schema(description = "用户其他数据配置(JSON)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
@@ -155,7 +153,12 @@ public class User implements Serializable {
 
     @Field(name = "is_deleted", type = FieldType.Keyword)
     @Schema(description = "用户是否已被删除")
-    private Integer isDeleted;
+    private Integer isDeleted = 0;
+
+    @Transient
+    @Schema(description = "当前实体的版本(用于辅助实现乐观锁)")
+    @Version
+    private Integer version = 1;
 
 
 }

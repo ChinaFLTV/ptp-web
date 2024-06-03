@@ -1,15 +1,13 @@
 package pfp.fltv.common.model.po.manage;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Transient;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -42,11 +40,11 @@ public class Role implements Serializable {
 
     @Schema(description = "角色所具有的权限")
     @TableField(typeHandler = JacksonTypeHandler.class)
-    private List<String> authorities;
+    private List<String> authorities = new ArrayList<>();
 
     @Schema(description = "角色所不被允许的权限")
     @TableField(typeHandler = JacksonTypeHandler.class)
-    private List<String> prohibition;
+    private List<String> prohibition = new ArrayList<>();
 
     @Schema(description = "角色建立时间")
     private Timestamp createTime;
@@ -55,7 +53,12 @@ public class Role implements Serializable {
     private Timestamp updateTime;
 
     @Schema(description = "角色是否已被删除")
-    private Integer isDeleted;
+    private Integer isDeleted = 0;
+
+    @Transient
+    @Schema(description = "当前实体的版本(用于辅助实现乐观锁)")
+    @Version
+    private Integer version = 1;
 
 
     /**

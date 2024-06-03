@@ -24,6 +24,7 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Lenovo/LiGuanda
@@ -73,8 +74,7 @@ public class CommodityController {
     @GetMapping("/query/page/{offset}/{limit}")
     public Result<List<Commodity>> queryCommodityPage(
 
-            @Parameter(name = "offset", description = "查询的一页商品数据的起始偏移量", in = ParameterIn.PATH) @PathVariable("offset") Long offset,
-            @Parameter(name = "limit", description = "查询的这一页商品数据的数量", in = ParameterIn.PATH) @PathVariable("limit") Long limit
+            @Parameter(name = "offset", description = "查询的一页商品数据的起始偏移量", in = ParameterIn.PATH) @PathVariable("offset") Long offset, @Parameter(name = "limit", description = "查询的这一页商品数据的数量", in = ParameterIn.PATH) @PathVariable("limit") Long limit
 
     ) {
 
@@ -169,15 +169,16 @@ public class CommodityController {
     }
 
 
+    private final AtomicInteger count1 = new AtomicInteger(0);
+
+
     @Transactional
     @SentinelResource("web-finance-commodity-controller")
     @Operation(description = "根据ID秒杀一个商品")
     @PutMapping("/extension/seckill")
-    public Result<?> seckillSingleCommodity(
+    public synchronized Result<?> seckillSingleCommodity(
 
-            @Parameter(name = "id", description = "待秒杀的单个商品ID") @RequestParam("id") Long id,
-            @Parameter(name = "count", description = "待秒杀的单个商品的数量") @RequestParam("count") Integer count,
-            HttpServletRequest request
+            @Parameter(name = "id", description = "待秒杀的单个商品ID") @RequestParam("id") Long id, @Parameter(name = "count", description = "待秒杀的单个商品的数量") @RequestParam("count") Integer count, HttpServletRequest request
 
     ) {
 
@@ -197,18 +198,14 @@ public class CommodityController {
 
         if (modifiedCommodity != null) {
 
+            int c = count1.incrementAndGet();
+            System.out.println("-----------------------------------------------------------------");
+            System.out.println("[web]当前累计秒杀成功的次数 ：" + c);
+
             restTemplate.put(ES_UPDATE_COMMODITY_URL, modifiedCommodity);
             map.put("es_result", Result.BLANK);
 
-            TransactionRecord record = new TransactionRecord()
-                    .setUid(uid)
-                    .setCommodityId(modifiedCommodity.getId())
-                    .setCount(count)
-                    .setTotalPrice(count * modifiedCommodity.getPrice())
-                    .setPaymentMode("Wechat")
-                    .setTags(modifiedCommodity.getTags())
-                    .setCategory(List.of("commodity", "seckill"))
-                    .setCreateTime(Timestamp.from(Instant.now()));
+            TransactionRecord record = new TransactionRecord().setUid(uid).setCommodityId(modifiedCommodity.getId()).setCount(count).setTotalPrice(count * modifiedCommodity.getPrice()).setPaymentMode("Wechat").setTags(modifiedCommodity.getTags()).setCategory(List.of("commodity", "seckill")).setCreateTime(Timestamp.from(Instant.now()));
 
             commodityMqService.asyncSendOrderAddMsg("commodity-seckill-record-add-topic", record, null, null);
 
@@ -230,8 +227,7 @@ public class CommodityController {
     @PutMapping("/extension/replenish")
     public Result<?> replenishSingleCommodity(
 
-            @Parameter(name = "id", description = "待补货的单个商品ID") @RequestParam("id") Long id,
-            @Parameter(name = "count", description = "待补货的单个商品的数量") @RequestParam("count") Integer count
+            @Parameter(name = "id", description = "待补货的单个商品ID") @RequestParam("id") Long id, @Parameter(name = "count", description = "待补货的单个商品的数量") @RequestParam("count") Integer count
 
     ) {
 

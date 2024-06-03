@@ -14,7 +14,8 @@ CREATE TABLE IF NOT EXISTS `asset`
     `status`      SMALLINT UNSIGNED DEFAULT 300 COMMENT '当前账户状态',
     `create_time` TIMESTAMP         DEFAULT CURRENT_TIMESTAMP COMMENT '资产创建时间',
     `update_time` TIMESTAMP         DEFAULT CURRENT_TIMESTAMP COMMENT '(最后)修改时间' ON UPDATE CURRENT_TIMESTAMP,
-    `is_deleted`  INT UNSIGNED      DEFAULT 0 COMMENT '资产是否已被删除'
+    `is_deleted`  INT UNSIGNED      DEFAULT 0 COMMENT '资产是否已被删除',
+    `version`     INT UNSIGNED      DEFAULT 1 COMMENT '当前资产实体的版本(用于辅助实现乐观锁)'
 
 )
     ENGINE = InnoDB
@@ -32,6 +33,7 @@ CREATE TABLE `role`
     `create_time` TIMESTAMP     DEFAULT CURRENT_TIMESTAMP COMMENT '角色创建时间',
     `update_time` TIMESTAMP     DEFAULT CURRENT_TIMESTAMP COMMENT '(最后)修改时间' ON UPDATE CURRENT_TIMESTAMP,
     `is_deleted`  INT UNSIGNED  DEFAULT 0 COMMENT '角色是否已被删除',
+    `version`     INT UNSIGNED  DEFAULT 1 COMMENT '当前角色实体的版本(用于辅助实现乐观锁)',
 
     UNIQUE KEY ix_code (code),
     UNIQUE KEY ix_name (name)
@@ -69,6 +71,7 @@ CREATE TABLE IF NOT EXISTS `user`
     `create_time`     TIMESTAMP         DEFAULT CURRENT_TIMESTAMP COMMENT '用户注册时间',
     `update_time`     TIMESTAMP         DEFAULT CURRENT_TIMESTAMP COMMENT '用户资料修改时间' ON UPDATE CURRENT_TIMESTAMP,
     `is_deleted`      INT UNSIGNED      DEFAULT 0 COMMENT '用户是否已被删除',
+    `version`         INT UNSIGNED      DEFAULT 1 COMMENT '当前用户实体的版本(用于辅助实现乐观锁)',
 
     FOREIGN KEY (role_id) REFERENCES role (id),
     FOREIGN KEY (asset_id) REFERENCES asset (id),
@@ -106,6 +109,7 @@ CREATE TABLE IF NOT EXISTS `dialogue`
     `create_time`  TIMESTAMP         DEFAULT CURRENT_TIMESTAMP COMMENT '内容创建时间',
     `update_time`  TIMESTAMP         DEFAULT CURRENT_TIMESTAMP COMMENT '(最后)更新时间' ON UPDATE CURRENT_TIMESTAMP,
     `is_deleted`   INT UNSIGNED      DEFAULT 0 COMMENT '当前实体是否已被逻辑删除',
+    `version`      INT UNSIGNED      DEFAULT 1 COMMENT '当前对话实体的版本(用于辅助实现乐观锁)',
 
     FOREIGN KEY (uid) REFERENCES user (id)
 
@@ -136,6 +140,7 @@ CREATE TABLE IF NOT EXISTS `announcement`
     `create_time`  TIMESTAMP         DEFAULT CURRENT_TIMESTAMP COMMENT '内容创建时间',
     `update_time`  TIMESTAMP         DEFAULT CURRENT_TIMESTAMP COMMENT '(最后)更新时间' ON UPDATE CURRENT_TIMESTAMP,
     `is_deleted`   INT UNSIGNED      DEFAULT 0 COMMENT '当前实体是否已被逻辑删除',
+    `version`      INT UNSIGNED      DEFAULT 1 COMMENT '当前公告实体的版本(用于辅助实现乐观锁)',
 
     FOREIGN KEY (uid) REFERENCES user (id)
 
@@ -167,6 +172,7 @@ CREATE TABLE IF NOT EXISTS `passage`
     `create_time`  TIMESTAMP         DEFAULT CURRENT_TIMESTAMP COMMENT '内容创建时间',
     `update_time`  TIMESTAMP         DEFAULT CURRENT_TIMESTAMP COMMENT '(最后)更新时间' ON UPDATE CURRENT_TIMESTAMP,
     `is_deleted`   INT UNSIGNED      DEFAULT 0 COMMENT '当前实体是否已被逻辑删除',
+    `version`      INT UNSIGNED      DEFAULT 1 COMMENT '当前文章实体的版本(用于辅助实现乐观锁)',
 
     FOREIGN KEY (uid) REFERENCES user (id)
 
@@ -200,6 +206,7 @@ CREATE TABLE IF NOT EXISTS `passage_comment`
     `create_time`  TIMESTAMP         DEFAULT CURRENT_TIMESTAMP COMMENT '内容创建时间',
     `update_time`  TIMESTAMP         DEFAULT CURRENT_TIMESTAMP COMMENT '(最后)更新时间' ON UPDATE CURRENT_TIMESTAMP,
     `is_deleted`   INT UNSIGNED      DEFAULT 0 COMMENT '文章评论是否已被逻辑删除',
+    `version`      INT UNSIGNED      DEFAULT 1 COMMENT '当前文章评论实体的版本(用于辅助实现乐观锁)',
 
     FOREIGN KEY (passage_id) REFERENCES passage (id),
     FOREIGN KEY (from_uid) REFERENCES user (id),
@@ -233,6 +240,7 @@ CREATE TABLE IF NOT EXISTS `commodity`
     `create_time`  TIMESTAMP       DEFAULT CURRENT_TIMESTAMP COMMENT '商品发布时间',
     `update_time`  TIMESTAMP       DEFAULT CURRENT_TIMESTAMP COMMENT '商品信息(最后)更新时间',
     `is_deleted`   INT UNSIGNED    DEFAULT 0 COMMENT '当前实体是否已被逻辑删除',
+    `version`      INT UNSIGNED    DEFAULT 1 COMMENT '当前商品实体的版本(用于辅助实现乐观锁)',
 
     FOREIGN KEY (user_id) REFERENCES user (id)
         ON UPDATE CASCADE -- 2024-5-21  23:08-级联删除都设置了，这个更新也一起设置得了
@@ -259,6 +267,7 @@ CREATE TABLE IF NOT EXISTS `commodity_details`
     `origin`         VARCHAR(255) COMMENT '商品产地',
     `image_url`      TEXT COMMENT '商品图片URL',
     `barcode`        VARCHAR(255) COMMENT '商品条形码',
+    `version`        INT UNSIGNED DEFAULT 1 COMMENT '当前商品详情实体的版本(用于辅助实现乐观锁)',
 
     FOREIGN KEY (commodity_id) REFERENCES commodity (id)
 
@@ -293,6 +302,7 @@ CREATE TABLE `transaction_record`
     `create_time`  TIMESTAMP       DEFAULT CURRENT_TIMESTAMP COMMENT '流水创建时间',
     `update_time`  TIMESTAMP       DEFAULT CURRENT_TIMESTAMP COMMENT '（最后）更新时间',
     `is_deleted`   INT UNSIGNED    DEFAULT 0 COMMENT '当前实体是否已被逻辑删除',
+    `version`      INT UNSIGNED    DEFAULT 1 COMMENT '当前商品交易记录实体的版本(用于辅助实现乐观锁)',
 
     FOREIGN KEY (uid) REFERENCES user (id),
     FOREIGN KEY (commodity_id) REFERENCES commodity (id)
