@@ -24,7 +24,10 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Lenovo/LiGuanda
@@ -169,18 +172,18 @@ public class CommodityController {
     }
 
 
-    private final AtomicInteger count1 = new AtomicInteger(0);
+    private final ExecutorService executorService = Executors.newFixedThreadPool(100);
 
 
     @Transactional
     @SentinelResource("web-finance-commodity-controller")
     @Operation(description = "根据ID秒杀一个商品")
     @PutMapping("/extension/seckill")
-    public synchronized Result<?> seckillSingleCommodity(
+    public Result<?> seckillSingleCommodity(
 
             @Parameter(name = "id", description = "待秒杀的单个商品ID") @RequestParam("id") Long id, @Parameter(name = "count", description = "待秒杀的单个商品的数量") @RequestParam("count") Integer count, HttpServletRequest request
 
-    ) {
+    ) throws InterruptedException {
 
         long uid = Long.parseLong(request.getHeader("uid") == null ? "-1" : request.getHeader("uid"));
         if (uid < 0) {
@@ -189,7 +192,35 @@ public class CommodityController {
 
         }
 
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+
+        final Thread serviceThread = Thread.currentThread();
+
+        executorService.execute(() -> {
+
+            try {
+
+                boolean isReachToZero = countDownLatch.await(600, TimeUnit.MILLISECONDS);
+                if (!isReachToZero) {
+
+                    System.out.println("---->已超时，执行线程中断操作");
+                    serviceThread.interrupt();
+
+                }
+
+            } catch (InterruptedException e) {
+
+                // ignore it
+
+            }
+
+        });
+
         Commodity modifiedCommodity = commodityService.seckillOne(id, count);
+        countDownLatch.countDown();
+
+        boolean isReachZero = countDownLatch.await(750, TimeUnit.MILLISECONDS);
+
 
         Map<String, Object> map = new HashMap<>();
         Map<String, Object> mysqlResult = new HashMap<>();
@@ -197,10 +228,6 @@ public class CommodityController {
         map.put("mysql_result", mysqlResult);
 
         if (modifiedCommodity != null) {
-
-            int c = count1.incrementAndGet();
-            System.out.println("-----------------------------------------------------------------");
-            System.out.println("[web]当前累计秒杀成功的次数 ：" + c);
 
             restTemplate.put(ES_UPDATE_COMMODITY_URL, modifiedCommodity);
             map.put("es_result", Result.BLANK);

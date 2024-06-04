@@ -8,8 +8,6 @@ import org.springframework.stereotype.Service;
 import pfp.fltv.common.model.po.finance.TransactionRecord;
 import ptp.fltv.web.service.mq.service.TransactionRecordService;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 /**
  * @author Lenovo/LiGuanda
  * @version 1.0.0
@@ -27,17 +25,12 @@ public class CommoditySeckillRecordAddConsumer implements RocketMQListener<Trans
 
     private TransactionRecordService transactionRecordService;
 
-    private final AtomicInteger count = new AtomicInteger(0);
-
 
     @Override
     public void onMessage(TransactionRecord transactionRecord) {
 
         log.info("Record add message sent successfully ! TransactionRecord = {}", transactionRecord.toString());
         boolean isSaveRecordSuccessfully = transactionRecordService.save(transactionRecord);
-        int c = count.incrementAndGet();
-        System.out.println("-----------------------------------------------------------------");
-        System.out.println("[mq]当前累计接收消息的次数 ：" + c);
 
     }
 

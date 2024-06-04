@@ -2,6 +2,12 @@ server:
   port: 8210
   servlet:
     context-path: /api/v1/service/mq
+  tomcat:
+    # 2024-6-4  23:27-配置web服务线程的核心线程和最大线程数量
+    threads:
+      min-spare: 10
+      max: 100
+    accept-count: 100 # 2024-6-4  23:37-设置请求缓存队列的长度，用于在服务器高负载的情况下临时放置请求
 
 
 spring:
@@ -98,3 +104,4 @@ springdoc:
 # 2024-6-1  23:19-RocketMQ相关配置
 rocketmq:
   name-server: 127.0.0.1:9876
+
