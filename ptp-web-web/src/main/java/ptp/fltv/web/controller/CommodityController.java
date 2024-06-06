@@ -8,6 +8,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -24,9 +26,6 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -54,6 +53,7 @@ public class CommodityController {
     private RestTemplate restTemplate;
     private RocketMQTemplate rocketMQTemplate;
     private CommodityMqService commodityMqService;
+    private RedissonClient redissonClient;
 
 
     @SentinelResource("web-finance-commodity-controller")
@@ -172,9 +172,6 @@ public class CommodityController {
     }
 
 
-    private final ExecutorService executorService = Executors.newFixedThreadPool(100);
-
-
     @Transactional
     @SentinelResource("web-finance-commodity-controller")
     @Operation(description = "根据ID秒杀一个商品")
@@ -192,58 +189,49 @@ public class CommodityController {
 
         }
 
-        CountDownLatch countDownLatch = new CountDownLatch(1);
+        // 2024-6-6  23:18-使用Redis的分布式锁来完成排队秒杀
+        RLock lock = redissonClient.getLock(String.format("lock:commodity:seckill:%d", id));
+        boolean isLocked = lock.tryLock(500, TimeUnit.MILLISECONDS);// 2024-6-6  23:19-设置的超时时间越长，最大延时也就越高，吞吐量也就越低，但超卖的概率会变低；反之亦然
 
-        final Thread serviceThread = Thread.currentThread();
+        // 2024-6-6  23:22-未能在规定时间内获取到锁，则以异常抛出结束本次业务操作
+        if (!isLocked) {
 
-        executorService.execute(() -> {
-
-            try {
-
-                boolean isReachToZero = countDownLatch.await(600, TimeUnit.MILLISECONDS);
-                if (!isReachToZero) {
-
-                    System.out.println("---->已超时，执行线程中断操作");
-                    serviceThread.interrupt();
-
-                }
-
-            } catch (InterruptedException e) {
-
-                // ignore it
-
-            }
-
-        });
-
-        Commodity modifiedCommodity = commodityService.seckillOne(id, count);
-        countDownLatch.countDown();
-
-        boolean isReachZero = countDownLatch.await(750, TimeUnit.MILLISECONDS);
-
-
-        Map<String, Object> map = new HashMap<>();
-        Map<String, Object> mysqlResult = new HashMap<>();
-        mysqlResult.put("isUpdated", modifiedCommodity != null);
-        map.put("mysql_result", mysqlResult);
-
-        if (modifiedCommodity != null) {
-
-            restTemplate.put(ES_UPDATE_COMMODITY_URL, modifiedCommodity);
-            map.put("es_result", Result.BLANK);
-
-            TransactionRecord record = new TransactionRecord().setUid(uid).setCommodityId(modifiedCommodity.getId()).setCount(count).setTotalPrice(count * modifiedCommodity.getPrice()).setPaymentMode("Wechat").setTags(modifiedCommodity.getTags()).setCategory(List.of("commodity", "seckill")).setCreateTime(Timestamp.from(Instant.now()));
-
-            commodityMqService.asyncSendOrderAddMsg("commodity-seckill-record-add-topic", record, null, null);
-
-        } else {
-
-            // 2024-5-24  21:54-MySQL数据库部分执行失败则立即抛异常
-            throw new PtpException(807, "商品秒杀失败");
+            throw new PtpException(810, "商品秒杀失败");
 
         }
 
-        return Result.neutral(map);
+        try {
+
+            Commodity modifiedCommodity = commodityService.seckillOne(id, count);
+
+            Map<String, Object> map = new HashMap<>();
+            Map<String, Object> mysqlResult = new HashMap<>();
+            mysqlResult.put("isUpdated", modifiedCommodity != null);
+            map.put("mysql_result", mysqlResult);
+
+            if (modifiedCommodity != null) {
+
+                restTemplate.put(ES_UPDATE_COMMODITY_URL, modifiedCommodity);
+                map.put("es_result", Result.BLANK);
+
+                TransactionRecord record = new TransactionRecord().setUid(uid).setCommodityId(modifiedCommodity.getId()).setCount(count).setTotalPrice(count * modifiedCommodity.getPrice()).setPaymentMode("Wechat").setTags(modifiedCommodity.getTags()).setCategory(List.of("commodity", "seckill")).setCreateTime(Timestamp.from(Instant.now()));
+
+                commodityMqService.asyncSendOrderAddMsg("commodity-seckill-record-add-topic", record, null, null);
+
+            } else {
+
+                // 2024-5-24  21:54-MySQL数据库部分执行失败则立即抛异常
+                throw new PtpException(807, "商品秒杀失败");
+
+            }
+
+            return Result.neutral(map);
+
+        } finally {
+
+            lock.unlock();
+
+        }
 
     }
 
