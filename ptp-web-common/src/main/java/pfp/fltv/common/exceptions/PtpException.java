@@ -27,6 +27,7 @@ public class PtpException extends RuntimeException implements Serializable {
 
     private Integer code; // 2024-4-7  22:38-错误码为8xx
     private String message;
+    private String subMessage; // 2024-6-7  23:29-二级消息(一般面向开发人员，不对用户公布该消息)
     private Object additionalData;
 
 
@@ -42,6 +43,15 @@ public class PtpException extends RuntimeException implements Serializable {
 
         this.code = code;
         this.message = message;
+
+    }
+
+
+    public PtpException(Integer code, String message, String subMessage) {
+
+        this.code = code;
+        this.message = message;
+        this.subMessage = subMessage;
 
     }
 
