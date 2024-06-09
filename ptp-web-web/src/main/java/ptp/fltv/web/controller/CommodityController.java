@@ -18,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
 import pfp.fltv.common.exceptions.PtpException;
 import pfp.fltv.common.model.po.finance.Commodity;
 import pfp.fltv.common.response.Result;
+import ptp.fltv.web.annotation.CheckCostTime;
 import ptp.fltv.web.constants.WebConstants;
 import ptp.fltv.web.mq.CommodityMqService;
 import ptp.fltv.web.service.CommodityService;
@@ -172,6 +173,7 @@ public class CommodityController {
     }
 
 
+    @CheckCostTime
     // @Transactional
     @SentinelResource("web-finance-commodity-controller")
     @Operation(description = "根据ID秒杀一个商品")
@@ -200,7 +202,7 @@ public class CommodityController {
 
         try {
 
-            boolean isLocked = lock.tryLock(500, TimeUnit.MILLISECONDS);// 2024-6-6  23:19-设置的超时时间越长，最大延时也就越高，吞吐量也就越低，但超卖的概率会变低；反之亦然
+            boolean isLocked = lock.tryLock(500L, TimeUnit.MILLISECONDS);// 2024-6-6  23:19-设置的超时时间越长，最大延时也就越高，吞吐量也就越低，但超卖的概率会变低；反之亦然
 
             // 2024-6-6  23:22-未能在规定时间内获取到锁，则以异常抛出结束本次业务操作
             if (!isLocked) {

@@ -5,6 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 /**
  * @author Lenovo/LiGuanda
@@ -13,6 +14,7 @@ import org.springframework.context.annotation.ComponentScan;
  * @filename MainApplication.java
  */
 
+// @EnableAspectJAutoProxy(proxyTargetClass = true)// 2024-6-10  00:01-开启对AspectJ的支持，以实现自定义的AOP切面
 @EnableDiscoveryClient // 2024-4-27  20:52-开启nacos服务注册发现功能
 @ComponentScan(basePackages = "ptp.fltv")
 @SpringBootApplication(/*exclude = DataSourceAutoConfiguration.class*/)
