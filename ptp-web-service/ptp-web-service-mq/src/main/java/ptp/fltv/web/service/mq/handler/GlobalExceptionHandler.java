@@ -36,7 +36,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(PtpException.class)
     public Result<String> handlePtpException(PtpException ex) {
 
-        log.error("[{}] : {} occurred : {}", "ptp-web-web", "Exception", ex.getDetailedMessage());
+        log.error("[{}] : {} occurred : {} [{}]", "ptp-web-web", "Exception", ex.getDetailedMessage(), ex.getCode());
         Tracer.trace(ex);// 2024-5-17  20:29-上报异常信息到Sentinel
 
         return Result.failure(ex.getDetailedMessage());

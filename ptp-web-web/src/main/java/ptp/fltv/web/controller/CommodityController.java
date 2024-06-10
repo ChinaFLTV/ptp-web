@@ -173,14 +173,15 @@ public class CommodityController {
     }
 
 
-    @CheckCostTime
+    // @CheckCostTime
     // @Transactional
     @SentinelResource("web-finance-commodity-controller")
     @Operation(description = "根据ID秒杀一个商品")
     @PutMapping("/extension/seckill")
     public Result<?> seckillSingleCommodity(
 
-            @Parameter(name = "id", description = "待秒杀的单个商品ID") @RequestParam("id") Long id, @Parameter(name = "count", description = "待秒杀的单个商品的数量") @RequestParam("count") Integer count, HttpServletRequest request
+            @Parameter(name = "id", description = "待秒杀的单个商品ID") @RequestParam("id") Long id, @Parameter(name = "count", description = "待秒杀的单个商品的数量") @RequestParam("count") Integer count,
+            HttpServletRequest request
 
     ) throws InterruptedException {
 
@@ -247,31 +248,44 @@ public class CommodityController {
     }
 
 
+    @CheckCostTime
     @Transactional
     @SentinelResource("web-finance-commodity-controller")
     @Operation(description = "根据ID给一种商品补货")
     @PutMapping("/extension/replenish")
     public Result<?> replenishSingleCommodity(
 
-            @Parameter(name = "id", description = "待补货的单个商品ID") @RequestParam("id") Long id, @Parameter(name = "count", description = "待补货的单个商品的数量") @RequestParam("count") Integer count
+            @Parameter(name = "id", description = "待补货的单个商品ID") @RequestParam("id") Long id, @Parameter(name = "count", description = "待补货的单个商品的数量") @RequestParam("count") Integer count,
+            HttpServletRequest request
 
     ) {
 
-        Commodity modifiedCommodity = commodityService.replenishOne(id, count);
+        long uid = Long.parseLong(request.getHeader("uid") == null ? "-1" : request.getHeader("uid"));
+        if (uid < 0) {
 
-        Map<String, Object> map = new HashMap<>();
-        Map<String, Object> mysqlResult = new HashMap<>();
-        mysqlResult.put("isUpdated", modifiedCommodity != null);
-        map.put("mysql_result", mysqlResult);
+            throw new PtpException(809, "请求头部参数缺少UID");
 
-        if (modifiedCommodity != null) {
+        }
+        if (id < 0 || count <= 0) {
 
-            restTemplate.put(ES_UPDATE_COMMODITY_URL, modifiedCommodity);
-            map.put("es_result", Result.BLANK);
+            throw new PtpException(812, "商品ID或商品秒杀数量无效");
 
         }
 
-        return Result.neutral(map);
+        // 2024-6-10  21:47-尽管商品补货不会出现大量商家抢着给某一种商品补货的迷惑情况，
+        // 但由于是在大量用户秒杀过程中进行补货，这个过程可能会出现比较激烈的锁竞争，因此需要以MQ的形式进行异步补货，
+        // 补货开始结果响应尽早返回，补货完成结果响应则以消息通知的形式发送给商家
+        HashMap<String, Object> msg = new HashMap<>();
+        msg.put("user-id", uid);
+        msg.put("commodity-id", id);
+        msg.put("count", count);
+        msg.put("user-ip", request.getHeader("X-Forward-For"));
+        msg.put("user-agent", request.getHeader(HttpHeaders.USER_AGENT));
+        commodityMqService.asyncSendOrderAddMsg("commodity-replenish-topic", msg, null, null);
+
+        Map<String, Object> resMap = new HashMap<>();
+        resMap.put("msg", "商品补货请求已被接收!请耐心等待商品补货完成通知(商品秒杀期间可能会有一定的延迟)");
+        return Result.success(resMap);
 
     }
 

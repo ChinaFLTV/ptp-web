@@ -52,6 +52,24 @@ spring:
       # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
       # connect-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
 
+
+  # 2024-6-10  22:15-集成Redis所需配置
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 7001
+      username: default
+      password: root
+      timeout: 5s # 2024-6-10  22:15-读超时
+      connect-timeout: 5s # 2024-6-10  22:16-连接超时
+      jedis:
+        pool:
+          max-active: 8 # 2024-6-10  22:16-连接池最大连接数
+          max-wait: -1 # 2024-6-10  22:16-连接池最大阻塞空闲时间(负数表示无限制)
+          max-idle: 8 # 2024-6-10  22:16-连接池最大空闲连接数
+          min-idle: 0 # 2024-6-10  22:16-连接池最小空闲连接数
+
+
   cloud:
     # 2024-5-27  22:16-sentinel相关配置
     sentinel:

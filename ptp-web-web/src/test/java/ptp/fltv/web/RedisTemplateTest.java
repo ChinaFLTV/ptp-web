@@ -1,6 +1,8 @@
 package ptp.fltv.web;
 
 import org.junit.jupiter.api.Test;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -19,12 +21,17 @@ public class RedisTemplateTest {
 
     @Autowired
     private StringRedisTemplate redisTemplate;
+    @Autowired
+    private RedissonClient redissonClient;
 
 
     @Test
     public void test() {
 
         System.out.println(redisTemplate.opsForValue().get("k1"));
+        RLock lock = redissonClient.getLock(String.format("lock:commodity:seckill:%d", 1));
+        lock.lock();
+        System.out.println();
 
     }
 

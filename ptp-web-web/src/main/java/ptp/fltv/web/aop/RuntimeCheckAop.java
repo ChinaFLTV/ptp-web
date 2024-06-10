@@ -31,6 +31,15 @@ public class RuntimeCheckAop {
     }
 
 
+    /*private AtomicLong totalCost = new AtomicLong(0);
+    private AtomicInteger totalTimes = new AtomicInteger(0);
+    private AtomicLong maxCost = new AtomicLong(0);
+    private AtomicLong minCost = new AtomicLong(Long.MAX_VALUE);
+    private AtomicInteger gt2000count = new AtomicInteger(0);
+    private AtomicInteger gt1000count = new AtomicInteger(0);
+    private AtomicInteger gt600count = new AtomicInteger(0);*/
+
+
     @Around("costTimeMethods()")
     public Object calculateCostTime(ProceedingJoinPoint joinPoint) {
 
@@ -49,6 +58,30 @@ public class RuntimeCheckAop {
             Object result = joinPoint.proceed();
             long end = System.currentTimeMillis();
 
+            /*long newTotalCost = totalCost.addAndGet(end - start);
+            int newTotalTimes = totalTimes.incrementAndGet();
+            maxCost.set(Long.max(maxCost.get(), end - start));
+            minCost.set(Long.min(minCost.get(), end - start));
+            if ((end - start) >= 2000) {
+
+                int gt2000 = gt2000count.incrementAndGet();
+
+            } else if ((end - start) >= 1000) {
+
+                int gt1000 = gt1000count.incrementAndGet();
+
+            } else if ((end - start) >= 600) {
+
+                int gt600 = gt600count.incrementAndGet();
+
+            }
+            log.info("平均耗时：{} ms", newTotalCost / newTotalTimes);
+            log.info("最小耗时：{} ms", minCost.get());
+            log.info("最大耗时：{} ms", maxCost.get());
+            log.info("耗时超过2000ms的个数：{}", gt2000count.get());
+            log.info("耗时超过1000ms的个数：{}", gt1000count.get());
+            log.info("耗时超过600ms的个数：{}", gt600count.get());*/
+
             log.info("[{}] 类的 [{}] 方法执行耗时 : {} ms", className, methodName, end - start);
             log.info("[{}] 类的 [{}] 方法执行结果 : {}", className, methodName, result);
             return result;
@@ -58,6 +91,31 @@ public class RuntimeCheckAop {
             long end = System.currentTimeMillis();
             log.warn("[{}] 类的 [{}] 方法执行耗时 : {} ms", className, methodName, end - start + "");
             log.warn("[{}] 类的 [{}] 方法执行出错 : {}", className, methodName, e.getLocalizedMessage());
+
+            /*long newTotalCost = totalCost.addAndGet(end - start);
+            int newTotalTimes = totalTimes.incrementAndGet();
+            maxCost.set(Long.max(maxCost.get(), end - start));
+            minCost.set(Long.min(minCost.get(), end - start));
+            if ((end - start) >= 2000) {
+
+                int gt2000 = gt2000count.incrementAndGet();
+
+            } else if ((end - start) >= 1000) {
+
+                int gt1000 = gt1000count.incrementAndGet();
+
+            } else if ((end - start) >= 600) {
+
+                int gt600 = gt600count.incrementAndGet();
+
+            }
+            log.info("平均耗时：{} ms", newTotalCost / newTotalTimes);
+            log.info("最小耗时：{} ms", minCost.get());
+            log.info("最大耗时：{} ms", maxCost.get());
+            log.info("耗时超过2000ms的个数：{}", gt2000count.get());
+            log.info("耗时超过1000ms的个数：{}", gt1000count.get());
+            log.info("耗时超过600ms的个数：{}", gt600count.get());*/
+
             throw new PtpException(813, e.getLocalizedMessage());
 
         }
