@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
 import org.apache.rocketmq.spring.core.RocketMQListener;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -11,6 +12,7 @@ import pfp.fltv.common.exceptions.PtpException;
 import pfp.fltv.common.model.po.finance.Commodity;
 import pfp.fltv.common.model.po.finance.TransactionRecord;
 import pfp.fltv.common.response.Result;
+import pfp.fltv.common.utils.StringUtils;
 import ptp.fltv.web.service.mq.service.CommodityService;
 import ptp.fltv.web.service.mq.service.TransactionRecordService;
 
@@ -41,6 +43,7 @@ public class CommoditySeckillConsumer implements RocketMQListener<HashMap<String
     private TransactionRecordService transactionRecordService;
     private RestTemplate restTemplate;
     private CommodityService commodityService;
+    private StringRedisTemplate stringRedisTemplate;
 
 
     @Transactional
@@ -53,7 +56,20 @@ public class CommoditySeckillConsumer implements RocketMQListener<HashMap<String
         String userIp = (String) msg.getOrDefault("user-ip", "未知IP信息");
         String userAgent = (String) msg.getOrDefault("userAgent", "未知代理信息");
 
-        Commodity modifiedCommodity = commodityService.seckillOne(commodityId.longValue(), count);
+
+        //// 2024-6-11  21:29-这里必须先补货再去秒杀，否则会出现商品抢购一空之后无法补货的类死锁问题
+        String replenishmentQuantityStr = stringRedisTemplate.opsForValue().get(String.format("replenish:commodity:%d", commodityId));
+        String newAddStockQuantityStr = replenishmentQuantityStr.substring(0, replenishmentQuantityStr.length() / 2); // 2024-6-12  00:02-这里一定是整除2的，因为我们是对半放的
+        int newAddStockQuantity = Integer.parseInt(newAddStockQuantityStr, 2);
+
+        // 2024-6-11  21:35-由于我们在CommodityService::seckillOne方法中首先对库存数量进行了判空并且后面又调用了decreaseStockQuantityByIdAndVersion方法，
+        // 意义很明确，根本不给我们update方式更新库存的机会，因此我们不能以 CommodityService::seckillOne(commodityId, count - replenishmentQuantity) 合并两个SQL请求为一个了
+        // 于是我们只能分别发送两个补货和扣减请求了
+        // 但是就在这个时候，您猜怎么着？我们发现 CommodityService::replenishOne这个函数不仅没有对商品库存进行判空检查，而且最终调用的是update方法！(还有，库存更新是进行增量更新的，而不是直接赋值！)
+        // 于是乎，我们又可以合二为一啦！
+
+        Commodity modifiedCommodity = commodityService.replenishOne(commodityId.longValue(), newAddStockQuantity > 0 ? newAddStockQuantity - count : -count);
+        // Commodity modifiedCommodity = commodityService.seckillOne(commodityId.longValue(), count);
 
         Map<String, Object> resMap = new HashMap<>();
         Map<String, Object> mysqlResult = new HashMap<>();
@@ -61,9 +77,6 @@ public class CommoditySeckillConsumer implements RocketMQListener<HashMap<String
         resMap.put("mysql_result", mysqlResult);
 
         if (modifiedCommodity != null) {
-
-            restTemplate.put(ES_UPDATE_COMMODITY_URL, modifiedCommodity);
-            resMap.put("es_result", Result.BLANK);
 
             TransactionRecord record = new TransactionRecord().setUid(userId.longValue())
                     .setCommodityId(modifiedCommodity.getId())
@@ -78,11 +91,16 @@ public class CommoditySeckillConsumer implements RocketMQListener<HashMap<String
             boolean isSaveRecordSuccessfully = transactionRecordService.save(record);
             mysqlResult.put("is_saved_record", isSaveRecordSuccessfully);
 
+            restTemplate.put(ES_UPDATE_COMMODITY_URL, modifiedCommodity);
+            resMap.put("es_result", Result.BLANK);
+
             if (!isSaveRecordSuccessfully) {
 
                 throw new PtpException(807, "商品交易记录添加失败");
 
             }
+
+            stringRedisTemplate.opsForValue().set(String.format("replenish:commodity:%d", commodityId), StringUtils.padToBytes("", '0', 32) + replenishmentQuantityStr.substring(32));
 
             log.info("Commodity seckill message sent successfully ! TransactionRecord = {}", record.toString());
             log.info("result = {}", resMap);

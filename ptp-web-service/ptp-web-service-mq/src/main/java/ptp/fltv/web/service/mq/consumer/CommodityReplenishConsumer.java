@@ -9,13 +9,11 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
-import pfp.fltv.common.model.po.finance.Commodity;
-import pfp.fltv.common.response.Result;
+import pfp.fltv.common.utils.StringUtils;
 import ptp.fltv.web.service.mq.service.CommodityService;
 import ptp.fltv.web.service.mq.service.TransactionRecordService;
 
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Lenovo/LiGuanda
@@ -52,7 +50,7 @@ public class CommodityReplenishConsumer implements RocketMQListener<HashMap<Stri
         String userIp = (String) msg.getOrDefault("user-ip", "未知IP信息");
         String userAgent = (String) msg.getOrDefault("userAgent", "未知代理信息");
 
-        Commodity modifiedCommodity = commodityService.replenishOne(commodityId.longValue(), count);
+        /*Commodity modifiedCommodity = commodityService.replenishOne(commodityId.longValue(), count);
 
         Map<String, Object> resMap = new HashMap<>();
         Map<String, Object> mysqlResult = new HashMap<>();
@@ -64,10 +62,31 @@ public class CommodityReplenishConsumer implements RocketMQListener<HashMap<Stri
             restTemplate.put(ES_UPDATE_COMMODITY_URL, modifiedCommodity);
             resMap.put("es_result", Result.BLANK);
 
+        }*/
+
+        // 2024-6-11  22:38-针对于Redis和MySQL、ElasticSearch秒杀不同步的问题导致二次补货具有不确定性的问题，我们是这样解决的：
+        // 补货时，我们按照Long型64位二进制字符串的形式进行补货，例如：补5件商品：  0000 0000 0000 0000 0000 0000 0000 0101  |  0000 0000 0000 0000 0000 0000 0000 0101
+        // Redis消费时消费低32位 -> 0000 0000 0000 0000 0000 0000 0000 0101  |  0000 0000 0000 0000 0000 0000 0000 0000，
+        // 而MySQL和ElasticSearch消费则消费高32位 -> 0000 0000 0000 0000 0000 0000 0000 0000  |  0000 0000 0000 0000 0000 0000 0000 0000，
+        // 每次消费都需要将对应Bit位置0，直至最终变为64个0(转换值为0值)时，本轮补货消费才算结束，否则，只要拿到该Bit位串且其转换为Long型后的值》0,
+        // 则表示上一轮的补货还没有完成，依旧拒绝本轮补货
+        // 这样即可避免重复补货问题
+        // 2024-6-11  20:56-这里只有先前的补货请求被执行后才能进行新一轮的补货操作，以避免数据覆盖问题
+
+
+        String countBinaryStr = StringUtils.padToBytes(Integer.toBinaryString(count), '0', 32);
+        String oldReplenishmentQuantityStr = stringRedisTemplate.opsForValue().get(String.format("replenish:commodity:%d", commodityId));
+        // 2024-6-12  00:16-这里之所以我们又把判断条件该为 is null，是因为如果为null时由于网络异常原因导致的，那你后续的Redis操作肯定大概率也会失败，对外表现为啥⑩没有
+        // 如果是因为没有这个key，那么意味着本次补货操作是本种商品的第一次补货操作，应予以放行
+        // 2024-6-12  00:11-只有在前一次的两轮消费全部完成后(补货值变为64个0时)，才能进行补货，否则会出现一致性问题
+        if (oldReplenishmentQuantityStr == null || Long.parseLong(oldReplenishmentQuantityStr, 2) == 0L) {
+
+            stringRedisTemplate.opsForValue().set(String.format("replenish:commodity:%d", commodityId), countBinaryStr + countBinaryStr);
+            log.info("Commodity replenish message sent successfully ! Commodity[{}] Stock Quantity + {}", commodityId, count);
+
         }
 
-        log.info("Commodity replenish message sent successfully ! Commodity[{}] Stock Quantity + {}", commodityId, count);
-        log.info("result = {}", resMap);
+        // log.info("result = {}", resMap);
 
     }
 
