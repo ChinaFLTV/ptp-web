@@ -1,5 +1,6 @@
 package ptp.fltv.web.service.mq.consumer;
 
+import com.alibaba.fastjson2.JSON;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
@@ -55,12 +56,19 @@ public class CommoditySeckillConsumer implements RocketMQListener<HashMap<String
         Integer count = (Integer) msg.getOrDefault("count", 0);
         String userIp = (String) msg.getOrDefault("user-ip", "未知IP信息");
         String userAgent = (String) msg.getOrDefault("userAgent", "未知代理信息");
+        String type = (String) msg.getOrDefault("type", "normal-order");
+        String remark = (String) msg.getOrDefault("remark", "no remark here .");
 
 
         //// 2024-6-11  21:29-这里必须先补货再去秒杀，否则会出现商品抢购一空之后无法补货的类死锁问题
-        String replenishmentQuantityStr = stringRedisTemplate.opsForValue().get(String.format("replenish:commodity:%d", commodityId));
-        String newAddStockQuantityStr = replenishmentQuantityStr.substring(0, replenishmentQuantityStr.length() / 2); // 2024-6-12  00:02-这里一定是整除2的，因为我们是对半放的
-        int newAddStockQuantity = Integer.parseInt(newAddStockQuantityStr, 2);
+        String replenishmentQuantityStr = stringRedisTemplate.opsForValue().getAndDelete(String.format("replenish:commodity:%d", commodityId));
+        int newAddStockQuantity = -1;
+        if (replenishmentQuantityStr != null) {
+
+            String newAddStockQuantityStr = replenishmentQuantityStr.substring(0, replenishmentQuantityStr.length() / 2); // 2024-6-12  00:02-这里一定是整除2的，因为我们是对半放的
+            newAddStockQuantity = Integer.parseInt(newAddStockQuantityStr, 2);
+
+        }
 
         // 2024-6-11  21:35-由于我们在CommodityService::seckillOne方法中首先对库存数量进行了判空并且后面又调用了decreaseStockQuantityByIdAndVersion方法，
         // 意义很明确，根本不给我们update方式更新库存的机会，因此我们不能以 CommodityService::seckillOne(commodityId, count - replenishmentQuantity) 合并两个SQL请求为一个了
@@ -68,7 +76,17 @@ public class CommoditySeckillConsumer implements RocketMQListener<HashMap<String
         // 但是就在这个时候，您猜怎么着？我们发现 CommodityService::replenishOne这个函数不仅没有对商品库存进行判空检查，而且最终调用的是update方法！(还有，库存更新是进行增量更新的，而不是直接赋值！)
         // 于是乎，我们又可以合二为一啦！
 
-        Commodity modifiedCommodity = commodityService.replenishOne(commodityId.longValue(), newAddStockQuantity > 0 ? newAddStockQuantity - count : -count);
+        Commodity modifiedCommodity;
+        if (newAddStockQuantity > 0) {
+
+            modifiedCommodity = commodityService.replenishOne(commodityId.longValue(), newAddStockQuantity - count);
+
+        } else {
+
+            // 2024-6-12  23:20-我说怎么换上这个函数就不会出现数据不一致的情况呢，原来这方法是通过CAS的方式更新的，而上面那个就是普通更新操作，在高并发的情况下肯定会出现数据不一致的问题
+            modifiedCommodity = commodityService.seckillOne(commodityId.longValue(), count);
+
+        }
         // Commodity modifiedCommodity = commodityService.seckillOne(commodityId.longValue(), count);
 
         Map<String, Object> resMap = new HashMap<>();
@@ -78,6 +96,9 @@ public class CommoditySeckillConsumer implements RocketMQListener<HashMap<String
 
         if (modifiedCommodity != null) {
 
+            Map<String, Object> meta = new HashMap<>();
+            meta.put("type", type);
+
             TransactionRecord record = new TransactionRecord().setUid(userId.longValue())
                     .setCommodityId(modifiedCommodity.getId())
                     .setCount(count)
@@ -85,8 +106,10 @@ public class CommoditySeckillConsumer implements RocketMQListener<HashMap<String
                     .setPaymentMode("Wechat")
                     .setTags(modifiedCommodity.getTags())
                     .setCategory(List.of("commodity", "seckill"))
+                    .setMeta(JSON.toJSONString(meta))
                     .setCreateTime(Timestamp.from(Instant.now()))
-                    .setUpdateTime(Timestamp.from(Instant.now()));
+                    .setUpdateTime(Timestamp.from(Instant.now()))
+                    .setRemark(remark);
 
             boolean isSaveRecordSuccessfully = transactionRecordService.save(record);
             mysqlResult.put("is_saved_record", isSaveRecordSuccessfully);
@@ -100,7 +123,11 @@ public class CommoditySeckillConsumer implements RocketMQListener<HashMap<String
 
             }
 
-            stringRedisTemplate.opsForValue().set(String.format("replenish:commodity:%d", commodityId), StringUtils.padToBytes("", '0', 32) + replenishmentQuantityStr.substring(32));
+            if (replenishmentQuantityStr != null && newAddStockQuantity > 0) {
+
+                stringRedisTemplate.opsForValue().set(String.format("replenish:commodity:%d", commodityId), StringUtils.padToBytes("", '0', 32, StringUtils.Direction.LEFT) + replenishmentQuantityStr.substring(32));
+
+            }
 
             log.info("Commodity seckill message sent successfully ! TransactionRecord = {}", record.toString());
             log.info("result = {}", resMap);

@@ -109,7 +109,9 @@ public class CommodityServiceImpl extends ServiceImpl<CommodityMapper, Commodity
             // 1.将那个被调用的事务方法抽离到类外
             // 2.通过获取代理对象来直接调用
             // 这里我们选择第二种，不过要在配置类上添加 @EnableAspectJAutoProxy(exposeProxy = true) 注解
-            int updateItemCount = ((CommodityService) AopContext.currentProxy()).updateOne(commodity);
+            // int updateItemCount = ((CommodityService) AopContext.currentProxy()).updateOne(commodity);
+            // 2024-6-12  23:26-改用CAS形式进行商品库存数量的更新，以避免数据不一致的问题
+            int updateItemCount = ((CommodityMapper) ((CommodityService) AopContext.currentProxy()).getBaseMapper()).updateStockQuantityByIdAndVersion(id, count, commodity.getVersion2());
             return updateItemCount > 0 ? commodity : null;
 
         }

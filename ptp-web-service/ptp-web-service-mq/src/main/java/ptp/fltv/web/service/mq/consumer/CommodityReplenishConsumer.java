@@ -74,13 +74,13 @@ public class CommodityReplenishConsumer implements RocketMQListener<HashMap<Stri
         // 2024-6-11  20:56-这里只有先前的补货请求被执行后才能进行新一轮的补货操作，以避免数据覆盖问题
 
 
-        String countBinaryStr = StringUtils.padToBytes(Integer.toBinaryString(count), '0', 32);
         String oldReplenishmentQuantityStr = stringRedisTemplate.opsForValue().get(String.format("replenish:commodity:%d", commodityId));
         // 2024-6-12  00:16-这里之所以我们又把判断条件该为 is null，是因为如果为null时由于网络异常原因导致的，那你后续的Redis操作肯定大概率也会失败，对外表现为啥⑩没有
         // 如果是因为没有这个key，那么意味着本次补货操作是本种商品的第一次补货操作，应予以放行
         // 2024-6-12  00:11-只有在前一次的两轮消费全部完成后(补货值变为64个0时)，才能进行补货，否则会出现一致性问题
         if (oldReplenishmentQuantityStr == null || Long.parseLong(oldReplenishmentQuantityStr, 2) == 0L) {
 
+            String countBinaryStr = StringUtils.padToBytes(Integer.toBinaryString(count), '0', 32, StringUtils.Direction.LEFT);
             stringRedisTemplate.opsForValue().set(String.format("replenish:commodity:%d", commodityId), countBinaryStr + countBinaryStr);
             log.info("Commodity replenish message sent successfully ! Commodity[{}] Stock Quantity + {}", commodityId, count);
 

@@ -17,6 +17,7 @@ public class StringUtils {
      * @param originStr   待填充的原始字符串
      * @param placeholder 填充字符
      * @param length      填充后的长度
+     * @param direction   填充方向
      * @return 填充后的字符串
      * @author Lenovo/LiGuanda
      * @date 2024/6/11 PM 11:34:40
@@ -24,7 +25,7 @@ public class StringUtils {
      * @description 将指定字符串按指定填充字符填充至指定位数(如果指定的填充长度小于等于当前原始字符串的长度 ， 则不做任何操作)
      * @filename StringUtils.java
      */
-    public static String padToBytes(@Nonnull String originStr, @Nonnull Character placeholder, @Nonnull Integer length) {
+    public static String padToBytes(@Nonnull String originStr, @Nonnull Character placeholder, @Nonnull Integer length, Direction direction) {
 
         if (originStr.length() >= length) {
 
@@ -32,11 +33,27 @@ public class StringUtils {
 
         }
 
-        StringBuilder stringBuilder = new StringBuilder(originStr);
-        stringBuilder.append(String.valueOf(placeholder)
-                .repeat(length - originStr.length()));
+        String fillStr = String.valueOf(placeholder)
+                .repeat(length - originStr.length());
 
-        return stringBuilder.toString();
+        if (direction == Direction.LEFT) {
+
+            return fillStr + originStr;
+
+        } else {
+
+            return originStr + fillStr;
+
+        }
+
+    }
+
+
+    public enum Direction {
+
+
+        LEFT, RIGHT
+
 
     }
 

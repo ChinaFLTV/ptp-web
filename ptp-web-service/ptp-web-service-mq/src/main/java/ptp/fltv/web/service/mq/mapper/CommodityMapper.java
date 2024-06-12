@@ -134,4 +134,19 @@ public interface CommodityMapper extends BaseMapper<Commodity> {
     int decreaseStockQuantityByIdAndVersion(@Nonnull @Param("id") Long id, @Nonnull @Param("count") Integer count, @Nonnull @Param("version2") Integer version2);
 
 
+    /**
+     * @param id       待操作的商品ID
+     * @param version2 该商品的当前的版本号
+     * @param delta    商品变化数量(可以是正增长，也可以是逆下降)
+     * @return 该商品库存更新操作所影响的行数
+     * @author Lenovo/LiGuanda
+     * @date 2024/6/12 PM 11:23:08
+     * @version 1.0.0
+     * @description 以乐观锁的形式更新(添加 / 删除)商品的库存容量
+     * @filename CommodityMapper.java
+     */
+    @Update("UPDATE commodity_details SET stock_quantity = stock_quantity + #{delta} , version = version + 1 WHERE commodity_id = #{id} AND version = #{version2}")
+    int updateStockQuantityByIdAndVersion(@Nonnull @Param("id") Long id, @Nonnull @Param("count") Integer delta, @Nonnull @Param("version2") Integer version2);
+
+
 }

@@ -174,7 +174,7 @@ public class CommodityController {
     }
 
 
-    // @CheckCostTime
+    @CheckCostTime
     // @Transactional
     @SentinelResource("web-finance-commodity-controller")
     @Operation(description = "根据ID秒杀一个商品")
@@ -218,12 +218,13 @@ public class CommodityController {
             // 成功(2次)、失败(1次)
             // 现在情况：直接扣减(1次)再判断是否透支了库存数量
             // 成功(1次)、失败(1次)
-            Long newStockQuantity = stringRedisTemplate.opsForValue().decrement(String.format("stock-quantity:commodity:seckill:%d", id), count);
-            if (newStockQuantity == null) {
+            String oldStockQuantityStr = stringRedisTemplate.opsForValue().get(String.format("stock-quantity:commodity:seckill:%d", id));
+            if (oldStockQuantityStr == null) {
 
                 throw new PtpException(811, "商品秒杀异常", "获取到扣减商品后的商品库存数量为null");
 
             }
+            long oldStockQuantity = Long.parseLong(oldStockQuantityStr);
 
             // 2024-6-11  23:18-这里由于Redis和MySQL、ElasticSearch这两处的库存数量更新不是同步的，所以可能会产生一致性问题，但是，若真如此吗？我们来分析一下(以秒杀100件商品，中途补货50件为例)
             // 如果 Redis 更新早于 MySQL&ElasticSearch：
@@ -239,25 +240,52 @@ public class CommodityController {
             // 如果 Redis 与 MySQL&ElasticSearch 同时更新：
             //     这是理想情况，当然不会存在一致性问题哈
             // 2024-6-11  22:04-同样地，这里也需要先补货再秒杀，否则同样会出现因库存为空且无法补货的尴尬情形
-            String replenishmentQuantityStr = stringRedisTemplate.opsForValue().get(String.format("replenish:commodity:%d", id));
-            String newAddStockQuantityStr = replenishmentQuantityStr.substring(32);
-            int newAddStockQuantity = Integer.parseInt(newAddStockQuantityStr, 2);
+            String replenishmentQuantityStr = stringRedisTemplate.opsForValue().getAndDelete(String.format("replenish:commodity:%d", id));
+            if (replenishmentQuantityStr != null) {
 
-            // 2024-6-11  23:52-这里我们规定：凡是用户秒杀时机与补货时机相同但此时处于售罄状态时，秒杀操作一律失败
-            if (newStockQuantity + count <= 0) {
+                String newAddStockQuantityStr = replenishmentQuantityStr.substring(32);
+                int newAddStockQuantity = Integer.parseInt(newAddStockQuantityStr, 2);
 
-                stringRedisTemplate.opsForValue().set(String.format("stock-quantity:commodity:seckill:%d", id), String.valueOf(newAddStockQuantity));
-                // 2024-6-12  00:07-这里不能直接以取到的自己的低32位作为新的高32位处理，因为你不知道在你消费这低32位之前，高32为是否已经被消费掉了
-                stringRedisTemplate.opsForValue().set(String.format("replenish:commodity:%d", id), replenishmentQuantityStr.substring(0, replenishmentQuantityStr.length() / 2) + StringUtils.padToBytes("", '0', 32));
+                if (newAddStockQuantity > 0) {
 
-                throw new PtpException(811, "商品已售罄", "扣减商品后的商品库存数量为负");
+                    // 2024-6-11  23:52-这里我们规定：凡是用户秒杀时机与补货时机相同时，秒杀操作一律失败
+                    if (oldStockQuantity <= 0) {
 
-            } else {
+                        stringRedisTemplate.opsForValue().set(String.format("stock-quantity:commodity:seckill:%d", id), String.valueOf(newAddStockQuantity));
+                        // 2024-6-12  00:07-这里不能直接以取到的自己的低32位作为新的高32位处理，因为你不知道在你消费这低32位之前，高32为是否已经被消费掉了
+                        stringRedisTemplate.opsForValue().set(String.format("replenish:commodity:%d", id), replenishmentQuantityStr.substring(0, replenishmentQuantityStr.length() / 2) + StringUtils.padToBytes("", '0', 32, StringUtils.Direction.LEFT));
 
-                stringRedisTemplate.opsForValue().set(String.format("stock-quantity:commodity:seckill:%d", id), String.valueOf(newStockQuantity + newAddStockQuantity));
-                stringRedisTemplate.opsForValue().set(String.format("replenish:commodity:%d", id), replenishmentQuantityStr.substring(0, replenishmentQuantityStr.length() / 2) + StringUtils.padToBytes("", '0', 32));
+                    } else {
+
+                        stringRedisTemplate.opsForValue().set(String.format("stock-quantity:commodity:seckill:%d", id), String.valueOf(oldStockQuantity + newAddStockQuantity));
+                        stringRedisTemplate.opsForValue().set(String.format("replenish:commodity:%d", id), replenishmentQuantityStr.substring(0, replenishmentQuantityStr.length() / 2) + StringUtils.padToBytes("", '0', 32, StringUtils.Direction.LEFT));
+
+                    }
+
+                    /*HashMap<String, Object> msg = new HashMap<>();
+                    msg.put("user-id", uid);
+                    msg.put("commodity-id", id);
+                    msg.put("count", 0);// 2024-6-12  22:17-这里我们相当于进行一个无意义的空操作，目的只有一个—————不秒杀但补货
+                    msg.put("user-ip", request.getHeader("X-Forward-For"));
+                    msg.put("user-agent", request.getHeader(HttpHeaders.USER_AGENT));
+                    msg.put("type", "fake-order");
+                    msg.put("remark", "This is not a real order from the user , but a fake order created out of thin air in order to replenish the stock .");
+
+                    commodityMqService.asyncSendOrderAddMsg("commodity-seckill-topic", msg, null, null);*/
+
+                    throw new PtpException(811, "商品已售罄", "当前秒杀操作的时机与补货时机一致(相冲突)");
+
+                }
 
             }
+
+            if (oldStockQuantity < count) {
+
+                throw new PtpException(811, "商品已售罄", "商品剩余库存数量小于请求秒杀的数量");
+
+            }
+
+            Long newStockQuantity = stringRedisTemplate.opsForValue().decrement(String.format("stock-quantity:commodity:seckill:%d", id), count);
 
             // 2024-6-7  23:15-你会发现在这里我们几乎没有进行耗时操作，都是对现有数据的收集与简单处理
             HashMap<String, Object> msg = new HashMap<>();
