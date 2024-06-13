@@ -89,8 +89,9 @@
         <sentinel.dashboard.version>1.8.7</sentinel.dashboard.version>
         <spring.cloud.version>2023.0.1</spring.cloud.version>
         <spring.cloud.alibaba.version>2023.0.1.0</spring.cloud.alibaba.version>
-        <rocketmq.version>2.3.0</rocketmq.version>
+        <rocketmq.starter.version>2.3.0</rocketmq.starter.version>
         <redisson.version>3.30.0</redisson.version>
+        <rocketmq.version>5.2.0</rocketmq.version>
 
     </properties>
 
@@ -201,12 +202,23 @@
             <dependency>
                 <groupId>org.apache.rocketmq</groupId>
                 <artifactId>rocketmq-spring-boot-starter</artifactId>
-                <version>${rocketmq.version}</version>
+                <version>${rocketmq.starter.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.redisson</groupId>
                 <artifactId>redisson-spring-boot-starter</artifactId>
                 <version>${redisson.version}</version>
+            </dependency>
+            <!--  2024-6-14  20:21-引入用来使删除RocketMQ中的堆积消息的删除更加简便  -->
+            <dependency>
+                <groupId>org.apache.rocketmq</groupId>
+                <artifactId>rocketmq-client</artifactId>
+                <version>${rocketmq.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.rocketmq</groupId>
+                <artifactId>rocketmq-tools</artifactId>
+                <version>${rocketmq.version}</version>
             </dependency>
 
         </dependencies>

@@ -84,6 +84,10 @@ public class CommodityReplenishConsumer implements RocketMQListener<HashMap<Stri
             stringRedisTemplate.opsForValue().set(String.format("replenish:commodity:%d", commodityId), countBinaryStr + countBinaryStr);
             log.info("Commodity replenish message sent successfully ! Commodity[{}] Stock Quantity + {}", commodityId, count);
 
+        } else {
+
+            log.warn("Replenish failed ~ Because there is already a replenishment task");
+
         }
 
         // log.info("result = {}", resMap);

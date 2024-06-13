@@ -408,6 +408,39 @@ services:
       - rocketmq-broker
 
 
+  # 2024-6-13  23:50-安装logstash
+  logstash:
+    container_name: ptp-backend-logstash-1
+    labels:
+      name: ptp-backend-logstash-1
+      author: LiGuanda
+      description: "用于从多个数据源采集数据然后转换数据并发送至数据库中"
+    image: logstash:${LOGSTASH_VERSION}
+    env_file:
+      - .env
+    dns: 8.8.8.8
+    hostname: ptp-backend-logstash-1
+    extra_hosts:
+      - exthost:${EXTERNAL_LOCALHOST}
+    networks:
+      ptp-network:
+        ipv4_address: ${LOGSTASH_LOCALHOST}
+    ports:
+      - "5043:5043"
+      - "5044:5044"
+    expose:
+      - 5043
+      - 5044
+    volumes:
+      - "./volumes/rocketmq/logs:/home/rocketmq/logs:rw"
+    restart: on-failure
+    logging:
+      driver: json-file
+      options:
+        max-size: 256k
+        max-file: 64
+
+
 # 2024-4-10  15:28-新建一个自定义网络，将全部容器部署到同一个网络内，使其之间能够相互连通
 networks:
   ptp-network:

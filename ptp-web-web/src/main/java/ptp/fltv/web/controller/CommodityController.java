@@ -174,7 +174,7 @@ public class CommodityController {
     }
 
 
-    @CheckCostTime
+    // @CheckCostTime
     // @Transactional
     @SentinelResource("web-finance-commodity-controller")
     @Operation(description = "根据ID秒杀一个商品")

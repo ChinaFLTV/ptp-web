@@ -86,6 +86,9 @@
     </select>
 
 
+    <!--  2024-6-13  15:37-${}与#{}用法说明  -->
+    <!--  ${} 会直接进行文本替换，这可能会存在SQL注入的风险，一般建议用在动态生成的SQL语句的某些非参数部分(表名、列表等)和确定的安全的参数部分  -->
+    <!--  #{} 会借助PreparedStatement来实现安全地变量赋值，不会存在SQL注入的风险，同时它还可以自动进行类型转换，适用于大多数的参数绑定场景  -->
     <select id="getListByRange" parameterType="map" resultType="pfp.fltv.common.model.po.finance.Commodity">
 
         <include refid="select_commodity_fields"/>

@@ -146,7 +146,7 @@ public interface CommodityMapper extends BaseMapper<Commodity> {
      * @filename CommodityMapper.java
      */
     @Update("UPDATE commodity_details SET stock_quantity = stock_quantity + #{delta} , version = version + 1 WHERE commodity_id = #{id} AND version = #{version2}")
-    int updateStockQuantityByIdAndVersion(@Nonnull @Param("id") Long id, @Nonnull @Param("count") Integer delta, @Nonnull @Param("version2") Integer version2);
+    int updateStockQuantityByIdAndVersion(@Nonnull @Param("id") Long id, @Nonnull @Param("delta") Integer delta, @Nonnull @Param("version2") Integer version2);
 
 
 }
