@@ -112,10 +112,6 @@ public class CommodityServiceImpl extends ServiceImpl<CommodityMapper, Commodity
             // int updateItemCount = ((CommodityService) AopContext.currentProxy()).updateOne(commodity);
             // 2024-6-12  23:26-改用CAS形式进行商品库存数量的更新，以避免数据不一致的问题
             int updateItemCount = ((CommodityMapper) ((CommodityService) AopContext.currentProxy()).getBaseMapper()).updateStockQuantityByIdAndVersion(id, count, commodity.getVersion2());
-
-            System.out.println("-----------------------------------------------------------------");
-            System.out.println("updateItemCount = " + updateItemCount);
-
             return updateItemCount > 0 ? commodity : null;
 
         }

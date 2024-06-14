@@ -14,7 +14,7 @@ import org.springframework.data.annotation.Transient;
 import pfp.fltv.common.enums.TaskStatus;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 /**
  * @author Lenovo/LiGuanda
@@ -46,10 +46,10 @@ public class BaseEntity implements Serializable {
     private String meta;
 
     @Schema(description = "动作产生时间")
-    private Timestamp createTime;
+    private LocalDateTime createTime;
 
     @Schema(description = "(最后)修改时间")
-    private Timestamp updateTime;
+    private LocalDateTime updateTime;
 
     @TableLogic
     @Schema(description = "事件是否已被逻辑移除")

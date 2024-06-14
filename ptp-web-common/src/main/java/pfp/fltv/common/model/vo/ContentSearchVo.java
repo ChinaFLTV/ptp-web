@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import pfp.fltv.common.enums.ContentSearchType;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -41,7 +40,7 @@ public class ContentSearchVo implements Serializable {
     @Schema(description = "查询的用户的ID")
     private Long userId;
     @Schema(description = "查询产生的时间")
-    private Timestamp createTime = Timestamp.valueOf(LocalDateTime.now());
+    private LocalDateTime createTime = LocalDateTime.now();
 
 
 }

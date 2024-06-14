@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import pfp.fltv.common.model.po.info.AddressInfo;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -57,7 +57,7 @@ public class DialogueVo implements Serializable {
     private AddressInfo addressInfo;
 
     @Schema(description = "内容创建时间")
-    private Timestamp createTime;
+    private LocalDateTime createTime;
 
 
 }

@@ -18,7 +18,7 @@ import pfp.fltv.common.enums.Gender;
 import pfp.fltv.common.enums.UserStatus;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -93,7 +93,7 @@ public class User implements Serializable {
 
     @Transient
     @Schema(description = "用户出生年月")
-    private Timestamp birthDate;
+    private LocalDateTime birthDate;
 
     // TODO 设置用户关注的博主&被关注列表
 //    @Schema(description = "用户关注的用户列表JSON串")
@@ -145,11 +145,11 @@ public class User implements Serializable {
 
     @Field(name = "create_time", type = FieldType.Date)
     @Schema(description = "用户注册时间")
-    private Timestamp createTime;
+    private LocalDateTime createTime;
 
     @Field(name = "update_time", type = FieldType.Date)
     @Schema(description = "用户资料修改时间")
-    private Timestamp updateTime;
+    private LocalDateTime updateTime;
 
     @Field(name = "is_deleted", type = FieldType.Keyword)
     @Schema(description = "用户是否已被删除")

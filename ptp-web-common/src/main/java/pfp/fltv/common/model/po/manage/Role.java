@@ -10,8 +10,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Transient;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,10 +46,10 @@ public class Role implements Serializable {
     private List<String> prohibition = new ArrayList<>();
 
     @Schema(description = "角色建立时间")
-    private Timestamp createTime;
+    private LocalDateTime createTime;
 
     @Schema(description = "(最后)修改时间")
-    private Timestamp updateTime;
+    private LocalDateTime updateTime;
 
     @Schema(description = "角色是否已被删除")
     private Integer isDeleted = 0;
@@ -76,8 +75,8 @@ public class Role implements Serializable {
         role.name = "";
         role.authorities = new ArrayList<>();
         role.prohibition = new ArrayList<>();
-        role.createTime = Timestamp.from(Instant.now());
-        role.updateTime = Timestamp.from(Instant.now());
+        role.createTime = LocalDateTime.now();
+        role.updateTime = LocalDateTime.now();
         role.isDeleted = 0;
 
         return role;

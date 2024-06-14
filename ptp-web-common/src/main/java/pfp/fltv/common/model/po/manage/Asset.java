@@ -13,7 +13,7 @@ import org.springframework.data.annotation.Transient;
 import pfp.fltv.common.enums.AssetStatus;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,10 +55,10 @@ public class Asset implements Serializable {
     private AssetStatus status = AssetStatus.NORMAL;
 
     @Schema(description = "资产创建时间")
-    private Timestamp createTime;
+    private LocalDateTime createTime;
 
     @Schema(description = "(最后)修改时间")
-    private Timestamp updateTime;
+    private LocalDateTime updateTime;
 
     @Schema(description = "资产信息是否已被删除")
     private Integer isDeleted = 0;

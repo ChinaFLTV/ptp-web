@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 /**
  * @author Lenovo/LiGuanda
@@ -28,7 +28,7 @@ public class LoginInfo implements Serializable {
     private int uid;
 
     @Schema(description = "登录时间")
-    private Timestamp loginDatetime;
+    private LocalDateTime loginDatetime;
 
     @Schema(description = "登录设备信息")
     private DeviceInfo deviceInfo;

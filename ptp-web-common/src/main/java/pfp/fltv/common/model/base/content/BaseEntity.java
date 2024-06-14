@@ -16,7 +16,7 @@ import pfp.fltv.common.enums.ContentStatus;
 import pfp.fltv.common.model.po.info.AddressInfo;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -102,13 +102,14 @@ public class BaseEntity implements Serializable {
     @Schema(description = "其他数据配置(JSON)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private String meta;
 
+    // 2024-6-14  11:32-统一将数据类型由TimeStamp调整为LocalDateTime，因为LocalDateTime类型也可以对应SQL中的TImeStamp类型，并且LocalDateTime操作起来更方便
     @Field(name = "create_time", type = FieldType.Date)
     @Schema(description = "内容创建时间")
-    private Timestamp createTime;
+    private LocalDateTime createTime;
 
     @Field(name = "update_time", type = FieldType.Date)
     @Schema(description = "(最后)更新时间")
-    private Timestamp updateTime;
+    private LocalDateTime updateTime;
 
     @Field(name = "is_deleted", type = FieldType.Keyword)
     @Schema(description = "当前实体是否已被逻辑删除", requiredMode = Schema.RequiredMode.NOT_REQUIRED)

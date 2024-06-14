@@ -9,11 +9,12 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
-import pfp.fltv.common.utils.StringUtils;
+import pfp.fltv.common.exceptions.PtpException;
 import ptp.fltv.web.service.mq.service.CommodityService;
 import ptp.fltv.web.service.mq.service.TransactionRecordService;
 
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Lenovo/LiGuanda
@@ -24,7 +25,7 @@ import java.util.HashMap;
  */
 
 @AllArgsConstructor
-@RocketMQMessageListener(topic = "commodity-replenish-topic", consumerGroup = "commodity-replenish-consumer-group")
+@RocketMQMessageListener(topic = "commodity-replenish-topic", consumerGroup = "commodity-replenish-consumer-group", consumeThreadNumber = 10, consumeThreadMax = 10, maxReconsumeTimes = 64, delayLevelWhenNextConsume = 2)
 @Slf4j
 @Service
 public class CommodityReplenishConsumer implements RocketMQListener<HashMap<String, Object>> {
@@ -38,6 +39,8 @@ public class CommodityReplenishConsumer implements RocketMQListener<HashMap<Stri
     private CommodityService commodityService;
     private StringRedisTemplate stringRedisTemplate;
     private RedissonClient redissonClient;
+    public static final AtomicInteger successReplenishRecv = new AtomicInteger(0);
+    public static final AtomicInteger failReplenishRecv = new AtomicInteger(0);
 
 
     @Transactional
@@ -78,15 +81,18 @@ public class CommodityReplenishConsumer implements RocketMQListener<HashMap<Stri
         // 2024-6-12  00:16-这里之所以我们又把判断条件该为 is null，是因为如果为null时由于网络异常原因导致的，那你后续的Redis操作肯定大概率也会失败，对外表现为啥⑩没有
         // 如果是因为没有这个key，那么意味着本次补货操作是本种商品的第一次补货操作，应予以放行
         // 2024-6-12  00:11-只有在前一次的两轮消费全部完成后(补货值变为64个0时)，才能进行补货，否则会出现一致性问题
-        if (oldReplenishmentQuantityStr == null || Long.parseLong(oldReplenishmentQuantityStr, 2) == 0L) {
+        if (oldReplenishmentQuantityStr == null || Integer.parseInt(oldReplenishmentQuantityStr) == 0L) {
 
-            String countBinaryStr = StringUtils.padToBytes(Integer.toBinaryString(count), '0', 32, StringUtils.Direction.LEFT);
-            stringRedisTemplate.opsForValue().set(String.format("replenish:commodity:%d", commodityId), countBinaryStr + countBinaryStr);
+            // String countBinaryStr = StringUtils.padToBytes(Integer.toBinaryString(count), '0', 32, StringUtils.Direction.LEFT);
+            stringRedisTemplate.opsForValue().set(String.format("replenish:commodity:%d", commodityId), String.valueOf(count));
             log.info("Commodity replenish message sent successfully ! Commodity[{}] Stock Quantity + {}", commodityId, count);
+            successReplenishRecv.incrementAndGet();
 
         } else {
 
             log.warn("Replenish failed ~ Because there is already a replenishment task");
+            failReplenishRecv.incrementAndGet();
+            throw new PtpException(808, "商品补货失败", "当前还存在一个正在运行的补货任务，需等待当前补货任务完成后才可添加");
 
         }
 

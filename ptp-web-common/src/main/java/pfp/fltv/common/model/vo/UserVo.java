@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import pfp.fltv.common.enums.Gender;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -70,7 +70,7 @@ public class UserVo implements Serializable {
     private Double userRank;
 
     @Schema(description = "用户出生年月")
-    private Timestamp birthDate;
+    private LocalDateTime birthDate;
 
     @Schema(description = "用户地址信息ID")
     private Long addressInfoId;

@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 import pfp.fltv.common.enums.ResponseStatus;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 /**
  * @param <T> 包装数据的类型
@@ -28,13 +27,13 @@ public class Result<T> implements Serializable {
     @Schema(description = "响应状态")
     private ResponseStatus status;
     @Schema(description = "响应时间")
-    private Timestamp time;
+    private LocalDateTime time;
     @Schema(description = "响应数据")
     private T data;
     public static final Blank BLANK = Blank.INSTANCE;
 
 
-    public Result(ResponseStatus status, Timestamp time, T data) {
+    public Result(ResponseStatus status, LocalDateTime time, T data) {
 
         this.status = status;
         this.time = time;
@@ -53,7 +52,7 @@ public class Result<T> implements Serializable {
      */
     public static <U> Result<U> success() {
 
-        return new Result<>(ResponseStatus.SUCCESS, Timestamp.from(Instant.now()), null);
+        return new Result<>(ResponseStatus.SUCCESS, LocalDateTime.now(), null);
 
     }
 
@@ -69,7 +68,7 @@ public class Result<T> implements Serializable {
      */
     public static <U> Result<U> success(U data) {
 
-        return new Result<>(ResponseStatus.SUCCESS, Timestamp.from(Instant.now()), data);
+        return new Result<>(ResponseStatus.SUCCESS, LocalDateTime.now(), data);
 
     }
 
@@ -85,7 +84,7 @@ public class Result<T> implements Serializable {
      */
     public static <U> Result<U> neutral(U data) {
 
-        return new Result<>(ResponseStatus.NEUTRAL, Timestamp.from(Instant.now()), data);
+        return new Result<>(ResponseStatus.NEUTRAL, LocalDateTime.now(), data);
 
     }
 
@@ -101,7 +100,7 @@ public class Result<T> implements Serializable {
      */
     public static <U> Result<U> failure(U data) {
 
-        return new Result<>(ResponseStatus.FAILURE, Timestamp.from(Instant.now()), data);
+        return new Result<>(ResponseStatus.FAILURE, LocalDateTime.now(), data);
 
     }
 

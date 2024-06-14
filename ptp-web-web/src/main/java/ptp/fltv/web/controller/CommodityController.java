@@ -18,7 +18,6 @@ import org.springframework.web.client.RestTemplate;
 import pfp.fltv.common.exceptions.PtpException;
 import pfp.fltv.common.model.po.finance.Commodity;
 import pfp.fltv.common.response.Result;
-import pfp.fltv.common.utils.StringUtils;
 import ptp.fltv.web.annotation.CheckCostTime;
 import ptp.fltv.web.constants.WebConstants;
 import ptp.fltv.web.mq.CommodityMqService;
@@ -243,8 +242,8 @@ public class CommodityController {
             String replenishmentQuantityStr = stringRedisTemplate.opsForValue().getAndDelete(String.format("replenish:commodity:%d", id));
             if (replenishmentQuantityStr != null) {
 
-                String newAddStockQuantityStr = replenishmentQuantityStr.substring(32);
-                int newAddStockQuantity = Integer.parseInt(newAddStockQuantityStr, 2);
+                // String newAddStockQuantityStr = replenishmentQuantityStr.substring(32);
+                int newAddStockQuantity = Integer.parseInt(replenishmentQuantityStr);
 
                 if (newAddStockQuantity > 0) {
 
@@ -253,25 +252,26 @@ public class CommodityController {
 
                         stringRedisTemplate.opsForValue().set(String.format("stock-quantity:commodity:seckill:%d", id), String.valueOf(newAddStockQuantity));
                         // 2024-6-12  00:07-这里不能直接以取到的自己的低32位作为新的高32位处理，因为你不知道在你消费这低32位之前，高32为是否已经被消费掉了
-                        stringRedisTemplate.opsForValue().set(String.format("replenish:commodity:%d", id), replenishmentQuantityStr.substring(0, replenishmentQuantityStr.length() / 2) + StringUtils.padToBytes("", '0', 32, StringUtils.Direction.LEFT));
+                        // stringRedisTemplate.opsForValue().set(String.format("replenish:commodity:%d", id), replenishmentQuantityStr.substring(0, replenishmentQuantityStr.length() / 2) + StringUtils.padToBytes("", '0', 32, StringUtils.Direction.LEFT));
 
                     } else {
 
                         stringRedisTemplate.opsForValue().set(String.format("stock-quantity:commodity:seckill:%d", id), String.valueOf(oldStockQuantity + newAddStockQuantity));
-                        stringRedisTemplate.opsForValue().set(String.format("replenish:commodity:%d", id), replenishmentQuantityStr.substring(0, replenishmentQuantityStr.length() / 2) + StringUtils.padToBytes("", '0', 32, StringUtils.Direction.LEFT));
+                        // stringRedisTemplate.opsForValue().set(String.format("replenish:commodity:%d", id), replenishmentQuantityStr.substring(0, replenishmentQuantityStr.length() / 2) + StringUtils.padToBytes("", '0', 32, StringUtils.Direction.LEFT));
 
                     }
 
-                    /*HashMap<String, Object> msg = new HashMap<>();
+                    HashMap<String, Object> msg = new HashMap<>();
                     msg.put("user-id", uid);
                     msg.put("commodity-id", id);
                     msg.put("count", 0);// 2024-6-12  22:17-这里我们相当于进行一个无意义的空操作，目的只有一个—————不秒杀但补货
+                    msg.put("replenishment-quantity", newAddStockQuantity);
                     msg.put("user-ip", request.getHeader("X-Forward-For"));
                     msg.put("user-agent", request.getHeader(HttpHeaders.USER_AGENT));
-                    msg.put("type", "fake-order");
+                    msg.put("order-type", "replenishment-order");
                     msg.put("remark", "This is not a real order from the user , but a fake order created out of thin air in order to replenish the stock .");
 
-                    commodityMqService.asyncSendOrderAddMsg("commodity-seckill-topic", msg, null, null);*/
+                    commodityMqService.asyncSendOrderAddMsg("commodity-seckill-topic", msg, null, null);
 
                     throw new PtpException(811, "商品已售罄", "当前秒杀操作的时机与补货时机一致(相冲突)");
 
