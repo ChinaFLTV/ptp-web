@@ -1,0 +1,70 @@
+#!/bin/bash -e
+
+# Map environment variables to entries in logstash.yml.
+# Note that this will mutate logstash.yml in place if any such settings are found.
+# This may be undesirable, especially if logstash.yml is bind-mounted from the
+# host system.
+env2yaml /usr/share/logstash/config/logstash.yml
+
+
+if [[ -n "$LOG_STYLE" ]]; then
+
+  case "$LOG_STYLE" in
+
+    console)
+
+      # This is the default. Nothing to do.
+      ;;
+
+    file)
+
+      # Overwrite the default config with the stack config. Do this as a
+      # copy, not a move, in case the container is restarted.
+      cp -f /usr/share/logstash/config/log4j2.file.properties /usr/share/logstash/config/log4j2.properties
+      ;;
+
+    *)
+
+      echo "ERROR: LOG_STYLE set to [$LOG_STYLE]. Expected [console] or [file]" >&2
+      exit 1 ;;
+
+  esac
+
+fi
+
+
+export LS_JAVA_OPTS="-Dls.cgroup.cpuacct.path.override=/ -Dls.cgroup.cpu.path.override=/ $LS_JAVA_OPTS"
+
+
+# 2024-6-15  21:34-以下逻辑只为避免每次容器启动都要下载一次 logstash-codec-json_lines 插件的情况
+echo "正在扫描已安装的插件..."
+# 使用临时文件记录捕获的插件列表
+plugin_list=$(mktemp)
+/usr/share/logstash/bin/logstash-plugin list > "$plugin_list"
+echo "插件扫描完毕！"
+
+if ! grep -q "logstash-codec-json_lines" "$plugin_list"; then
+
+  echo "未检测到 logstash-codec-json_lines 插件，开始安装 logstash-codec-json_lines 插件..."
+  /usr/share/logstash/bin/logstash-plugin install logstash-codec-json_lines
+  echo "插件 logstash-codec-json_lines 安装完成！"
+
+else
+
+  echo "logstash-codec-json_lines 插件已经安装，无需再次安装！"
+
+fi
+
+# 删除临时文件
+rm -rf "$plugin_list"
+
+
+if [[ -z $1 ]] || [[ ${1:0:1} == '-' ]] ; then
+
+  exec logstash "$@"
+
+else
+
+  exec "$@"
+
+fi

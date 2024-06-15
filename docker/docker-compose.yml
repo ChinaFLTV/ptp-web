@@ -435,8 +435,10 @@ services:
       - 9600
     volumes:
       - "./volumes/logstash/config:/usr/share/logstash/config:rw"
+      - "./volumes/logstash/pipeline:/usr/share/logstash/pipeline:rw"
+      - "./volumes/logstash/docker-entrypoint:/usr/local/bin/docker-entrypoint:rw"
     # 2024-6-14  23:42-安装json_lines所需的插件
-    command: /usr/share/logstash/bin/logstash-plugin install logstash-codec-json_lines && /bin/bash
+    # command: /usr/share/logstash/bin/logstash-plugin install logstash-codec-json_lines && /bin/bash
     restart: on-failure
     logging:
       driver: json-file

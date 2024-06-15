@@ -5,7 +5,7 @@
     <!--获取springboot的yml配置信息-->
     <springProperty scope="context" name="applicationName" source="spring.application.name" defaultValue="default"/>
     <!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径-->
-    <property name="LOG_HOME" value="D:\JavaProjects\ptp-web-backend\logs\logback"/>
+    <property name="LOG_HOME" value="D:/JavaProjects/ptp-web-backend/logs/logback"/>
 
 
     <!--输出到控制台-->

@@ -3,6 +3,8 @@ package ptp.fltv.web.controller;
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +20,7 @@ import pfp.fltv.common.response.Result;
  * @filename TestController.java
  */
 
+@Slf4j(topic = "ptp-web-web-test")
 @Profile("dev")
 @Tag(name = "WEB测试专用接口")
 @RestController
@@ -28,9 +31,12 @@ public class TestController {
     @SentinelResource("web-content-test")
     @Operation(description = "获取达哥的女朋友")
     @GetMapping("/get/dage/wife")
-    public Result<String> getDageWife() throws InterruptedException {
+    public Result<String> getDageWife(HttpServletRequest request) throws InterruptedException {
+
+        String ip = request.getHeader("X-Forwarded-For");
 
         Thread.sleep(300);// 2024-5-10  21:13-模拟耗时操作
+        log.info("IP为 {} 的用户发来一个获取达哥女朋友的GET请求~", ip);
         return Result.success("JuJingyi");
 
     }
