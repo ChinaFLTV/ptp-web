@@ -13,6 +13,7 @@ import pfp.fltv.common.model.po.manage.Asset;
 import pfp.fltv.common.model.po.manage.User;
 import pfp.fltv.common.model.vo.AssetVo;
 import pfp.fltv.common.response.Result;
+import pfp.fltv.common.annotation.LogRecord;
 import ptp.fltv.web.service.AssetService;
 import ptp.fltv.web.service.UserService;
 
@@ -41,6 +42,7 @@ public class AssetController {
     private UserService userService;
 
 
+    @LogRecord(description = "根据财产ID查询财产信息")
     @SentinelResource("web-content-asset-controller")
     @Operation(description = "根据财产ID查询财产信息")
     @GetMapping("/query/{userId}")
@@ -57,6 +59,7 @@ public class AssetController {
     }
 
 
+    @LogRecord(description = "批量(分页)查询多条财产数据")
     @SentinelResource("web-content-asset-controller")
     @Operation(description = "批量(分页)查询多条财产数据")
     @GetMapping("/query/page/{offset}/{limit}")
@@ -80,6 +83,7 @@ public class AssetController {
     }
 
 
+    @LogRecord(description = "添加财产信息")
     @SentinelResource("web-content-asset-controller")
     @Operation(description = "添加财产信息")
     @PostMapping("/insert")
@@ -97,6 +101,7 @@ public class AssetController {
     }
 
 
+    @LogRecord(description = "修改财产信息")
     @SentinelResource("web-content-asset-controller")
     @Operation(description = "修改财产信息")
     @PutMapping("/update")
@@ -114,6 +119,7 @@ public class AssetController {
     }
 
 
+    @LogRecord(description = "删除财产信息")
     @SentinelResource("web-content-asset-controller")
     @Operation(description = "删除财产信息")
     @DeleteMapping("/delete/{id}")

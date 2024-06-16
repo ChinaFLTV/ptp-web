@@ -1,4 +1,4 @@
-package ptp.fltv.web.annotation;
+package pfp.fltv.common.annotation;
 
 import java.lang.annotation.*;
 

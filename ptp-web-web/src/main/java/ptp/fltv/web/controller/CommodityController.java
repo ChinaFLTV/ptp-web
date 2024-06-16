@@ -18,7 +18,7 @@ import org.springframework.web.client.RestTemplate;
 import pfp.fltv.common.exceptions.PtpException;
 import pfp.fltv.common.model.po.finance.Commodity;
 import pfp.fltv.common.response.Result;
-import ptp.fltv.web.annotation.CheckCostTime;
+import pfp.fltv.common.annotation.CheckCostTime;
 import ptp.fltv.web.constants.WebConstants;
 import ptp.fltv.web.mq.CommodityMqService;
 import ptp.fltv.web.service.CommodityService;

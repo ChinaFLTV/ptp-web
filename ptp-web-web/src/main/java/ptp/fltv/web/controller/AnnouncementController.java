@@ -13,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
 import pfp.fltv.common.model.po.content.Announcement;
 import pfp.fltv.common.model.vo.AnnouncementVo;
 import pfp.fltv.common.response.Result;
+import pfp.fltv.common.annotation.LogRecord;
 import ptp.fltv.web.constants.WebConstants;
 import ptp.fltv.web.service.AnnouncementService;
 
@@ -48,6 +49,7 @@ public class AnnouncementController {
     private RestTemplate restTemplate;
 
 
+    @LogRecord(description = "根据ID查询单条公告数据")
     @SentinelResource("web-content-announcement-controller")
     @Operation(description = "根据ID查询单条公告数据")
     @GetMapping("/query/single/{id}")
@@ -60,6 +62,7 @@ public class AnnouncementController {
     }
 
 
+    @LogRecord(description = "批量(分页)查询多条公告数据")
     @SentinelResource("web-content-announcement-controller")
     @Operation(description = "批量(分页)查询多条公告数据")
     @GetMapping("/query/page/{offset}/{limit}")
@@ -82,6 +85,7 @@ public class AnnouncementController {
     }
 
 
+    @LogRecord(description = "添加单条公告数据")
     @SentinelResource("web-content-announcement-controller")
     @Operation(description = "添加单条公告数据")
     @PostMapping("/insert/single")
@@ -109,6 +113,7 @@ public class AnnouncementController {
     }
 
 
+    @LogRecord(description = "修改单条公告数据")
     @SentinelResource("web-content-announcement-controller")
     @Operation(description = "修改单条公告数据")
     @PutMapping("/update/single")
@@ -136,6 +141,7 @@ public class AnnouncementController {
     }
 
 
+    @LogRecord(description = "删除单条公告数据")
     @SentinelResource("web-content-announcement-controller")
     @Operation(description = "删除单条公告数据")
     @DeleteMapping("/delete/single/{id}")

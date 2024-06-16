@@ -14,17 +14,17 @@ import pfp.fltv.common.exceptions.PtpException;
  * @version 1.0.0
  * @date 2024/6/9 PM 11:32:29
  * @description 通过AOP的方式对方法的执行时的运行时状态进行检测
- * @filename RuntimeCheckAop.java
+ * @filename RuntimeCheckAspect.java
  */
 
 
 @Slf4j
 @Aspect
 @Component
-public class RuntimeCheckAop {
+public class RuntimeCheckAspect {
 
 
-    @Pointcut("@annotation(ptp.fltv.web.annotation.CheckCostTime)")
+    @Pointcut("@annotation(pfp.fltv.common.annotation.CheckCostTime)")
     public void costTimeMethods() {
 
 
