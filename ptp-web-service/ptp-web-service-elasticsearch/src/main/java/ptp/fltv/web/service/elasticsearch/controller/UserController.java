@@ -10,6 +10,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.data.elasticsearch.core.query.ByQueryResponse;
 import org.springframework.data.elasticsearch.core.query.UpdateResponse;
 import org.springframework.web.bind.annotation.*;
+import pfp.fltv.common.annotation.LogRecord;
 import pfp.fltv.common.model.po.manage.User;
 import pfp.fltv.common.model.vo.UserVo;
 import pfp.fltv.common.response.Result;
@@ -40,6 +41,7 @@ public class UserController {
     private EsSearchService esSearchService;
 
 
+    @LogRecord(description = "根据给定的关键词分页查询符合条件的用户数据")
     @SentinelResource("service-elasticsearch-content-user-controller")
     @Operation(description = "根据给定的关键词分页查询符合条件的用户数据")
     @PostMapping("/fuzzy_query/page/{offset}/{limit}")
@@ -67,6 +69,7 @@ public class UserController {
     }
 
 
+    @LogRecord(description = "修改单条用户数据(ES)")
     @SentinelResource("service-elasticsearch-content-user-controller")
     @Operation(description = "修改单条用户数据(ES)")
     @PutMapping("/update/single")
@@ -82,6 +85,7 @@ public class UserController {
     }
 
 
+    @LogRecord(description = "添加单条用户数据(ES)")
     @SentinelResource("service-elasticsearch-content-user-controller")
     @Operation(description = "添加单条用户数据(ES)")
     @PostMapping("/insert/single")
@@ -99,6 +103,7 @@ public class UserController {
     }
 
 
+    @LogRecord(description = "删除单条用户数据(ES)")
     @SentinelResource("service-elasticsearch-content-user-controller")
     @Operation(description = "删除单条用户数据(ES)")
     @DeleteMapping("/delete/single/{id}")

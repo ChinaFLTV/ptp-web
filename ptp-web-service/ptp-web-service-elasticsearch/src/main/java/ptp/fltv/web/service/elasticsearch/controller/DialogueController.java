@@ -10,6 +10,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.data.elasticsearch.core.query.ByQueryResponse;
 import org.springframework.data.elasticsearch.core.query.UpdateResponse;
 import org.springframework.web.bind.annotation.*;
+import pfp.fltv.common.annotation.LogRecord;
 import pfp.fltv.common.model.po.content.Dialogue;
 import pfp.fltv.common.model.vo.DialogueVo;
 import pfp.fltv.common.response.Result;
@@ -39,6 +40,7 @@ public class DialogueController {
     private EsSearchService esSearchService;
 
 
+    @LogRecord(description = "根据给定的关键词分页查询符合条件的对话数据")
     @SentinelResource("service-elasticsearch-content-dialogue-controller")
     @Operation(description = "根据给定的关键词分页查询符合条件的对话数据")
     @PostMapping("/fuzzy_query/page/{offset}/{limit}")
@@ -66,6 +68,7 @@ public class DialogueController {
     }
 
 
+    @LogRecord(description = "修改单条对话数据(ES)")
     @SentinelResource("service-elasticsearch-content-dialogue-controller")
     @Operation(description = "修改单条对话数据(ES)")
     @PutMapping("/update/single")
@@ -81,6 +84,7 @@ public class DialogueController {
     }
 
 
+    @LogRecord(description = "添加单条对话数据(ES)")
     @SentinelResource("service-elasticsearch-content-dialogue-controller")
     @Operation(description = "添加单条对话数据(ES)")
     @PostMapping("/insert/single")
@@ -98,6 +102,7 @@ public class DialogueController {
     }
 
 
+    @LogRecord(description = "删除单条对话数据(ES)")
     @SentinelResource("service-elasticsearch-content-dialogue-controller")
     @Operation(description = "删除单条对话数据(ES)")
     @DeleteMapping("/delete/single/{id}")

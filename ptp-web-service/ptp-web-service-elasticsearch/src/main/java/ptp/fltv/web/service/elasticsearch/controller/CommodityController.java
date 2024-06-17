@@ -9,6 +9,7 @@ import jakarta.annotation.Resource;
 import org.springframework.data.elasticsearch.core.query.ByQueryResponse;
 import org.springframework.data.elasticsearch.core.query.UpdateResponse;
 import org.springframework.web.bind.annotation.*;
+import pfp.fltv.common.annotation.LogRecord;
 import pfp.fltv.common.model.po.finance.Commodity;
 import pfp.fltv.common.response.Result;
 import pfp.fltv.common.utils.ReflectUtils;
@@ -36,6 +37,7 @@ public class CommodityController {
     private EsSearchService esSearchService;
 
 
+    @LogRecord(description = "根据给定的关键词分页查询符合个件的商品数据")
     @SentinelResource("service-elasticsearch-finance-commodity-controller")
     @Operation(description = "根据给定的关键词分页查询符合个件的商品数据")
     @PostMapping("/fuzzy_query/page/{offset}/{limit}")
@@ -52,6 +54,7 @@ public class CommodityController {
     }
 
 
+    @LogRecord(description = "修改单个商品数据(ES)")
     @SentinelResource("service-elasticsearch-finance-commodity-controller")
     @Operation(description = "修改单个商品数据(ES)")
     @PutMapping("/update/single")
@@ -67,6 +70,7 @@ public class CommodityController {
     }
 
 
+    @LogRecord(description = "添加单个商品数据(ES)")
     @SentinelResource("service-elasticsearch-finance-commodity-controller")
     @Operation(description = "添加单个商品数据(ES)")
     @PostMapping("/insert/single")
@@ -85,6 +89,7 @@ public class CommodityController {
     }
 
 
+    @LogRecord(description = "删除单个商品数据(ES)")
     @SentinelResource("service-elasticsearch-finance-commodity-controller")
     @Operation(description = "删除单个商品数据(ES)")
     @DeleteMapping("/delete/single/{id}")

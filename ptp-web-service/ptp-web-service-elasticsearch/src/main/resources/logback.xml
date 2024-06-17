@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--  2024-6-16  20:51-默认每60s检测一次配置文件的变动，设置重新设置为10s  -->
+<!--  2024-6-17  11:20-默认每60s检测一次配置文件的变动，设置重新设置为10s  -->
 <configuration debug="false" scan="true" scanPeriod="10 seconds">
 
 
     <!--获取springboot的yml配置信息-->
     <springProperty scope="context" name="applicationName" source="spring.application.name" defaultValue="default"/>
     <!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径-->
-    <property name="LOG_HOME" value="D:/JavaProjects/ptp-web-backend/logs/logback/web"/>
+    <property name="LOG_HOME" value="D:/JavaProjects/ptp-web-backend/logs/logback/service/es"/>
 
 
     <!--输出到控制台-->
@@ -46,7 +46,7 @@
         </encoder>
 
 
-        <!--  2024-6-17  11:21-将通过MDC设置的自定义字段值添加到日志元数据中  -->
+        <!--  2024-6-16  23:06-将通过MDC设置的自定义字段值添加到日志元数据中  -->
         <includeCallerData>true</includeCallerData>
         <includeMdc>true</includeMdc>
 

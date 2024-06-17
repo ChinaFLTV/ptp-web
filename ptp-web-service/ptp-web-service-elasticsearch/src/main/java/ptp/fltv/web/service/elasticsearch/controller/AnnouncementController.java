@@ -10,6 +10,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.data.elasticsearch.core.query.ByQueryResponse;
 import org.springframework.data.elasticsearch.core.query.UpdateResponse;
 import org.springframework.web.bind.annotation.*;
+import pfp.fltv.common.annotation.LogRecord;
 import pfp.fltv.common.model.po.content.Announcement;
 import pfp.fltv.common.model.vo.AnnouncementVo;
 import pfp.fltv.common.response.Result;
@@ -40,6 +41,7 @@ public class AnnouncementController {
     private EsSearchService esSearchService;
 
 
+    @LogRecord(description = "根据给定的关键词分页查询符合条件的公告数据")
     @SentinelResource("service-elasticsearch-content-announcement-controller")
     @Operation(description = "根据给定的关键词分页查询符合条件的公告数据")
     @PostMapping("/fuzzy_query/page/{offset}/{limit}")
@@ -67,6 +69,7 @@ public class AnnouncementController {
     }
 
 
+    @LogRecord(description = "修改单条公告数据(ES)")
     @SentinelResource("service-elasticsearch-content-announcement-controller")
     @Operation(description = "修改单条公告数据(ES)")
     @PutMapping("/update/single")
@@ -82,6 +85,7 @@ public class AnnouncementController {
     }
 
 
+    @LogRecord(description = "添加单条公告数据(ES)")
     @SentinelResource("service-elasticsearch-content-announcement-controller")
     @Operation(description = "添加单条公告数据(ES)")
     @PostMapping("/insert/single")
@@ -100,6 +104,7 @@ public class AnnouncementController {
     }
 
 
+    @LogRecord(description = "删除单条公告数据(ES)")
     @SentinelResource("service-elasticsearch-content-announcement-controller")
     @Operation(description = "删除单条公告数据(ES)")
     @DeleteMapping("/delete/single/{id}")
