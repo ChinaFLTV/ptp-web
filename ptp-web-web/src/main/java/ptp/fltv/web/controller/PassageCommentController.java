@@ -11,6 +11,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import pfp.fltv.common.annotation.LogRecord;
 import pfp.fltv.common.model.po.content.PassageComment;
 import pfp.fltv.common.model.vo.PassageCommentVo;
 import pfp.fltv.common.response.Result;
@@ -48,6 +49,7 @@ public class PassageCommentController {
     private RestTemplate restTemplate;
 
 
+    @LogRecord(description = "根据ID查询单条文章评论数据")
     @SentinelResource("web-content-passage-comment-controller")
     @Operation(description = "根据ID查询单条文章评论数据")
     @GetMapping("/query/single/{id}")
@@ -63,6 +65,7 @@ public class PassageCommentController {
     }
 
 
+    @LogRecord(description = "批量(分页)查询多条文章评论数据")
     @SentinelResource("web-content-passage-comment-controller")
     @Operation(description = "批量(分页)查询多条文章评论数据")
     @GetMapping("/query/page/{offset}/{limit}")
@@ -87,6 +90,7 @@ public class PassageCommentController {
     }
 
 
+    @LogRecord(description = "添加单条文章评论数据")
     @SentinelResource("web-content-passage-comment-controller")
     @Operation(description = "添加单条文章评论数据")
     @PostMapping("/insert/single")
@@ -117,6 +121,7 @@ public class PassageCommentController {
     }
 
 
+    @LogRecord(description = "修改单条文章评论数据")
     @SentinelResource("web-content-passage-comment-controller")
     @Operation(description = "修改单条文章评论数据")
     @PutMapping("/update/single")
@@ -147,6 +152,7 @@ public class PassageCommentController {
     }
 
 
+    @LogRecord(description = "删除单条文章评论数据")
     @SentinelResource("web-content-passage-comment-controller")
     @Operation(description = "删除单条文章评论数据")
     @DeleteMapping("/delete/single/{id}")

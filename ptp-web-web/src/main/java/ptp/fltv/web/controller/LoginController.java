@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import pfp.fltv.common.annotation.LogRecord;
 import pfp.fltv.common.exceptions.PtpException;
 import pfp.fltv.common.model.vo.UserLoginVo;
 import pfp.fltv.common.response.Result;
@@ -31,6 +32,7 @@ public class LoginController {
     private UserService userService;
 
 
+    @LogRecord(description = "普通登录(用户名+密码)")
     @SentinelResource("web-gate-controller")
     @Operation(description = "普通登录(用户名+密码)")
     @PermitAll
@@ -46,6 +48,7 @@ public class LoginController {
     }
 
 
+    @LogRecord(description = "注册账号")
     @SentinelResource("web-gate-controller")
     @Operation(description = "登出账号")
     @GetMapping("/logout")
@@ -58,6 +61,7 @@ public class LoginController {
     }
 
 
+    @LogRecord(description = "通过Github第三方客户端进行OAuth2登录")
     @SentinelResource("web-gate-controller")
     @Operation(summary = "通过Github第三方客户端进行OAuth2登录", description = "想要被动地调用此方法，需要向 https://github.com/login/oauth/authorize?client_id=你的应用注册的ClientID 发送GET请求")
     @PermitAll

@@ -11,6 +11,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import pfp.fltv.common.annotation.LogRecord;
 import pfp.fltv.common.model.po.content.Passage;
 import pfp.fltv.common.model.vo.PassageVo;
 import pfp.fltv.common.response.Result;
@@ -48,6 +49,7 @@ public class PassageController {
     private RestTemplate restTemplate;
 
 
+    @LogRecord(description = "根据ID查询单条文章数据")
     @SentinelResource("web-content-passage-controller")
     @Operation(description = "根据ID查询单条文章数据")
     @GetMapping("/query/single/{id}")
@@ -62,6 +64,7 @@ public class PassageController {
     }
 
 
+    @LogRecord(description = "批量(分页)查询多条文章数据")
     @SentinelResource("web-content-passage-controller")
     @Operation(description = "批量(分页)查询多条文章数据")
     @GetMapping("/query/page/{offset}/{limit}")
@@ -85,6 +88,7 @@ public class PassageController {
     }
 
 
+    @LogRecord(description = "添加单条文章数据")
     @SentinelResource("web-content-passage-controller")
     @Operation(description = "添加单条文章数据")
     @PostMapping("/insert/single")
@@ -114,6 +118,7 @@ public class PassageController {
     }
 
 
+    @LogRecord(description = "修改单条文章数据")
     @SentinelResource("web-content-passage-controller")
     @Operation(description = "修改单条文章数据")
     @PutMapping("/update/single")
@@ -144,6 +149,7 @@ public class PassageController {
     }
 
 
+    @LogRecord(description = "删除单条文章数据")
     @SentinelResource("web-content-passage-controller")
     @Operation(description = "删除单条文章数据")
     @DeleteMapping("/delete/single/{id}")

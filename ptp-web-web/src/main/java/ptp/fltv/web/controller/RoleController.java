@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
+import pfp.fltv.common.annotation.LogRecord;
 import pfp.fltv.common.model.po.manage.Role;
 import pfp.fltv.common.model.vo.RoleVo;
 import pfp.fltv.common.response.Result;
@@ -37,6 +38,7 @@ public class RoleController {
     private RoleService roleService;
 
 
+    @LogRecord(description = "根据ID查询角色信息")
     @SentinelResource("web-content-user-role-controller")
     @Operation(description = "根据ID查询角色信息")
     @GetMapping("/query/{roleId}")
@@ -52,6 +54,7 @@ public class RoleController {
     }
 
 
+    @LogRecord(description = "批量(分页)查询多条角色数据")
     @SentinelResource("web-content-user-role-controller")
     @Operation(description = "批量(分页)查询多条角色数据")
     @GetMapping("/query/page/{offset}/{limit}")
@@ -75,6 +78,7 @@ public class RoleController {
     }
 
 
+    @LogRecord(description = "查询所有角色信息")
     @SentinelResource("web-content-user-role-controller")
     @Operation(description = "查询所有角色信息")
     @GetMapping("/query/all")
@@ -86,6 +90,7 @@ public class RoleController {
     }
 
 
+    @LogRecord(description = "添加角色信息")
     @SentinelResource("web-content-user-role-controller")
     @Operation(description = "添加角色信息")
     @PostMapping("/insert")
@@ -103,6 +108,7 @@ public class RoleController {
     }
 
 
+    @LogRecord(description = "修改角色信息")
     @SentinelResource("web-content-user-role-controller")
     @Operation(description = "修改角色信息")
     @PutMapping("/update")
@@ -120,6 +126,7 @@ public class RoleController {
     }
 
 
+    @LogRecord(description = "删除角色信息")
     @SentinelResource("web-content-user-role-controller")
     @Operation(description = "删除角色信息")
     @DeleteMapping("/delete/{roleId}")

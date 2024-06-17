@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import pfp.fltv.common.annotation.LogRecord;
 import pfp.fltv.common.response.Result;
 import ptp.fltv.web.service.PassageService;
 
@@ -30,6 +31,7 @@ public class ExceptionController {
     private PassageService passageService;
 
 
+    @LogRecord(description = "流量过载")
     @SentinelResource("web-exception-controller")
     @Operation(description = "流量过载")
     @GetMapping("/flow/overload")
@@ -44,6 +46,7 @@ public class ExceptionController {
     }
 
 
+    @LogRecord(description = "服务异常")
     @SentinelResource("web-exception-controller")
     @Operation(description = "服务异常")
     @GetMapping("/service/abnormal")
@@ -58,6 +61,7 @@ public class ExceptionController {
     }
 
 
+    @LogRecord(description = "服务暂不可用")
     @SentinelResource("web-exception-controller")
     @Operation(description = "服务暂不可用")
     @GetMapping("/service/unavailable")
@@ -72,6 +76,7 @@ public class ExceptionController {
     }
 
 
+    @LogRecord(description = "权限校验失败")
     @SentinelResource("web-exception-controller")
     @Operation(description = "权限校验失败")
     @GetMapping("/authentication/fail")

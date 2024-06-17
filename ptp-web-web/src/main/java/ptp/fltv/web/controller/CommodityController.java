@@ -15,10 +15,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import pfp.fltv.common.annotation.CheckCostTime;
+import pfp.fltv.common.annotation.LogRecord;
 import pfp.fltv.common.exceptions.PtpException;
 import pfp.fltv.common.model.po.finance.Commodity;
 import pfp.fltv.common.response.Result;
-import pfp.fltv.common.annotation.CheckCostTime;
 import ptp.fltv.web.constants.WebConstants;
 import ptp.fltv.web.mq.CommodityMqService;
 import ptp.fltv.web.service.CommodityService;
@@ -57,6 +58,7 @@ public class CommodityController {
     private StringRedisTemplate stringRedisTemplate;
 
 
+    @LogRecord(description = "根据ID查询单个商品数据")
     @SentinelResource("web-finance-commodity-controller")
     @Operation(description = "根据ID查询单个商品数据")
     @GetMapping("/query/single/{id}")
@@ -73,6 +75,7 @@ public class CommodityController {
     }
 
 
+    @LogRecord(description = "批量(分页)查询多个商品数据")
     @SentinelResource("web-finance-commodity-controller")
     @Operation(description = "批量(分页)查询多个商品数据")
     @GetMapping("/query/page/{offset}/{limit}")
@@ -87,6 +90,7 @@ public class CommodityController {
     }
 
 
+    @LogRecord(description = "添加单个商品数据")
     @SentinelResource("web-finance-commodity-controller")
     @Operation(description = "添加单个商品数据")
     @PostMapping("/insert/single")
@@ -115,6 +119,7 @@ public class CommodityController {
     }
 
 
+    @LogRecord(description = "修改单个商品数据")
     @SentinelResource("web-finance-commodity-controller")
     @Operation(description = "修改单个商品数据")
     @PutMapping("/update/single")
@@ -143,6 +148,7 @@ public class CommodityController {
     }
 
 
+    @LogRecord(description = "删除单个商品数据")
     @SentinelResource("web-finance-commodity-controller")
     @Operation(description = "删除单个商品数据")
     @DeleteMapping("/delete/single/{id}")
@@ -173,6 +179,7 @@ public class CommodityController {
     }
 
 
+    @LogRecord(description = "根据ID秒杀一个商品")
     // @CheckCostTime
     // @Transactional
     @SentinelResource("web-finance-commodity-controller")
@@ -310,6 +317,7 @@ public class CommodityController {
     }
 
 
+    @LogRecord(description = "根据ID给一种商品补货")
     @CheckCostTime
     @Transactional
     @SentinelResource("web-finance-commodity-controller")

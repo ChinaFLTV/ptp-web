@@ -11,6 +11,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import pfp.fltv.common.annotation.LogRecord;
 import pfp.fltv.common.model.po.manage.User;
 import pfp.fltv.common.model.vo.UserVo;
 import pfp.fltv.common.response.Result;
@@ -50,6 +51,7 @@ public class UserController {
     private RestTemplate restTemplate;
 
 
+    @LogRecord(description = "根据ID查询用户信息")
     @SentinelResource("web-content-user-controller")
     @Operation(description = "根据ID查询用户信息")
     @GetMapping("/query/{userId}")
@@ -65,6 +67,7 @@ public class UserController {
     }
 
 
+    @LogRecord(description = "批量(分页)查询多条用户数据")
     @SentinelResource("web-content-user-controller")
     @Operation(description = "批量(分页)查询多条用户数据")
     @GetMapping("/query/page/{offset}/{limit}")
@@ -88,6 +91,7 @@ public class UserController {
     }
 
 
+    @LogRecord(description = "查询所有用户信息")
     @SentinelResource("web-content-user-controller")
     @Operation(description = "查询所有用户信息")
     @GetMapping("/query/all")
@@ -99,6 +103,7 @@ public class UserController {
     }
 
 
+    @LogRecord(description = "添加用户信息")
     @SentinelResource("web-content-user-controller")
     @Operation(description = "添加用户信息")
     @PostMapping("/insert")
@@ -130,6 +135,7 @@ public class UserController {
     }
 
 
+    @LogRecord(description = "修改用户信息")
     @SentinelResource("web-content-user-controller")
     @Operation(description = "修改用户信息")
     @PutMapping("/update")
@@ -157,6 +163,7 @@ public class UserController {
     }
 
 
+    @LogRecord(description = "删除用户信息")
     @SentinelResource("web-content-user-controller")
     @Operation(description = "删除用户信息")
     @DeleteMapping("/delete/{userId}")

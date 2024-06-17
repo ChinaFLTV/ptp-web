@@ -8,9 +8,9 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pfp.fltv.common.annotation.LogRecord;
 import pfp.fltv.common.model.po.content.Passage;
 import pfp.fltv.common.response.Result;
-import pfp.fltv.common.annotation.LogRecord;
 
 /**
  * @author Lenovo/LiGuanda
@@ -41,6 +41,7 @@ public class TestController {
     }
 
 
+    @LogRecord(description = "模拟超时获取达哥的女朋友")
     @SentinelResource("web-content-test")
     @Operation(description = "模拟超时获取达哥的女朋友")
     @GetMapping("/get/dage/wife/timeout")
@@ -53,6 +54,7 @@ public class TestController {
 
 
     @SuppressWarnings("DataFlowIssue")
+    @LogRecord(description = "模拟获取达哥的女朋友出现内部异常")
     @SentinelResource("web-content-test")
     @Operation(description = "模拟获取达哥的女朋友出现内部异常")
     @GetMapping("/get/dage/wife/exception")
