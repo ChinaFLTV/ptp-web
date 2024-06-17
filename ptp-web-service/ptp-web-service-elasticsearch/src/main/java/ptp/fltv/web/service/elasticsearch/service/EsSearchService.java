@@ -34,7 +34,7 @@ public interface EsSearchService {
      * @description 根据关键词组进行分页查询
      * @filename ContentIntermediateService.java
      */
-    <D> List<D> pagingQueryByKeywords(List<String> keywords, String field, Long offset, Long limit, Class<D> clazz);
+    <D> List<D> pagingQueryByKeywords(@Nonnull List<String> keywords, @Nonnull String field, @Nonnull Long offset, @Nonnull Long limit, @Nonnull Class<D> clazz);
 
 
     /**

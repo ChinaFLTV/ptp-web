@@ -118,11 +118,6 @@
             </dependency>
             <dependency>
                 <groupId>ptp.fltv</groupId>
-                <artifactId>ptp-web-service-admin</artifactId>
-                <version>${ptp.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>ptp.fltv</groupId>
                 <artifactId>ptp-web-service-store</artifactId>
                 <version>${ptp.version}</version>
             </dependency>

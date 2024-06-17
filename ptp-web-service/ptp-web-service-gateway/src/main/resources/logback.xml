@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--  2024-6-17  11:20-默认每60s检测一次配置文件的变动，设置重新设置为10s  -->
+<!--  2024-6-17  19:35-默认每60s检测一次配置文件的变动，设置重新设置为10s  -->
 <configuration debug="false" scan="true" scanPeriod="10 seconds">
 
 
@@ -46,7 +46,7 @@
         </encoder>
 
 
-        <!--  2024-6-16  23:06-将通过MDC设置的自定义字段值添加到日志元数据中  -->
+        <!--  2024-6-17  19:35-将通过MDC设置的自定义字段值添加到日志元数据中  -->
         <includeCallerData>true</includeCallerData>
         <includeMdc>true</includeMdc>
 
@@ -94,12 +94,12 @@
     </root>
 
 
-    <logger name="ptp.fltv.web.service.elasticsearch" level="INFO" additivity="false">
+    <!--<logger name="ptp.fltv.web.service.gateway" level="INFO" additivity="false">
 
         <appender-ref ref="console"/>
         <appender-ref ref="logstash"/>
 
-    </logger>
+    </logger>-->
 
 
 </configuration>

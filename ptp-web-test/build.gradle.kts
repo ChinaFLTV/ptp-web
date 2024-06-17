@@ -35,6 +35,10 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1-Beta")
     implementation("cn.hutool:hutool-all:5.8.27")
 
+    // 2024-6-17  19:43-搭建ELK日志系统所需依赖
+    implementation("ch.qos.logback:logback-classic:1.4.14")
+    implementation("net.logstash.logback:logstash-logback-encoder:7.4")
+
 }
 
 

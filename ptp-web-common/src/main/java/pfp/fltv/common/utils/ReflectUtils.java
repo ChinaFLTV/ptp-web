@@ -96,12 +96,6 @@ public class ReflectUtils {
 
     }
 
-    interface Hehe {
-
-        String hehe = "jeje";
-
-    }
-
 
     /**
      * @param objects 多个待序列化的类

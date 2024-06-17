@@ -1,6 +1,7 @@
 package ptp.fltv.web.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import jakarta.annotation.Nonnull;
 import org.springframework.stereotype.Service;
 import pfp.fltv.common.model.po.manage.Role;
 import pfp.fltv.common.model.po.manage.User;
@@ -20,16 +21,9 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
 
 
     @Override
-    public Role getRoleByUser(User user) {
-
-        if (user == null) {
-
-            return Role.EMPTY_ROLE();
-
-        }
+    public Role getRoleByUser(@Nonnull User user) {
 
         Role role = baseMapper.selectById(user.getRoleId());
-
         return (role == null) ? Role.EMPTY_ROLE() : role;
 
     }

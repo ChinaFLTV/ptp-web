@@ -105,6 +105,7 @@ spring:
         switch-pid: true # 2024-5-18  21:47-单机多模块必须启用该参数以区分各模块产生的日志
 
 
+# 2024-6-17  20:24-导入API文档至API fox中作为接口配置数据时，请填写 http://localhost:8080/api/v1/web/v3/docs (即格式为 http://localhost:{服务模块占用的端口}{微服务的上下文路径}/v3/api-docs})
 # 2024-3-16  19:33-Knife4j配置
 knife4j:
   # enable: true # 2024-3-16  19:42-WebFlux模式下无法增强，运行将报 java.lang.ClassNotFoundException: jakarta.servlet.Filter 异常

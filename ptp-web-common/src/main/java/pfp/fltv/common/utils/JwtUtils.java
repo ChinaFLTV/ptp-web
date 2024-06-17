@@ -5,6 +5,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import jakarta.annotation.Nonnull;
 import org.springframework.util.StringUtils;
 
 import java.time.Instant;
@@ -38,13 +39,7 @@ public class JwtUtils {
      * @description 生成对应对象的Token
      * @filename JwtUtils.java
      */
-    public static String encode(Object object) {
-
-        if (object == null) {
-
-            return null;
-
-        }
+    public static String encode(@Nonnull Object object) {
 
         Map<String, Object> header = new HashMap<>();
         header.put("type", "jwt");
@@ -73,7 +68,7 @@ public class JwtUtils {
      * @description 用于根据所给的Token解析出对应的文本内容(不做对象解析处理)
      * @filename JwtUtils.java
      */
-    public static String decode(String token) throws JWTDecodeException {
+    public static String decode(@Nonnull String token) throws JWTDecodeException {
 
         if (!StringUtils.hasLength(token)) {
 

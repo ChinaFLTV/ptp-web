@@ -34,11 +34,11 @@ public class EsSearchServiceImpl implements EsSearchService {
 
 
     @Override
-    public <D> List<D> pagingQueryByKeywords(List<String> keywords, String field, Long offset, Long limit, Class<D> clazz) {
+    public <D> List<D> pagingQueryByKeywords(@Nonnull List<String> keywords, @Nonnull String field, @Nonnull Long offset, @Nonnull Long limit, @Nonnull Class<D> clazz) {
 
         List<D> ds = new ArrayList<>();
 
-        if (keywords != null && !keywords.isEmpty()) {
+        if (!keywords.isEmpty()) {
 
             Criteria criteria = new Criteria(field).matchesAll(keywords);
 

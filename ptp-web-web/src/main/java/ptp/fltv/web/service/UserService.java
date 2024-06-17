@@ -1,6 +1,7 @@
 package ptp.fltv.web.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import jakarta.annotation.Nonnull;
 import lombok.NonNull;
 import pfp.fltv.common.exceptions.PtpException;
 import pfp.fltv.common.model.po.manage.User;
@@ -40,7 +41,7 @@ public interface UserService extends IService<User> {
      * @description 执行用户登录成功后的业务逻辑
      * @filename UserService.java
      */
-    Map<String, Object> login(UserLoginVo userLoginVo) throws PtpException;
+    Map<String, Object> login(@Nonnull UserLoginVo userLoginVo) throws PtpException;
 
 
     /**
@@ -52,7 +53,7 @@ public interface UserService extends IService<User> {
      * @description 通过Github进行OAuth2登录
      * @filename UserService.java
      */
-    String loginByGithub(String code);
+    String loginByGithub(@Nonnull String code);
 
 
 }

@@ -1,6 +1,7 @@
 package ptp.fltv.web.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import jakarta.annotation.Nonnull;
 import pfp.fltv.common.model.po.manage.Role;
 import pfp.fltv.common.model.po.manage.User;
 
@@ -24,7 +25,7 @@ public interface RoleService extends IService<Role> {
      * @description 根据传入的用户对象获取对应的角色数据
      * @filename RoleService.java
      */
-    Role getRoleByUser(User user);
+    Role getRoleByUser(@Nonnull User user);
 
 
 }

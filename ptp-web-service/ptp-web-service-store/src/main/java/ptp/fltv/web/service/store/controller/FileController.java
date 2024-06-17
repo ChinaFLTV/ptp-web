@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import pfp.fltv.common.annotation.LogRecord;
 import pfp.fltv.common.enums.ContentType;
 import pfp.fltv.common.response.Result;
 import pfp.fltv.common.utils.FileUtils;
@@ -45,6 +46,7 @@ public class FileController {
     private FileService fileService;
 
 
+    @LogRecord(description = "下载一个文件")
     @SentinelResource("service-store-file-controller")
     @Operation(description = "下载一个文件")
     @GetMapping("/download")
@@ -68,6 +70,7 @@ public class FileController {
     }
 
 
+    @LogRecord(description = "分片下载一个文件")
     @SentinelResource("service-store-file-controller")
     @Operation(description = "分片下载一个文件")
     @GetMapping("/download/partition")
@@ -93,6 +96,7 @@ public class FileController {
     }
 
 
+    @LogRecord(description = "上传一个文件")
     @SentinelResource("service-store-file-controller")
     @Operation(description = "上传一个文件")
     @PostMapping("/upload")
@@ -115,6 +119,7 @@ public class FileController {
     }
 
 
+    @LogRecord(description = "上传多个文件")
     @SentinelResource("service-store-file-controller")
     @Operation(description = "上传多个文件")
     @PostMapping("/upload/batch")
@@ -158,6 +163,7 @@ public class FileController {
     }
 
 
+    @LogRecord(description = "删除一个文件")
     @SentinelResource("service-store-file-controller")
     @Operation(description = "删除一个文件")
     @DeleteMapping("/delete")
@@ -175,6 +181,7 @@ public class FileController {
     }
 
 
+    @LogRecord(description = "删除多个文件")
     @SentinelResource("service-store-file-controller")
     @Operation(description = "删除多个文件")
     @DeleteMapping("/delete/batch")
@@ -198,6 +205,7 @@ public class FileController {
     }
 
 
+    @LogRecord(description = "更新一个文件")
     @SentinelResource("service-store-file-controller")
     @Operation(description = "更新一个文件")
     @PutMapping("/update")
@@ -217,6 +225,7 @@ public class FileController {
     }
 
 
+    @LogRecord(description = "获取一个文件的元信息")
     @SentinelResource("service-store-file-controller")
     @Operation(description = "获取一个文件的元信息")
     @GetMapping("/get/information")
@@ -235,6 +244,7 @@ public class FileController {
     }
 
 
+    @LogRecord(description = "判断一个文件是否存在")
     @SentinelResource("service-store-file-controller")
     @Operation(description = "判断一个文件是否存在")
     @GetMapping("/exist")

@@ -13,7 +13,6 @@
     <packaging>pom</packaging>
     <description>PTP后台服务管理中心</description>
     <modules>
-        <module>ptp-web-service-admin</module>
         <module>ptp-web-service-gateway</module>
         <module>ptp-web-service-store</module>
         <module>ptp-web-service-elasticsearch</module>
@@ -26,6 +25,15 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-bootstrap</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
         </dependency>
 
         <dependency>

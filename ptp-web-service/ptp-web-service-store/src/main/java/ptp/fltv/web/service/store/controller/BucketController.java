@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import pfp.fltv.common.annotation.LogRecord;
 import pfp.fltv.common.response.Result;
 import ptp.fltv.web.service.store.service.BucketService;
 
@@ -32,6 +33,7 @@ public class BucketController {
     private BucketService bucketService;
 
 
+    @LogRecord(description = "创建一个存储桶")
     @SentinelResource("service-store-bucket-controller")
     @Operation(description = "创建一个存储桶")
     @PostMapping("/create")
@@ -48,6 +50,7 @@ public class BucketController {
     }
 
 
+    @LogRecord(description = "判断存储桶是否存在")
     @SentinelResource("service-store-bucket-controller")
     @Operation(description = "判断存储桶是否存在")
     @PostMapping("/exist")
@@ -64,6 +67,7 @@ public class BucketController {
     }
 
 
+    @LogRecord(description = "删除一个存储桶")
     @SentinelResource("service-store-bucket-controller")
     @Operation(description = "删除一个存储桶")
     @PostMapping("/remove")
@@ -80,6 +84,7 @@ public class BucketController {
     }
 
 
+    @LogRecord(description = "查看一个存储桶的信息")
     @SentinelResource("service-store-bucket-controller")
     @Operation(description = "查看一个存储桶的信息")
     @PostMapping("/get/information")
@@ -95,6 +100,7 @@ public class BucketController {
     }
 
 
+    @LogRecord(description = "查看全部区域的全部存储桶的信息")
     @SentinelResource("service-store-bucket-controller")
     @Operation(description = "查看全部区域的全部存储桶的信息")
     @PostMapping("/get/information/all")

@@ -4,6 +4,7 @@ import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import jakarta.annotation.Nonnull;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -53,13 +54,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
 
     @Override
-    public Map<String, Object> login(UserLoginVo userLoginVo) throws PtpException {
-
-        if (userLoginVo == null) {
-
-            throw new PtpException(801);
-
-        }
+    public Map<String, Object> login(@Nonnull UserLoginVo userLoginVo) throws PtpException {
 
         User user = getUserByNickname(userLoginVo.getNickname());
 
@@ -116,7 +111,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
 
     @Override
-    public String loginByGithub(String code) {
+    public String loginByGithub(@Nonnull String code) {
 
         Map<String, Object> params = new HashMap<>();
         params.put("code", code);
