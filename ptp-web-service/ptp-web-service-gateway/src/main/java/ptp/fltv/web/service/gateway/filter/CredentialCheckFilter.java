@@ -7,18 +7,25 @@ import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ServerWebExchange;
+import pfp.fltv.common.constants.RedisConstants;
+import pfp.fltv.common.enums.LoginClientType;
 import pfp.fltv.common.model.po.manage.Role;
 import pfp.fltv.common.model.po.manage.User;
 import pfp.fltv.common.utils.JwtUtils;
 import ptp.fltv.web.service.gateway.constants.SecurityConstants;
 import ptp.fltv.web.service.gateway.model.ApplicationContext;
 import reactor.core.publisher.Mono;
+
+import java.util.HashMap;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Lenovo/LiGuanda
@@ -65,7 +72,7 @@ public class CredentialCheckFilter implements GlobalFilter, Ordered {
 
 
         final String authorization = request.getHeaders().getFirst("Authorization");// 2024-5-3  21:17-取到用户登录后本次存储的JWT数据
-        final String STORE_KEY = JwtUtils.decode(authorization);
+        final String STORE_KEY = JwtUtils.decode(Objects.requireNonNull(authorization));
 
         if (STORE_KEY != null) {
 
@@ -77,17 +84,66 @@ public class CredentialCheckFilter implements GlobalFilter, Ordered {
 
                 // UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(compactUser, compactUser.getPassword(), compactRole.getGrantedAuthorities());
                 // SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                log.info("----> 校验通过，请求将被允许放行");
                 log.info("============请求用户信息[通过验证]============");
                 log.info(compactUser.toString());
                 log.info("============请求角色信息[通过验证]============");
                 log.info(compactRole.toString());
 
-                // 2024-5-5  21:00-缓存用户身份信息到ThreadLocal中，以便后续组件使用
-                ApplicationContext.USER.set(compactUser);
-                ApplicationContext.ROLE.set(compactRole);
+                HttpCookie loginClientInfo = request.getCookies().getFirst("login_client_info");
+                if (loginClientInfo != null) {
 
-                return chain.filter(exchange);
+
+                    String encodedLoginClientInfo = loginClientInfo.getValue();
+                    // 2024-6-17  23:04-之所以强制前端先加密登录环境信息再发送登录请求，是因为这样可在一定程度上避免客户端伪造登录信息的情况
+                    String decodedLoginClientInfo = JwtUtils.decode(encodedLoginClientInfo);
+                    HashMap<String, Object> nativeEnvMap = JSON.parseObject(decodedLoginClientInfo, HashMap.class);
+                    LoginClientType nativeClientType = (LoginClientType) nativeEnvMap.getOrDefault("client-type", LoginClientType.UNKNOWN);
+                    String nativeDeviceId = (String) nativeEnvMap.getOrDefault("device-id", "NATIVE-UNKNOWN");
+
+
+                    String loginEnvInfoStr = stringRedisTemplate.opsForValue().get(String.format("user:login:env:%s:%s", nativeClientType.name().toLowerCase(), STORE_KEY));
+
+                    if (loginEnvInfoStr != null) {
+
+                        // 2024-6-17  23:06-说明目前已有该ID的登录历史，先判断客户端类型和机器码是否一致，如果一致，则不做操作，否则将更新当前端的登录环境数据并发送下线通知给另个同时在线的同ID的用户
+                        HashMap<String, Object> cloudEnvMap = JSON.parseObject(loginEnvInfoStr, HashMap.class);
+                        LoginClientType cloudClientType = (LoginClientType) cloudEnvMap.getOrDefault("client-type", LoginClientType.UNKNOWN);
+                        String cloudDeviceId = (String) cloudEnvMap.getOrDefault("device-id", "CLOUD-UNKNOWN");
+
+                        // 2024-6-17  23:23-也就是说，此时已经存在同ID的同端用户处于登录状态了，需要强制其下线
+                        if (!nativeDeviceId.equals(cloudDeviceId)) {
+
+                            stringRedisTemplate.opsForValue().set(String.format("user:login:env:%s:%s", nativeClientType.name().toLowerCase(), STORE_KEY), JSON.toJSONString(nativeEnvMap), RedisConstants.CACHE_TIMEOUT, TimeUnit.MILLISECONDS);
+
+                        }
+
+                        log.info("----> 校验通过，请求将被允许放行");
+                        log.info("============请求用户云端登录信息[通过验证]============");
+                        log.warn("cloud-client-type = {}", cloudClientType);
+                        log.warn("cloud-device-id = {}", cloudDeviceId);
+
+                        // 2024-5-5  21:00-缓存用户身份信息到ThreadLocal中，以便后续组件使用
+                        ApplicationContext.USER.set(compactUser);
+                        ApplicationContext.ROLE.set(compactRole);
+
+                        return chain.filter(exchange);
+
+
+                    } else {
+
+                        log.warn("----> 用户云端登录环境信息丢失或出现异常");
+                        log.warn("============请求用户本地登录环境[未通过验证]============");
+                        log.warn("native-client-type = {}", nativeClientType);
+                        log.warn("native-device-id = {}", nativeDeviceId);
+
+                    }
+
+
+                } else {
+
+                    log.warn("----> 用户本地登录环境信息缺失或受损");
+
+                }
 
             } else {
 

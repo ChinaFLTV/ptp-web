@@ -39,6 +39,10 @@ public interface UserService extends IService<User> {
      * @date 2024/4/3 下午 8:26:09
      * @version 1.0.0
      * @description 执行用户登录成功后的业务逻辑
+     * @implNote 前端传过来的UserLoginVo中的LoginInfo中的DeviceInfo中的deviceID必须分Web端、移动端、PC端分别进行实现，
+     * 且各端的实现方式必须统一，生成的机器码必须是唯一的且对于同一台机器所生成的机器码是固定的，deviceID格式为 {WEB/MOBILE/PC}:生成的随机序列号。
+     * 注意1：你生成的设备码中只能含有a-bA-Z0-9这些字符，长度不能太长。
+     * 注意2：生成的deviceID需要通过JWT进行签名后再以Cookie的形式发送过来、
      * @filename UserService.java
      */
     Map<String, Object> login(@Nonnull UserLoginVo userLoginVo) throws PtpException;

@@ -14,14 +14,10 @@ spring:
 
       globalcors:
         cors-configurations:
-          # 2024-4-30  21:0-对于所有GET/POST/PUT/DELETE请求的路径，允许来自所有路径的请求的跨域请求
+          # 2024-4-30  21:0-对于所有类型的HTTP请求的路径，允许来自所有路径的请求的跨域请求
           '[/**]':
             allowedOrigins: "*"
-            allowedMethods:
-              - GET
-              - POST
-              - PUT
-              - DELETE
+            allowedMethods: "*"
         add-to-simple-url-handler-mapping: true # 2024-4-30  21:04-为未被某些网关路由谓词处理的请求提供相同的 CORS 配置
         # main:
         # web-application-type: reactive # 2024-4-30  21:59-解决本模块服务启动报 Spring MVC found on classpath, which is incompatible with Spring Cloud Gateway 错误的问题

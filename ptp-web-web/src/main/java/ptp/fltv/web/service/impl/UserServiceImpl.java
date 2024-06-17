@@ -11,6 +11,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import pfp.fltv.common.constants.OAuth2LoginConstants;
 import pfp.fltv.common.constants.RedisConstants;
+import pfp.fltv.common.enums.LoginClientType;
 import pfp.fltv.common.exceptions.PtpException;
 import pfp.fltv.common.model.po.manage.Role;
 import pfp.fltv.common.model.po.manage.User;
@@ -69,6 +70,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         }
 
+        // 2024-6-17  22:08-后端无需考虑设备码的具体实现，该实现将交由各端开发人员负责实现，这里只需要知道deviceID为 {WEB/MOBILE/PC}:设备码 即可
+        String deviceID = userLoginVo.getLoginInfo().getDeviceInfo().getDeviceID();
+
+        LoginClientType loginClientType = LoginClientType.valueOf(deviceID.split(":")[0]);
+        String deviceId = deviceID.split(":")[1];
+
+
         // 2024-4-4  21:18 保存用户敏感信息和权限认证信息到分布式Redis中，同时返回对应的SessionId
 
         Role role = roleService.getRoleByUser(user);
@@ -96,14 +104,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 2024-4-7  9:39-缓存的超时时间暂定为24H
         redisTemplate.opsForValue().set("user:login:" + STORE_KEY, JSON.toJSONString(compactUser), RedisConstants.CACHE_TIMEOUT, TimeUnit.MILLISECONDS);
         redisTemplate.opsForValue().set("user:role:" + STORE_KEY, JSON.toJSONString(compactRole), RedisConstants.CACHE_TIMEOUT, TimeUnit.MILLISECONDS);
+        // 2024-6-17  22:23-存储三端各自的登录环境信息
+        Map<String, Object> env = new HashMap<>();
+        env.put("client-type", loginClientType);
+        env.put("device-id", deviceId);
+        redisTemplate.opsForValue().set(String.format("user:login:env:%s:%d", loginClientType.name().toLowerCase(), STORE_KEY), JSON.toJSONString(env), RedisConstants.CACHE_TIMEOUT, TimeUnit.MILLISECONDS);
 
         Map<String, Object> result = new HashMap<>();
         userLoginVo.setPassword(""); // 2024-4-3  20:51-清除用户敏感信息
         String jwt1 = JwtUtils.encode(userLoginVo);
-        result.put("userLoginData", jwt1);
+        result.put("user_login_data", jwt1);
         String jwt2 = JwtUtils.encode(STORE_KEY);
-        result.put("STORE_KEY", jwt2);
+        result.put("store_key", jwt2);
 
+        // 2024-6-17  22:32-登录客户端类型和设备码无需返回给前端，因为这些数据完全可以再次由前端计算出来，而且计算是幂等的，至于每一次请求是否需要重新计算一遍，这得看前端那边怎么处理了，与我们后端无关~
         // 2024-4-3  21:33-返回给前端，保存到LocalStorage那里，用的时候再让前端带过来
         return result;
 
