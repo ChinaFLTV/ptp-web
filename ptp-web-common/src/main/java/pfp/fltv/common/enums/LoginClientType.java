@@ -1,8 +1,11 @@
 package pfp.fltv.common.enums;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import jakarta.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+
+import java.util.Objects;
 
 /**
  * @author Lenovo/LiGuanda
@@ -26,6 +29,32 @@ public enum LoginClientType {
     @JsonValue
     private final Integer code;
     private final String comment;
+
+
+    /**
+     * @param code 需要被转换的code值
+     * @return 转换后的对应的LoginClientType类型的枚举常量
+     * @author Lenovo/LiGuanda
+     * @date 2024/6/18 PM 8:15:16
+     * @version 1.0.0
+     * @description 将指定整形类型的code值转换为对应的LoginClientType枚举常量
+     * @filename LoginClientType.java
+     */
+    public static LoginClientType valueOfByCode(@Nonnull Integer code) {
+
+        for (LoginClientType loginClientType : values()) {
+
+            if (Objects.equals(loginClientType.code, code)) {
+
+                return loginClientType;
+
+            }
+
+        }
+
+        return UNKNOWN;
+
+    }
 
 
 }

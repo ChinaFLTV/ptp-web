@@ -21,6 +21,7 @@ import ptp.fltv.web.mapper.UserMapper;
 import ptp.fltv.web.service.RoleService;
 import ptp.fltv.web.service.UserService;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -108,6 +109,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         Map<String, Object> env = new HashMap<>();
         env.put("client-type", loginClientType);
         env.put("device-id", deviceId);
+        env.put("login-datetime", LocalDateTime.now());
+        env.put("login-info-details", userLoginVo.getLoginInfo());
         redisTemplate.opsForValue().set(String.format("user:login:env:%s:%d", loginClientType.name().toLowerCase(), STORE_KEY), JSON.toJSONString(env), RedisConstants.CACHE_TIMEOUT, TimeUnit.MILLISECONDS);
 
         Map<String, Object> result = new HashMap<>();
