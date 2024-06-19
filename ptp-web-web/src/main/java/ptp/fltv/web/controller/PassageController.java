@@ -11,10 +11,12 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import pfp.fltv.common.annotation.LogRecord;
+import pfp.fltv.common.model.base.content.BaseEntity;
 import pfp.fltv.common.model.po.content.Passage;
 import pfp.fltv.common.model.vo.PassageVo;
 import pfp.fltv.common.response.Result;
 import ptp.fltv.web.constants.WebConstants;
+import ptp.fltv.web.mq.ContentRankMqService;
 import ptp.fltv.web.service.PassageService;
 
 import java.util.ArrayList;
@@ -45,6 +47,7 @@ public class PassageController {
 
     private PassageService passageService;
     private RestTemplate restTemplate;
+    private ContentRankMqService contentRankMqService;
 
 
     @LogRecord(description = "根据ID查询单条文章数据")
@@ -139,6 +142,9 @@ public class PassageController {
 
             restTemplate.put(ES_UPDATE_PASSAGE_URL, passage);
             map.put("es_result", Result.BLANK);
+
+            // 2024-6-19  22:36-每次内容实体更新都需要重新计算一次得分，以避免上一次计算失误，尽快恢复内容实体的正常得分
+            contentRankMqService.sendIndexChangeMsg(passage, BaseEntity.ContentType.PASSAGE);
 
         }
 

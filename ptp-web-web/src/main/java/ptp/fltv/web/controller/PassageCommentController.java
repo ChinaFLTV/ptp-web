@@ -11,10 +11,12 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import pfp.fltv.common.annotation.LogRecord;
+import pfp.fltv.common.model.base.content.BaseEntity;
 import pfp.fltv.common.model.po.content.PassageComment;
 import pfp.fltv.common.model.vo.PassageCommentVo;
 import pfp.fltv.common.response.Result;
 import ptp.fltv.web.constants.WebConstants;
+import ptp.fltv.web.mq.ContentRankMqService;
 import ptp.fltv.web.service.PassageCommentService;
 
 import java.util.ArrayList;
@@ -45,6 +47,7 @@ public class PassageCommentController {
 
     private PassageCommentService passageCommentService;
     private RestTemplate restTemplate;
+    private ContentRankMqService contentRankMqService;
 
 
     @LogRecord(description = "根据ID查询单条文章评论数据")
@@ -142,6 +145,11 @@ public class PassageCommentController {
 
             restTemplate.put(ES_UPDATE_PASSAGE_COMMENT_URL, passageComment);
             map.put("es_result", Result.BLANK);
+
+            // 2024-6-19  23:33-由于文章评论比较特殊，它并没有继承于content包下的BaseEntity，因此需要先转换成一个BaseEntity，以骗过方法入参检查，这个操作并不会产生副作用
+            BaseEntity parodyPassageComment = new BaseEntity();
+            BeanUtils.copyProperties(passageComment, parodyPassageComment);
+            contentRankMqService.sendIndexChangeMsg(parodyPassageComment, BaseEntity.ContentType.PASSAGE_COMMENT);
 
         }
 

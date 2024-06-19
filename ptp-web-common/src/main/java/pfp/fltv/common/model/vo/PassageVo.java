@@ -49,6 +49,21 @@ public class PassageVo implements Serializable {
     @Schema(accessMode = Schema.AccessMode.READ_WRITE, description = "文章分类")
     private List<String> category;
 
+    @Schema(description = "浏览量")
+    private Integer browseNum = 0;
+
+    @Schema(description = "点赞量")
+    private Integer likeNum = 0;
+
+    @Schema(description = "倒赞量")
+    private Integer unlikeNum = 0;
+
+    @Schema(description = "评论量")
+    private Integer commentNum = 0;
+
+    @Schema(description = "收藏量")
+    private Integer starNum = 0;
+
     @Schema(description = "发布时用户所在的地址信息")
     private AddressInfo addressInfo;
 

@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author Lenovo/LiGuanda
  * @version 1.0.0
  * @date 2024/6/10 PM 10:01:21
- * @description 用于添加商品补货的消费者
+ * @description 添加商品补货的消费者
  * @filename CommodityReplenishConsumer.java
  */
 

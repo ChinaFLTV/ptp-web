@@ -2,9 +2,12 @@ package pfp.fltv.common.model.base.content;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
+import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import lombok.experimental.SuperBuilder;
@@ -19,6 +22,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Lenovo/LiGuanda
@@ -120,6 +124,59 @@ public class BaseEntity implements Serializable {
     @Schema(description = "当前实体的版本(用于辅助实现乐观锁)")
     @Version
     private Integer version = 1;
+
+
+    /**
+     * @author Lenovo/LiGuanda
+     * @version 1.0.0
+     * @date 2024/6/19 PM 9:59:17
+     * @description 内容实体的类型枚举常量
+     * @filename BaseEntity.java
+     */
+    @AllArgsConstructor
+    @Getter
+    public enum ContentType implements Serializable {
+
+
+        ANNOUNCEMENT(1501, "公告"),
+        DIALOGUE(102, "对话"),
+        PASSAGE(1503, "文章"),
+        PASSAGE_COMMENT(1504, "文章评论"),
+        UNKNOWN(1505, "未知内容");
+
+
+        @JsonValue
+        private final Integer code;
+        private final String comment;
+
+
+        /**
+         * @param code 需要被转换的code值
+         * @return 转换后的对应的ContentType类型的枚举常量
+         * @author Lenovo/LiGuanda
+         * @date 2024/6/19 PM 10:07:11
+         * @version 1.0.0
+         * @description 将指定整形类型的code值转换为对应的ContentType枚举常量
+         * @filename BaseEntity.java
+         */
+        public static ContentType valueOfByCode(@Nonnull Integer code) {
+
+            for (ContentType contentType : values()) {
+
+                if (Objects.equals(contentType.code, code)) {
+
+                    return contentType;
+
+                }
+
+            }
+
+            return UNKNOWN;
+
+        }
+
+
+    }
 
 
 }

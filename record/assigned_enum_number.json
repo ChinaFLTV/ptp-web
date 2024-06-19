@@ -73,5 +73,10 @@
     "start": 1400,
     "end": 1499,
     "enum": "RecordStatus"
+  },
+  {
+    "start": 1500,
+    "end": 1599,
+    "enum": "content.BaseEntity.ContentType"
   }
 ]

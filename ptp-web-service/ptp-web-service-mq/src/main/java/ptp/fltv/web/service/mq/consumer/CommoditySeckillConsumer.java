@@ -19,14 +19,12 @@ import ptp.fltv.web.service.mq.service.TransactionRecordService;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Lenovo/LiGuanda
  * @version 1.0.0
  * @date 2024/6/1 PM 11:22:24
- * @description 用于进行商品秒杀的消费者
+ * @description 进行商品秒杀的消费者
  * @filename CommoditySeckillRecordAddConsumer.java
  */
 
