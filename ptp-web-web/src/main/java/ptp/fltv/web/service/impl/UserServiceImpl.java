@@ -5,8 +5,8 @@ import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.annotation.Nonnull;
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import pfp.fltv.common.constants.OAuth2LoginConstants;
@@ -34,13 +34,12 @@ import java.util.concurrent.TimeUnit;
  * @filename UserServiceImpl.java
  */
 
+@AllArgsConstructor
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
 
-    @Autowired
     private StringRedisTemplate redisTemplate;
-    @Autowired
     private RoleService roleService;
 
 
@@ -100,7 +99,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         // 2024-4-5  22:17-先不要用ID+""的形式加密，这样做解密的时候会被转换为"ID"
         // TODO 目前先用用户ID作为key，日后将单独与远程随机ID生成服务进行交互获取
-        final Long STORE_KEY = user.getId();
+        Long STORE_KEY = user.getId();
 
         // 2024-4-7  9:39-缓存的超时时间暂定为24H
         redisTemplate.opsForValue().set("user:login:" + STORE_KEY, JSON.toJSONString(compactUser), RedisConstants.CACHE_TIMEOUT, TimeUnit.MILLISECONDS);

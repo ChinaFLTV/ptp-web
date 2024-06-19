@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.Resource;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 import pfp.fltv.common.annotation.LogRecord;
@@ -28,13 +28,13 @@ import java.util.Map;
  * @filename RoleController.java
  */
 
+@AllArgsConstructor
 @Tag(name = "角色操作接口")
 @RestController
 @RequestMapping("/content/user/role")
 public class RoleController {
 
 
-    @Resource
     private RoleService roleService;
 
 

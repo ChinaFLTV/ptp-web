@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.Resource;
+import lombok.AllArgsConstructor;
 import org.springframework.data.elasticsearch.core.query.ByQueryResponse;
 import org.springframework.data.elasticsearch.core.query.UpdateResponse;
 import org.springframework.web.bind.annotation.*;
@@ -27,13 +27,13 @@ import java.util.Map;
  * @filename CommodityController.java
  */
 
+@AllArgsConstructor
 @Tag(name = "商品操作接口(ES)")
 @RestController
 @RequestMapping("/finance/commodity")
 public class CommodityController {
 
 
-    @Resource
     private EsSearchService esSearchService;
 
 

@@ -4,7 +4,7 @@ import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.security.PermitAll;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import pfp.fltv.common.annotation.LogRecord;
 import pfp.fltv.common.exceptions.PtpException;
@@ -22,13 +22,13 @@ import java.util.Map;
  * @filename LoginController.java
  */
 
+@AllArgsConstructor
 @Tag(name = "登录接口")
 @RestController
 @RequestMapping("/gate")
 public class LoginController {
 
 
-    @Autowired
     private UserService userService;
 
 

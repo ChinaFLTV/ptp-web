@@ -2,7 +2,7 @@ package ptp.fltv.web.service.elasticsearch.service.impl;
 
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
@@ -25,11 +25,11 @@ import java.util.Map;
  * @filename ContentIntermediateServiceImpl.java
  */
 
+@AllArgsConstructor
 @Service
 public class EsSearchServiceImpl implements EsSearchService {
 
 
-    @Autowired
     private ElasticsearchOperations elasticsearchOperations;
 
 

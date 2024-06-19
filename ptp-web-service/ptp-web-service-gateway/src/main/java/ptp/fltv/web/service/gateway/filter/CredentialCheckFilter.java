@@ -1,7 +1,7 @@
 package ptp.fltv.web.service.gateway.filter;
 
 import com.alibaba.fastjson2.JSON;
-import jakarta.annotation.Resource;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -37,12 +37,13 @@ import java.util.Objects;
  * @filename PtpGlobalFilter.java
  */
 
+@AllArgsConstructor
 @Slf4j
 @Component
 public class CredentialCheckFilter implements GlobalFilter, Ordered {
 
-    @Resource
     private StringRedisTemplate stringRedisTemplate;
+
 
     @SuppressWarnings("unchecked")
     @Override

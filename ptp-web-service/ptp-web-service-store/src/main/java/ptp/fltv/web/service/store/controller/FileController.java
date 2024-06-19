@@ -7,8 +7,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,13 +36,13 @@ import java.util.Objects;
  * @filename FileController.java
  */
 
+@AllArgsConstructor
 @Tag(name = "OSS文件服务接口")
 @RestController
 @RequestMapping("/service/store/file")
 public class FileController {
 
 
-    @Autowired
     private FileService fileService;
 
 

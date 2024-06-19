@@ -6,9 +6,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.Resource;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import pfp.fltv.common.annotation.LogRecord;
@@ -31,6 +30,7 @@ import java.util.Map;
  * @filename PassageController.java
  */
 
+@AllArgsConstructor
 @Tag(name = "文章操作接口")
 @RestController
 @RequestMapping("/content/passage")
@@ -43,9 +43,7 @@ public class PassageController {
     private static final String ES_DELETE_PASSAGE_URL = ES_PREFIX_PASSAGE_URL + "/delete/single/{id}";
 
 
-    @Resource
     private PassageService passageService;
-    @Autowired
     private RestTemplate restTemplate;
 
 

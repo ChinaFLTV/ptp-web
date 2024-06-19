@@ -7,15 +7,15 @@ import io.minio.messages.DeleteError;
 import io.minio.messages.DeleteObject;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import pfp.fltv.common.enums.ContentType;
-import ptp.fltv.web.service.store.service.FileService;
 import pfp.fltv.common.utils.FileUtils;
+import ptp.fltv.web.service.store.service.FileService;
 
 import java.io.*;
 import java.security.InvalidKeyException;
@@ -33,14 +33,15 @@ import java.util.Map;
  * @filename StoreServiceImpl.java
  */
 
+@AllArgsConstructor
 @Slf4j
 @Service
 public class FileServiceImpl implements FileService {
 
 
-    @Autowired
     private MinioClient minioClient;
     private static ServerSideEncryptionKms SSE;
+
 
     static {
 

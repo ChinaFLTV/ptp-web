@@ -17,7 +17,7 @@ import java.util.function.Consumer;
  * @author Lenovo/LiGuanda
  * @version 1.0.0
  * @date 2024/6/1 PM 10:05:41
- * @description 商品的MQ服务接口规范
+ * @description 商品的MQ服务接口规范的实现
  * @filename CommodityMqServiceImpl.java
  */
 

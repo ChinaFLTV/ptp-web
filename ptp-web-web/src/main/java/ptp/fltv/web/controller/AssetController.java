@@ -6,14 +6,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.Resource;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
+import pfp.fltv.common.annotation.LogRecord;
 import pfp.fltv.common.model.po.manage.Asset;
 import pfp.fltv.common.model.po.manage.User;
 import pfp.fltv.common.model.vo.AssetVo;
 import pfp.fltv.common.response.Result;
-import pfp.fltv.common.annotation.LogRecord;
 import ptp.fltv.web.service.AssetService;
 import ptp.fltv.web.service.UserService;
 
@@ -30,15 +30,14 @@ import java.util.Map;
  * @filename AssetController.java
  */
 
+@AllArgsConstructor
 @Tag(name = "财产操作接口")
 @RestController
 @RequestMapping("/content/user/asset")
 public class AssetController {
 
 
-    @Resource
     private AssetService assetService;
-    @Resource
     private UserService userService;
 
 

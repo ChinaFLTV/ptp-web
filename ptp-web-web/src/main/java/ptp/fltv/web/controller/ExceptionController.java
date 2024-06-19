@@ -4,7 +4,7 @@ import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,12 +22,13 @@ import ptp.fltv.web.service.PassageService;
  * @filename ExceptionController.java
  */
 
+@AllArgsConstructor
 @Tag(name = "流量或服务异常相关的接口")
 @RestController
 @RequestMapping("/exception")
 public class ExceptionController {
 
-    @Autowired
+
     private PassageService passageService;
 
 

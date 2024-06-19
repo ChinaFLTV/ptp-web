@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.Resource;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.elasticsearch.core.query.ByQueryResponse;
 import org.springframework.data.elasticsearch.core.query.UpdateResponse;
@@ -31,12 +31,13 @@ import java.util.Map;
  * @filename PassageCommentController.java
  */
 
+@AllArgsConstructor
 @Tag(name = "文章评论操作接口(ES)")
 @RestController
 @RequestMapping("/content/passage/comment")
 public class PassageCommentController {
 
-    @Resource
+
     private EsSearchService esSearchService;
 
 

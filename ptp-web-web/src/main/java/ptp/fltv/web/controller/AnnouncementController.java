@@ -6,14 +6,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.Resource;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import pfp.fltv.common.annotation.LogRecord;
 import pfp.fltv.common.model.po.content.Announcement;
 import pfp.fltv.common.model.vo.AnnouncementVo;
 import pfp.fltv.common.response.Result;
-import pfp.fltv.common.annotation.LogRecord;
 import ptp.fltv.web.constants.WebConstants;
 import ptp.fltv.web.service.AnnouncementService;
 
@@ -30,6 +30,7 @@ import java.util.Map;
  * @filename AnnouncementController.java
  */
 
+@AllArgsConstructor
 @Tag(name = "公告操作接口")
 @RestController
 // @PreAuthorize("@pc.hasAnyPermission('content:announcement:add','content:announcement:remove','content:announcement:list','content:announcement:update')") // 2024-5-3  20:55-权限控制将委托给spring cloud gateway 处理
@@ -43,9 +44,7 @@ public class AnnouncementController {
     private static final String ES_DELETE_ANNOUNCEMENT_URL = ES_PREFIX_ANNOUNCEMENT_URL + "/delete/single/{id}";
 
 
-    @Resource
     private AnnouncementService announcementService;
-    @Resource
     private RestTemplate restTemplate;
 
 

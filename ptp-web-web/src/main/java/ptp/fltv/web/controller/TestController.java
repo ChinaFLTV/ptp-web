@@ -3,6 +3,7 @@ package ptp.fltv.web.controller;
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +21,7 @@ import pfp.fltv.common.response.Result;
  * @filename TestController.java
  */
 
+@AllArgsConstructor
 @Slf4j
 @Profile("dev")
 @Tag(name = "WEB测试专用接口")

@@ -5,14 +5,14 @@ import com.alibaba.fastjson2.JSONObject;
 import io.minio.*;
 import io.minio.errors.*;
 import io.minio.messages.*;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import ptp.fltv.web.service.store.service.BucketService;
 import pfp.fltv.common.utils.ReflectUtils;
+import ptp.fltv.web.service.store.service.BucketService;
 
 import java.io.IOException;
 import java.security.InvalidKeyException;
@@ -29,12 +29,12 @@ import java.util.Map;
  * @filename BucketServiceImpl.java
  */
 
+@AllArgsConstructor
 @Slf4j
 @Service
 public class BucketServiceImpl implements BucketService {
 
 
-    @Autowired
     private MinioClient minioClient;
 
 

@@ -6,9 +6,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.Resource;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import pfp.fltv.common.annotation.LogRecord;
@@ -31,6 +30,7 @@ import java.util.Map;
  * @filename DialogueController.java
  */
 
+@AllArgsConstructor
 @Tag(name = "对话操作接口")
 @RestController
 @RequestMapping("/content/dialogue")
@@ -43,9 +43,7 @@ public class DialogueController {
     private static final String ES_DELETE_DIALOGUE_URL = ES_PREFIX_DIALOGUE_URL + "/delete/single/{id}";
 
 
-    @Resource
     private DialogueService dialogueService;
-    @Autowired
     private RestTemplate restTemplate;
 
 

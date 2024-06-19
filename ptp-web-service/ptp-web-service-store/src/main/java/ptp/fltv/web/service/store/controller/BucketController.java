@@ -6,7 +6,7 @@ import com.alibaba.fastjson2.JSONObject;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,13 +23,13 @@ import ptp.fltv.web.service.store.service.BucketService;
  * @filename BucketController.java
  */
 
+@AllArgsConstructor
 @Tag(name = "OSS存储桶服务接口")
 @RestController
 @RequestMapping("/service/store/bucket")
 public class BucketController {
 
 
-    @Autowired
     private BucketService bucketService;
 
 
