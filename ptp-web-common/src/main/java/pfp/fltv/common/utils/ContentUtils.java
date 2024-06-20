@@ -1,4 +1,4 @@
-package ptp.fltv.web.service.mq.utils;
+package pfp.fltv.common.utils;
 
 import jakarta.annotation.Nonnull;
 
@@ -57,7 +57,7 @@ public class ContentUtils {
         double Q_updated = (currentTime - lastCollectTimestamp) / (double) TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS); // 最后收藏时间到现在的天数
 
         // 计算分母
-        double denominator = Math.pow((Q_age / 2.0 + Q_updated / 2.0 + 1), 1.5);
+        double denominator = Math.pow((Q_age / 2.0 + Q_updated / 2.0 + 1), 1.5); 
 
         // 2024-6-19  23:59-采用Math::max方法以避免分数值出现负值的偶然情况
         // 最终得分计算

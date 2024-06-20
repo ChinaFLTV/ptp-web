@@ -7,7 +7,7 @@ import org.apache.rocketmq.spring.core.RocketMQListener;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import pfp.fltv.common.model.base.content.BaseEntity;
-import ptp.fltv.web.service.mq.utils.ContentUtils;
+import pfp.fltv.common.utils.ContentUtils;
 
 import java.util.HashMap;
 

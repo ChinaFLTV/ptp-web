@@ -6,7 +6,6 @@ mybatis-plus:
 
 spring:
   security:
-
     # 2024-4-7  20:20-配置开发环境下的OAuth2登录
     oauth2:
       client:

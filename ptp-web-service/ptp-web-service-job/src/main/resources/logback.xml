@@ -94,12 +94,12 @@
     </root>
 
 
-    <!--<logger name="ptp.fltv.web.service.job" level="INFO" additivity="false">
+    <logger name="ptp.fltv.web.service.job" level="INFO" additivity="false">
 
         <appender-ref ref="console"/>
         <appender-ref ref="logstash"/>
 
-    </logger>-->
+    </logger>
 
 
 </configuration>

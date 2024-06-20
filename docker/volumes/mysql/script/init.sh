@@ -10,6 +10,8 @@ mysql -u$CUSTOM_MYSQL_USER -p$CUSTOM_MYSQL_PASSWORD <<EOF
 SOURCE ${SQL_SCRIPT_DIR}/create_table.sql;
 SOURCE ${SQL_SCRIPT_DIR}/config_mysql.sql;
 SOURCE ${SQL_SCRIPT_DIR}/insert_data.sql;
+# 2024-6-20  10:33-执行xxl-job库的构建脚本
+SOURCE ${SQL_SCRIPT_DIR}/tables_xxl_job.sql;
 
 EOF
 echo "执行SQL脚本完毕"
