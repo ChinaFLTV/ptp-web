@@ -163,7 +163,8 @@ CREATE TABLE `xxl_job_lock`
 
 
 INSERT INTO `xxl_job_group`(`app_name`, `title`, `address_type`, `address_list`)
-VALUES ('ptp-web-service-job', '内容实体评分执行器', 0, 'http://127.0.0.1:9999');
+VALUES ('ptp-web-service-job', '内容实体评分执行器', 1, 'http://exthost:9999');
+-- 2024-6-21  00:04-这里必须填写exthost，而不能写127.0.0.1或者localhost，因为任务的运行是在容器中进行的!!!
 
 # 2024-6-20  23:01-获取先前插入的job handler的ID,以便后续分配任务使用
 SET @job_group_id := NULL;

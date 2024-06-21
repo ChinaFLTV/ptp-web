@@ -138,15 +138,16 @@ public class BaseEntity implements Serializable {
     public enum ContentType implements Serializable {
 
 
-        ANNOUNCEMENT(1501, "公告"),
-        DIALOGUE(102, "对话"),
-        PASSAGE(1503, "文章"),
-        PASSAGE_COMMENT(1504, "文章评论"),
-        UNKNOWN(1505, "未知内容");
+        ANNOUNCEMENT(1501, "announcement", "公告"),
+        DIALOGUE(102, "dialogue", "对话"),
+        PASSAGE(1503, "passage", "文章"),
+        PASSAGE_COMMENT(1504, "passage:comment", "文章评论"),
+        UNKNOWN(1505, "unknown", "未知内容");
 
 
         @JsonValue
         private final Integer code;
+        private final String subkey; // 2024-6-21  11:25-用于合成Redis的key，主要解决passage:comment这种特殊的构成
         private final String comment;
 
 

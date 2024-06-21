@@ -1,7 +1,8 @@
 package ptp.fltv.web.service.job;
 
 import jakarta.annotation.Nonnull;
-import org.junit.Test;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataAccessException;
@@ -20,6 +21,7 @@ import java.util.Random;
  * @filename ContentRankMockTest.java
  */
 
+@Slf4j
 @SpringBootTest
 public class ContentRankMockTest {
 
@@ -28,8 +30,11 @@ public class ContentRankMockTest {
     private StringRedisTemplate stringRedisTemplate;
 
 
+    // 2024-6-21  8:54-注意请使用 org.junit.jupiter.api.Test 而不是 org.junit.Test , 否则会出现Bean无法自动注入的异常情况!!!
     @Test
     public void addMockRankData() {
+
+        log.info("Start to add simulated data to the leaderboard...");
 
         final int RANK_DATA_QUANTITY = 10_000; // 2024-6-20  22:50-测试将会产生的排行榜条目数
         final String RANK_KEY = "content:passage:rank100:total"; // 2024-6-20  22:50-针对的排行榜的键名
@@ -43,6 +48,7 @@ public class ContentRankMockTest {
         stringRedisTemplate.executePipelined(new SessionCallback<>() {
 
 
+            @SuppressWarnings("unchecked")
             @Override
             public <K, V> Object execute(@Nonnull RedisOperations<K, V> operations) throws DataAccessException {
 
@@ -70,6 +76,7 @@ public class ContentRankMockTest {
 
         });
 
+        log.info("The task of adding simulated leaderboard data is complete !");
 
     }
 

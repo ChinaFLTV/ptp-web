@@ -448,6 +448,7 @@ services:
         max-file: 64
 
 
+  # 2024-6-21  15:51-如果在执行本配置的xxl-job-admin镜像下载过程中总是出错，建议先单独通过docker拉取镜像，然后再执行本docker-compose配置
   # 2024-6-20  15:12-部署成功后可进入 http://localhost:8380/xxl-job-admin 到控制台界面(默认账号为ptpjob，默认密码为5201314)
   # 2024-6-20  10:56-安装XXL-Job-Admin管理界面
   xxl-job-admin:

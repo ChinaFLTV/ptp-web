@@ -78,5 +78,10 @@
     "start": 1500,
     "end": 1599,
     "enum": "content.BaseEntity.ContentType"
+  },
+  {
+    "start": 1600,
+    "end": 1699,
+    "enum": "ContentRankType"
   }
 ]

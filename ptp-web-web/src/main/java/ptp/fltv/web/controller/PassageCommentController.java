@@ -11,6 +11,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import pfp.fltv.common.annotation.LogRecord;
+import pfp.fltv.common.enums.ContentRankType;
 import pfp.fltv.common.model.base.content.BaseEntity;
 import pfp.fltv.common.model.po.content.PassageComment;
 import pfp.fltv.common.model.vo.PassageCommentVo;
@@ -184,6 +185,23 @@ public class PassageCommentController {
         }
 
         return Result.neutral(map);
+
+    }
+
+
+    @LogRecord(description = "分页获取指定类型的排行榜的文章评论数据")
+    @SentinelResource("web-content-announcement-controller")
+    @Operation(description = "分页获取指定类型的排行榜的文章评论数据")
+    @DeleteMapping("/query/rank/page/{offset}/{limit}")
+    public Result<?> queryAnnouncementRankPage(
+
+            @Parameter(name = "offset", description = "查询的一页排行榜文章评论数据的起始偏移量", in = ParameterIn.PATH) @PathVariable("offset") Long offset,
+            @Parameter(name = "limit", description = "查询的这一页排行榜文章评论数据的数量", in = ParameterIn.PATH) @PathVariable("limit") Long limit,
+            @RequestParam(name = "rankType") ContentRankType contentRankType
+
+    ) {
+
+        return Result.success(passageCommentService.getRankListByPage(contentRankType, offset, limit));
 
     }
 

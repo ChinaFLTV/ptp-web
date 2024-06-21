@@ -11,6 +11,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import pfp.fltv.common.annotation.LogRecord;
+import pfp.fltv.common.enums.ContentRankType;
 import pfp.fltv.common.model.base.content.BaseEntity;
 import pfp.fltv.common.model.po.content.Announcement;
 import pfp.fltv.common.model.vo.AnnouncementVo;
@@ -55,7 +56,11 @@ public class AnnouncementController {
     @SentinelResource("web-content-announcement-controller")
     @Operation(description = "根据ID查询单条公告数据")
     @GetMapping("/query/single/{id}")
-    public Result<Announcement> querySingleAnnouncement(@Parameter(name = "id", description = "待查询的单条公告ID", in = ParameterIn.PATH) @PathVariable("id") Long id) {
+    public Result<Announcement> querySingleAnnouncement(
+
+            @Parameter(name = "id", description = "待查询的单条公告ID", in = ParameterIn.PATH) @PathVariable("id") Long id
+
+    ) {
 
         Announcement announcement = announcementService.getById(id);
 
@@ -68,7 +73,12 @@ public class AnnouncementController {
     @SentinelResource("web-content-announcement-controller")
     @Operation(description = "批量(分页)查询多条公告数据")
     @GetMapping("/query/page/{offset}/{limit}")
-    public Result<List<AnnouncementVo>> queryAnnouncementPage(@Parameter(name = "offset", description = "查询的一页公告数据的起始偏移量", in = ParameterIn.PATH) @PathVariable("offset") Long offset, @Parameter(name = "limit", description = "查询的这一页公告数据的数量", in = ParameterIn.PATH) @PathVariable("limit") Long limit) {
+    public Result<List<AnnouncementVo>> queryAnnouncementPage(
+
+            @Parameter(name = "offset", description = "查询的一页公告数据的起始偏移量", in = ParameterIn.PATH) @PathVariable("offset") Long offset,
+            @Parameter(name = "limit", description = "查询的这一页公告数据的数量", in = ParameterIn.PATH) @PathVariable("limit") Long limit
+
+    ) {
 
         Page<Announcement> announcementPage = new Page<>(offset, limit);
         announcementPage = announcementService.page(announcementPage);
@@ -91,7 +101,11 @@ public class AnnouncementController {
     @SentinelResource("web-content-announcement-controller")
     @Operation(description = "添加单条公告数据")
     @PostMapping("/insert/single")
-    public Result<?> insertSingleAnnouncement(@Parameter(name = "announcementVo", description = "待添加的单条公告数据VO") @RequestBody AnnouncementVo announcementVo) {
+    public Result<?> insertSingleAnnouncement(
+
+            @Parameter(name = "announcementVo", description = "待添加的单条公告数据VO") @RequestBody AnnouncementVo announcementVo
+
+    ) {
 
         Announcement announcement = new Announcement();
         BeanUtils.copyProperties(announcementVo, announcement);
@@ -119,7 +133,11 @@ public class AnnouncementController {
     @SentinelResource("web-content-announcement-controller")
     @Operation(description = "修改单条公告数据")
     @PutMapping("/update/single")
-    public Result<?> updateSingleAnnouncement(@Parameter(name = "announcementVo", description = "待修改的单条公告数据VO") @RequestBody AnnouncementVo announcementVo) {
+    public Result<?> updateSingleAnnouncement(
+
+            @Parameter(name = "announcementVo", description = "待修改的单条公告数据VO") @RequestBody AnnouncementVo announcementVo
+
+    ) {
 
         Announcement announcement = announcementService.getById(announcementVo.getId());
         BeanUtils.copyProperties(announcementVo, announcement);
@@ -150,7 +168,11 @@ public class AnnouncementController {
     @SentinelResource("web-content-announcement-controller")
     @Operation(description = "删除单条公告数据")
     @DeleteMapping("/delete/single/{id}")
-    public Result<?> deleteSingleAnnouncement(@Parameter(name = "id", description = "待删除的单条公告ID", in = ParameterIn.PATH) @PathVariable("id") Long id) {
+    public Result<?> deleteSingleAnnouncement(
+
+            @Parameter(name = "id", description = "待删除的单条公告ID", in = ParameterIn.PATH) @PathVariable("id") Long id
+
+    ) {
 
         boolean isDeleted = announcementService.removeById(id);
 
@@ -169,6 +191,23 @@ public class AnnouncementController {
         }
 
         return Result.neutral(map);
+
+    }
+
+
+    @LogRecord(description = "分页获取指定类型的排行榜的公告数据")
+    @SentinelResource("web-content-announcement-controller")
+    @Operation(description = "分页获取指定类型的排行榜的公告数据")
+    @DeleteMapping("/query/rank/page/{offset}/{limit}")
+    public Result<?> queryAnnouncementRankPage(
+
+            @Parameter(name = "offset", description = "查询的一页排行榜公告数据的起始偏移量", in = ParameterIn.PATH) @PathVariable("offset") Long offset,
+            @Parameter(name = "limit", description = "查询的这一页排行榜公告数据的数量", in = ParameterIn.PATH) @PathVariable("limit") Long limit,
+            @RequestParam(name = "rankType") ContentRankType contentRankType
+
+    ) {
+
+        return Result.success(announcementService.getRankListByPage(contentRankType, offset, limit));
 
     }
 

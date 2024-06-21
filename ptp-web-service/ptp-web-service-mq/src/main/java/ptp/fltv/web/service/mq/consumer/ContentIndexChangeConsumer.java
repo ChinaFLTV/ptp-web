@@ -43,7 +43,7 @@ public class ContentIndexChangeConsumer implements RocketMQListener<HashMap<Stri
 
         Double score = ContentUtils.calculateContentScore(views, likes, unlikes, collects, comments, contentId.longValue(), lastCollectTimestamp.longValue());
 
-        stringRedisTemplate.opsForZSet().add(String.format("content:%s:rank100:total", contentType.name().toLowerCase()), String.valueOf(contentId), score);
+        stringRedisTemplate.opsForZSet().add(String.format("content:%s:rank100:total", contentType.getSubkey()), String.valueOf(contentId), score);
 
         log.info("Calculated the score of the {} successfully ! new score is {}", contentType.name().toLowerCase(), score);
 
