@@ -4,9 +4,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import jakarta.annotation.Nonnull;
 import lombok.NonNull;
 import pfp.fltv.common.exceptions.PtpException;
+import pfp.fltv.common.model.po.info.AddressInfo;
 import pfp.fltv.common.model.po.manage.User;
 import pfp.fltv.common.model.vo.UserLoginVo;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -49,7 +51,6 @@ public interface UserService extends IService<User> {
      * (1)登录后拿到的签名后的STORE_KEY数据(放在Header的Authorization字段中)。
      * (2)登录环境信息(用于控制单一物理设备登录)(放在Cookie中的login_client_info字段中)
      * </pre>
-     *
      * @filename UserService.java
      */
     Map<String, Object> login(@Nonnull UserLoginVo userLoginVo) throws PtpException;
@@ -65,6 +66,35 @@ public interface UserService extends IService<User> {
      * @filename UserService.java
      */
     String loginByGithub(@Nonnull String code);
+
+
+    /**
+     * @param addressInfo 用户当前位置信息数据包
+     * @param id          用户ID
+     * @author Lenovo/LiGuanda
+     * @date 2024/6/21 PM 10:29:45
+     * @version 1.0.0
+     * @implNote 这里我们仅向前端暴露这样的一个用于单独更新用户信息的API , 我们并不打算在后端负责用户位置的实时更新 ,
+     * 还是那句话 , 一切交由客户端根据实际情况适时地去调用该API进行用户地理位置的修正更新 , 毕竟位置信息是敏感信息 , 必须要审慎对待
+     * @description 更新当前用户的模糊的地理位置信息
+     * @filename UserService.java
+     */
+    void refreshGeolocation(@Nonnull Long id, @Nonnull AddressInfo addressInfo);
+
+
+    /**
+     * @param longitude 当前用户的所在经度
+     * @param latitude  当前用户的所在纬度
+     * @param radius    搜索半径(单位 : m)
+     * @param limit     最大检索人数
+     * @return 查询到的指定半径范围内的附近的人的信息集合(距离 = > 同距离的用户集合)
+     * @author Lenovo/LiGuanda
+     * @date 2024/6/21 PM 11:43:06
+     * @version 1.0.0
+     * @description 查找当前位置处指定半径内的附近的人
+     * @filename UserService.java
+     */
+    Map<Double, List<User>> findPeopleNearby(@Nonnull Double longitude, @Nonnull Double latitude, @Nonnull Double radius, @Nonnull Long limit);
 
 
 }

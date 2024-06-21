@@ -11,6 +11,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import pfp.fltv.common.annotation.LogRecord;
+import pfp.fltv.common.model.po.info.AddressInfo;
 import pfp.fltv.common.model.po.manage.User;
 import pfp.fltv.common.model.vo.UserVo;
 import pfp.fltv.common.response.Result;
@@ -53,9 +54,10 @@ public class UserController {
     @Operation(description = "根据ID查询用户信息")
     @GetMapping("/query/{userId}")
     public Result<User> queryUserById(
-            @Parameter(name = "userId", description = "待查询的用户ID", in = ParameterIn.PATH)
-            @PathVariable("userId")
-            Long userId) {
+
+            @Parameter(name = "userId", description = "待查询的用户ID", in = ParameterIn.PATH) @PathVariable("userId") Long userId
+
+    ) {
 
         User user = userService.getById(userId);
 
@@ -68,8 +70,12 @@ public class UserController {
     @SentinelResource("web-content-user-controller")
     @Operation(description = "批量(分页)查询多条用户数据")
     @GetMapping("/query/page/{offset}/{limit}")
-    public Result<List<UserVo>> queryPassagePage(@Parameter(name = "offset", description = "查询的一页用户数据的起始偏移量", in = ParameterIn.PATH) @PathVariable("offset") Long offset,
-                                                 @Parameter(name = "limit", description = "查询的这一页用户数据的数量", in = ParameterIn.PATH) @PathVariable("limit") Long limit) {
+    public Result<List<UserVo>> queryPassagePage(
+
+            @Parameter(name = "offset", description = "查询的一页用户数据的起始偏移量", in = ParameterIn.PATH) @PathVariable("offset") Long offset,
+            @Parameter(name = "limit", description = "查询的这一页用户数据的数量", in = ParameterIn.PATH) @PathVariable("limit") Long limit
+
+    ) {
 
         Page<User> userPage = new Page<>(offset, limit);
         userPage = userService.page(userPage);
@@ -105,9 +111,10 @@ public class UserController {
     @Operation(description = "添加用户信息")
     @PostMapping("/insert")
     public Result<?> insertUser(
-            @Parameter(name = "user", description = "待添加的用户信息")
-            @RequestBody
-            User user) {
+
+            @Parameter(name = "user", description = "待添加的用户信息") @RequestBody User user
+
+    ) {
 
         // 2024-5-3  20:58-TODO 必须进行用户密码加密
         // 2024-4-1  21:28-使用Spring Security配置中配置的密码加密验证器对用户原始密码进行加密
@@ -137,9 +144,10 @@ public class UserController {
     @Operation(description = "修改用户信息")
     @PutMapping("/update")
     public Result<?> updateUser(
-            @Parameter(name = "user", description = "待修改的用户信息")
-            @RequestBody
-            User user) {
+
+            @Parameter(name = "user", description = "待修改的用户信息") @RequestBody User user
+
+    ) {
 
         boolean isUpdated = userService.updateById(user);
 
@@ -165,9 +173,10 @@ public class UserController {
     @Operation(description = "删除用户信息")
     @DeleteMapping("/delete/{userId}")
     public Result<?> deleteUser(
-            @Parameter(name = "userId", description = "待删除的用户ID", in = ParameterIn.PATH)
-            @PathVariable("userId")
-            Long userId) {
+
+            @Parameter(name = "userId", description = "待删除的用户ID", in = ParameterIn.PATH) @PathVariable("userId") Long userId
+
+    ) {
 
         boolean isDeleted = userService.removeById(userId);
 
@@ -184,6 +193,27 @@ public class UserController {
             map.put("es_result", Result.BLANK);
 
         }
+
+        return Result.neutral(map);
+
+    }
+
+
+    @LogRecord(description = "更新用户当前的地理位置信息")
+    @SentinelResource("web-content-user-controller")
+    @Operation(description = "更新用户当前的地理位置信息")
+    @PostMapping("/refresh/geolocation/{userId}")
+    public Result<?> refreshGeolocation(
+
+            @Parameter(name = "userId", description = "待删除的用户ID", in = ParameterIn.PATH) @PathVariable("userId") Long userId,
+            @RequestBody AddressInfo addressInfo
+
+    ) {
+
+        userService.refreshGeolocation(userId, addressInfo);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("msg", "完成更新用户当前的地理位置信息");
 
         return Result.neutral(map);
 

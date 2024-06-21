@@ -29,10 +29,10 @@ public class AddressInfo implements Serializable {
     private Double altitude;
 
     @Schema(description = "经度")
-    private String longitude;
+    private Double longitude;
 
     @Schema(description = "纬度")
-    private String latitude;
+    private Double latitude;
 
     @Schema(description = "所在国家")
     private String country;

@@ -7,12 +7,17 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
+import org.springframework.data.geo.Distance;
+import org.springframework.data.geo.Point;
+import org.springframework.data.redis.connection.RedisGeoCommands;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.domain.geo.GeoReference;
 import org.springframework.stereotype.Service;
 import pfp.fltv.common.constants.OAuth2LoginConstants;
 import pfp.fltv.common.constants.RedisConstants;
 import pfp.fltv.common.enums.LoginClientType;
 import pfp.fltv.common.exceptions.PtpException;
+import pfp.fltv.common.model.po.info.AddressInfo;
 import pfp.fltv.common.model.po.manage.Role;
 import pfp.fltv.common.model.po.manage.User;
 import pfp.fltv.common.model.vo.UserLoginVo;
@@ -22,7 +27,9 @@ import ptp.fltv.web.service.RoleService;
 import ptp.fltv.web.service.UserService;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -147,6 +154,73 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 .header("Authorization", "token " + token)
                 .execute()
                 .body();
+
+    }
+
+
+    @Override
+    public void refreshGeolocation(@Nonnull Long id, @Nonnull AddressInfo addressInfo) {
+
+        Double longitude = addressInfo.getLongitude();
+        Double latitude = addressInfo.getLatitude();
+
+        if (longitude == null || latitude == null) {
+
+            throw new PtpException(814, "用经度或纬度信息缺失", String.format("longitude = %s , latitude = %s", longitude, latitude));
+
+        }
+
+        final String key = "user:geolocation:current";
+
+        // 2024-6-21  22:43-Redis GEO数据类型说明
+        // Redis v3.2+ 新增了GEO数据类型 , 主要用于存储和操作地理位置信息
+        // 其底层实现结构为 Sorted Set , 与 zset数据类型的底层实现结构相类似
+        // 由于数据的分布是以二维的形式进行呈现的 , 而保存的时候要以一维的方式进行存储 , 因此需要将 经度&纬度 这两个度量指标进行合并映射
+        // func(longitude , latitude) => geo_hash as score(zset)
+        redisTemplate.opsForGeo().add(key, new Point(longitude, latitude), String.valueOf(id));
+
+    }
+
+
+    @Override
+    public Map<Double, List<User>> findPeopleNearby(@Nonnull Double longitude, @Nonnull Double latitude, @Nonnull Double radius, @Nonnull Long limit) {
+
+
+        RedisGeoCommands.GeoRadiusCommandArgs commandArgs = RedisGeoCommands.GeoRadiusCommandArgs.newGeoRadiusArgs()
+                .includeCoordinates()
+                .sortAscending()
+                .limit(limit);
+
+        final String key = "user:geolocation:current";
+        final Map<Long, Double> id2distanceMap = new HashMap<>();
+        final Map<Double, List<User>> distance2UserMap = new HashMap<>();
+
+        redisTemplate.opsForGeo()
+                .search(key, GeoReference.fromCoordinate(longitude, latitude), new Distance(radius), commandArgs)
+                .getContent()
+                .stream()
+                .forEach(res -> {
+
+                    String id = res.getContent().getName();
+                    double distance = res.getDistance().getValue();
+                    id2distanceMap.put(Long.parseLong(id), distance);
+
+                });
+
+        List<User> users = baseMapper.selectBatchIds(id2distanceMap.keySet());
+        for (User user : users) {
+
+            if (!distance2UserMap.containsKey(id2distanceMap.get(user.getId()))) {
+
+                distance2UserMap.put(id2distanceMap.get(user.getId()), new ArrayList<>());
+
+            }
+
+            distance2UserMap.get(id2distanceMap.get(user.getId())).add(user);
+
+        }
+
+        return distance2UserMap;
 
     }
 
