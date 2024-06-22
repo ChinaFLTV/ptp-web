@@ -1,9 +1,7 @@
 package pfp.fltv.common.model.base.system;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.Version;
+import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,6 +13,7 @@ import pfp.fltv.common.enums.TaskStatus;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Map;
 
 /**
  * @author Lenovo/LiGuanda
@@ -42,8 +41,9 @@ public class BaseEntity implements Serializable {
     @Schema(description = "流水状态")
     private TaskStatus status = TaskStatus.NORMAL;
 
+    @TableField(typeHandler = JacksonTypeHandler.class)
     @Schema(description = "其他数据配置(JSON)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-    private String meta;
+    private Map<String, Object> meta;
 
     @Schema(description = "动作产生时间")
     private LocalDateTime createTime;

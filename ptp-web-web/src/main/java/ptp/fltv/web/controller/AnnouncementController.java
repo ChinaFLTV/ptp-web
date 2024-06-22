@@ -198,16 +198,16 @@ public class AnnouncementController {
     @LogRecord(description = "分页获取指定类型的排行榜的公告数据")
     @SentinelResource("web-content-announcement-controller")
     @Operation(description = "分页获取指定类型的排行榜的公告数据")
-    @DeleteMapping("/query/rank/page/{offset}/{limit}")
-    public Result<?> queryAnnouncementRankPage(
+    @DeleteMapping("/query/rank/page")
+    public Result<List<Announcement>> queryAnnouncementRankPage(
 
-            @Parameter(name = "offset", description = "查询的一页排行榜公告数据的起始偏移量", in = ParameterIn.PATH) @PathVariable("offset") Long offset,
-            @Parameter(name = "limit", description = "查询的这一页排行榜公告数据的数量", in = ParameterIn.PATH) @PathVariable("limit") Long limit,
-            @RequestParam(name = "rankType") ContentRankType contentRankType
+            @Parameter(name = "offset", description = "查询的一页排行榜公告数据的起始偏移量") @RequestParam("offset") Long offset,
+            @Parameter(name = "limit", description = "查询的这一页排行榜公告数据的数量") @RequestParam("limit") Long limit,
+            @Parameter(name = "rankType", description = "排行榜的类型") @RequestParam("rankType") ContentRankType rankType
 
     ) {
 
-        return Result.success(announcementService.getRankListByPage(contentRankType, offset, limit));
+        return Result.success(announcementService.getRankListByPage(rankType, offset, limit));
 
     }
 

@@ -71,6 +71,7 @@ public interface UserService extends IService<User> {
     /**
      * @param addressInfo 用户当前位置信息数据包
      * @param id          用户ID
+     * @return 成功更新当前用户的位置信息后得到的Redis的实时位置key中对应的成员(更新失败则为null)
      * @author Lenovo/LiGuanda
      * @date 2024/6/21 PM 10:29:45
      * @version 1.0.0
@@ -79,13 +80,14 @@ public interface UserService extends IService<User> {
      * @description 更新当前用户的模糊的地理位置信息
      * @filename UserService.java
      */
-    void refreshGeolocation(@Nonnull Long id, @Nonnull AddressInfo addressInfo);
+    User refreshGeolocation(@Nonnull Long id, @Nonnull AddressInfo addressInfo);
 
 
     /**
+     * @param id        当前用户ID
      * @param longitude 当前用户的所在经度
      * @param latitude  当前用户的所在纬度
-     * @param radius    搜索半径(单位 : m)
+     * @param radius    搜索半径(单位 : km)
      * @param limit     最大检索人数
      * @return 查询到的指定半径范围内的附近的人的信息集合(距离 = > 同距离的用户集合)
      * @author Lenovo/LiGuanda
@@ -94,7 +96,7 @@ public interface UserService extends IService<User> {
      * @description 查找当前位置处指定半径内的附近的人
      * @filename UserService.java
      */
-    Map<Double, List<User>> findPeopleNearby(@Nonnull Double longitude, @Nonnull Double latitude, @Nonnull Double radius, @Nonnull Long limit);
+    Map<Integer, List<User>> findPeopleNearby(@Nonnull Long id, @Nonnull Double longitude, @Nonnull Double latitude, @Nonnull Double radius, @Nonnull Long limit);
 
 
 }

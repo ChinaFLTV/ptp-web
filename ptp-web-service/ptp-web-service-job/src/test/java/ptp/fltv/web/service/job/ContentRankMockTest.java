@@ -30,6 +30,13 @@ public class ContentRankMockTest {
     private StringRedisTemplate stringRedisTemplate;
 
 
+    /**
+     * @author Lenovo/LiGuanda
+     * @date 2024/6/22 AM 9:14:26
+     * @version 1.0.0
+     * @description 添加虚拟的内容实体排行数据
+     * @filename ContentRankMockTest.java
+     */
     // 2024-6-21  8:54-注意请使用 org.junit.jupiter.api.Test 而不是 org.junit.Test , 否则会出现Bean无法自动注入的异常情况!!!
     @Test
     public void addMockRankData() {

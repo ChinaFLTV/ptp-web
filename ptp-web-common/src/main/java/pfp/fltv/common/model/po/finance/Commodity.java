@@ -21,6 +21,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Lenovo/LiGuanda
@@ -128,9 +129,10 @@ public class Commodity implements Serializable {
     @Schema(description = "商品状态")
     private CommodityStatus status = CommodityStatus.ON_SALE;
 
+    @TableField(typeHandler = JacksonTypeHandler.class)
     @Transient
     @Schema(description = "其他数据配置(JSON)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-    private String meta;
+    private Map<String, Object> meta;
 
     @Transient
     @Schema(description = "发布时用户所在的地址信息")

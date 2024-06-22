@@ -21,6 +21,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Setting(sortOrders = Setting.SortOrder.desc)
 @Document(indexName = "user")
@@ -131,9 +132,10 @@ public class User implements Serializable {
     @TableField(typeHandler = JacksonTypeHandler.class)
     private UserStatus status = UserStatus.NORMAL;
 
+    @TableField(typeHandler = JacksonTypeHandler.class)
     @Transient
     @Schema(description = "用户其他数据配置(JSON)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-    private String meta;
+    private Map<String, Object> meta;
 
     @Field(name = "role_id", type = FieldType.Constant_Keyword)
     @Schema(description = "用户角色ID")

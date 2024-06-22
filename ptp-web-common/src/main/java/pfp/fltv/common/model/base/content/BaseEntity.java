@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -102,9 +103,10 @@ public class BaseEntity implements Serializable {
     @TableField(typeHandler = JacksonTypeHandler.class)
     private ContentStatus status = ContentStatus.NORMAL;
 
+    @TableField(typeHandler = JacksonTypeHandler.class)
     @Transient
     @Schema(description = "其他数据配置(JSON)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-    private String meta;
+    private Map<String, Object> meta;
 
     // 2024-6-14  11:32-统一将数据类型由TimeStamp调整为LocalDateTime，因为LocalDateTime类型也可以对应SQL中的TImeStamp类型，并且LocalDateTime操作起来更方便
     @Field(name = "create_time", type = FieldType.Date)

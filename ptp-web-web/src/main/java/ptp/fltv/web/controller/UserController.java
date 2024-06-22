@@ -174,7 +174,7 @@ public class UserController {
     @DeleteMapping("/delete/{userId}")
     public Result<?> deleteUser(
 
-            @Parameter(name = "userId", description = "待删除的用户ID", in = ParameterIn.PATH) @PathVariable("userId") Long userId
+            @Parameter(name = "userId", description = "当前用户ID", in = ParameterIn.PATH) @PathVariable("userId") Long userId
 
     ) {
 
@@ -203,19 +203,47 @@ public class UserController {
     @SentinelResource("web-content-user-controller")
     @Operation(description = "更新用户当前的地理位置信息")
     @PostMapping("/refresh/geolocation/{userId}")
-    public Result<?> refreshGeolocation(
+    public Result<Map<String, Object>> refreshGeolocation(
 
-            @Parameter(name = "userId", description = "待删除的用户ID", in = ParameterIn.PATH) @PathVariable("userId") Long userId,
+            @Parameter(name = "userId", description = "当前用户ID", in = ParameterIn.PATH) @PathVariable("userId") Long userId,
             @RequestBody AddressInfo addressInfo
 
     ) {
 
-        userService.refreshGeolocation(userId, addressInfo);
+        User refreshedUser = userService.refreshGeolocation(userId, addressInfo);
 
         Map<String, Object> map = new HashMap<>();
-        map.put("msg", "完成更新用户当前的地理位置信息");
+        map.put("refreshed-user", refreshedUser);
 
-        return Result.neutral(map);
+        if (refreshedUser != null) {
+
+            map.put("msg", "成功更新用户当前的地理位置信息");
+            return Result.success(map);
+
+        } else {
+
+            map.put("msg", "更新用户当前的地理位置信息失败");
+            return Result.failure(map);
+
+        }
+
+    }
+
+
+    @LogRecord(description = "更新用户当前的地理位置信息")
+    @SentinelResource("web-content-user-controller")
+    @Operation(description = "更新用户当前的地理位置信息")
+    @PostMapping("/query/nearby")
+    public Result<Map<Integer, List<User>>> findPeopleNearby(
+
+            @Parameter(name = "userId", description = "当前的用户ID") @RequestParam("userId") Long userId,
+            @Parameter(name = "radius", description = "所要查询的半径范围(单位 : km)") @RequestParam("radius") Double radius,
+            @Parameter(name = "limit", description = "所要查询的指定半径范围内的附近的人的最大人数") @RequestParam("limit") Long limit,
+            @RequestBody AddressInfo addressInfo
+
+    ) {
+
+        return Result.success(userService.findPeopleNearby(userId, addressInfo.getLongitude(), addressInfo.getLatitude(), radius, limit));
 
     }
 

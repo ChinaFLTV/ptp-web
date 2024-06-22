@@ -21,6 +21,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Lenovo/LiGuanda
@@ -121,9 +122,10 @@ public class TransactionRecord implements Serializable {
     @TableField(typeHandler = JacksonTypeHandler.class)
     private RecordStatus status = RecordStatus.NORMAL;
 
+    @TableField(typeHandler = JacksonTypeHandler.class)
     @Transient
     @Schema(description = "其他数据配置(JSON)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-    private String meta;
+    private Map<String, Object> meta;
 
     @Field(name = "create_time", type = FieldType.Date)
     @Schema(description = "流水创建时间")

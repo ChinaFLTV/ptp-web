@@ -2,14 +2,19 @@ package ptp.fltv.web.service.impl;
 
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONWriter;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.geo.Distance;
+import org.springframework.data.geo.Metrics;
 import org.springframework.data.geo.Point;
 import org.springframework.data.redis.connection.RedisGeoCommands;
+import org.springframework.data.redis.core.RedisOperations;
+import org.springframework.data.redis.core.SessionCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.domain.geo.GeoReference;
 import org.springframework.stereotype.Service;
@@ -27,10 +32,7 @@ import ptp.fltv.web.service.RoleService;
 import ptp.fltv.web.service.UserService;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -159,7 +161,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
 
     @Override
-    public void refreshGeolocation(@Nonnull Long id, @Nonnull AddressInfo addressInfo) {
+    public User refreshGeolocation(@Nonnull Long id, @Nonnull AddressInfo addressInfo) {
 
         Double longitude = addressInfo.getLongitude();
         Double latitude = addressInfo.getLatitude();
@@ -172,42 +174,133 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         final String key = "user:geolocation:current";
 
-        // 2024-6-21  22:43-Redis GEO数据类型说明
-        // Redis v3.2+ 新增了GEO数据类型 , 主要用于存储和操作地理位置信息
-        // 其底层实现结构为 Sorted Set , 与 zset数据类型的底层实现结构相类似
-        // 由于数据的分布是以二维的形式进行呈现的 , 而保存的时候要以一维的方式进行存储 , 因此需要将 经度&纬度 这两个度量指标进行合并映射
-        // func(longitude , latitude) => geo_hash as score(zset)
-        redisTemplate.opsForGeo().add(key, new Point(longitude, latitude), String.valueOf(id));
+        // 2024-6-22  20:19-由于考虑到 附近的人 功能需要拉取用户数据 , 可是这个过程可能会因拉取大量用户数据而出现较长时间的卡顿 , 因此 , 我们决定将部分必要的用户数据直接存入Redis中 , 并且作为当前key的成员
+        User user = baseMapper.selectById(id);
+        if (user != null) {
+
+            // 2024-6-22  20:25-移除掉 附近的人 社交功能用不到的非必要信息(FastJson2 默认不会序列化字段值为null的字段 , 这样就能在一定程度上降低单个成员的体积了)
+            user.setPassword(null);
+            user.setPhone(null);
+            user.setEmail(null);
+            user.setRealname(null);
+            user.setIdiograph(null);
+            user.setBackground(null);
+            user.setLikeNum(null);
+            user.setBirthDate(null);
+            user.setAddressInfoId(null);
+            user.setBindAccounts(null);
+            user.setRoleId(null);
+            user.setAssetId(null);
+            user.setCreateTime(null);
+            user.setUpdateTime(null);
+            user.setIsDeleted(null);
+            user.setVersion(null);
+
+
+            // 2024-6-21  22:43-Redis GEO数据类型说明
+            // Redis v3.2+ 新增了GEO数据类型 , 主要用于存储和操作地理位置信息
+            // 其底层实现结构为 Sorted Set , 与 zset数据类型的底层实现结构相类似
+            // 由于数据的分布是以二维的形式进行呈现的 , 而保存的时候要以一维的方式进行存储 , 因此需要将 经度&纬度 这两个度量指标进行合并映射
+            // func(longitude , latitude) => geo_hash as score(zset)
+            Long addedItems = redisTemplate.opsForGeo().add(key, new Point(longitude, latitude), JSON.toJSONString(user, JSONWriter.Feature.NotWriteDefaultValue, JSONWriter.Feature.NotWriteEmptyArray));
+
+        }
+
+        return user;
 
     }
 
 
     @Override
-    public Map<Double, List<User>> findPeopleNearby(@Nonnull Double longitude, @Nonnull Double latitude, @Nonnull Double radius, @Nonnull Long limit) {
+    public Map<Integer, List<User>> findPeopleNearby(@Nonnull Long id, @Nonnull Double longitude, @Nonnull Double latitude, @Nonnull Double radius, @Nonnull Long limit) {
 
+        final String KEY = "user:geolocation:current";
 
+        GeoReference<String> point = GeoReference.fromCoordinate(longitude, latitude);
+        Distance range = new Distance(radius, Metrics.KILOMETERS);
         RedisGeoCommands.GeoRadiusCommandArgs commandArgs = RedisGeoCommands.GeoRadiusCommandArgs.newGeoRadiusArgs()
                 .includeCoordinates()
                 .sortAscending()
                 .limit(limit);
 
-        final String key = "user:geolocation:current";
-        final Map<Long, Double> id2distanceMap = new HashMap<>();
-        final Map<Double, List<User>> distance2UserMap = new HashMap<>();
+        // final Map<Long, Double> id2distanceMap = new HashMap<>();
+        final Map<Integer, List<User>> distance2UserMap = new HashMap<>();
 
-        redisTemplate.opsForGeo()
-                .search(key, GeoReference.fromCoordinate(longitude, latitude), new Distance(radius), commandArgs)
-                .getContent()
-                .stream()
-                .forEach(res -> {
+        AddressInfo addressInfo = new AddressInfo();
+        addressInfo.setLongitude(longitude);
+        addressInfo.setLatitude(latitude);
 
-                    String id = res.getContent().getName();
-                    double distance = res.getDistance().getValue();
-                    id2distanceMap.put(Long.parseLong(id), distance);
 
-                });
+        User currentRefreshedUser = refreshGeolocation(id, addressInfo);
 
-        List<User> users = baseMapper.selectBatchIds(id2distanceMap.keySet());
+        if (currentRefreshedUser == null) {
+
+            throw new PtpException(811, "无法更新当前用户的位置信息", "执行 UserServiceImpl::refreshGeolocation 方法后返回的user为null");
+
+        }
+
+        // 2024-6-23  00:08-由于Redis的Pipeline并不能保证输入到Redis服务端的这一串命令原子化执行 , 因此我们需要使用Redis的事务来完成 附近的人 距离计算操作
+        redisTemplate.executePipelined(new SessionCallback<>() {
+
+
+            @SuppressWarnings("unchecked")
+            @Override
+            public <K, V> Object execute(@Nonnull RedisOperations<K, V> operations) throws DataAccessException {
+
+                try {
+
+                    Objects.requireNonNull(operations.opsForGeo().search((K) KEY, (GeoReference<V>) point, range, commandArgs))
+                            .getContent()
+                            .forEach(res -> {
+
+                                User peopleNearby = JSON.parseObject((String) res.getContent().getName(), User.class);
+                                Distance distance = operations.opsForGeo().distance((K) KEY, (V) JSON.toJSONString(currentRefreshedUser, JSONWriter.Feature.NotWriteDefaultValue, JSONWriter.Feature.NotWriteEmptyArray), res.getContent().getName(), Metrics.KILOMETERS);
+                                // id2distanceMap.put(Long.parseLong(id), Objects.requireNonNull(distance).getValue());
+
+                                if (peopleNearby != null && distance != null) {
+
+                                    // 2024-6-22  23:22-不要为了节约内存空间而把extension单独抽离到 forEach 外面!!!这样会使得全部的User最终都引用到了同一个最后一个User更新后的meta映射!!!
+                                    Map<String, Object> extension = new HashMap<>();
+                                    extension.put("distance", distance.getValue());
+                                    peopleNearby.setMeta(extension);
+
+                                    int estimatedDistance = ((int) distance.getValue() / 10) * 10;
+
+                                    if (!distance2UserMap.containsKey(estimatedDistance)) {
+
+                                        distance2UserMap.put(estimatedDistance, new ArrayList<>());
+
+                                    }
+                                    distance2UserMap.get(estimatedDistance).add(peopleNearby);
+
+                                }
+
+                            });
+
+                } catch (Exception e) {
+
+                    e.printStackTrace();
+                    System.out.println();
+
+                }
+
+                return null;
+
+            }
+
+
+        });
+
+        /*if (id2distanceMap.isEmpty()) {
+
+            return Collections.emptyMap();
+
+        }*/
+
+        // 2024-6-22  20:17-下面是及其消耗时间且性价比极低的操作:
+        // 消耗时间长 : 从数据库查询数据 , 这是磁盘IO操作 , 且ID大概率不会是连续的 , 因此是随机磁盘IO
+        // 性价比极低 : 由于读操作时间很长 , 因此在这个过程中查询出来的数据并不总是最新的有效的
+        /*List<User> users = baseMapper.selectBatchIds(id2distanceMap.keySet());
         for (User user : users) {
 
             if (!distance2UserMap.containsKey(id2distanceMap.get(user.getId()))) {
@@ -218,7 +311,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
             distance2UserMap.get(id2distanceMap.get(user.getId())).add(user);
 
-        }
+        }*/
 
         return distance2UserMap;
 

@@ -1,7 +1,5 @@
 package ptp.fltv.web.mq.impl;
 
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONObject;
 import jakarta.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,11 +41,10 @@ public class ContentRankMqServiceImpl implements ContentRankMqService {
         indices.put("collects", contentObj.getStarNum());
         indices.put("comments", contentObj.getCommentNum());
 
-        String meta = contentObj.getMeta();
+        Map<String, Object> meta = contentObj.getMeta();
         if (meta != null) {
 
-            JSONObject metaObj = JSON.parseObject(meta);
-            indices.put("last-collect-timestamp", metaObj.getLongValue("last-collect-timestamp", contentObj.getCreateTime().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()));
+            indices.put("last-collect-timestamp", meta.getOrDefault("last-collect-timestamp", contentObj.getCreateTime().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()));
 
         }
 
