@@ -8,15 +8,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.dao.DataAccessException;
-import org.springframework.data.geo.Distance;
-import org.springframework.data.geo.Metrics;
 import org.springframework.data.geo.Point;
-import org.springframework.data.redis.connection.RedisGeoCommands;
-import org.springframework.data.redis.core.RedisOperations;
-import org.springframework.data.redis.core.SessionCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.domain.geo.GeoReference;
 import org.springframework.stereotype.Service;
 import pfp.fltv.common.constants.OAuth2LoginConstants;
 import pfp.fltv.common.constants.RedisConstants;
@@ -30,6 +23,10 @@ import pfp.fltv.common.utils.JwtUtils;
 import ptp.fltv.web.mapper.UserMapper;
 import ptp.fltv.web.service.RoleService;
 import ptp.fltv.web.service.UserService;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.args.GeoUnit;
+import redis.clients.jedis.params.GeoSearchParam;
+import redis.clients.jedis.resps.GeoRadiusResponse;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -50,6 +47,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     private StringRedisTemplate redisTemplate;
     private RoleService roleService;
+    private Jedis jedis;
 
 
     @Override
@@ -216,20 +214,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         final String KEY = "user:geolocation:current";
 
-        GeoReference<String> point = GeoReference.fromCoordinate(longitude, latitude);
-        Distance range = new Distance(radius, Metrics.KILOMETERS);
-        RedisGeoCommands.GeoRadiusCommandArgs commandArgs = RedisGeoCommands.GeoRadiusCommandArgs.newGeoRadiusArgs()
-                .includeCoordinates()
-                .sortAscending()
-                .limit(limit);
-
         // final Map<Long, Double> id2distanceMap = new HashMap<>();
         final Map<Integer, List<User>> distance2UserMap = new HashMap<>();
 
         AddressInfo addressInfo = new AddressInfo();
         addressInfo.setLongitude(longitude);
         addressInfo.setLatitude(latitude);
-
 
         User currentRefreshedUser = refreshGeolocation(id, addressInfo);
 
@@ -239,79 +229,53 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         }
 
-        // 2024-6-23  00:08-由于Redis的Pipeline并不能保证输入到Redis服务端的这一串命令原子化执行 , 因此我们需要使用Redis的事务来完成 附近的人 距离计算操作
-        redisTemplate.executePipelined(new SessionCallback<>() {
+        // 2024-6-23  21:51-太好了 , Jedis的 geosearch 方法不仅会返回附近的人的坐标 , 还连距离一同计算并返回回来了,真是太省事了!!!并且相应速度平均是之前Redis客户端操作的1/3！！！
+        GeoSearchParam geoSearchParam = new GeoSearchParam()
+                .fromLonLat(longitude, latitude)
+                .byRadius(radius, GeoUnit.KM)
+                .count(Math.toIntExact(limit))
+                .asc()
+                .withCoord()
+                .withDist()
+                .withHash();
+        List<GeoRadiusResponse> peoplesNearby = jedis.geosearch(KEY, geoSearchParam);
 
-
-            @SuppressWarnings("unchecked")
-            @Override
-            public <K, V> Object execute(@Nonnull RedisOperations<K, V> operations) throws DataAccessException {
-
-                try {
-
-                    Objects.requireNonNull(operations.opsForGeo().search((K) KEY, (GeoReference<V>) point, range, commandArgs))
-                            .getContent()
-                            .forEach(res -> {
-
-                                User peopleNearby = JSON.parseObject((String) res.getContent().getName(), User.class);
-                                Distance distance = operations.opsForGeo().distance((K) KEY, (V) JSON.toJSONString(currentRefreshedUser, JSONWriter.Feature.NotWriteDefaultValue, JSONWriter.Feature.NotWriteEmptyArray), res.getContent().getName(), Metrics.KILOMETERS);
-                                // id2distanceMap.put(Long.parseLong(id), Objects.requireNonNull(distance).getValue());
-
-                                if (peopleNearby != null && distance != null) {
-
-                                    // 2024-6-22  23:22-不要为了节约内存空间而把extension单独抽离到 forEach 外面!!!这样会使得全部的User最终都引用到了同一个最后一个User更新后的meta映射!!!
-                                    Map<String, Object> extension = new HashMap<>();
-                                    extension.put("distance", distance.getValue());
-                                    peopleNearby.setMeta(extension);
-
-                                    int estimatedDistance = ((int) distance.getValue() / 10) * 10;
-
-                                    if (!distance2UserMap.containsKey(estimatedDistance)) {
-
-                                        distance2UserMap.put(estimatedDistance, new ArrayList<>());
-
-                                    }
-                                    distance2UserMap.get(estimatedDistance).add(peopleNearby);
-
-                                }
-
-                            });
-
-                } catch (Exception e) {
-
-                    e.printStackTrace();
-                    System.out.println();
-
-                }
-
-                return null;
-
-            }
-
-
-        });
-
-        /*if (id2distanceMap.isEmpty()) {
+        if (peoplesNearby == null || peoplesNearby.isEmpty()) {
 
             return Collections.emptyMap();
 
-        }*/
+        }
 
-        // 2024-6-22  20:17-下面是及其消耗时间且性价比极低的操作:
-        // 消耗时间长 : 从数据库查询数据 , 这是磁盘IO操作 , 且ID大概率不会是连续的 , 因此是随机磁盘IO
-        // 性价比极低 : 由于读操作时间很长 , 因此在这个过程中查询出来的数据并不总是最新的有效的
-        /*List<User> users = baseMapper.selectBatchIds(id2distanceMap.keySet());
-        for (User user : users) {
+        // 2024-6-23  21:14-由于Redis通过Pipeline进行map操作比较不方便 , 因此改用jedis客户端进行pipeline下的map操作
+        // 2024-6-23  10:04-但是由于我们的操作并不是特别耗时并且对于数据一致性可靠性要求不是特别高 , 因此这里不再走事务进行处理了
+        // 2024-6-23  00:08-由于Redis的Pipeline并不能保证输入到Redis服务端的这一串命令原子化执行 , 因此我们需要使用Redis的事务来完成 附近的人 距离计算操作
+        for (GeoRadiusResponse response : peoplesNearby) {
 
-            if (!distance2UserMap.containsKey(id2distanceMap.get(user.getId()))) {
+            User peopleNearby = JSON.parseObject(response.getMemberByString(), User.class);
 
-                distance2UserMap.put(id2distanceMap.get(user.getId()), new ArrayList<>());
+            if (peopleNearby != null) {
+
+                // 2024-6-22  23:22-不要为了节约内存空间而把extension单独抽离到 forEach 外面!!!这样会使得全部的User最终都引用到了同一个最后一个User更新后的meta映射!!!
+                Map<String, Object> extension = new HashMap<>();
+                extension.put("distance", response.getDistance());
+                extension.put("longitude", response.getCoordinate().getLongitude());
+                extension.put("latitude", response.getCoordinate().getLatitude());
+                extension.put("geo-hash", response.getRawScore());
+
+                peopleNearby.setMeta(extension);
+
+                int estimatedDistance = ((int) response.getDistance() / 10) * 10;
+
+                if (!distance2UserMap.containsKey(estimatedDistance)) {
+
+                    distance2UserMap.put(estimatedDistance, new ArrayList<>());
+
+                }
+                distance2UserMap.get(estimatedDistance).add(peopleNearby);
 
             }
 
-            distance2UserMap.get(id2distanceMap.get(user.getId())).add(user);
-
-        }*/
+        }
 
         return distance2UserMap;
 

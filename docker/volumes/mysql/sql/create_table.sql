@@ -7,15 +7,15 @@ CREATE TABLE IF NOT EXISTS `asset`
 (
 
     `id`          BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT COMMENT '用户财产ID',
-    `balance`     DOUBLE UNSIGNED   DEFAULT 0 COMMENT '用户当前账户余额',
-    `accounts`    CHAR(255)         DEFAULT NULL COMMENT '用户绑定的银行卡',
-    `authorities` CHAR(255)         DEFAULT 'drawback,withdraw,view,update_password' COMMENT '当前账户所允许的操作',
-    `credit`      DOUBLE UNSIGNED   DEFAULT 100 COMMENT '当前账户的信誉积分',
-    `status`      SMALLINT UNSIGNED DEFAULT 300 COMMENT '当前账户状态',
-    `create_time` TIMESTAMP         DEFAULT CURRENT_TIMESTAMP COMMENT '资产创建时间',
-    `update_time` TIMESTAMP         DEFAULT CURRENT_TIMESTAMP COMMENT '(最后)修改时间' ON UPDATE CURRENT_TIMESTAMP,
-    `is_deleted`  INT UNSIGNED      DEFAULT 0 COMMENT '资产是否已被删除',
-    `version`     INT UNSIGNED      DEFAULT 1 COMMENT '当前资产实体的版本(用于辅助实现乐观锁)'
+    `balance`     DECIMAL(65, 6) UNSIGNED DEFAULT 0 COMMENT '用户当前账户余额', -- 2024-6-23  16:48-采用DECIMAL数据类型存储用户余额 , 因为DECIMAL类型不存在精度损失 , 备注 : DECIMAL(M,D)占用16B , 其中M范围为1~65(默认为10) , 表示数字的总位数 , D范围为0~30(默认为0,值不得大于M) , 表示小数位数
+    `accounts`    CHAR(255)               DEFAULT NULL COMMENT '用户绑定的银行卡',
+    `authorities` CHAR(255)               DEFAULT 'drawback,withdraw,view,update_password' COMMENT '当前账户所允许的操作',
+    `credit`      DOUBLE UNSIGNED         DEFAULT 100 COMMENT '当前账户的信誉积分',
+    `status`      SMALLINT UNSIGNED       DEFAULT 300 COMMENT '当前账户状态',
+    `create_time` TIMESTAMP               DEFAULT CURRENT_TIMESTAMP COMMENT '资产创建时间',
+    `update_time` TIMESTAMP               DEFAULT CURRENT_TIMESTAMP COMMENT '(最后)修改时间' ON UPDATE CURRENT_TIMESTAMP,
+    `is_deleted`  INT UNSIGNED            DEFAULT 0 COMMENT '资产是否已被删除',
+    `version`     INT UNSIGNED            DEFAULT 1 COMMENT '当前资产实体的版本(用于辅助实现乐观锁)'
 
 )
     ENGINE = InnoDB
@@ -225,22 +225,22 @@ CREATE TABLE IF NOT EXISTS `commodity`
     `id`           BIGINT UNSIGNED PRIMARY KEY NOT NULL COMMENT '商品唯一标识符',
     `user_id`      BIGINT UNSIGNED             NOT NULL COMMENT '商品卖家ID',
     `name`         VARCHAR(255)                NOT NULL COMMENT '商品名称',
-    `description`  TEXT            DEFAULT NULL COMMENT '商品详细描述',
-    `tags`         CHAR(255)       DEFAULT NULL COMMENT '标签',
-    `category`     CHAR(255)       DEFAULT NULL COMMENT '分类',
-    `browse_num`   INT UNSIGNED    DEFAULT 0 COMMENT '浏览量',
-    `like_num`     INT UNSIGNED    DEFAULT 0 COMMENT '点赞量',
-    `unlike_num`   INT UNSIGNED    DEFAULT 0 COMMENT '倒赞量',
-    `comment_num`  INT UNSIGNED    DEFAULT 0 COMMENT '评论量',
-    `star_num`     INT UNSIGNED    DEFAULT 0 COMMENT '收藏量',
-    `price`        DOUBLE UNSIGNED DEFAULT 0 COMMENT '商品售价',
-    `status`       INT UNSIGNED    DEFAULT 1201 COMMENT '商品状态',
-    `meta`         TEXT            DEFAULT NULL COMMENT '其他数据配置(JSON)',
-    `address_info` TEXT            DEFAULT NULL COMMENT '记录文章评论发布时的地址信息',
-    `create_time`  TIMESTAMP       DEFAULT CURRENT_TIMESTAMP COMMENT '商品发布时间',
-    `update_time`  TIMESTAMP       DEFAULT CURRENT_TIMESTAMP COMMENT '商品信息(最后)更新时间',
-    `is_deleted`   INT UNSIGNED    DEFAULT 0 COMMENT '当前实体是否已被逻辑删除',
-    `version`      INT UNSIGNED    DEFAULT 1 COMMENT '当前商品实体的版本(用于辅助实现乐观锁)',
+    `description`  TEXT                    DEFAULT NULL COMMENT '商品详细描述',
+    `tags`         CHAR(255)               DEFAULT NULL COMMENT '标签',
+    `category`     CHAR(255)               DEFAULT NULL COMMENT '分类',
+    `browse_num`   INT UNSIGNED            DEFAULT 0 COMMENT '浏览量',
+    `like_num`     INT UNSIGNED            DEFAULT 0 COMMENT '点赞量',
+    `unlike_num`   INT UNSIGNED            DEFAULT 0 COMMENT '倒赞量',
+    `comment_num`  INT UNSIGNED            DEFAULT 0 COMMENT '评论量',
+    `star_num`     INT UNSIGNED            DEFAULT 0 COMMENT '收藏量',
+    `price`        DECIMAL(65, 6) UNSIGNED DEFAULT 0 COMMENT '商品售价',
+    `status`       INT UNSIGNED            DEFAULT 1201 COMMENT '商品状态',
+    `meta`         TEXT                    DEFAULT NULL COMMENT '其他数据配置(JSON)',
+    `address_info` TEXT                    DEFAULT NULL COMMENT '记录文章评论发布时的地址信息',
+    `create_time`  TIMESTAMP               DEFAULT CURRENT_TIMESTAMP COMMENT '商品发布时间',
+    `update_time`  TIMESTAMP               DEFAULT CURRENT_TIMESTAMP COMMENT '商品信息(最后)更新时间',
+    `is_deleted`   INT UNSIGNED            DEFAULT 0 COMMENT '当前实体是否已被逻辑删除',
+    `version`      INT UNSIGNED            DEFAULT 1 COMMENT '当前商品实体的版本(用于辅助实现乐观锁)',
 
     FOREIGN KEY (user_id) REFERENCES user (id)
         ON UPDATE CASCADE -- 2024-5-21  23:08-级联删除都设置了，这个更新也一起设置得了

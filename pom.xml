@@ -95,6 +95,7 @@
         <!--<logback.version>1.5.6</logback.version>-->
         <logstash.logback.encoder.version>7.4</logstash.logback.encoder.version>
         <xxl-job.version>2.4.1</xxl-job.version>
+        <jedis.version>5.2.0-beta3</jedis.version>
 
     </properties>
 
@@ -236,6 +237,12 @@
                 <groupId>com.xuxueli</groupId>
                 <artifactId>xxl-job-core</artifactId>
                 <version>${xxl-job.version}</version>
+            </dependency>
+            <!--  2024-6-23  21:16-由于Redis通过Pipeline进行map操作比较不方便 , 因此改用jedis进行pipeline下的map操作  -->
+            <dependency>
+                <groupId>redis.clients</groupId>
+                <artifactId>jedis</artifactId>
+                <version>${jedis.version}</version>
             </dependency>
 
         </dependencies>

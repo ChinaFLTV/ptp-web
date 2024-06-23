@@ -111,6 +111,11 @@
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
         </dependency>
+        <!--  2024-6-23  21:16-由于Redis通过Pipeline进行map操作比较不方便 , 因此改用jedis进行pipeline下的map操作  -->
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+        </dependency>
 
     </dependencies>
 
