@@ -58,7 +58,7 @@ public class AnnouncementController {
     @GetMapping("/query/single/{id}")
     public Result<Announcement> querySingleAnnouncement(
 
-            @Parameter(name = "id", description = "待查询的单条公告ID", in = ParameterIn.PATH) @PathVariable("id") Long id
+            @Parameter(name = "id", description = "待查询的单条公告ID", in = ParameterIn.PATH, required = true) @PathVariable("id") Long id
 
     ) {
 
@@ -75,8 +75,8 @@ public class AnnouncementController {
     @GetMapping("/query/page/{offset}/{limit}")
     public Result<List<AnnouncementVo>> queryAnnouncementPage(
 
-            @Parameter(name = "offset", description = "查询的一页公告数据的起始偏移量", in = ParameterIn.PATH) @PathVariable("offset") Long offset,
-            @Parameter(name = "limit", description = "查询的这一页公告数据的数量", in = ParameterIn.PATH) @PathVariable("limit") Long limit
+            @Parameter(name = "offset", description = "查询的一页公告数据的起始偏移量", in = ParameterIn.PATH, required = true) @PathVariable("offset") Long offset,
+            @Parameter(name = "limit", description = "查询的这一页公告数据的数量", in = ParameterIn.PATH, required = true) @PathVariable("limit") Long limit
 
     ) {
 
@@ -103,7 +103,7 @@ public class AnnouncementController {
     @PostMapping("/insert/single")
     public Result<?> insertSingleAnnouncement(
 
-            @Parameter(name = "announcementVo", description = "待添加的单条公告数据VO") @RequestBody AnnouncementVo announcementVo
+            @Parameter(name = "announcementVo", description = "待添加的单条公告数据VO", required = true) @RequestBody AnnouncementVo announcementVo
 
     ) {
 
@@ -135,7 +135,7 @@ public class AnnouncementController {
     @PutMapping("/update/single")
     public Result<?> updateSingleAnnouncement(
 
-            @Parameter(name = "announcementVo", description = "待修改的单条公告数据VO") @RequestBody AnnouncementVo announcementVo
+            @Parameter(name = "announcementVo", description = "待修改的单条公告数据VO", required = true) @RequestBody AnnouncementVo announcementVo
 
     ) {
 
@@ -170,7 +170,7 @@ public class AnnouncementController {
     @DeleteMapping("/delete/single/{id}")
     public Result<?> deleteSingleAnnouncement(
 
-            @Parameter(name = "id", description = "待删除的单条公告ID", in = ParameterIn.PATH) @PathVariable("id") Long id
+            @Parameter(name = "id", description = "待删除的单条公告ID", in = ParameterIn.PATH, required = true) @PathVariable("id") Long id
 
     ) {
 
@@ -201,9 +201,9 @@ public class AnnouncementController {
     @DeleteMapping("/query/rank/page")
     public Result<List<Announcement>> queryAnnouncementRankPage(
 
-            @Parameter(name = "offset", description = "查询的一页排行榜公告数据的起始偏移量") @RequestParam("offset") Long offset,
-            @Parameter(name = "limit", description = "查询的这一页排行榜公告数据的数量") @RequestParam("limit") Long limit,
-            @Parameter(name = "rankType", description = "排行榜的类型") @RequestParam("rankType") ContentRankType rankType
+            @Parameter(name = "offset", description = "查询的一页排行榜公告数据的起始偏移量", required = true) @RequestParam("offset") Long offset,
+            @Parameter(name = "limit", description = "查询的这一页排行榜公告数据的数量", required = true) @RequestParam("limit") Long limit,
+            @Parameter(name = "rankType", description = "排行榜的类型", required = true) @RequestParam("rankType") ContentRankType rankType
 
     ) {
 

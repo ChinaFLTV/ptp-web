@@ -64,7 +64,7 @@ public class CommodityController {
     @GetMapping("/query/single/{id}")
     public Result<Commodity> querySingleCommodity(
 
-            @Parameter(name = "id", description = "待查询的单个商品ID", in = ParameterIn.PATH) @PathVariable("id") Long id
+            @Parameter(name = "id", description = "待查询的单个商品ID", in = ParameterIn.PATH, required = true) @PathVariable("id") Long id
 
     ) {
 
@@ -81,7 +81,7 @@ public class CommodityController {
     @GetMapping("/query/page/{offset}/{limit}")
     public Result<List<Commodity>> queryCommodityPage(
 
-            @Parameter(name = "offset", description = "查询的一页商品数据的起始偏移量", in = ParameterIn.PATH) @PathVariable("offset") Long offset, @Parameter(name = "limit", description = "查询的这一页商品数据的数量", in = ParameterIn.PATH) @PathVariable("limit") Long limit
+            @Parameter(name = "offset", description = "查询的一页商品数据的起始偏移量", in = ParameterIn.PATH, required = true) @PathVariable("offset") Long offset, @Parameter(name = "limit", description = "查询的这一页商品数据的数量", in = ParameterIn.PATH) @PathVariable("limit") Long limit
 
     ) {
 
@@ -96,7 +96,7 @@ public class CommodityController {
     @PostMapping("/insert/single")
     public Result<?> insertSingleAnnouncement(
 
-            @Parameter(name = "commodity", description = "待添加的单个商品数据") @RequestBody Commodity commodity
+            @Parameter(name = "commodity", description = "待添加的单个商品数据", required = true) @RequestBody Commodity commodity
 
     ) {
 
@@ -125,7 +125,7 @@ public class CommodityController {
     @PutMapping("/update/single")
     public Result<?> updateSingleCommodity(
 
-            @Parameter(name = "commodity", description = "待修改的单个商品数据") @RequestBody Commodity commodity
+            @Parameter(name = "commodity", description = "待修改的单个商品数据", required = true) @RequestBody Commodity commodity
 
     ) {
 
@@ -152,7 +152,7 @@ public class CommodityController {
     @SentinelResource("web-finance-commodity-controller")
     @Operation(description = "删除单个商品数据")
     @DeleteMapping("/delete/single/{id}")
-    public Result<?> deleteSingleCommodity(@Parameter(name = "id", description = "待删除的单个公告ID", in = ParameterIn.PATH) @PathVariable("id") Long id) {
+    public Result<?> deleteSingleCommodity(@Parameter(name = "id", description = "待删除的单个公告ID", in = ParameterIn.PATH, required = true) @PathVariable("id") Long id) {
 
         boolean isDeleted = commodityService.deleteOne(id) > 0;
 
@@ -187,7 +187,8 @@ public class CommodityController {
     @PutMapping("/extension/seckill")
     public Result<?> seckillSingleCommodity(
 
-            @Parameter(name = "id", description = "待秒杀的单个商品ID") @RequestParam("id") Long id, @Parameter(name = "count", description = "待秒杀的单个商品的数量") @RequestParam("count") Integer count,
+            @Parameter(name = "id", description = "待秒杀的单个商品ID", required = true) @RequestParam("id") Long id,
+            @Parameter(name = "count", description = "待秒杀的单个商品的数量", required = true) @RequestParam("count") Integer count,
             HttpServletRequest request
 
     ) throws InterruptedException {
@@ -325,7 +326,8 @@ public class CommodityController {
     @PutMapping("/extension/replenish")
     public Result<?> replenishSingleCommodity(
 
-            @Parameter(name = "id", description = "待补货的单个商品ID") @RequestParam("id") Long id, @Parameter(name = "count", description = "待补货的单个商品的数量") @RequestParam("count") Integer count,
+            @Parameter(name = "id", description = "待补货的单个商品ID", required = true) @RequestParam("id") Long id,
+            @Parameter(name = "count", description = "待补货的单个商品的数量", required = true) @RequestParam("count") Integer count,
             HttpServletRequest request
 
     ) {

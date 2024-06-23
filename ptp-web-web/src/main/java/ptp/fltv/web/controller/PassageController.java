@@ -55,7 +55,7 @@ public class PassageController {
     @SentinelResource("web-content-passage-controller")
     @Operation(description = "根据ID查询单条文章数据")
     @GetMapping("/query/single/{id}")
-    public Result<Passage> querySinglePassage(@Parameter(name = "id", description = "待查询的单条文章ID", in = ParameterIn.PATH)
+    public Result<Passage> querySinglePassage(@Parameter(name = "id", description = "待查询的单条文章ID", in = ParameterIn.PATH, required = true)
                                               @PathVariable("id")
                                               Long id) {
 
@@ -70,8 +70,8 @@ public class PassageController {
     @SentinelResource("web-content-passage-controller")
     @Operation(description = "批量(分页)查询多条文章数据")
     @GetMapping("/query/page/{offset}/{limit}")
-    public Result<List<PassageVo>> queryPassagePage(@Parameter(name = "offset", description = "查询的一页文章数据的起始偏移量", in = ParameterIn.PATH) @PathVariable("offset") Long offset,
-                                                    @Parameter(name = "limit", description = "查询的这一页文章数据的数量", in = ParameterIn.PATH) @PathVariable("limit") Long limit) {
+    public Result<List<PassageVo>> queryPassagePage(@Parameter(name = "offset", description = "查询的一页文章数据的起始偏移量", in = ParameterIn.PATH, required = true) @PathVariable("offset") Long offset,
+                                                    @Parameter(name = "limit", description = "查询的这一页文章数据的数量", in = ParameterIn.PATH, required = true) @PathVariable("limit") Long limit) {
 
         Page<Passage> passagePage = new Page<>(offset, limit);
         passagePage = passageService.page(passagePage);
@@ -94,7 +94,7 @@ public class PassageController {
     @SentinelResource("web-content-passage-controller")
     @Operation(description = "添加单条文章数据")
     @PostMapping("/insert/single")
-    public Result<?> insertSinglePassage(@Parameter(name = "dialogueVo", description = "待添加的单条文章数据VO")
+    public Result<?> insertSinglePassage(@Parameter(name = "dialogueVo", description = "待添加的单条文章数据VO", required = true)
                                          @RequestBody
                                          PassageVo passageVo) {
 
@@ -125,7 +125,7 @@ public class PassageController {
     @Operation(description = "修改单条文章数据")
     @PutMapping("/update/single")
     public Result<?> updateSinglePassage(
-            @Parameter(name = "dialogueVo", description = "待修改的单条文章数据VO")
+            @Parameter(name = "dialogueVo", description = "待修改的单条文章数据VO", required = true)
             @RequestBody
             PassageVo passageVo) {
 
@@ -158,7 +158,7 @@ public class PassageController {
     @SentinelResource("web-content-passage-controller")
     @Operation(description = "删除单条文章数据")
     @DeleteMapping("/delete/single/{id}")
-    public Result<?> deleteSinglePassage(@Parameter(name = "id", description = "待删除的单条文章ID", in = ParameterIn.PATH)
+    public Result<?> deleteSinglePassage(@Parameter(name = "id", description = "待删除的单条文章ID", in = ParameterIn.PATH, required = true)
                                          @PathVariable("id")
                                          Long id) {
 
@@ -189,9 +189,9 @@ public class PassageController {
     @DeleteMapping("/query/rank/page")
     public Result<List<Passage>> queryAnnouncementRankPage(
 
-            @Parameter(name = "offset", description = "查询的一页排行榜文章数据的起始偏移量") @RequestParam("offset") Long offset,
-            @Parameter(name = "limit", description = "查询的这一页排行榜文章数据的数量") @RequestParam("limit") Long limit,
-            @Parameter(name = "rankType", description = "排行榜的类型") @RequestParam("rankType") ContentRankType rankType
+            @Parameter(name = "offset", description = "查询的一页排行榜文章数据的起始偏移量", required = true) @RequestParam("offset") Long offset,
+            @Parameter(name = "limit", description = "查询的这一页排行榜文章数据的数量", required = true) @RequestParam("limit") Long limit,
+            @Parameter(name = "rankType", description = "排行榜的类型", required = true) @RequestParam("rankType") ContentRankType rankType
 
     ) {
 

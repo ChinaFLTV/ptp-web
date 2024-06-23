@@ -55,7 +55,7 @@ public class DialogueController {
     @SentinelResource("web-content-dialogue-controller")
     @Operation(description = "根据ID查询单条对话数据")
     @GetMapping("/query/single/{id}")
-    public Result<Dialogue> querySingleDialogue(@Parameter(name = "id", description = "待查询的单条对话ID", in = ParameterIn.PATH)
+    public Result<Dialogue> querySingleDialogue(@Parameter(name = "id", description = "待查询的单条对话ID", in = ParameterIn.PATH, required = true)
                                                 @PathVariable("id")
                                                 Long id) {
 
@@ -70,8 +70,12 @@ public class DialogueController {
     @SentinelResource("web-content-dialogue-controller")
     @Operation(description = "批量(分页)查询多条对话数据")
     @GetMapping("/query/page/{offset}/{limit}")
-    public Result<List<DialogueVo>> queryDialoguePage(@Parameter(name = "offset", description = "查询的一页对话数据的起始偏移量", in = ParameterIn.PATH) @PathVariable("offset") Long offset,
-                                                      @Parameter(name = "limit", description = "查询的这一页对话数据的数量", in = ParameterIn.PATH) @PathVariable("limit") Long limit) {
+    public Result<List<DialogueVo>> queryDialoguePage(
+
+            @Parameter(name = "offset", description = "查询的一页对话数据的起始偏移量", in = ParameterIn.PATH, required = true) @PathVariable("offset") Long offset,
+            @Parameter(name = "limit", description = "查询的这一页对话数据的数量", in = ParameterIn.PATH, required = true) @PathVariable("limit") Long limit
+
+    ) {
 
         Page<Dialogue> dialoguePage = new Page<>(offset, limit);
         dialoguePage = dialogueService.page(dialoguePage);
@@ -94,9 +98,11 @@ public class DialogueController {
     @SentinelResource("web-content-dialogue-controller")
     @Operation(description = "添加单条对话数据")
     @PostMapping("/insert/single")
-    public Result<?> insertSingleDialogue(@Parameter(name = "dialogueVo", description = "待添加的单条对话数据VO")
-                                          @RequestBody
-                                          DialogueVo dialogueVo) {
+    public Result<?> insertSingleDialogue(
+
+            @Parameter(name = "dialogueVo", description = "待添加的单条对话数据VO", required = true) @RequestBody DialogueVo dialogueVo
+
+    ) {
 
         Dialogue dialogue = new Dialogue();
         BeanUtils.copyProperties(dialogueVo, dialogue);
@@ -124,9 +130,11 @@ public class DialogueController {
     @SentinelResource("web-content-dialogue-controller")
     @Operation(description = "修改单条对话数据")
     @PutMapping("/update/single")
-    public Result<?> updateSingleDialogue(@Parameter(name = "dialogueVo", description = "待修改的单条对话数据VO")
-                                          @RequestBody
-                                          DialogueVo dialogueVo) {
+    public Result<?> updateSingleDialogue(
+
+            @Parameter(name = "dialogueVo", description = "待修改的单条对话数据VO", required = true) @RequestBody DialogueVo dialogueVo
+
+    ) {
 
         Dialogue dialogue = dialogueService.getById(dialogueVo.getId());
         BeanUtils.copyProperties(dialogueVo, dialogue);
@@ -157,9 +165,11 @@ public class DialogueController {
     @SentinelResource("web-content-dialogue-controller")
     @Operation(description = "删除单条对话数据")
     @DeleteMapping("/delete/single/{id}")
-    public Result<?> deleteSingleDialogue(@Parameter(name = "id", description = "待删除的单条对话ID", in = ParameterIn.PATH)
-                                          @PathVariable("id")
-                                          Long id) {
+    public Result<?> deleteSingleDialogue(
+
+            @Parameter(name = "id", description = "待删除的单条对话ID", in = ParameterIn.PATH, required = true) @PathVariable("id") Long id
+
+    ) {
 
         boolean isDeleted = dialogueService.removeById(id);
 
@@ -188,9 +198,9 @@ public class DialogueController {
     @DeleteMapping("/query/rank/page")
     public Result<List<Dialogue>> queryAnnouncementRankPage(
 
-            @Parameter(name = "offset", description = "查询的一页排行榜对话数据的起始偏移量") @RequestParam("offset") Long offset,
-            @Parameter(name = "limit", description = "查询的这一页排行榜对话数据的数量") @RequestParam("limit") Long limit,
-            @Parameter(name = "rankType", description = "排行榜的类型") @RequestParam("rankType") ContentRankType rankType
+            @Parameter(name = "offset", description = "查询的一页排行榜对话数据的起始偏移量", required = true) @RequestParam("offset") Long offset,
+            @Parameter(name = "limit", description = "查询的这一页排行榜对话数据的数量", required = true) @RequestParam("limit") Long limit,
+            @Parameter(name = "rankType", description = "排行榜的类型", required = true) @RequestParam("rankType") ContentRankType rankType
 
     ) {
 

@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
 /**
  * @author Lenovo/LiGuanda
@@ -32,6 +33,22 @@ public class WebConfiguration {
     public RestTemplate restTemplate() {
 
         return new RestTemplate();
+
+    }
+
+
+    /**
+     * @return 自定义的服务端端点暴露器
+     * @author Lenovo/LiGuanda
+     * @date 2024/6/23 PM 10:46:41
+     * @version 1.0.0
+     * @description 开启WebSocket功能所需实体
+     * @filename WebConfiguration.java
+     */
+    @Bean
+    public ServerEndpointExporter serverEndpointExporter() {
+
+        return new ServerEndpointExporter();
 
     }
 

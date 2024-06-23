@@ -43,7 +43,7 @@ public class RoleController {
     @Operation(description = "根据ID查询角色信息")
     @GetMapping("/query/{roleId}")
     public Result<Role> queryRoleById(
-            @Parameter(name = "roleId", description = "待查询的角色ID", in = ParameterIn.PATH)
+            @Parameter(name = "roleId", description = "待查询的角色ID", in = ParameterIn.PATH, required = true)
             @PathVariable("roleId")
             Long roleId) {
 
@@ -58,8 +58,12 @@ public class RoleController {
     @SentinelResource("web-content-user-role-controller")
     @Operation(description = "批量(分页)查询多条角色数据")
     @GetMapping("/query/page/{offset}/{limit}")
-    public Result<List<RoleVo>> queryPassagePage(@Parameter(name = "offset", description = "查询的一页角色数据的起始偏移量", in = ParameterIn.PATH) @PathVariable("offset") Long offset,
-                                                 @Parameter(name = "limit", description = "查询的这一页角色数据的数量", in = ParameterIn.PATH) @PathVariable("limit") Long limit) {
+    public Result<List<RoleVo>> queryPassagePage(
+
+            @Parameter(name = "offset", description = "查询的一页角色数据的起始偏移量", in = ParameterIn.PATH, required = true) @PathVariable("offset") Long offset,
+            @Parameter(name = "limit", description = "查询的这一页角色数据的数量", in = ParameterIn.PATH, required = true) @PathVariable("limit") Long limit
+
+    ) {
 
         Page<Role> rolePage = new Page<>(offset, limit);
         rolePage = roleService.page(rolePage);
@@ -95,7 +99,7 @@ public class RoleController {
     @Operation(description = "添加角色信息")
     @PostMapping("/insert")
     public Result<?> insertRole(
-            @Parameter(name = "role", description = "待添加的角色信息")
+            @Parameter(name = "role", description = "待添加的角色信息", required = true)
             @RequestBody
             Role role) {
 
@@ -113,7 +117,7 @@ public class RoleController {
     @Operation(description = "修改角色信息")
     @PutMapping("/update")
     public Result<?> updateRole(
-            @Parameter(name = "role", description = "待修改的角色信息")
+            @Parameter(name = "role", description = "待修改的角色信息", required = true)
             @RequestBody
             Role role) {
 
@@ -131,7 +135,7 @@ public class RoleController {
     @Operation(description = "删除角色信息")
     @DeleteMapping("/delete/{roleId}")
     public Result<?> deleteRole(
-            @Parameter(name = "roleId", description = "待删除的角色ID", in = ParameterIn.PATH)
+            @Parameter(name = "roleId", description = "待删除的角色ID", in = ParameterIn.PATH, required = true)
             @PathVariable("roleId")
             Long roleId) {
 

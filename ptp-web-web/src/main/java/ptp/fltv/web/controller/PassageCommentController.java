@@ -56,7 +56,7 @@ public class PassageCommentController {
     @Operation(description = "根据ID查询单条文章评论数据")
     @GetMapping("/query/single/{id}")
     public Result<PassageComment> querySinglePassageComment(
-            @Parameter(name = "id", description = "待查询的单条文章评论ID", in = ParameterIn.PATH)
+            @Parameter(name = "id", description = "待查询的单条文章评论ID", in = ParameterIn.PATH, required = true)
             @PathVariable("id")
             Long id) {
 
@@ -72,8 +72,8 @@ public class PassageCommentController {
     @Operation(description = "批量(分页)查询多条文章评论数据")
     @GetMapping("/query/page/{offset}/{limit}")
     public Result<List<PassageCommentVo>> queryPassageCommentPage(
-            @Parameter(name = "offset", description = "查询的一页文章评论数据的起始偏移量", in = ParameterIn.PATH) @PathVariable("offset") Long offset,
-            @Parameter(name = "limit", description = "查询的这一页文章评论数据的数量", in = ParameterIn.PATH) @PathVariable("limit") Long limit) {
+            @Parameter(name = "offset", description = "查询的一页文章评论数据的起始偏移量", in = ParameterIn.PATH, required = true) @PathVariable("offset") Long offset,
+            @Parameter(name = "limit", description = "查询的这一页文章评论数据的数量", in = ParameterIn.PATH, required = true) @PathVariable("limit") Long limit) {
 
         Page<PassageComment> passageCommentPage = new Page<>(offset, limit);
         passageCommentPage = passageCommentService.page(passageCommentPage);
@@ -97,7 +97,7 @@ public class PassageCommentController {
     @Operation(description = "添加单条文章评论数据")
     @PostMapping("/insert/single")
     public Result<?> insertSinglePassageComment(
-            @Parameter(name = "passageCommentVo", description = "待添加的单条文章评论数据VO")
+            @Parameter(name = "passageCommentVo", description = "待添加的单条文章评论数据VO", required = true)
             @RequestBody
             PassageCommentVo passageCommentVo) {
 
@@ -128,7 +128,7 @@ public class PassageCommentController {
     @Operation(description = "修改单条文章评论数据")
     @PutMapping("/update/single")
     public Result<?> updateSinglePassageComment(
-            @Parameter(name = "passageCommentVo", description = "待修改的单条文章评论数据VO")
+            @Parameter(name = "passageCommentVo", description = "待修改的单条文章评论数据VO", required = true)
             @RequestBody
             PassageCommentVo passageCommentVo) {
 
@@ -164,7 +164,7 @@ public class PassageCommentController {
     @Operation(description = "删除单条文章评论数据")
     @DeleteMapping("/delete/single/{id}")
     public Result<?> deleteSinglePassageComment(
-            @Parameter(name = "id", description = "待删除的单条文章评论ID", in = ParameterIn.PATH)
+            @Parameter(name = "id", description = "待删除的单条文章评论ID", in = ParameterIn.PATH, required = true)
             @PathVariable("id")
             Long id) {
 
@@ -195,9 +195,9 @@ public class PassageCommentController {
     @DeleteMapping("/query/rank/page")
     public Result<List<PassageComment>> queryAnnouncementRankPage(
 
-            @Parameter(name = "offset", description = "查询的一页排行榜文章评论数据的起始偏移量") @RequestParam("offset") Long offset,
-            @Parameter(name = "limit", description = "查询的这一页排行榜文章评论数据的数量") @RequestParam("limit") Long limit,
-            @Parameter(name = "rankType", description = "排行榜的类型") @RequestParam("rankType") ContentRankType rankType
+            @Parameter(name = "offset", description = "查询的一页排行榜文章评论数据的起始偏移量", required = true) @RequestParam("offset") Long offset,
+            @Parameter(name = "limit", description = "查询的这一页排行榜文章评论数据的数量", required = true) @RequestParam("limit") Long limit,
+            @Parameter(name = "rankType", description = "排行榜的类型", required = true) @RequestParam("rankType") ContentRankType rankType
 
     ) {
 

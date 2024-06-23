@@ -55,7 +55,7 @@ public class UserController {
     @GetMapping("/query/{userId}")
     public Result<User> queryUserById(
 
-            @Parameter(name = "userId", description = "待查询的用户ID", in = ParameterIn.PATH) @PathVariable("userId") Long userId
+            @Parameter(name = "userId", description = "待查询的用户ID", in = ParameterIn.PATH, required = true) @PathVariable("userId") Long userId
 
     ) {
 
@@ -72,8 +72,8 @@ public class UserController {
     @GetMapping("/query/page/{offset}/{limit}")
     public Result<List<UserVo>> queryPassagePage(
 
-            @Parameter(name = "offset", description = "查询的一页用户数据的起始偏移量", in = ParameterIn.PATH) @PathVariable("offset") Long offset,
-            @Parameter(name = "limit", description = "查询的这一页用户数据的数量", in = ParameterIn.PATH) @PathVariable("limit") Long limit
+            @Parameter(name = "offset", description = "查询的一页用户数据的起始偏移量", in = ParameterIn.PATH, required = true) @PathVariable("offset") Long offset,
+            @Parameter(name = "limit", description = "查询的这一页用户数据的数量", in = ParameterIn.PATH, required = true) @PathVariable("limit") Long limit
 
     ) {
 
@@ -112,7 +112,7 @@ public class UserController {
     @PostMapping("/insert")
     public Result<?> insertUser(
 
-            @Parameter(name = "user", description = "待添加的用户信息") @RequestBody User user
+            @Parameter(name = "user", description = "待添加的用户信息", required = true) @RequestBody User user
 
     ) {
 
@@ -145,7 +145,7 @@ public class UserController {
     @PutMapping("/update")
     public Result<?> updateUser(
 
-            @Parameter(name = "user", description = "待修改的用户信息") @RequestBody User user
+            @Parameter(name = "user", description = "待修改的用户信息", required = true) @RequestBody User user
 
     ) {
 
@@ -174,7 +174,7 @@ public class UserController {
     @DeleteMapping("/delete/{userId}")
     public Result<?> deleteUser(
 
-            @Parameter(name = "userId", description = "当前用户ID", in = ParameterIn.PATH) @PathVariable("userId") Long userId
+            @Parameter(name = "userId", description = "当前用户ID", in = ParameterIn.PATH, required = true) @PathVariable("userId") Long userId
 
     ) {
 
@@ -205,7 +205,7 @@ public class UserController {
     @PostMapping("/refresh/geolocation/{userId}")
     public Result<Map<String, Object>> refreshGeolocation(
 
-            @Parameter(name = "userId", description = "当前用户ID", in = ParameterIn.PATH) @PathVariable("userId") Long userId,
+            @Parameter(name = "userId", description = "当前用户ID", in = ParameterIn.PATH, required = true) @PathVariable("userId") Long userId,
             @RequestBody AddressInfo addressInfo
 
     ) {
@@ -236,9 +236,9 @@ public class UserController {
     @PostMapping("/query/nearby")
     public Result<Map<Integer, List<User>>> findPeopleNearby(
 
-            @Parameter(name = "userId", description = "当前的用户ID") @RequestParam("userId") Long userId,
-            @Parameter(name = "radius", description = "所要查询的半径范围(单位 : km)") @RequestParam("radius") Double radius,
-            @Parameter(name = "limit", description = "所要查询的指定半径范围内的附近的人的最大人数") @RequestParam("limit") Long limit,
+            @Parameter(name = "userId", description = "当前的用户ID", required = true) @RequestParam("userId") Long userId,
+            @Parameter(name = "radius", description = "所要查询的半径范围(单位 : km)", required = true) @RequestParam("radius") Double radius,
+            @Parameter(name = "limit", description = "所要查询的指定半径范围内的附近的人的最大人数", required = true) @RequestParam("limit") Long limit,
             @RequestBody AddressInfo addressInfo
 
     ) {
