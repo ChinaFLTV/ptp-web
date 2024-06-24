@@ -56,7 +56,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public Result<String> handleException(Exception ex) {
 
-        log.error("[{}] : {} occurred : {}", "ptp-web-service-id", "Exception", ex.getCause() == null ? ex.getLocalizedMessage() : ex.getCause().getMessage());
+        log.error("[{}] : {} occurred : {}", "ptp-web-service-id", ex.getClass().getName(), ex.getCause() == null ? ex.getLocalizedMessage() : ex.getCause().getMessage());
         return Result.failure(ex.getCause() == null ? ex.getLocalizedMessage() : ex.getCause().getMessage());
 
     }

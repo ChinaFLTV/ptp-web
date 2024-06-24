@@ -4,6 +4,7 @@ import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.security.PermitAll;
+import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import pfp.fltv.common.annotation.LogRecord;
@@ -37,7 +38,7 @@ public class LoginController {
     @Operation(description = "普通登录(用户名+密码)")
     @PermitAll
     @PostMapping("/login")
-    public Result<?> login(@RequestBody UserLoginVo userLoginVo) throws PtpException {
+    public Result<?> login(@RequestBody UserLoginVo userLoginVo, HttpSession httpSession) throws PtpException {
 
         // 2024-4-7  22:26-登录前，客户端一侧一定要将本地的登录数据清理干净
 

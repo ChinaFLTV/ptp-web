@@ -255,6 +255,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
             if (peopleNearby != null) {
 
+                peopleNearby.setPassword(null);
+                peopleNearby.setPhone(null);
+                peopleNearby.setEmail(null);
+                peopleNearby.setRealname(null);
+                peopleNearby.setIdiograph(null);
+                peopleNearby.setBackground(null);
+                peopleNearby.setLikeNum(null);
+                peopleNearby.setBirthDate(null);
+                peopleNearby.setAddressInfoId(null);
+                peopleNearby.setBindAccounts(null);
+                peopleNearby.setRoleId(null);
+                peopleNearby.setAssetId(null);
+                peopleNearby.setCreateTime(null);
+                peopleNearby.setUpdateTime(null);
+                peopleNearby.setIsDeleted(null);
+                peopleNearby.setVersion(null);
+
                 // 2024-6-22  23:22-不要为了节约内存空间而把extension单独抽离到 forEach 外面!!!这样会使得全部的User最终都引用到了同一个最后一个User更新后的meta映射!!!
                 Map<String, Object> extension = new HashMap<>();
                 extension.put("distance", response.getDistance());

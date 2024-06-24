@@ -15,6 +15,7 @@ import pfp.fltv.common.model.po.info.AddressInfo;
 import pfp.fltv.common.model.po.manage.User;
 import pfp.fltv.common.model.vo.UserVo;
 import pfp.fltv.common.response.Result;
+import pfp.fltv.common.utils.ReflectUtils;
 import ptp.fltv.web.constants.WebConstants;
 import ptp.fltv.web.service.UserService;
 
@@ -213,9 +214,12 @@ public class UserController {
         User refreshedUser = userService.refreshGeolocation(userId, addressInfo);
 
         Map<String, Object> map = new HashMap<>();
-        map.put("refreshed-user", refreshedUser);
 
         if (refreshedUser != null) {
+
+            // 2024-6-24  17:01-将无数据的字段去除 , 以降低通信数据大小
+            Map<String, Object> strippedUserMap = ReflectUtils.bean2Map(refreshedUser, false);
+            map.put("refreshed-user", strippedUserMap);
 
             map.put("msg", "成功更新用户当前的地理位置信息");
             return Result.success(map);
@@ -234,7 +238,7 @@ public class UserController {
     @SentinelResource("web-content-user-controller")
     @Operation(description = "更新用户当前的地理位置信息")
     @PostMapping("/query/nearby")
-    public Result<Map<Integer, List<User>>> findPeopleNearby(
+    public Result<Map<Integer, List<Map<String, Object>>>> findPeopleNearby(
 
             @Parameter(name = "userId", description = "当前的用户ID", required = true) @RequestParam("userId") Long userId,
             @Parameter(name = "radius", description = "所要查询的半径范围(单位 : km)", required = true) @RequestParam("radius") Double radius,
@@ -243,7 +247,28 @@ public class UserController {
 
     ) {
 
-        return Result.success(userService.findPeopleNearby(userId, addressInfo.getLongitude(), addressInfo.getLatitude(), radius, limit));
+        Map<Integer, List<User>> peoplesNearby = userService.findPeopleNearby(userId, addressInfo.getLongitude(), addressInfo.getLatitude(), radius, limit);
+
+        // 2024-6-24  17:12-给拉取到的 附近的人 数据瘦瘦身 , 移除掉没有意义的数据字段 , 降低通信数据体积
+        Map<Integer, List<Map<String, Object>>> strippedPeoplesNearby = new HashMap<>();
+
+        for (Map.Entry<Integer, List<User>> entry : peoplesNearby.entrySet()) {
+
+            Integer estimatedDistance = entry.getKey();
+            List<User> subPeoplesNearby = entry.getValue();
+
+            strippedPeoplesNearby.put(estimatedDistance, new ArrayList<>());
+
+            for (User user : subPeoplesNearby) {
+
+                Map<String, Object> strippedUser = ReflectUtils.bean2Map(user, false);
+                strippedPeoplesNearby.get(estimatedDistance).add(strippedUser);
+
+            }
+
+        }
+
+        return Result.success(strippedPeoplesNearby);
 
     }
 

@@ -5,7 +5,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.web.socket.config.annotation.EnableWebSocket;
 
 /**
  * @author Lenovo/LiGuanda
@@ -14,7 +13,7 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
  * @filename MainApplication.java
  */
 
-@EnableWebSocket // 2024-6-23  22:46-开启WebSocket功能
+// @EnableWebSocket // 2024-6-23  22:46-开启WebSocket功能
 // @EnableAspectJAutoProxy(proxyTargetClass = true)// 2024-6-10  00:01-开启对AspectJ的支持，以实现自定义的AOP切面
 @EnableDiscoveryClient // 2024-4-27  20:52-开启nacos服务注册发现功能
 @ComponentScan(basePackages = "ptp.fltv")

@@ -5,19 +5,18 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
 /**
  * @author Lenovo/LiGuanda
  * @version 1.0.0
  * @date 2024/4/28 PM 8:46:58
  * @description Web的个性化配置类
- * @filename WebConfiguration.java
+ * @filename WebConfig.java
  */
 
 @EnableAspectJAutoProxy(exposeProxy = true)// 2024-5-23  22:55-使用 AopContext.currentProxy() 解决类内方法调用引发的事务失效问题 所需配置
 @Configuration
-public class WebConfiguration {
+public class WebConfig {
 
 
     /**
@@ -26,29 +25,13 @@ public class WebConfiguration {
      * @date 2024/4/28 PM 8:47:46
      * @version 1.0.0
      * @description 用于以负载均衡的方式请求服务提供者的服务(nacos建议配置)
-     * @filename WebConfiguration.java
+     * @filename WebConfig.java
      */
     @LoadBalanced
     @Bean
     public RestTemplate restTemplate() {
 
         return new RestTemplate();
-
-    }
-
-
-    /**
-     * @return 自定义的服务端端点暴露器
-     * @author Lenovo/LiGuanda
-     * @date 2024/6/23 PM 10:46:41
-     * @version 1.0.0
-     * @description 开启WebSocket功能所需实体
-     * @filename WebConfiguration.java
-     */
-    @Bean
-    public ServerEndpointExporter serverEndpointExporter() {
-
-        return new ServerEndpointExporter();
 
     }
 

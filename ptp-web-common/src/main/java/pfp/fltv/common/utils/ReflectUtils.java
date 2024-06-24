@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -159,6 +160,79 @@ public class ReflectUtils {
             return null;
 
         }
+
+    }
+
+
+    /**
+     * @param obj                   原类实例
+     * @param isRetainNullableField 是否保留字段值为null的字段
+     * @return 转换后的Map
+     * @author Lenovo/LiGuanda
+     * @date 2024/6/24 PM 3:45:58
+     * @version 1.0.0
+     * @description 将类实例转换为Map(该方法不能去除未手动赋值而自动采用默认值的字段, 如果你想去除这种字段, 你需要提前将其手动置为null)
+     * @filename ReflectUtils.java
+     */
+    public static Map<String, Object> bean2Map(@Nonnull Object obj, @Nonnull Boolean isRetainNullableField) {
+
+        Map<String, Object> result = new HashMap<>();
+
+        Class<?> clazz = obj.getClass();
+
+        Field[] fields = clazz.getDeclaredFields();
+        for (Field field : fields) {
+
+            try {
+
+                field.setAccessible(true);
+                Object fieldValue = field.get(obj);
+                Class<?> valueClazz;
+
+                // 2024-6-24  16:44-copy from toJSONObjectForcibly方法 , 嘿嘿
+                // 2024-6-24  16:45-对属性字段类型进行检测,分情况处理
+                if (fieldValue == null) {
+
+                    // 2024-6-24  16:48-根据用户选择来决定要不要存储字段值为null的字段
+                    if (isRetainNullableField) {
+
+                        // 2024-6-24  16:45-如果该属性无效，则填充空值
+                        result.put(field.getName(), null);
+
+                    }
+
+                } else if ("java.base".equalsIgnoreCase((valueClazz = fieldValue.getClass()).getModule().getName())) {
+
+                    // 2024-6-24  16:45-如果是系统类(Java 9)，则直接添加为一级属性
+                    result.put(field.getName(), fieldValue);
+
+                } else if (Set.of(valueClazz.getInterfaces()).contains(Serializable.class)) {
+
+                    // 2024-6-24  16:45-如果该属性可序列化，同样的直接添加为一级属性
+                    result.put(field.getName(), fieldValue);
+
+                } else if (valueClazz.isEnum()) {
+
+                    // 2024-6-24  16:45-如果字段值是枚举类型，则直接返回其字面值
+                    result.put(field.getName(), fieldValue);
+
+                } else {
+
+                    // 2024-6-24  16:45-如果字段值是接口类型，由于接口可能存在公共类型的静态常量，因此还需要递归遍历获取(这种情况下的字段遍历是安全的)
+                    // 2024-6-24  16:45-如果属性是不可序列化类，此时直接添加返回会丢失对象的全部属性，因此需要递归处理
+                    result.put(field.getName(), bean2Map(fieldValue, isRetainNullableField));
+
+                }
+
+            } catch (Exception ignore) {
+
+                // 2024-6-24  16:22-本轮字段获取失败就跳过
+
+            }
+
+        }
+
+        return result;
 
     }
 

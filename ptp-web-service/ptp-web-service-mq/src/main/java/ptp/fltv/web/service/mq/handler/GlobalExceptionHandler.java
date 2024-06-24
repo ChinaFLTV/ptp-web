@@ -78,7 +78,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public Result<String> handleException(Exception ex) {
 
-        log.error("[{}] : {} occurred : {}", "ptp-web-web", "Exception", ex.getCause() == null ? ex.getLocalizedMessage() : ex.getCause().getMessage());
+        log.error("[{}] : {} occurred : {}", "ptp-web-web", ex.getClass().getName(), ex.getCause() == null ? ex.getLocalizedMessage() : ex.getCause().getMessage());
         Tracer.trace(ex);// 2024-5-17  20:31-上报异常信息到Sentinel
 
         return Result.failure(ex.getCause() == null ? ex.getLocalizedMessage() : ex.getCause().getMessage());
