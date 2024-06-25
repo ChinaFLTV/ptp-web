@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.redisson.api.RLock;
@@ -189,13 +188,14 @@ public class CommodityController {
 
             @Parameter(name = "id", description = "待秒杀的单个商品ID", required = true) @RequestParam("id") Long id,
             @Parameter(name = "count", description = "待秒杀的单个商品的数量", required = true) @RequestParam("count") Integer count,
-            HttpServletRequest request
+            @Parameter(name = "uid", description = "参与秒杀活动的用户ID", required = true) @RequestHeader("uid") Long uid,
+            @Parameter(name = "X-Forward-For", description = "客户端的原始IP地址") @RequestHeader(name = "X-Forward-For", required = false) String xForwardFor,
+            @Parameter(name = "userAgent", description = "发出请求的客户端应用程序、操作系统、设备类型及其版本信息") @RequestHeader(HttpHeaders.USER_AGENT) String userAgent
 
     ) throws InterruptedException {
 
         // 2024-6-7  23:26-在获取锁之前提前校验显式信息，以避免获取到锁之后信息缺少无效的尴尬情况
-        long uid = Long.parseLong(request.getHeader("uid") == null ? "-1" : request.getHeader("uid"));
-        if (uid < 0) {
+        if (uid == null || uid < 0) {
 
             throw new PtpException(809, "请求头部参数缺少UID");
 
@@ -274,8 +274,8 @@ public class CommodityController {
                     msg.put("commodity-id", id);
                     msg.put("count", 0);// 2024-6-12  22:17-这里我们相当于进行一个无意义的空操作，目的只有一个—————不秒杀但补货
                     msg.put("replenishment-quantity", newAddStockQuantity);
-                    msg.put("user-ip", request.getHeader("X-Forward-For"));
-                    msg.put("user-agent", request.getHeader(HttpHeaders.USER_AGENT));
+                    msg.put("user-ip", xForwardFor);
+                    msg.put("user-agent", userAgent);
                     msg.put("order-type", "replenishment-order");
                     msg.put("remark", "This is not a real order from the user , but a fake order created out of thin air in order to replenish the stock .");
 
@@ -300,8 +300,8 @@ public class CommodityController {
             msg.put("user-id", uid);
             msg.put("commodity-id", id);
             msg.put("count", count);
-            msg.put("user-ip", request.getHeader("X-Forward-For"));
-            msg.put("user-agent", request.getHeader(HttpHeaders.USER_AGENT));
+            msg.put("user-ip", xForwardFor);
+            msg.put("user-agent", userAgent);
 
             commodityMqService.asyncSendOrderAddMsg("commodity-seckill-topic", msg, null, null);
 
@@ -328,12 +328,13 @@ public class CommodityController {
 
             @Parameter(name = "id", description = "待补货的单个商品ID", required = true) @RequestParam("id") Long id,
             @Parameter(name = "count", description = "待补货的单个商品的数量", required = true) @RequestParam("count") Integer count,
-            HttpServletRequest request
+            @Parameter(name = "uid", description = "参与秒杀活动的用户ID", required = true) @RequestHeader("uid") Long uid,
+            @Parameter(name = "X-Forward-For", description = "客户端的原始IP地址") @RequestHeader(name = "X-Forward-For", required = false) String xForwardFor,
+            @Parameter(name = "userAgent", description = "发出请求的客户端应用程序、操作系统、设备类型及其版本信息") @RequestHeader(HttpHeaders.USER_AGENT) String userAgent
 
     ) {
 
-        long uid = Long.parseLong(request.getHeader("uid") == null ? "-1" : request.getHeader("uid"));
-        if (uid < 0) {
+        if (uid == null || uid < 0) {
 
             throw new PtpException(809, "请求头部参数缺少UID");
 
@@ -351,8 +352,8 @@ public class CommodityController {
         msg.put("user-id", uid);
         msg.put("commodity-id", id);
         msg.put("count", count);
-        msg.put("user-ip", request.getHeader("X-Forward-For"));
-        msg.put("user-agent", request.getHeader(HttpHeaders.USER_AGENT));
+        msg.put("user-ip", xForwardFor);
+        msg.put("user-agent", userAgent);
         commodityMqService.asyncSendOrderAddMsg("commodity-replenish-topic", msg, null, null);
 
         Map<String, Object> resMap = new HashMap<>();

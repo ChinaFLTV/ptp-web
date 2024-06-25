@@ -94,12 +94,13 @@
     </root>
 
 
-    <logger name="ptp.fltv.web" level="INFO" additivity="false">
+    <!-- 2024-6-25  10:54-如果暂时不需要将日志数据推送到ELK平台上 , 那就将下面的配置注释掉 -->
+    <!--<logger name="ptp.fltv.web" level="INFO" additivity="false">
 
         <appender-ref ref="console"/>
         <appender-ref ref="logstash"/>
 
-    </logger>
+    </logger>-->
 
 
 </configuration>

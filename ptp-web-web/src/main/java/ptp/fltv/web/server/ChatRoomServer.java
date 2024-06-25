@@ -9,13 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 import pfp.fltv.common.model.po.manage.User;
+import pfp.fltv.common.model.po.ws.GroupChatMessage;
 import ptp.fltv.web.config.WebSocketEndpointConfig;
 import ptp.fltv.web.service.ChatRoomService;
 import ptp.fltv.web.service.UserService;
-import ptp.fltv.web.ws.GroupChatMessage;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.Map;
 
 /**
@@ -72,17 +71,23 @@ public class ChatRoomServer {
         user = userService.getById(userId);
         roomId = Long.parseLong(params.get("roomId"));
 
-        boolean isJoinSuccessfully = chatRoomService.addSessionToChatRoom(roomId, session);
+        boolean isJoinSuccessfully = chatRoomService.joinChatRoom(roomId, userId, session);
         GroupChatMessage groupChatMessage;
 
         if (isJoinSuccessfully) {
 
-            groupChatMessage = new GroupChatMessage(true, String.format("欢迎用户 %s 加入到当前聊天室[%d]中来!", user.getNickname(), roomId), LocalDateTime.now());
+            groupChatMessage = GroupChatMessage.builder()
+                    .isSystem(true)
+                    .msg(String.format("欢迎用户 %s 加入到当前聊天室[%d]中来!", user.getNickname(), roomId))
+                    .build();
             log.info("用户 {} (USER ID = {}) 加入到当前聊天房(ROOM ID = {})", user.getNickname(), userId, roomId);
 
         } else {
 
-            groupChatMessage = new GroupChatMessage(true, String.format("欢迎用户 %s 加入到聊天室[%d]失败", user.getNickname(), roomId), LocalDateTime.now());
+            groupChatMessage = GroupChatMessage.builder()
+                    .isSystem(true)
+                    .msg(String.format("欢迎用户 %s 加入到聊天室[%d]失败", user.getNickname(), roomId))
+                    .build();
             log.warn("用户 {} (USER ID = {}) 加入到当前聊天房失败(ROOM ID = {})", user.getNickname(), userId, roomId);
 
         }
@@ -96,10 +101,13 @@ public class ChatRoomServer {
     public void onSessionClose(Session session) throws IOException {
 
         log.info("用户 {} (USER ID = {}) 退出了当前聊天房(ROOM ID = {})", user.getNickname(), user.getId(), roomId);
-        chatRoomService.removeSession(roomId, this.session);
+        chatRoomService.leaveChatRoom(roomId, user.getId(), this.session);
 
         // 2024-66-24  23:16-发送用户退出群聊的全房间广播消息
-        GroupChatMessage groupChatMessage = new GroupChatMessage(true, String.format("用户 %s 已退出当前聊天室[%d]", user.getNickname(), roomId), LocalDateTime.now());
+        GroupChatMessage groupChatMessage = GroupChatMessage.builder()
+                .isSystem(true)
+                .msg(String.format("用户 %s 已退出当前聊天室[%d]", user.getNickname(), roomId))
+                .build();
         chatRoomService.sendGroupChatMsg(roomId, user, groupChatMessage);
 
         // 2024-6-24  22:47-加速GC , 毕竟每建立一次WS连接就要new一个ChatRoomServer实例
@@ -113,7 +121,7 @@ public class ChatRoomServer {
     // @LogRecord(description = "接收到聊天室的某个会话发来的消息")
     // @SentinelResource("web-content-user-char-room-controller")
     @OnMessage
-    public void onReceiveMessage(String msg) {
+    public void onReceiveMessage(String msg) throws IOException {
 
         try {
 
@@ -122,6 +130,11 @@ public class ChatRoomServer {
 
         } catch (Exception ex) {
 
+            GroupChatMessage groupChatMessage = GroupChatMessage.builder()
+                    .isSystem(true)
+                    .msg(String.format("当前客户端[%s]本次发送消息异常 : %s", session.getId(), ex.getCause() == null ? ex.getLocalizedMessage() : ex.getCause().getMessage()))
+                    .build();
+            boolean isSendSuccessfully = chatRoomService.sendPrivateChatMsg(roomId, user.getId(), groupChatMessage);
             // 2024-6-24  23:58-客户端封装的消息格式不规范则静默本次消息的发送 , 避免因本次操作失误而使整个会话异常断连
             log.error("用户客户端 {} (USER ID = {}) 在聊天房(ROOM ID = {}) 发送的消息在解析时出现异常 : {}", user.getNickname(), user.getId(), roomId, ex.getCause() == null ? ex.getLocalizedMessage() : ex.getCause().getMessage());
 
