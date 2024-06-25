@@ -487,6 +487,95 @@ services:
       - mysql
 
 
+  # 2024-6-25  21:25-安装skywalking的OAP服务器
+  skywalking-oap:
+    container_name: ptp-backend-skywalking-oap-1
+    labels:
+      name: ptp-backend-skywalking-oap-1
+      author: LiGuanda
+      description: "skywalking的OAP服务器端"
+    image: apache/skywalking-oap-server:${SKYWALKING_OAP_VERSION}
+    env_file:
+      - .env
+    dns: 8.8.8.8
+    hostname: ptp-backend-skywalking-oap-1
+    extra_hosts:
+      - exthost:${EXTERNAL_LOCALHOST}
+    networks:
+      ptp-network:
+        ipv4_address: ${SKYWALKING_OAP_LOCALHOST}
+    ports:
+      - "11800:11800"
+      - "12800:12800"
+    expose:
+      - 11800
+      - 12800
+    volumes:
+      - "./volumes/skywalking/oap/config:/skywalking/config:rw" # 2024-6-25  22:05-如果您打算覆盖或添加 /skywalking/config 配置文件， /skywalking/ext-config 则 是放置额外文件的位置。同名文件将被覆盖;否则，它们将被添加到 /skywalking/config
+      - "./volumes/skywalking/oap/ext-config:/skywalking/ext-config:rw"
+      - "./volumes/skywalking/oap/ext-libs:/skywalking/ext-libs:rw" # 2024-6-25  22:06-如果要在 OAP 的类路径中添加更多 libs/jar，例如，OAL 的新指标。这些 jar 可以挂载到 /skywalking/ext-libs ，然后 entrypoint bash 会将它们附加到类路径中。请注意，您不能覆盖类路径中的现有 jar
+    environment:
+      SW_STORAGE: elasticsearch # 指定存储方式
+      SW_STORAGE_ES_CLUSTER_NODES: exthost:9200 # 指定存储的地址
+      SW_HEALTH_CHECKER: default
+      SW_TELEMETRY: prometheus
+      TZ: Asia/Shanghai
+    # 监控检查
+    # healthcheck:
+      # test: [ "CMD-SHELL", "/skywalking/bin/swctl ch" ]
+      # 每间隔30秒执行一次
+      # interval: 30s
+      # 健康检查命令运行超时时间，如果超过这个时间，本次健康检查就被视为失败；
+      # timeout: 10s
+      # 当连续失败指定次数后，则将容器状态视为 unhealthy，默认 3 次。
+      # retries: 3
+      # 应用的启动的初始化时间，在启动过程中的健康检查失效不会计入，默认 0 秒。
+      start_period: 10s
+    restart: on-failure
+    logging:
+      driver: json-file
+      options:
+        max-size: 256k
+        max-file: 64
+    depends_on:
+      - elasticsearch
+
+
+  # 2024-6-25  21:38-安装skywalking的管理控制台
+  skywalking-ui:
+    container_name: ptp-backend-skywalking-ui-1
+    labels:
+      name: ptp-backend-skywalking-ui-1
+      author: LiGuanda
+      description: "skywalking的后端管理控制台"
+    image: apache/skywalking-ui:${SKYWALKING_UI_VERSION}
+    env_file:
+      - .env
+    dns: 8.8.8.8
+    hostname: ptp-backend-skywalking-ui-1
+    extra_hosts:
+      - exthost:${EXTERNAL_LOCALHOST}
+    networks:
+      ptp-network:
+        ipv4_address: ${SKYWALKING_UI_LOCALHOST}
+    ports:
+      - "8480:8080"
+    expose:
+      - 8080
+    environment:
+      SW_OAP_ADDRESS: http://exthost:12800
+      TZ: Asia/Shanghai
+    restart: on-failure
+    logging:
+      driver: json-file
+      options:
+        max-size: 256k
+        max-file: 64
+    depends_on:
+      - skywalking-oap
+        # condition: service_healthy
+
+
 # 2024-4-10  15:28-新建一个自定义网络，将全部容器部署到同一个网络内，使其之间能够相互连通
 networks:
   ptp-network:

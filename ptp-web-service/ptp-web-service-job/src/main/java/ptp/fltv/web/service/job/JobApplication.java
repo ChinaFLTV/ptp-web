@@ -9,17 +9,17 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  * @version 1.0.0
  * @date 2024/5/19 PM 9:17:36
  * @description PTP任务服务的主启动类
- * @filename PtpWebServiceJobApplication.java
+ * @filename JobApplication.java
  */
 
 @EnableDiscoveryClient // 2024-5-19  21:17-开启nacos服务注册发现功能
 @SpringBootApplication
-public class PtpWebServiceJobApplication {
+public class JobApplication {
 
 
     public static void main(String[] args) {
 
-        SpringApplication.run(PtpWebServiceJobApplication.class, args);
+        SpringApplication.run(JobApplication.class, args);
 
     }
 

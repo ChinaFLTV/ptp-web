@@ -96,6 +96,7 @@
         <logstash.logback.encoder.version>7.4</logstash.logback.encoder.version>
         <xxl-job.version>2.4.1</xxl-job.version>
         <jedis.version>5.2.0-beta3</jedis.version>
+        <skywalking.version>9.2.0</skywalking.version>
 
     </properties>
 
@@ -243,6 +244,12 @@
                 <groupId>redis.clients</groupId>
                 <artifactId>jedis</artifactId>
                 <version>${jedis.version}</version>
+            </dependency>
+            <!--  2024-6-25  22:12-集成skywalking微服务监控平台所需依赖  -->
+            <dependency>
+                <groupId>org.apache.skywalking</groupId>
+                <artifactId>apm-toolkit-logback-1.x</artifactId>
+                <version>${skywalking.version}</version>
             </dependency>
 
         </dependencies>

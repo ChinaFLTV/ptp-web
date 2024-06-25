@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+    <configuration default="false" name="ptp-web-service-gateway" type="SpringBootApplicationConfigurationType"
+                   factoryName="Spring Boot">
+        <module name="ptp-web-service-gateway"/>
+        <option name="SPRING_BOOT_MAIN_CLASS" value="ptp.fltv.web.service.gateway.GatewayApplication"/>
+        <!--  2024-6-25  23:50-请在Run Configuration窗口的 VM options选项中修改下面的skywalking-agent.jar所在路径为你本地的路径  -->
+        <option name="VM_PARAMETERS"
+                value="-javaagent:&quot;D:\Programming-Tools\apache-skywalking-java-agent-9.2.0\skywalking-agent\skywalking-agent.jar&quot; -Dskywalking.agent.service_name=ptp-web-service-gateway -Dskywalking.collector.backend_service=127.0.0.1:11800"/>
+        <method v="2">
+            <option name="Make" enabled="true"/>
+        </method>
+    </configuration>
+</component>

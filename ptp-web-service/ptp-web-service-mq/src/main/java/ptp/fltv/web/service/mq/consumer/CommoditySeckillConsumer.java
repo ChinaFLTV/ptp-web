@@ -1,6 +1,5 @@
 package ptp.fltv.web.service.mq.consumer;
 
-import com.alibaba.fastjson2.JSON;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
@@ -101,7 +100,15 @@ public class CommoditySeckillConsumer implements RocketMQListener<HashMap<String
             Map<String, Object> meta = new HashMap<>();
             meta.put("order-type", orderType);
 
-            TransactionRecord record = new TransactionRecord().setUid(userId.longValue()).setCommodityId(modifiedCommodity.getId()).setCount(count).setTotalPrice(count * modifiedCommodity.getPrice()).setPaymentMode("Wechat").setTags(modifiedCommodity.getTags()).setCategory(List.of("commodity", "seckill")).setMeta(JSON.toJSONString(meta)).setRemark(remark);
+            TransactionRecord record = new TransactionRecord()
+                    .setUid(userId.longValue())
+                    .setCommodityId(modifiedCommodity.getId())
+                    .setCount(count)
+                    .setTotalPrice(count * modifiedCommodity.getPrice())
+                    .setPaymentMode("Wechat")
+                    .setTags(modifiedCommodity.getTags())
+                    .setCategory(List.of("commodity", "seckill"))
+                    .setMeta(meta).setRemark(remark);
 
             boolean isSaveRecordSuccessfully = transactionRecordService.save(record);
             mysqlResult.put("is_saved_record", isSaveRecordSuccessfully);
