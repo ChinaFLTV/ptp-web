@@ -11,6 +11,7 @@ import ptp.fltv.web.service.ChatRoomService;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Lenovo/LiGuanda
@@ -24,8 +25,8 @@ import java.util.Map;
 public class ChatRoomServiceImpl implements ChatRoomService {
 
 
-    private static final Map<Long, Map<String, Session>> chatRoom2SessionsMap = new HashMap<>(); // 2024-6-23  23:46-存储房间号以及其当前持有的SESSION的映射 : roomId -> sessionId --> session
-    private static final Map<Long, Map<Long, String>> chatRoom2SessionIdsMap = new HashMap<>(); // 2024-6-25  9:11-存储用户ID与会话ID的映射 , 方便后续根据用户ID查找对应的会话 : roomId -> userId --> sessionId
+    private static final Map<Long, Map<String, Session>> chatRoom2SessionsMap = new ConcurrentHashMap<>(); // 2024-6-23  23:46-存储房间号以及其当前持有的SESSION的映射 : roomId -> sessionId --> session
+    private static final Map<Long, Map<Long, String>> chatRoom2SessionIdsMap = new ConcurrentHashMap<>(); // 2024-6-25  9:11-存储用户ID与会话ID的映射 , 方便后续根据用户ID查找对应的会话 : roomId -> userId --> sessionId
 
 
     @Override
