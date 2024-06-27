@@ -1,0 +1,78 @@
+server:
+  port: 7091
+
+
+spring:
+  application:
+    name: seata-server
+
+
+logging:
+  config: classpath:logback-spring.xml
+  file:
+    path: ${log.home:${user.home}/logs/seata}
+
+
+console:
+  user:
+    username: seata
+    password: seata
+seata:
+  config:
+    # support: nacos, consul, apollo, zk, etcd3
+    type: file
+    # 2024-6-27  22:41-将seata服务端注册到nacos配置中心上去
+    nacos:
+      server-addr: exthost:8848
+      group: 'SEATA_GROUP'
+      namespace: ''
+      # username: 'nacos'
+      # password: 'nacos'
+  registry:
+    # support: nacos, eureka, redis, zk, consul, etcd3, sofa
+    type: file
+    # 2024-6-27  22:36-将seata服务端注册到nacos注册中心上去
+    nacos:
+      server-addr: exthost:8848
+      namespace:
+      group: SEATA_GROUP
+      context-path:
+      ##1.The following configuration is for the open source version of Nacos
+      username:
+      password:
+      ##2.The following configuration is for the MSE Nacos on aliyun
+      #access-key:
+      #secret-key:
+      ##3.The following configuration is used to deploy on Aliyun ECS or ACK without authentication
+      #ram-role-name:
+      # data-id: seataServer.properties
+  store:
+    # support: file 、 db 、 redis 、 raft
+    mode: db
+  #  server:
+  #    service-port: 8091 #If not configured, the default is '${server.port} + 1000'
+    # 2024-6-27  22:37-详细配置各种存储类型的参数
+    session:
+      mode: db # 2024-6-27  23:06-事务锁信息存储方式
+    lock:
+      mode: db # 2024-6-27  23:06-事务回话信息存储方式
+    db:
+      datasource: druid
+      db-type: mysql
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://exthost:4407/seata?rewriteBatchedStatements=true&serverTimezone=Asia/Shanghai&useSSL=false&useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true
+      username: ptp_backend
+      password: 7758521
+      min-conn: 10
+      max-conn: 100
+      global-table: global_table
+      branch-table: branch_table
+      lock-table: lock_table
+      distributed-lock-table: distributed_lock
+      query-limit: 1000
+      max-wait: 5000
+  security:
+    secretKey: SeataSecretKey0c382ef121d778043159209298fd40bf3850a017
+    tokenValidityInMilliseconds: 1800000
+    ignore:
+      urls: /,/**/*.css,/**/*.js,/**/*.html,/**/*.map,/**/*.svg,/**/*.png,/**/*.jpeg,/**/*.ico,/api/v1/auth/login,/version.json,/health,/error

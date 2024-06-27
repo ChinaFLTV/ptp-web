@@ -520,8 +520,8 @@ services:
       SW_HEALTH_CHECKER: default
       SW_TELEMETRY: prometheus
       TZ: Asia/Shanghai
-    # 监控检查
-    # healthcheck:
+      # 监控检查
+      # healthcheck:
       # test: [ "CMD-SHELL", "/skywalking/bin/swctl ch" ]
       # 每间隔30秒执行一次
       # interval: 30s
@@ -573,7 +573,50 @@ services:
         max-file: 64
     depends_on:
       - skywalking-oap
-        # condition: service_healthy
+      # condition: service_healthy
+
+
+  # 2024-6-27  22:24-部署并成功运行后 , 可键入 http://http://127.0.0.1:7091 进入到seata控制台界面 , 默认的用户名和密码均为seata(可在resources目录下的application.yml中进行配置)
+  # 2024-6-27  21:43-安装seata服务端
+  seata-server:
+    container_name: ptp-backend-seata-server-1
+    labels:
+      name: ptp-backend-seata-server-1
+      author: LiGuanda
+      description: "seata的服务端"
+    image: apache/seata-server:${SEATA_SERVER_VERSION}
+    env_file:
+      - .env
+    dns: 8.8.8.8
+    hostname: ptp-backend-seata-server-1
+    extra_hosts:
+      - exthost:${EXTERNAL_LOCALHOST}
+    networks:
+      ptp-network:
+        ipv4_address: ${SEATA_SERVER_LOCALHOST}
+    ports:
+      - "7091:7091"
+      - "8091:8091"
+    expose:
+      - 7091
+      - 8091
+    volumes:
+      - "./volumes/seata/resources:/seata-server/resources:rw"
+      - "./volumes/seata/sessionStore:/seata-server/sessionStore:rw"
+      - "./volumes/seata/libs/mysql-connector-j-8.2.0.jar:/seata-server/libs/mysql-connector-j-8.2.0.jar:rw"
+      # - "./volumes/seata/lib/jdbc:/lib/jdbc:rw"
+    environment:
+      SEATA_PORT: 8091
+      STORE_MODE: db # 2024-6-27  21:49-指定seata-server的事务日志存储方式, 支持db ,file,redis(Seata-Server 1.3及以上版本支持), 默认是 file
+      TZ: Asia/Shanghai # 2024-6-27  21:48-避免docker显示的date时间不正确
+    restart: on-failure
+    logging:
+      driver: json-file
+      options:
+        max-size: 256k
+        max-file: 64
+    depends_on:
+      - mysql
 
 
 # 2024-4-10  15:28-新建一个自定义网络，将全部容器部署到同一个网络内，使其之间能够相互连通

@@ -12,6 +12,8 @@ SOURCE ${SQL_SCRIPT_DIR}/config_mysql.sql;
 SOURCE ${SQL_SCRIPT_DIR}/insert_data.sql;
 # 2024-6-20  10:33-执行xxl-job库的构建脚本
 SOURCE ${SQL_SCRIPT_DIR}/tables_xxl_job.sql;
+# 2024-6-27  21:40-执行seata集成所需的必要SQL脚本
+SOURCE ${SQL_SCRIPT_DIR}/config_seata.sql;
 
 EOF
 echo "执行SQL脚本完毕"
