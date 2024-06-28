@@ -2,6 +2,7 @@ package ptp.fltv.web.controller;
 
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.seata.spring.annotation.GlobalTransactional;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -92,6 +93,7 @@ public class PassageCommentController {
     }
 
 
+    @GlobalTransactional(name = "insert-single-passage-comment", rollbackFor = Exception.class)
     @LogRecord(description = "添加单条文章评论数据")
     @SentinelResource("web-content-passage-comment-controller")
     @Operation(description = "添加单条文章评论数据")
@@ -123,6 +125,7 @@ public class PassageCommentController {
     }
 
 
+    @GlobalTransactional(name = "update-single-passage-comment", rollbackFor = Exception.class)
     @LogRecord(description = "修改单条文章评论数据")
     @SentinelResource("web-content-passage-comment-controller")
     @Operation(description = "修改单条文章评论数据")
@@ -159,6 +162,7 @@ public class PassageCommentController {
     }
 
 
+    @GlobalTransactional(name = "delete-single-passage-comment", rollbackFor = Exception.class)
     @LogRecord(description = "删除单条文章评论数据")
     @SentinelResource("web-content-passage-comment-controller")
     @Operation(description = "删除单条文章评论数据")

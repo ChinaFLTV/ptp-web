@@ -2,6 +2,7 @@ package ptp.fltv.web.controller;
 
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.seata.spring.annotation.GlobalTransactional;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -107,6 +108,7 @@ public class UserController {
     }
 
 
+    @GlobalTransactional(name = "insert-single-user", rollbackFor = Exception.class)
     @LogRecord(description = "添加用户信息")
     @SentinelResource("web-content-user-controller")
     @Operation(description = "添加用户信息")
@@ -140,6 +142,7 @@ public class UserController {
     }
 
 
+    @GlobalTransactional(name = "update-single-user", rollbackFor = Exception.class)
     @LogRecord(description = "修改用户信息")
     @SentinelResource("web-content-user-controller")
     @Operation(description = "修改用户信息")
@@ -169,6 +172,7 @@ public class UserController {
     }
 
 
+    @GlobalTransactional(name = "delete-single-user", rollbackFor = Exception.class)
     @LogRecord(description = "删除用户信息")
     @SentinelResource("web-content-user-controller")
     @Operation(description = "删除用户信息")

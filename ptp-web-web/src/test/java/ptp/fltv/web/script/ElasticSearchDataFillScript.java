@@ -27,8 +27,9 @@ import java.util.List;
  */
 
 @SuppressWarnings("NewClassNamingConvention")
-@Slf4j(topic = "test_elasticsearch_filldata")
-@SpringBootTest
+@Slf4j
+// 2024-6-28  22:08-webEnvironment-解决 javax.websocket.server.ServerContainer not available 报错问题 , 由于SpringCloud微服务模块项目中集成了WebSocket , 报错的方法的主要作用是 : 用于扫描带有@ServerEndpoint的注解成为websocket . 该方法是服务器端点出口 , 当进行SpringBoot单元测试时 , 并没有启动服务器 , 所以当加载到这个bean时就会报错
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(classes = WebApplication.class)
 public class ElasticSearchDataFillScript {
 

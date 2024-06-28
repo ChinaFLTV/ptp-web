@@ -2,6 +2,7 @@ package ptp.fltv.web.controller;
 
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.seata.spring.annotation.GlobalTransactional;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -94,6 +95,7 @@ public class DialogueController {
     }
 
 
+    @GlobalTransactional(name = "insert-single-dialogue", rollbackFor = Exception.class)
     @LogRecord(description = "添加单条对话数据")
     @SentinelResource("web-content-dialogue-controller")
     @Operation(description = "添加单条对话数据")
@@ -126,6 +128,7 @@ public class DialogueController {
     }
 
 
+    @GlobalTransactional(name = "update-single-dialogue", rollbackFor = Exception.class)
     @LogRecord(description = "修改单条对话数据")
     @SentinelResource("web-content-dialogue-controller")
     @Operation(description = "修改单条对话数据")
@@ -161,6 +164,7 @@ public class DialogueController {
     }
 
 
+    @GlobalTransactional(name = "delete-single-dialogue", rollbackFor = Exception.class)
     @LogRecord(description = "删除单条对话数据")
     @SentinelResource("web-content-dialogue-controller")
     @Operation(description = "删除单条对话数据")

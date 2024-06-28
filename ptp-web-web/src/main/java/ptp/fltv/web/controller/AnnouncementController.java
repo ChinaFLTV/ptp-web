@@ -2,6 +2,7 @@ package ptp.fltv.web.controller;
 
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.seata.spring.annotation.GlobalTransactional;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -97,6 +98,7 @@ public class AnnouncementController {
     }
 
 
+    @GlobalTransactional(name = "insert-single-announcement", rollbackFor = Exception.class)
     @LogRecord(description = "添加单条公告数据")
     @SentinelResource("web-content-announcement-controller")
     @Operation(description = "添加单条公告数据")
@@ -129,6 +131,7 @@ public class AnnouncementController {
     }
 
 
+    @GlobalTransactional(name = "update-single-announcement", rollbackFor = Exception.class)
     @LogRecord(description = "修改单条公告数据")
     @SentinelResource("web-content-announcement-controller")
     @Operation(description = "修改单条公告数据")
@@ -164,6 +167,7 @@ public class AnnouncementController {
     }
 
 
+    @GlobalTransactional(name = "delete-single-announcement", rollbackFor = Exception.class)
     @LogRecord(description = "删除单条公告数据")
     @SentinelResource("web-content-announcement-controller")
     @Operation(description = "删除单条公告数据")

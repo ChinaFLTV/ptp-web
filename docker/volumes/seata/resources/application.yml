@@ -20,26 +20,27 @@ console:
 seata:
   config:
     # support: nacos, consul, apollo, zk, etcd3
-    type: file
+    type: nacos
     # 2024-6-27  22:41-将seata服务端注册到nacos配置中心上去
     nacos:
       server-addr: exthost:8848
       group: 'SEATA_GROUP'
-      namespace: ''
+      # namespace: ''
       # username: 'nacos'
       # password: 'nacos'
+      data-id: seataServer.properties
   registry:
     # support: nacos, eureka, redis, zk, consul, etcd3, sofa
-    type: file
+    type: nacos
     # 2024-6-27  22:36-将seata服务端注册到nacos注册中心上去
     nacos:
       server-addr: exthost:8848
-      namespace:
+      # namespace:
       group: SEATA_GROUP
-      context-path:
+      # context-path:
       ##1.The following configuration is for the open source version of Nacos
-      username:
-      password:
+      # username:
+      # password:
       ##2.The following configuration is for the MSE Nacos on aliyun
       #access-key:
       #secret-key:
@@ -49,8 +50,8 @@ seata:
   store:
     # support: file 、 db 、 redis 、 raft
     mode: db
-  #  server:
-  #    service-port: 8091 #If not configured, the default is '${server.port} + 1000'
+    #  server:
+    #    service-port: 8091 #If not configured, the default is '${server.port} + 1000'
     # 2024-6-27  22:37-详细配置各种存储类型的参数
     session:
       mode: db # 2024-6-27  23:06-事务锁信息存储方式
@@ -61,7 +62,7 @@ seata:
       db-type: mysql
       driver-class-name: com.mysql.cj.jdbc.Driver
       url: jdbc:mysql://exthost:4407/seata?rewriteBatchedStatements=true&serverTimezone=Asia/Shanghai&useSSL=false&useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true
-      username: ptp_backend
+      user: ptp_backend
       password: 7758521
       min-conn: 10
       max-conn: 100

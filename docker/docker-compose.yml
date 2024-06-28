@@ -606,8 +606,9 @@ services:
       - "./volumes/seata/libs/mysql-connector-j-8.2.0.jar:/seata-server/libs/mysql-connector-j-8.2.0.jar:rw"
       # - "./volumes/seata/lib/jdbc:/lib/jdbc:rw"
     environment:
-      SEATA_PORT: 8091
-      STORE_MODE: db # 2024-6-27  21:49-指定seata-server的事务日志存储方式, 支持db ,file,redis(Seata-Server 1.3及以上版本支持), 默认是 file
+      SEATA_IP: exthost # 2024-6-28  21:38-指定seata-server启动的IP , 该IP用于向注册中心注册时使用 , 解决seata客户端从nacos拉取到的seata服务端地址为无法通信的docker容器的地址
+      SEATA_PORT: 8091 # 2024-6-28  21:40-指定seata-server启动的端口 , 默认为 8091
+      # STORE_MODE: db # 2024-6-27  21:49-指定seata-server的事务日志存储方式 , 支持db , file , redis(Seata-Server 1.3及以上版本支持) , 默认是 file
       TZ: Asia/Shanghai # 2024-6-27  21:48-避免docker显示的date时间不正确
     restart: on-failure
     logging:

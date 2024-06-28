@@ -146,3 +146,29 @@ rocketmq:
   name-server: 127.0.0.1:9876
   producer:
     group: commodity-seckill-record-producer-group
+
+
+# 2024-6-28  21:30-seata客户端相关配置
+seata:
+  config:
+    # support: nacos, consul, apollo, zk, etcd3
+    type: nacos
+    nacos:
+      server-addr: 127.0.0.1:8848
+      # namespace: seata
+      group: SEATA_GROUP
+      # username: nacos
+      # password: nacos
+      # context-path:
+      # if you use MSE Nacos with auth, mutex with username/password attribute
+      #access-key:
+      #secret-key:
+      data-id: seataServer.properties
+  registry:
+    type: nacos
+    nacos:
+      application: seata-server
+      server-addr: 127.0.0.1:8848
+      group: "SEATA_GROUP"
+      # namespace: "seata"
+  tx-service-group: "${spring.application.name}-transaction-group"

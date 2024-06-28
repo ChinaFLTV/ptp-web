@@ -311,3 +311,25 @@ CREATE TABLE `transaction_record`
     ENGINE = InnoDB
     DEFAULT CHARSET = utf8mb4
     COMMENT ='商品交易订单(PO实体类)';
+
+
+# 2024-6-28  21:47-创建seata框架所需的undo-log表
+CREATE TABLE `undo_log`
+(
+
+    `id`            BIGINT                                                        NOT NULL AUTO_INCREMENT,
+    `branch_id`     BIGINT                                                        NOT NULL,
+    `xid`           VARCHAR(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+    `context`       VARCHAR(128) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+    `rollback_info` LONGBLOB                                                      NOT NULL,
+    `log_status`    INT                                                           NOT NULL,
+    `log_created`   DATETIME                                                      NOT NULL,
+    `log_modified`  DATETIME                                                      NOT NULL,
+
+    PRIMARY KEY (id) USING BTREE,
+    UNIQUE KEY `ux_undo_log` (xid, branch_id) USING BTREE
+
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 15
+  DEFAULT CHARSET = utf8mb3
+  ROW_FORMAT = DYNAMIC;

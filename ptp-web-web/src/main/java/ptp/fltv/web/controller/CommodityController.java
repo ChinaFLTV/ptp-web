@@ -1,6 +1,7 @@
 package ptp.fltv.web.controller;
 
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
+import io.seata.spring.annotation.GlobalTransactional;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -89,6 +90,7 @@ public class CommodityController {
     }
 
 
+    @GlobalTransactional(name = "insert-single-commodity", rollbackFor = Exception.class)
     @LogRecord(description = "添加单个商品数据")
     @SentinelResource("web-finance-commodity-controller")
     @Operation(description = "添加单个商品数据")
@@ -118,6 +120,7 @@ public class CommodityController {
     }
 
 
+    @GlobalTransactional(name = "update-single-commodity", rollbackFor = Exception.class)
     @LogRecord(description = "修改单个商品数据")
     @SentinelResource("web-finance-commodity-controller")
     @Operation(description = "修改单个商品数据")
@@ -147,6 +150,7 @@ public class CommodityController {
     }
 
 
+    @GlobalTransactional(name = "delete-single-commodity", rollbackFor = Exception.class)
     @LogRecord(description = "删除单个商品数据")
     @SentinelResource("web-finance-commodity-controller")
     @Operation(description = "删除单个商品数据")
