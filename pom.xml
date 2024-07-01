@@ -56,6 +56,7 @@
         <module>ptp-web-common</module>
         <module>ptp-web-service</module>
         <module>ptp-web-web</module>
+        <module>ptp-web-business</module>
     </modules>
 
     <properties>
@@ -137,6 +138,11 @@
             <dependency>
                 <groupId>ptp.fltv</groupId>
                 <artifactId>ptp-web-service-mq</artifactId>
+                <version>${ptp.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ptp.fltv</groupId>
+                <artifactId>ptp-web-business</artifactId>
                 <version>${ptp.version}</version>
             </dependency>
 
