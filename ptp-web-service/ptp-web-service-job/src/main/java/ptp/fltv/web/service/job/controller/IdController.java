@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import pfp.fltv.common.exceptions.PtpException;
-import pfp.fltv.common.response.Result;
+import pfp.fltv.common.model.po.response.Result;
 import ptp.fltv.web.service.job.worker.IdWorker;
 
 /**

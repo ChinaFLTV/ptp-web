@@ -12,7 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
-import pfp.fltv.common.response.Result;
+import pfp.fltv.common.model.po.response.Result;
 import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;

@@ -1,4 +1,4 @@
-package pfp.fltv.common.response;
+package pfp.fltv.common.model.po.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;

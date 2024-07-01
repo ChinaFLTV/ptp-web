@@ -27,7 +27,7 @@ import java.util.Map;
  * @author Lenovo/LiGuanda
  * @version 1.0.0
  * @date 2024/5/19 PM 11:22:22
- * @description 商品交易订单实体类
+ * @description 商品交易订单(PO实体类)
  * @filename TransactionRecord.java
  */
 

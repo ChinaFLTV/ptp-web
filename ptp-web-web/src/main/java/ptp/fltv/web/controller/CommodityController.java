@@ -19,7 +19,7 @@ import pfp.fltv.common.annotation.CheckCostTime;
 import pfp.fltv.common.annotation.LogRecord;
 import pfp.fltv.common.exceptions.PtpException;
 import pfp.fltv.common.model.po.finance.Commodity;
-import pfp.fltv.common.response.Result;
+import pfp.fltv.common.model.po.response.Result;
 import ptp.fltv.web.constants.WebConstants;
 import ptp.fltv.web.mq.CommodityMqService;
 import ptp.fltv.web.service.CommodityService;

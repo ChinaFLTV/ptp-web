@@ -11,7 +11,7 @@ import org.springframework.web.client.RestTemplate;
 import pfp.fltv.common.exceptions.PtpException;
 import pfp.fltv.common.model.po.finance.Commodity;
 import pfp.fltv.common.model.po.finance.TransactionRecord;
-import pfp.fltv.common.response.Result;
+import pfp.fltv.common.model.po.response.Result;
 import ptp.fltv.web.service.mq.service.CommodityService;
 import ptp.fltv.web.service.mq.service.TransactionRecordService;
 

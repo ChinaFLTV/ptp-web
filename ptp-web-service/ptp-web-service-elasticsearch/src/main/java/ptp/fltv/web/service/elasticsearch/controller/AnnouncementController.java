@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import pfp.fltv.common.annotation.LogRecord;
 import pfp.fltv.common.model.po.content.Announcement;
 import pfp.fltv.common.model.vo.AnnouncementVo;
-import pfp.fltv.common.response.Result;
+import pfp.fltv.common.model.po.response.Result;
 import pfp.fltv.common.utils.ReflectUtils;
 import ptp.fltv.web.service.elasticsearch.service.EsSearchService;
 

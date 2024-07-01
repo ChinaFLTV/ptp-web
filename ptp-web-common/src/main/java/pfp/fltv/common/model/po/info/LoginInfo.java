@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 /**
  * @author Lenovo/LiGuanda
  * @date 2024/3/14 下午 9:51:27
- * @description
+ * @description 用户登录信息
  * @filename LoginInformation.java
  */
 

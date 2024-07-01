@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import pfp.fltv.common.annotation.LogRecord;
 import pfp.fltv.common.exceptions.PtpException;
 import pfp.fltv.common.model.vo.UserLoginVo;
-import pfp.fltv.common.response.Result;
+import pfp.fltv.common.model.po.response.Result;
 import pfp.fltv.common.utils.JwtUtils;
 import ptp.fltv.web.service.UserService;
 

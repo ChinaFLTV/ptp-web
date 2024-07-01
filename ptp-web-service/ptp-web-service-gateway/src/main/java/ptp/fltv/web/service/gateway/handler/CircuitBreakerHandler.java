@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.function.HandlerFunction;
 import org.springframework.web.servlet.function.ServerRequest;
 import org.springframework.web.servlet.function.ServerResponse;
-import pfp.fltv.common.response.Result;
+import pfp.fltv.common.model.po.response.Result;
 
 /**
  * @author Lenovo/LiGuanda

@@ -11,7 +11,7 @@ import org.springframework.data.elasticsearch.core.query.UpdateResponse;
 import org.springframework.web.bind.annotation.*;
 import pfp.fltv.common.annotation.LogRecord;
 import pfp.fltv.common.model.po.finance.Commodity;
-import pfp.fltv.common.response.Result;
+import pfp.fltv.common.model.po.response.Result;
 import pfp.fltv.common.utils.ReflectUtils;
 import ptp.fltv.web.service.elasticsearch.service.EsSearchService;
 

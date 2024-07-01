@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
-import pfp.fltv.common.response.Result;
+import pfp.fltv.common.model.po.response.Result;
 
 /**
  * @author Lenovo/LiGuanda

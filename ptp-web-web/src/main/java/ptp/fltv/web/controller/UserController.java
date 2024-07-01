@@ -15,7 +15,7 @@ import pfp.fltv.common.annotation.LogRecord;
 import pfp.fltv.common.model.po.info.AddressInfo;
 import pfp.fltv.common.model.po.manage.User;
 import pfp.fltv.common.model.vo.UserVo;
-import pfp.fltv.common.response.Result;
+import pfp.fltv.common.model.po.response.Result;
 import pfp.fltv.common.utils.ReflectUtils;
 import ptp.fltv.web.constants.WebConstants;
 import ptp.fltv.web.service.UserService;

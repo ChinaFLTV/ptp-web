@@ -13,7 +13,7 @@ import pfp.fltv.common.annotation.LogRecord;
 import pfp.fltv.common.model.po.manage.Asset;
 import pfp.fltv.common.model.po.manage.User;
 import pfp.fltv.common.model.vo.AssetVo;
-import pfp.fltv.common.response.Result;
+import pfp.fltv.common.model.po.response.Result;
 import ptp.fltv.web.service.AssetService;
 import ptp.fltv.web.service.UserService;
 

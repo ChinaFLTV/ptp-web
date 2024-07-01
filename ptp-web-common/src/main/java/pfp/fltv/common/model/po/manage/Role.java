@@ -26,7 +26,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Schema(description = "用户角色")
+@Schema(description = "用户角色实体类(PO)")
 public class Role implements Serializable {
 
 

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import pfp.fltv.common.annotation.LogRecord;
 import pfp.fltv.common.model.po.manage.Role;
 import pfp.fltv.common.model.vo.RoleVo;
-import pfp.fltv.common.response.Result;
+import pfp.fltv.common.model.po.response.Result;
 import ptp.fltv.web.service.RoleService;
 
 import java.util.ArrayList;

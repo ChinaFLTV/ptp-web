@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import pfp.fltv.common.exceptions.PtpException;
-import pfp.fltv.common.response.Result;
+import pfp.fltv.common.model.po.response.Result;
 
 /**
  * @author Lenovo/LiGuanda

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pfp.fltv.common.annotation.LogRecord;
 import pfp.fltv.common.enums.ContentType;
-import pfp.fltv.common.response.Result;
+import pfp.fltv.common.model.po.response.Result;
 import pfp.fltv.common.utils.FileUtils;
 import pfp.fltv.common.utils.ReflectUtils;
 import ptp.fltv.web.service.store.service.FileService;

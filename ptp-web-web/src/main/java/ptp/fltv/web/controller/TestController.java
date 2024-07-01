@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pfp.fltv.common.annotation.LogRecord;
 import pfp.fltv.common.model.po.content.Passage;
-import pfp.fltv.common.response.Result;
+import pfp.fltv.common.model.po.response.Result;
 
 /**
  * @author Lenovo/LiGuanda

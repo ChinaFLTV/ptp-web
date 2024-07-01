@@ -19,7 +19,7 @@ import org.springframework.web.server.ServerWebExchange;
 import pfp.fltv.common.enums.LoginClientType;
 import pfp.fltv.common.model.po.manage.Role;
 import pfp.fltv.common.model.po.manage.User;
-import pfp.fltv.common.response.Result;
+import pfp.fltv.common.model.po.response.Result;
 import pfp.fltv.common.utils.JwtUtils;
 import ptp.fltv.web.service.gateway.constants.SecurityConstants;
 import ptp.fltv.web.service.gateway.model.ApplicationContext;
