@@ -76,12 +76,8 @@ public class GatewayConfig {
                                         f.modifyRequestBody(String.class, String.class, MediaType.APPLICATION_JSON_VALUE,
                                                         (exchange, content) -> {
 
-                                                            System.out.println("-----------------------------------------------------------------");
-                                                            System.out.println("content = " + content);
-                                                            System.out.println("exchange.getRequest().getMethod()1  = " + exchange.getRequest().getMethod());
                                                             // 2024-5-6  22:31-由于Spring Cloud Gateway并没有直接提供修改请求方法的过滤器，因此，我们只能投机取巧，这这个地方进行修改
                                                             exchange.mutate().request(req -> req.method(HttpMethod.GET).build()).build();
-                                                            System.out.println("exchange.getRequest().getMethod()2  = " + exchange.getRequest().getMethod());
                                                             return content == null ? Mono.empty() : Mono.just(content);
 
                                                         })

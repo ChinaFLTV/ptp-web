@@ -16,6 +16,7 @@ import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ServerWebExchange;
+import pfp.fltv.common.constants.WebConstants;
 import pfp.fltv.common.enums.LoginClientType;
 import pfp.fltv.common.model.po.manage.Role;
 import pfp.fltv.common.model.po.manage.User;
@@ -97,7 +98,7 @@ public class CredentialCheckFilter implements GlobalFilter, Ordered {
                     log.info("============请求角色信息[通过验证]============");
                     log.info(compactRole.toString());
 
-                    HttpCookie loginClientInfo = request.getCookies().getFirst("login_client_info");
+                    HttpCookie loginClientInfo = request.getCookies().getFirst(WebConstants.USER_LOGIN_COOKIE_KEY);
                     if (loginClientInfo != null) {
 
 

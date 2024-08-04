@@ -13,6 +13,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import pfp.fltv.common.constants.OAuth2LoginConstants;
 import pfp.fltv.common.constants.RedisConstants;
+import pfp.fltv.common.constants.WebConstants;
 import pfp.fltv.common.enums.LoginClientType;
 import pfp.fltv.common.exceptions.PtpException;
 import pfp.fltv.common.model.po.info.AddressInfo;
@@ -122,7 +123,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         Map<String, Object> result = new HashMap<>();
         userLoginVo.setPassword(""); // 2024-4-3  20:51-清除用户敏感信息
         String jwt1 = JwtUtils.encode(userLoginVo);
-        result.put("user_login_data", jwt1);
+        result.put(WebConstants.USER_LOGIN_COOKIE_KEY, jwt1);
         String jwt2 = JwtUtils.encode(STORE_KEY);
         result.put("store_key", jwt2);
 

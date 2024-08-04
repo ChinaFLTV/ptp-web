@@ -4,13 +4,15 @@ import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.security.PermitAll;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import pfp.fltv.common.annotation.LogRecord;
+import pfp.fltv.common.constants.WebConstants;
 import pfp.fltv.common.exceptions.PtpException;
-import pfp.fltv.common.model.vo.UserLoginVo;
 import pfp.fltv.common.model.po.response.Result;
+import pfp.fltv.common.model.vo.UserLoginVo;
 import pfp.fltv.common.utils.JwtUtils;
 import ptp.fltv.web.service.UserService;
 
@@ -38,11 +40,19 @@ public class LoginController {
     @Operation(description = "普通登录(用户名+密码)")
     @PermitAll
     @PostMapping("/login")
-    public Result<?> login(@RequestBody UserLoginVo userLoginVo, HttpSession httpSession) throws PtpException {
+    public Result<?> login(@RequestBody UserLoginVo userLoginVo, HttpServletResponse response) throws PtpException {
 
         // 2024-4-7  22:26-登录前，客户端一侧一定要将本地的登录数据清理干净
 
         Map<String, Object> userData = userService.login(userLoginVo);
+
+        // 2024-8-4  17:29-主动设置用户登录环境Cookie的数据到客户端浏览器中
+        Cookie cookie = new Cookie(WebConstants.USER_LOGIN_COOKIE_KEY, (String) userData.getOrDefault(WebConstants.USER_LOGIN_COOKIE_KEY, "UNKNOWN"));
+        cookie.setSecure(false); // 2024-8-4  17:26-带有该Secure属性的 cookie 仅通过 HTTPS 协议与加密请求一起发送到服务器 , 将此属性设置为 true 以防止中间人附加
+        cookie.setHttpOnly(false); // 2024-8-4  17:27-JavaScript Document.cookie API 无法访问具有该属性的 cookie , 将此属性设置为 true 以防止跨站点脚本 (XSS) 攻击
+        cookie.setMaxAge(7 * 24 * 60 * 60); // 2024-8-4  17:28-设置 cookie 的过期时间 , 默认为-1. -1表示它是一个会话 Cookie , 当用户关闭浏览器时 , 会话 cookie 将被删除
+
+        response.addCookie(cookie);
 
         return Result.success(userData);
 
