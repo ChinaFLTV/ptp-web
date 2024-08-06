@@ -51,6 +51,8 @@ public class LoginController {
         cookie.setSecure(false); // 2024-8-4  17:26-带有该Secure属性的 cookie 仅通过 HTTPS 协议与加密请求一起发送到服务器 , 将此属性设置为 true 以防止中间人附加
         cookie.setHttpOnly(false); // 2024-8-4  17:27-JavaScript Document.cookie API 无法访问具有该属性的 cookie , 将此属性设置为 true 以防止跨站点脚本 (XSS) 攻击
         cookie.setMaxAge(7 * 24 * 60 * 60); // 2024-8-4  17:28-设置 cookie 的过期时间 , 默认为-1. -1表示它是一个会话 Cookie , 当用户关闭浏览器时 , 会话 cookie 将被删除
+        cookie.setDomain("localhost");
+        cookie.setPath("/");
 
         response.addCookie(cookie);
 
@@ -63,10 +65,20 @@ public class LoginController {
     @SentinelResource("web-gate-controller")
     @Operation(description = "登出账号")
     @GetMapping("/logout")
-    public Result<String> logout() {
+    public Result<String> logout(HttpServletResponse response) {
 
         // 2024-4-5  21:21-这边登出的时候，前端那边也要同步清除用户SESSION TOKEN信息，不需要清除登录信息
         // SecurityContextHolder.clearContext();
+
+        // 2024-8-4  23:32-移除掉客户端浏览器的登录环境信息Cookie
+        Cookie cookie = new Cookie(WebConstants.USER_LOGIN_COOKIE_KEY, null);
+        cookie.setSecure(false);
+        cookie.setHttpOnly(false);
+        cookie.setMaxAge(0);
+        cookie.setDomain("localhost");
+        cookie.setPath("/");
+        response.addCookie(cookie);
+
         return Result.success("期待与您的下一次相遇~");
 
     }

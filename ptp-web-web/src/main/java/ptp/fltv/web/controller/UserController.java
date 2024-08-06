@@ -54,7 +54,7 @@ public class UserController {
     @LogRecord(description = "根据ID查询用户信息")
     @SentinelResource("web-content-user-controller")
     @Operation(description = "根据ID查询用户信息")
-    @GetMapping("/query/{userId}")
+    @GetMapping("/query/single/{userId}")
     public Result<User> queryUserById(
 
             @Parameter(name = "userId", description = "待查询的用户ID", in = ParameterIn.PATH, required = true) @PathVariable("userId") Long userId
@@ -72,7 +72,7 @@ public class UserController {
     @SentinelResource("web-content-user-controller")
     @Operation(description = "批量(分页)查询多条用户数据")
     @GetMapping("/query/page/{offset}/{limit}")
-    public Result<List<UserVo>> queryPassagePage(
+    public Result<List<UserVo>> queryUserPage(
 
             @Parameter(name = "offset", description = "查询的一页用户数据的起始偏移量", in = ParameterIn.PATH, required = true) @PathVariable("offset") Long offset,
             @Parameter(name = "limit", description = "查询的这一页用户数据的数量", in = ParameterIn.PATH, required = true) @PathVariable("limit") Long limit
@@ -112,7 +112,7 @@ public class UserController {
     @LogRecord(description = "添加用户信息")
     @SentinelResource("web-content-user-controller")
     @Operation(description = "添加用户信息")
-    @PostMapping("/insert")
+    @PostMapping("/insert/single")
     public Result<?> insertUser(
 
             @Parameter(name = "user", description = "待添加的用户信息", required = true) @RequestBody User user
@@ -146,7 +146,7 @@ public class UserController {
     @LogRecord(description = "修改用户信息")
     @SentinelResource("web-content-user-controller")
     @Operation(description = "修改用户信息")
-    @PutMapping("/update")
+    @PutMapping("/update/single")
     public Result<?> updateUser(
 
             @Parameter(name = "user", description = "待修改的用户信息", required = true) @RequestBody User user
@@ -176,7 +176,7 @@ public class UserController {
     @LogRecord(description = "删除用户信息")
     @SentinelResource("web-content-user-controller")
     @Operation(description = "删除用户信息")
-    @DeleteMapping("/delete/{userId}")
+    @DeleteMapping("/delete/single/{userId}")
     public Result<?> deleteUser(
 
             @Parameter(name = "userId", description = "当前用户ID", in = ParameterIn.PATH, required = true) @PathVariable("userId") Long userId

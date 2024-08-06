@@ -102,7 +102,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 .account(user.getAccount())
                 .password(user.getPassword())
                 .status(user.getStatus())
-                .roleId(user.getId())
+                .roleId(user.getRoleId())
                 .build();
 
         // 2024-4-5  22:17-先不要用ID+""的形式加密，这样做解密的时候会被转换为"ID"

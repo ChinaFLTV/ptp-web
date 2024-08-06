@@ -21,6 +21,7 @@ import pfp.fltv.common.enums.LoginClientType;
 import pfp.fltv.common.model.po.manage.Role;
 import pfp.fltv.common.model.po.manage.User;
 import pfp.fltv.common.model.po.response.Result;
+import pfp.fltv.common.model.vo.UserLoginVo;
 import pfp.fltv.common.utils.JwtUtils;
 import ptp.fltv.web.service.gateway.constants.SecurityConstants;
 import ptp.fltv.web.service.gateway.model.ApplicationContext;
@@ -28,7 +29,6 @@ import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.Objects;
 
 /**
  * @author Lenovo/LiGuanda
@@ -105,10 +105,15 @@ public class CredentialCheckFilter implements GlobalFilter, Ordered {
                         String encodedLoginClientInfo = loginClientInfo.getValue();
                         // 2024-6-17  23:04-之所以强制前端先加密登录环境信息再发送登录请求，是因为这样可在一定程度上避免客户端伪造登录信息的情况
                         String decodedLoginClientInfo = JwtUtils.decode(encodedLoginClientInfo);
-                        HashMap<String, Object> nativeEnvMap = JSON.parseObject(decodedLoginClientInfo, HashMap.class);
+                        /*HashMap<String, Object> nativeEnvMap = JSON.parseObject(decodedLoginClientInfo, HashMap.class);
                         LoginClientType nativeClientType = LoginClientType.valueOfByCode((Integer) Objects.requireNonNull(nativeEnvMap).get("client-type"));
                         String nativeDeviceId = (String) nativeEnvMap.getOrDefault("device-id", "NATIVE-UNKNOWN-DEVICEID");
-                        String nativeLoginDatetime = (String) nativeEnvMap.getOrDefault("login-datetime", "NATIVE-UNKNOWN-DATETIME");
+                        String nativeLoginDatetime = (String) nativeEnvMap.getOrDefault("login-datetime", "NATIVE-UNKNOWN-DATETIME");*/
+
+                        UserLoginVo userLoginVo = JSON.parseObject(decodedLoginClientInfo, UserLoginVo.class);
+
+                        String nativeDeviceId = userLoginVo.getLoginInfo().getDeviceInfo().getDeviceID().split(":")[1];
+                        LoginClientType nativeClientType = LoginClientType.valueOf(userLoginVo.getLoginInfo().getDeviceInfo().getDeviceID().split(":")[0]);
 
                         String loginEnvInfoStr = stringRedisTemplate.opsForValue().get(String.format("user:login:env:%s:%s", nativeClientType.name().toLowerCase(), STORE_KEY));
 

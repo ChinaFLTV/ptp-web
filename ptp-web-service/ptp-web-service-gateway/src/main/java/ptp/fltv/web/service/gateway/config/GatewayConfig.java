@@ -76,7 +76,7 @@ public class GatewayConfig {
                                         f.modifyRequestBody(String.class, String.class, MediaType.APPLICATION_JSON_VALUE,
                                                         (exchange, content) -> {
 
-                                                            // 2024-5-6  22:31-由于Spring Cloud Gateway并没有直接提供修改请求方法的过滤器，因此，我们只能投机取巧，这这个地方进行修改
+                                                            // 2024-5-6  22:31-由于Spring Cloud Gateway并没有直接提供修改请求方法的过滤器，因此，我们只能投机取巧，在这个地方进行修改
                                                             exchange.mutate().request(req -> req.method(HttpMethod.GET).build()).build();
                                                             return content == null ? Mono.empty() : Mono.just(content);
 

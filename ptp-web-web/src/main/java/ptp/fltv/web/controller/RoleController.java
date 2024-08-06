@@ -41,7 +41,7 @@ public class RoleController {
     @LogRecord(description = "根据ID查询角色信息")
     @SentinelResource("web-content-user-role-controller")
     @Operation(description = "根据ID查询角色信息")
-    @GetMapping("/query/{roleId}")
+    @GetMapping("/query/single/{roleId}")
     public Result<Role> queryRoleById(
             @Parameter(name = "roleId", description = "待查询的角色ID", in = ParameterIn.PATH, required = true)
             @PathVariable("roleId")
@@ -97,7 +97,7 @@ public class RoleController {
     @LogRecord(description = "添加角色信息")
     @SentinelResource("web-content-user-role-controller")
     @Operation(description = "添加角色信息")
-    @PostMapping("/insert")
+    @PostMapping("/insert/single")
     public Result<?> insertRole(
             @Parameter(name = "role", description = "待添加的角色信息", required = true)
             @RequestBody
@@ -115,7 +115,7 @@ public class RoleController {
     @LogRecord(description = "修改角色信息")
     @SentinelResource("web-content-user-role-controller")
     @Operation(description = "修改角色信息")
-    @PutMapping("/update")
+    @PutMapping("/update/single")
     public Result<?> updateRole(
             @Parameter(name = "role", description = "待修改的角色信息", required = true)
             @RequestBody
@@ -133,7 +133,7 @@ public class RoleController {
     @LogRecord(description = "删除角色信息")
     @SentinelResource("web-content-user-role-controller")
     @Operation(description = "删除角色信息")
-    @DeleteMapping("/delete/{roleId}")
+    @DeleteMapping("/delete/single/{roleId}")
     public Result<?> deleteRole(
             @Parameter(name = "roleId", description = "待删除的角色ID", in = ParameterIn.PATH, required = true)
             @PathVariable("roleId")
