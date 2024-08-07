@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
@@ -14,8 +15,8 @@ import org.springframework.web.client.RestTemplate;
 import pfp.fltv.common.annotation.LogRecord;
 import pfp.fltv.common.model.po.info.AddressInfo;
 import pfp.fltv.common.model.po.manage.User;
-import pfp.fltv.common.model.vo.UserVo;
 import pfp.fltv.common.model.po.response.Result;
+import pfp.fltv.common.model.vo.UserVo;
 import pfp.fltv.common.utils.ReflectUtils;
 import ptp.fltv.web.constants.WebConstants;
 import ptp.fltv.web.service.UserService;
@@ -55,7 +56,7 @@ public class UserController {
     @SentinelResource("web-content-user-controller")
     @Operation(description = "根据ID查询用户信息")
     @GetMapping("/query/single/{userId}")
-    public Result<User> queryUserById(
+    public Result<User> querySingleUser(
 
             @Parameter(name = "userId", description = "待查询的用户ID", in = ParameterIn.PATH, required = true) @PathVariable("userId") Long userId
 
@@ -113,7 +114,7 @@ public class UserController {
     @SentinelResource("web-content-user-controller")
     @Operation(description = "添加用户信息")
     @PostMapping("/insert/single")
-    public Result<?> insertUser(
+    public Result<?> insertSingleUser(
 
             @Parameter(name = "user", description = "待添加的用户信息", required = true) @RequestBody User user
 
@@ -147,9 +148,10 @@ public class UserController {
     @SentinelResource("web-content-user-controller")
     @Operation(description = "修改用户信息")
     @PutMapping("/update/single")
-    public Result<?> updateUser(
+    public Result<?> updateSingleUser(
 
-            @Parameter(name = "user", description = "待修改的用户信息", required = true) @RequestBody User user
+            @Parameter(name = "user", description = "待修改的用户信息", required = true) @RequestBody User user,
+            HttpServletRequest request
 
     ) {
 
@@ -177,7 +179,7 @@ public class UserController {
     @SentinelResource("web-content-user-controller")
     @Operation(description = "删除用户信息")
     @DeleteMapping("/delete/single/{userId}")
-    public Result<?> deleteUser(
+    public Result<?> deleteSingleUser(
 
             @Parameter(name = "userId", description = "当前用户ID", in = ParameterIn.PATH, required = true) @PathVariable("userId") Long userId
 

@@ -124,7 +124,7 @@
     <!-- 2024-6-25  22:56-如果暂时不需要将日志数据推送到skywalking平台上 , 那就将下面的配置注释掉 -->
     <logger name="ptp.fltv.web.service.gateway" level="INFO">
 
-        <appender-ref ref="stdout"/>
+        <!--<appender-ref ref="stdout"/>-->
         <appender-ref ref="grpc"/>
 
     </logger>

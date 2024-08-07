@@ -47,31 +47,31 @@ CREATE TABLE `role`
 # 2024-3-22  19:33-创建user表
 CREATE TABLE IF NOT EXISTS `user`
 (
-    `id`              BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT COMMENT '用户ID', -- 主键，自增长
-    `account`         VARCHAR(255) NOT NULL COMMENT '用户账号',                    -- 账号生成
-    `password`        VARCHAR(255) NOT NULL COMMENT '用户密码(加密)',              -- 密码加密
-    `phone`           VARCHAR(16)       DEFAULT NULL COMMENT '用户绑定的手机号',
-    `email`           VARCHAR(255)      DEFAULT NULL COMMENT '用户邮箱',
-    `nickname`        VARCHAR(255)      DEFAULT NULL COMMENT '用户昵称',           -- 随机生成昵称
-    `realname`        VARCHAR(255)      DEFAULT NULL COMMENT '用户真实姓名(管理员必需)',
-    `gender`          TINYINT UNSIGNED  DEFAULT 2 COMMENT '用户性别',
-    `idiograph`       VARCHAR(255)      DEFAULT '这个家伙很懒，什么都没写> - <' COMMENT '用户的个性签名',
-    `avatar`          TEXT              DEFAULT NULL COMMENT '用户头像(JSON)',     -- 用户个人资料背景图片(JSON)
-    `background`      TEXT              DEFAULT NULL COMMENT '用户个人资料背景图片(JSON)',
-    `like_num`        INT UNSIGNED      DEFAULT 0 COMMENT '用户被点赞数量',
-    `user_rank`       DOUBLE UNSIGNED   DEFAULT 0 COMMENT '用户等级',
-    `birth_date`      TIMESTAMP         DEFAULT NULL COMMENT '用户出生年月',
-    `address_info_id` BIGINT UNSIGNED   DEFAULT NULL COMMENT '用户地址信息ID',
-    `bind_accounts`   VARCHAR(255)      DEFAULT NULL COMMENT '用户绑定的其他账号',
-    `credit`          DOUBLE UNSIGNED   DEFAULT 100 COMMENT '用户信誉积分',
-    `status`          SMALLINT UNSIGNED DEFAULT 300 COMMENT '用户当前状态',
-    `meta`            TEXT              DEFAULT NULL COMMENT '用户其他数据配置(JSON)',
-    `role_id`         BIGINT UNSIGNED   DEFAULT NULL COMMENT '用户角色ID',
-    `asset_id`        BIGINT UNSIGNED   DEFAULT NULL COMMENT '用户资产ID',
-    `create_time`     TIMESTAMP         DEFAULT CURRENT_TIMESTAMP COMMENT '用户注册时间',
-    `update_time`     TIMESTAMP         DEFAULT CURRENT_TIMESTAMP COMMENT '用户资料修改时间' ON UPDATE CURRENT_TIMESTAMP,
-    `is_deleted`      INT UNSIGNED      DEFAULT 0 COMMENT '用户是否已被删除',
-    `version`         INT UNSIGNED      DEFAULT 1 COMMENT '当前用户实体的版本(用于辅助实现乐观锁)',
+    `id`            BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT COMMENT '用户ID', -- 主键，自增长
+    `account`       VARCHAR(255) NOT NULL COMMENT '用户账号',                    -- 账号生成
+    `password`      VARCHAR(255) NOT NULL COMMENT '用户密码(加密)',              -- 密码加密
+    `phone`         VARCHAR(16)       DEFAULT NULL COMMENT '用户绑定的手机号',
+    `email`         VARCHAR(255)      DEFAULT NULL COMMENT '用户邮箱',
+    `nickname`      VARCHAR(255)      DEFAULT NULL COMMENT '用户昵称',           -- 随机生成昵称
+    `realname`      VARCHAR(255)      DEFAULT NULL COMMENT '用户真实姓名(管理员必需)',
+    `gender`        TINYINT UNSIGNED  DEFAULT 2 COMMENT '用户性别',
+    `idiograph`     VARCHAR(255)      DEFAULT '这个家伙很懒，什么都没写> - <' COMMENT '用户的个性签名',
+    `avatar`        TEXT              DEFAULT NULL COMMENT '用户头像(JSON)',     -- 用户个人资料背景图片(JSON)
+    `background`    TEXT              DEFAULT NULL COMMENT '用户个人资料背景图片(JSON)',
+    `like_num`      INT UNSIGNED      DEFAULT 0 COMMENT '用户被点赞数量',
+    `user_rank`     DOUBLE UNSIGNED   DEFAULT 0 COMMENT '用户等级',
+    `birth_date`    TIMESTAMP         DEFAULT NULL COMMENT '用户出生年月',
+    `address`       VARCHAR(255)      DEFAULT '[]' COMMENT '用户家庭地址信息',
+    `bind_accounts` VARCHAR(255)      DEFAULT NULL COMMENT '用户绑定的其他账号',
+    `credit`        DOUBLE UNSIGNED   DEFAULT 100 COMMENT '用户信誉积分',
+    `status`        SMALLINT UNSIGNED DEFAULT 300 COMMENT '用户当前状态',
+    `meta`          TEXT              DEFAULT NULL COMMENT '用户其他数据配置(JSON)',
+    `role_id`       BIGINT UNSIGNED   DEFAULT NULL COMMENT '用户角色ID',
+    `asset_id`      BIGINT UNSIGNED   DEFAULT NULL COMMENT '用户资产ID',
+    `create_time`   TIMESTAMP         DEFAULT CURRENT_TIMESTAMP COMMENT '用户注册时间',
+    `update_time`   TIMESTAMP         DEFAULT CURRENT_TIMESTAMP COMMENT '用户资料修改时间' ON UPDATE CURRENT_TIMESTAMP,
+    `is_deleted`    INT UNSIGNED      DEFAULT 0 COMMENT '用户是否已被删除',
+    `version`       INT UNSIGNED      DEFAULT 1 COMMENT '当前用户实体的版本(用于辅助实现乐观锁)',
 
     FOREIGN KEY (role_id) REFERENCES role (id),
     FOREIGN KEY (asset_id) REFERENCES asset (id),

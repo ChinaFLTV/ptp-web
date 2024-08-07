@@ -3,6 +3,7 @@ package ptp.fltv.web.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import jakarta.annotation.Nonnull;
 import lombok.NonNull;
+import pfp.fltv.common.enums.LoginClientType;
 import pfp.fltv.common.exceptions.PtpException;
 import pfp.fltv.common.model.po.info.AddressInfo;
 import pfp.fltv.common.model.po.manage.User;
@@ -53,7 +54,7 @@ public interface UserService extends IService<User> {
      * </pre>
      * @filename UserService.java
      */
-    Map<String, Object> login(@Nonnull UserLoginVo userLoginVo) throws PtpException;
+    Map<String, Object> loginByNicknameAndPassword(@Nonnull UserLoginVo userLoginVo) throws PtpException;
 
 
     /**
@@ -97,6 +98,18 @@ public interface UserService extends IService<User> {
      * @filename UserService.java
      */
     Map<Integer, List<User>> findPeopleNearby(@Nonnull Long id, @Nonnull Double longitude, @Nonnull Double latitude, @Nonnull Double radius, @Nonnull Long limit);
+
+
+    /**
+     * @param userId     用户ID
+     * @param clientType 当前需要进行登出操作的客户端类型(保证单端单登录/登出)
+     * @author Lenovo/LiGuanda
+     * @date 2024/8/7 PM 3:03:31
+     * @version 1.0.0
+     * @description 登出用户并移除用户云端数据信息
+     * @filename UserService.java
+     */
+    void logout(LoginClientType clientType, Long userId);
 
 
 }

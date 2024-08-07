@@ -114,9 +114,9 @@ public class User implements Serializable {
 //    @Schema(description = "用户收藏的文章列表JSON串")
 //    private String collectList;
 
-    @Field(name = "address_info_id", type = FieldType.Constant_Keyword)
-    @Schema(description = "用户地址信息ID")
-    private Long addressInfoId;
+    @Field(name = "address", type = FieldType.Text, analyzer = "analysis-ik")
+    @Schema(description = "用户家庭地址信息")
+    private String address;
 
     @Transient
     @Schema(description = "用户绑定的其他账号")

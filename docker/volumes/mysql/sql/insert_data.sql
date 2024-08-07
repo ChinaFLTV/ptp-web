@@ -17,26 +17,26 @@ VALUES (1, 1000.00, '7758521,1212121'),
 # 2024-3-25  9:18-往role表中插入模拟数据
 INSERT INTO `role` (`id`, `code`, `name`, `authorities`, `prohibition`)
 VALUES (1, 801, 'administrator',
-        '["all","content:list","content:add","content:remove","content:update","user:add","user:remove","role:add","role:remove","role:list","role:update"]',
+        '["all","content:list","content:add","content:remove","content:update","content:user:add", "content:user:remove", "content:user:list", "content:user:update","role:add","role:remove","role:list","role:update"]',
         '[]'),
-       (2, 802, 'manager', '["content:list","content:add","content:remove","user:add","user:remove"]',
+       (2, 802, 'manager', '["content:list","content:add","content:remove","content:user:add","content:user:remove"]',
         '["role:add","role:remove","role:list","role:update"]'),
        (3, 803, 'normal:user', '["content:list","content:add","content:update"]',
         '["user:add","user:remove","role:add","role:remove","role:list","role:update"]'),
        (4, 804, 'limit:user', '["content:list"]',
-        '["content:remove","content:update","user:add","user:remove","role:add","role:remove","role:list","role:update"]'),
+        '["content:remove","content:update","user:add","content:user:remove","role:add","role:remove","role:list","role:update"]'),
        (5, 805, 'blocked:user', '[]',
-        '["content:add","content:remove","content:update","user:add","user:remove","role:add","role:remove","role:list","role:update"]'),
+        '["content:add","content:remove","content:update","content:user:add","content:user:remove","role:add","role:remove","role:list","role:update"]'),
        (6, 806, 'publisher', '["content:list","content:add"]',
-        '["user:add","user:remove","role:add","role:remove","role:list","role:update"]'),
+        '["user:add","content:user:remove","role:add","role:remove","role:list","role:update"]'),
        (7, 807, 'monitor', '["content:list","content:remove"]',
-        '["user:add","user:remove","role:add","role:remove","role:list","role:update"]'),
-       (8, 808, 'developer', '["user:add","user:remove"]',
+        '["user:add","content:user:remove","role:add","role:remove","role:list","role:update"]'),
+       (8, 808, 'developer', '["content:user:add","content:user:remove"]',
         '["content:list","content:update","role:add","role:remove","role:list","role:update"]'),
        (9, 809, 'DevOps', '["role:add","role:remove","role:list","role:update"]',
-        '["user:add","user:remove","content:add","content:update"]'),
+        '["user:add","content:user:remove","content:add","content:update"]'),
        (10, 810, 'else', '["content:remove","content:update"]',
-        '["user:add","user:remove","role:add","role:remove","role:list","role:update"]')
+        '["content:user:add","content:user:remove","role:add","role:remove","role:list","role:update"]')
 on duplicate key update code        = values(code),
                         name        = values(name),
                         authorities = values(authorities),
@@ -47,25 +47,25 @@ on duplicate key update code        = values(code),
 INSERT INTO `user` (`account`, `password`, `phone`, `email`, `nickname`, `realname`, `gender`, `idiograph`, `avatar`,
                     `background`, `like_num`,
                     `user_rank`,
-                    `birth_date`, `credit`, `role_id`, `asset_id`)
+                    `birth_date`, `address`, `credit`, `role_id`, `asset_id`)
 VALUES ('3599758685', '22851316', '13537484671',
         'l.shhieoo@gsv.at', '春物叙事曲', '易霞', 1, '都是风景，幸会', '{
     "type": "url",
-    "uri": "https://img.52tu.com/2021/09/01/5ad2100845d130a794d1b4c5d3e0e470ef2f8199.jpg"
+    "uri": "https://ptp-user-1309498949.cos.ap-nanjing.myqcloud.com/user-0816202307233954-avatar.jpg"
 }', '{
     "type": "url",
     "uri": "https://img.tukuppt.com/bg_grid/00/03/45/0aQwB9cbps.jpg!/fh/350"
-}', '71049', '2', '2020-06-17 22:02:05', '63',
+}', '71049', '2', '2020-06-17 22:02:05', '["山东省","临沂市","蒙阴县"]', '63',
         '5', '7')
      , ('3503619143', '07814566', '13287644133',
         't.idbdscth@lshsiu.cy', '焦糖布丁',
         '贺秀兰', 1, '没有期待的日子反而顺顺利利', '{
     "type": "url",
-    "uri": "https://img.52tu.com/2021/09/01/b2266bc20fb899954fdd83b52a4bc974945b0d8a.jpg"
+    "uri": "https://ptp-user-1309498949.cos.ap-nanjing.myqcloud.com/user-0846202307236889-background.jpg"
 }', '{
     "type": "url",
     "uri": "https://img.tukuppt.com/bg_grid/00/17/18/v6cXZ0iGp7.jpg!/fh/350"
-}', '46508', '0', '2006-02-09 20:15:06',
+}', '46508', '0', '2006-02-09 20:15:06', '["北京市","北京市","东城区"]',
         '67', '7', '5')
      , ('3516168164', '53874642', '18315661882',
         '3242742226@qq.com', '爱吃香芋派',
@@ -75,35 +75,35 @@ VALUES ('3599758685', '22851316', '13537484671',
 }', '{
     "type": "url",
     "uri": "https://img.tukuppt.com/bg_grid/00/03/71/LtH3VlTOqf.jpg!/fh/350"
-}', '94245', '4', '2000-03-31 04:16:50',
+}', '94245', '4', '2000-03-31 04:16:50', '["广东省","广州市","天河区"]',
         '82', '2', '6')
      , ('513246526', '55436628', '18912719149',
         't.bipmfy@gthgyhn.bi', 'Laura Allen', '龚艳', 1,
         '慢慢体会我的极端与浪漫吧', '{
     "type": "url",
-    "uri": "https://img.52tu.com/2021/09/01/c09ca8d3d114b49bbea211c3963f31cafd53c44e.jpg"
+    "uri": "https://ptp-user-1309498949.cos.ap-nanjing.myqcloud.com/user-1850202302121496-avatar.jpg"
 }', '{
     "type": "url",
     "uri": "https://img.tukuppt.com/bg_grid/00/06/62/qGrtrfyBtQ.jpg!/fh/350"
-}', '49784', '1', '1975-08-13 05:32:43', '67',
+}', '49784', '1', '1975-08-13 05:32:43', '["江苏省","南京市","鼓楼区"]', '67',
         '7', '6')
      , ('215696542', '66361897', '18689841823',
         '236010069@qq.com', '小鱼偶偶泡',
         '孟伟', 0, '白天有说有笑，晚上睡个好觉', '{
     "type": "url",
-    "uri": "https://img.52tu.com/2021/09/01/6dab3ef8c66c22ba5f42f2ae1c1962746a034e7c.jpg"
+    "uri": "https://ptp-user-1309498949.cos.ap-nanjing.myqcloud.com/user-9767202303161187-avatar.jpg"
 }', '{
     "type": "url",
     "uri": "https://img.tukuppt.com/bg_grid/00/03/35/zcLyqiXIpY.jpg!/fh/350"
-}', '93138', '0', '2003-12-04 09:43:51', '72', '1', '5')
+}', '93138', '0', '2003-12-04 09:43:51', '["浙江省","杭州市","西湖区"]', '72', '1', '5')
      , ('8939546763', '93719365', '18992484290',
         'dage3242742226@gmail.com', '树上有只熊', '乔洋', 2, '我出售故事，谋杀，艳情 ，小道消息', '{
     "type": "url",
-    "uri": "https://img.52tu.com/2021/09/01/dd21fad2a0e3d6fcc408e1259eecbfa62e8150b2.jpg"
+    "uri": "https://ptp-user-1309498949.cos.ap-nanjing.myqcloud.com/user-1850202302121496-background.jpg"
 }', '{
     "type": "url",
     "uri": "https://img.tukuppt.com/bg_grid/00/04/99/qel1H6beV0.jpg!/fh/350"
-}', '40361', '6', '2015-01-29 01:42:38', '86', '10', '6')
+}', '40361', '6', '2015-01-29 01:42:38', '["山东省","青岛市","市南区"]', '86', '10', '6')
      , ('3521156476', '52802884', '18955647333',
         'q.rmjw@agep.sj', '银河投递员', '吕丽', 1, '把自己流放到世界上的某个角落', '{
     "type": "url",
@@ -111,32 +111,32 @@ VALUES ('3599758685', '22851316', '13537484671',
 }', '{
     "type": "url",
     "uri": "https://img.tukuppt.com/bg_grid/00/12/38/nYHRr2MgWc.jpg!/fh/350"
-}', '42529', '4', '1973-01-02 08:51:20', '65', '8', '8')
+}', '42529', '4', '1973-01-02 08:51:20', '["四川省","成都市","锦江区"]', '65', '8', '8')
      , ('3528123755', '32553084', '18982578235',
         'z.amkn@hqzoo.al', '春天禁止入内', '高涛', 0, '放松点，不用和每个人都好，也不用被每个人喜欢', '{
     "type": "url",
-    "uri": "https://img.52tu.com/2021/09/01/013350272e6da3ba20f1132c15d469d81c8b5627.jpg"
+    "uri": "https://ptp-user-1309498949.cos.ap-nanjing.myqcloud.com/user-3125202308061853-avatar.jpg"
 }', '{
     "type": "url",
     "uri": "https://img.tukuppt.com/bg_grid/00/09/41/qOxDlfbzDo.jpg!/fh/350"
-}', '33603', '0', '1994-12-23 08:53:52', '62', '2', '7')
+}', '33603', '0', '1994-12-23 08:53:52', '["陕西省","西安市","雁塔区"]', '62', '2', '7')
      , ('8933864275', '68433956', '13262114721',
         'v.wvakehp@julprwh.kp', '海盐幻想',
         '罗强', 0, '这座城市每个角落，都填满若有所思的生活', '{
     "type": "url",
-    "uri": "https://img.52tu.com/2021/09/01/4d8d5a0c509e3a38b3199cf05cc2421c27e17eca.jpg"
+    "uri": "https://ptp-user-1309498949.cos.ap-nanjing.myqcloud.com/user-3125202308061853-background.jpg"
 }', '{
     "type": "url",
     "uri": "https://img.tukuppt.com/bg_grid/00/07/24/bG7xs5TbEb.jpg!/fh/350"
-}', '7477', '3', '2005-01-19 04:49:08', '85', '9', '3')
+}', '7477', '3', '2005-01-19 04:49:08', '["湖北省","武汉市","洪山区"]', '85', '9', '3')
      , ('3590511491', '01583241', '18987740346', 'j.qkeq@xykngv.cl', '落日飛機', '方平', 0,
         '一定要周而复始的快快乐乐', '{
     "type": "url",
-    "uri": "https://img.52tu.com/2021/09/01/0c2b9beba63bca2bf225a5db7c6824010a0d5ad1.jpg"
+    "uri": "https://ptp-user-1309498949.cos.ap-nanjing.myqcloud.com/user-9240202309053651-avatar.jpg"
 }', '{
     "type": "url",
     "uri": "https://img.tukuppt.com/bg_grid/00/05/30/TnG3M9TXyi.jpg!/fh/350"
-}', '38165', '1', '1984-03-13 14:12:53', '73', '9', '6');
+}', '38165', '1', '1984-03-13 14:12:53', '["福建省","福州市","鼓楼区"]', '73', '9', '6');
 
 
 # 2024-3-27  20:17-往announcement表中插入数据

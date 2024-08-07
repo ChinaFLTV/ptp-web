@@ -1,5 +1,8 @@
 package ptp.fltv.web;
 
+import io.seata.spring.boot.autoconfigure.SeataAutoConfiguration;
+import io.seata.spring.boot.autoconfigure.SeataCoreAutoConfiguration;
+import io.seata.spring.boot.autoconfigure.SeataDataSourceAutoConfiguration;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -17,7 +20,8 @@ import org.springframework.context.annotation.ComponentScan;
 // @EnableAspectJAutoProxy(proxyTargetClass = true)// 2024-6-10  00:01-开启对AspectJ的支持，以实现自定义的AOP切面
 @EnableDiscoveryClient // 2024-4-27  20:52-开启nacos服务注册发现功能
 @ComponentScan(basePackages = "ptp.fltv")
-@SpringBootApplication(/*exclude = DataSourceAutoConfiguration.class*/)
+// 2024-8-7  13:58-开发环境下 , 暂时禁用seata的自动配置(主要是在目前还没有用到seata的需求)
+@SpringBootApplication(/*exclude = DataSourceAutoConfiguration.class*/exclude = {SeataCoreAutoConfiguration.class, SeataAutoConfiguration.class, SeataDataSourceAutoConfiguration.class})
 @MapperScan("ptp.fltv.web.mapper")
 public class WebApplication {
 

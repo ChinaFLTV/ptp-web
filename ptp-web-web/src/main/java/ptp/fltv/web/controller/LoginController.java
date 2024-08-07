@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import pfp.fltv.common.annotation.LogRecord;
 import pfp.fltv.common.constants.WebConstants;
+import pfp.fltv.common.enums.LoginClientType;
 import pfp.fltv.common.exceptions.PtpException;
 import pfp.fltv.common.model.po.response.Result;
 import pfp.fltv.common.model.vo.UserLoginVo;
@@ -44,7 +45,7 @@ public class LoginController {
 
         // 2024-4-7  22:26-登录前，客户端一侧一定要将本地的登录数据清理干净
 
-        Map<String, Object> userData = userService.login(userLoginVo);
+        Map<String, Object> userData = userService.loginByNicknameAndPassword(userLoginVo);
 
         // 2024-8-4  17:29-主动设置用户登录环境Cookie的数据到客户端浏览器中
         Cookie cookie = new Cookie(WebConstants.USER_LOGIN_COOKIE_KEY, (String) userData.getOrDefault(WebConstants.USER_LOGIN_COOKIE_KEY, "UNKNOWN"));
@@ -61,11 +62,13 @@ public class LoginController {
     }
 
 
-    @LogRecord(description = "注册账号")
+    @LogRecord(description = "登出账号")
     @SentinelResource("web-gate-controller")
     @Operation(description = "登出账号")
-    @GetMapping("/logout")
-    public Result<String> logout(HttpServletResponse response) {
+    @PostMapping("/logout")
+    public Result<String> logout(@RequestParam("clientType") LoginClientType clientType, @RequestParam("userId") Long userId, HttpServletResponse response) {
+
+        userService.logout(clientType, userId);
 
         // 2024-4-5  21:21-这边登出的时候，前端那边也要同步清除用户SESSION TOKEN信息，不需要清除登录信息
         // SecurityContextHolder.clearContext();

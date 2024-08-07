@@ -63,7 +63,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
 
     @Override
-    public Map<String, Object> login(@Nonnull UserLoginVo userLoginVo) throws PtpException {
+    public Map<String, Object> loginByNicknameAndPassword(@Nonnull UserLoginVo userLoginVo) throws PtpException {
 
         User user = getUserByNickname(userLoginVo.getNickname());
 
@@ -126,6 +126,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         result.put(WebConstants.USER_LOGIN_COOKIE_KEY, jwt1);
         String jwt2 = JwtUtils.encode(STORE_KEY);
         result.put("store_key", jwt2);
+        // 2024-8-7  16:38-信息不需要脱敏,一方面是因为密码信息本身就是单向加密过的 , 另一方面则是因为该user数据仅流通于应用系统内部 , 并不会向用户/外界暴露
+        result.put("user", user);
 
         // 2024-6-17  22:32-登录客户端类型和设备码无需返回给前端，因为这些数据完全可以再次由前端计算出来，而且计算是幂等的，至于每一次请求是否需要重新计算一遍，这得看前端那边怎么处理了，与我们后端无关~
         // 2024-4-3  21:33-返回给前端，保存到LocalStorage那里，用的时候再让前端带过来
@@ -186,7 +188,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             user.setBackground(null);
             user.setLikeNum(null);
             user.setBirthDate(null);
-            user.setAddressInfoId(null);
+            user.setAddress(null);
             user.setBindAccounts(null);
             user.setRoleId(null);
             user.setAssetId(null);
@@ -264,7 +266,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 peopleNearby.setBackground(null);
                 peopleNearby.setLikeNum(null);
                 peopleNearby.setBirthDate(null);
-                peopleNearby.setAddressInfoId(null);
+                peopleNearby.setAddress(null);
                 peopleNearby.setBindAccounts(null);
                 peopleNearby.setRoleId(null);
                 peopleNearby.setAssetId(null);
@@ -296,6 +298,26 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
 
         return distance2UserMap;
+
+    }
+
+
+    @Override
+    public void logout(LoginClientType clientType, Long userId) {
+
+        // 2024-8-7  15:11-移除用户在云端Redis的登录数据信息
+        redisTemplate.delete(String.format("user:login:%d", userId));
+        redisTemplate.delete(String.format("user:role:%d", userId));
+        redisTemplate.delete(String.format("user:login:env:%s:%d", clientType.name().toLowerCase(), userId));
+
+        // 2024-8-7  15:23-更新对应的用户地理位置信息为0(或者可近似认为是无效值)
+        AddressInfo addressInfo = AddressInfo.builder()
+                .longitude(-1D)
+                .latitude(-1D)
+                .altitude(Double.MAX_VALUE)
+                .detailedLocation("Invalid User Location Information")
+                .build();
+        refreshGeolocation(userId, addressInfo);
 
     }
 
