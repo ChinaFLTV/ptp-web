@@ -2,15 +2,21 @@ package ptp.fltv.web.service.impl;
 
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.fastjson2.JSONWriter;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.qcloud.cos.COSClient;
+import com.qcloud.cos.model.PutObjectRequest;
+import com.qcloud.cos.model.UploadResult;
+import com.qcloud.cos.transfer.TransferManager;
 import jakarta.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.data.geo.Point;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import pfp.fltv.common.constants.OAuth2LoginConstants;
 import pfp.fltv.common.constants.RedisConstants;
 import pfp.fltv.common.constants.WebConstants;
@@ -21,6 +27,7 @@ import pfp.fltv.common.model.po.manage.Role;
 import pfp.fltv.common.model.po.manage.User;
 import pfp.fltv.common.model.vo.UserLoginVo;
 import pfp.fltv.common.utils.JwtUtils;
+import ptp.fltv.web.constants.CosConstants;
 import ptp.fltv.web.mapper.UserMapper;
 import ptp.fltv.web.service.RoleService;
 import ptp.fltv.web.service.UserService;
@@ -29,6 +36,7 @@ import redis.clients.jedis.args.GeoUnit;
 import redis.clients.jedis.params.GeoSearchParam;
 import redis.clients.jedis.resps.GeoRadiusResponse;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -49,6 +57,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     private StringRedisTemplate redisTemplate;
     private RoleService roleService;
     private Jedis jedis;
+    private TransferManager transferManager;
+    private COSClient cosClient;
 
 
     @Override
@@ -318,6 +328,72 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 .detailedLocation("Invalid User Location Information")
                 .build();
         refreshGeolocation(userId, addressInfo);
+
+    }
+
+
+    @Override
+    public String updateAvatar(@Nonnull Long userId, @Nonnull MultipartFile newAvatarFile) throws IOException, InterruptedException {
+
+        String key = "avatar/" + userId + ".png";
+
+        PutObjectRequest request = new PutObjectRequest(CosConstants.BUCKET_USER_PICTURE, key, newAvatarFile.getInputStream(), null);
+
+        UploadResult uploadResult = transferManager.upload(request).waitForUploadResult();
+
+        // 2024-8-11  20:13-八嘎 , 原来自己拼接的和getObjectUrl获取到的URL是一样的!!!
+        // 2024-8-11  20:04-由于存储桶我们设置了私有读写的权限 , 因此拼接得到的URI以及getObjectUrl均不能直接访问目标资源 , 只能通过客户端凭借getObjectUrl得到的URI去访问云端资源文件
+        String newAvatarUri = String.format(CosConstants.PUBLIC_REQUEST_URL_PREFIX, CosConstants.BUCKET_USER_PICTURE, "/" + key);
+
+        User user = getById(userId);
+
+        String oldAvatarUri = null;
+
+        try {
+
+            // 2024-8-12  17:58-旧头像URI的提取页同样需要进行异常处理 , 删除旧头像失败同样记录日志并交给人工处理
+            JSONObject avatarJSONObject = JSON.parseObject(user.getAvatar());
+            oldAvatarUri = avatarJSONObject.getString("uri");
+
+        } catch (Exception e) {
+
+            log.error("提取用户旧的头像URI出错", e);
+
+        }
+
+        Map<String, String> avatarMap = new HashMap<>();
+        avatarMap.put("type", "uri");
+        avatarMap.put("uri", newAvatarUri);
+
+        user.setAvatar(JSON.toJSONString(avatarMap));
+
+        // 2024-8-12  17:53-之所以我们在这里没有进行异常处理 , 是因为我们认为只要本次图片上传成功 , 但用户数据更新失败 , 则此次头像修改操作就认定为失败
+        // 至于多上传的头像图片文件 , 同样交由人工进行补偿处理
+        // 2024-8-12  17:52-服务端这里主动发起用户更新
+        updateById(user);
+
+        // 2024-8-11  19:26-能进行到这里 , 说明刚刚的新头像上传已经成功了 , 那现在就需要删除旧的图片文件(不开启文件版本的情况下)
+        // 此时即使删除失败了 , 流程也要正常进行下去 , 因为此时删除失败不会对用户更新头像操作产生副作用了 , 只不过是服务器这边的资源被多占用了些而已
+        // 后续可通过日志分析或者人工介入等操作来处理此类异常情况
+        try {
+
+            String uriPrefix = String.format(CosConstants.PUBLIC_REQUEST_URL_PREFIX, CosConstants.BUCKET_USER_PICTURE, "/");
+            String oldAvatarKey = Objects.requireNonNull(oldAvatarUri).replace(uriPrefix, "");
+
+            // 2024-8-12  22:19-如果前后头像URI一致 , 则说明本次更新为覆盖更新 , 即旧的头像存储策略与现在的一致 , 因此无需再额外删除(因为旧的头像文件已经被现在的新的头像文件给覆盖掉了); 否则 , 则去删除旧的头像资源文件
+            if (!oldAvatarUri.equals(newAvatarUri)) {
+
+                cosClient.deleteObject(CosConstants.BUCKET_USER_PICTURE, oldAvatarKey);
+
+            }
+
+        } catch (Exception e) {
+
+            log.error("删除用户旧的头像资源文件出错", e);
+
+        }
+
+        return newAvatarUri;
 
     }
 

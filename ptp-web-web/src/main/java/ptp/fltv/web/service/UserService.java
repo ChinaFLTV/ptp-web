@@ -3,12 +3,14 @@ package ptp.fltv.web.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import jakarta.annotation.Nonnull;
 import lombok.NonNull;
+import org.springframework.web.multipart.MultipartFile;
 import pfp.fltv.common.enums.LoginClientType;
 import pfp.fltv.common.exceptions.PtpException;
 import pfp.fltv.common.model.po.info.AddressInfo;
 import pfp.fltv.common.model.po.manage.User;
 import pfp.fltv.common.model.vo.UserLoginVo;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -110,6 +112,21 @@ public interface UserService extends IService<User> {
      * @filename UserService.java
      */
     void logout(LoginClientType clientType, Long userId);
+
+
+    /**
+     * @param userId        用户ID
+     * @param newAvatarFile 用户新头像的文件
+     * @return 上传头像文件成功后的云文件的URI
+     * @throws IOException          将用户传输上来的文件保存至服务端内部指定路径时失败可能会抛出此异常
+     * @throws InterruptedException 将头像图片文件上传到腾讯云对象存储COS的过程中遭到意外阻断时将会抛出此异常
+     * @author Lenovo/LiGuanda
+     * @date 2024/8/11 PM 5:23:38
+     * @version 1.0.0
+     * @description 更新用户的头像
+     * @filename UserService.java
+     */
+    String updateAvatar(@Nonnull Long userId, @Nonnull MultipartFile newAvatarFile) throws IOException, InterruptedException;
 
 
 }

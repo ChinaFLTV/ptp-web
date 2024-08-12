@@ -131,6 +131,11 @@
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-seata</artifactId>
         </dependency>
+        <!--  2024-8-11  17:04-引入腾讯云对象存储COS的Java SDK  -->
+        <dependency>
+            <groupId>com.qcloud</groupId>
+            <artifactId>cos_api</artifactId>
+        </dependency>
 
     </dependencies>
 

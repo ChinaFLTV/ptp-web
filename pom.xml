@@ -98,6 +98,7 @@
         <xxl-job.version>2.4.1</xxl-job.version>
         <jedis.version>5.2.0-beta3</jedis.version>
         <skywalking.version>9.2.0</skywalking.version>
+        <qcloud.cos.version>5.6.225</qcloud.cos.version>
 
     </properties>
 
@@ -256,6 +257,12 @@
                 <groupId>org.apache.skywalking</groupId>
                 <artifactId>apm-toolkit-logback-1.x</artifactId>
                 <version>${skywalking.version}</version>
+            </dependency>
+            <!--  2024-8-11  17:02-引入腾讯云对象存储COS的Java SDK  -->
+            <dependency>
+                <groupId>com.qcloud</groupId>
+                <artifactId>cos_api</artifactId>
+                <version>${qcloud.cos.version}</version>
             </dependency>
 
         </dependencies>

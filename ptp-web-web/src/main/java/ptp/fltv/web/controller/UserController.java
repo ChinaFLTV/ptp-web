@@ -7,12 +7,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 import pfp.fltv.common.annotation.LogRecord;
+import pfp.fltv.common.exceptions.PtpException;
 import pfp.fltv.common.model.po.info.AddressInfo;
 import pfp.fltv.common.model.po.manage.User;
 import pfp.fltv.common.model.po.response.Result;
@@ -21,6 +23,7 @@ import pfp.fltv.common.utils.ReflectUtils;
 import ptp.fltv.web.constants.WebConstants;
 import ptp.fltv.web.service.UserService;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -150,8 +153,7 @@ public class UserController {
     @PutMapping("/update/single")
     public Result<?> updateSingleUser(
 
-            @Parameter(name = "user", description = "待修改的用户信息", required = true) @RequestBody User user,
-            HttpServletRequest request
+            @Parameter(name = "user", description = "待修改的用户信息", required = true) @RequestBody User user
 
     ) {
 
@@ -275,6 +277,38 @@ public class UserController {
         }
 
         return Result.success(strippedPeoplesNearby);
+
+    }
+
+
+    @LogRecord(description = "更新用户当前的头像")
+    @SentinelResource("web-content-user-controller")
+    @Operation(description = "更新用户当前的头像")
+    @PostMapping("/update/avatar")
+    public Result<String> changeAvatar(
+
+            @Parameter(name = "userId", description = "当前的用户ID", required = true) @RequestParam("userId") Long userId,
+            @Parameter(name = "picture", description = "用户的新的头像图片文件", required = true) @RequestParam("picture") MultipartFile picture
+
+    ) throws IOException, InterruptedException {
+
+        if (picture.isEmpty()) {
+
+            throw new PtpException(816, "用户上传的文件为空！");
+
+        }
+
+        String uri = userService.updateAvatar(userId, picture);
+
+        if (StringUtils.hasLength(uri)) {
+
+            return Result.success(uri);
+
+        } else {
+
+            return Result.failure("Upload picture failed");
+
+        }
 
     }
 

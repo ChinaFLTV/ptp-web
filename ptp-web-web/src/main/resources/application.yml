@@ -4,8 +4,16 @@ server:
     context-path: /api/v1/web
 
 
+
 # 2024-3-16  19:34-项目基本配置
 spring:
+  servlet:
+    multipart:
+      enabled: true
+      # 2024-8-12  22:54-配置文件上传的文件大小上限(默认为1MB)
+      max-file-size: 50MB
+      max-request-size: 50MB
+
   datasource:
     # 2024-6-2  21:38-调整时区为北京时间，以避免自动填充日期时间时出现8个小时的时间差
     url: jdbc:mysql://127.0.0.1:4407/ptp_web?serverTimezone=Asia/Shanghai&useSSL=false&useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true # 2024-4-8  22:14-必须要加 allowPublicKeyRetrieval=true ，否则会报错
@@ -139,6 +147,8 @@ mybatis-plus:
       logic-delete-field: isDelete # 2024-3-26  8:08-全局逻辑删除的实体字段名
       logic-delete-value: 1 # 逻辑已删除值（默认为 1）
       logic-not-delete-value: 0 # 逻辑未删除值（默认为 0）
+      update-strategy: ignored # 2024-8-8  22:55-解决MyBatisPlus updateById方法更新不了空字符串和null 的问题 , 会对所有的字段都忽略判断，如果一些字段不想要修改，但是传值的时候没有传递过来，就会被更新为null，可能会影响其他业务数据的正确性
+      # insert-strategy: ignored # 2024-8-9  11:33-控制字段在 Insert 时的字段验证策略-忽略判断，效果等同于”ALWAYS”
 
 
 # 2024-6-1  17:36-RocketMQ相关配置
@@ -172,3 +182,10 @@ seata:
       group: "SEATA_GROUP"
       # namespace: "seata"
   tx-service-group: "content-operation-transaction-group"
+
+
+# 2024-8-11  17:30-腾讯云对象存储COS密钥相关的配置
+cos:
+  secretId: AKIDRkAmPsT0mF7zpTG4nDo2KvNm6MRM4iLx
+  secretKey: ccffoqmzDMUWURMAqeMsBey56De5Qd0O
+  regionName: ap-nanjing
