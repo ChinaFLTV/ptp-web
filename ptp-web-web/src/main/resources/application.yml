@@ -184,6 +184,8 @@ seata:
   tx-service-group: "content-operation-transaction-group"
 
 
+# 2024-8-12  23:15-由于下面的配置中包含敏感信息key , 因此你无法正常推送到Github仓库 , 解决方式 : Profile -> Settings -> Code security and analysis -> disable
+# 建议推送完该文件之后再将其打开 , 这是一个很有用的保护机制
 # 2024-8-11  17:30-腾讯云对象存储COS密钥相关的配置
 cos:
   secretId: AKIDRkAmPsT0mF7zpTG4nDo2KvNm6MRM4iLx
