@@ -83,5 +83,10 @@
     "start": 1600,
     "end": 1699,
     "enum": "ContentRankType"
+  },
+  {
+    "start": 1700,
+    "end": 1799,
+    "enum": "GroupMessage.MessageType"
   }
 ]

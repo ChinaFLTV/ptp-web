@@ -49,12 +49,17 @@ public class AuthenticationCheckFilter implements GatewayFilter {
         final String path = request.getPath().value();
 
         final AtomicBoolean isHeld = new AtomicBoolean(false);
+        // 2024-8-25  22:33-标记当前访问的URL是否匹配到了某个规则
+        final AtomicBoolean isMatched = new AtomicBoolean(false);
+
         for (Map.Entry<String, Set<String>> urlAuthoritiesEntry : SecurityConstants.URL_AUTHENTICATION_MAP.entrySet()) {
 
             String urlPrefix = urlAuthoritiesEntry.getKey();
             Set<String> requiredAuthorities = urlAuthoritiesEntry.getValue();
 
             if (path.startsWith(urlPrefix)) {
+
+                isMatched.set(true);
 
                 Set<String> holdingAuthorities = new HashSet<>(ApplicationContext.ROLE.get().getAuthorities());
                 // 2024-5-5  21:08-用户必须具有路径所需的全部权限才可放行
@@ -93,6 +98,14 @@ public class AuthenticationCheckFilter implements GatewayFilter {
 
             log.info("----> 请求用户满足要求的权限，请求将被放行");
             // 2024-5-5  21:16-权限满足，放行
+            return chain.filter(exchange);
+
+        }
+
+        if (!isMatched.get()) {
+
+            log.info("----> 请求用户不适用于当前配置的任何一条权限规则，请求将被默认放行");
+            // 2024-8-25  22:35-未能成功匹配任一规则，默认放行
             return chain.filter(exchange);
 
         }

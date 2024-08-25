@@ -1,5 +1,8 @@
 package ptp.fltv.web.constants;
 
+import org.springframework.util.StringUtils;
+import pfp.fltv.common.utils.NetworkUtils;
+
 /**
  * @author Lenovo/LiGuanda
  * @version 1.0.0
@@ -44,6 +47,29 @@ public class WebConstants {
     public static final String ES_BASE_PASSAGE_COMMENT_URL = "/content/passage/comment";
     public static final String ES_BASE_USER_URL = "/content/user";
     public static final String ES_BASE_COMMODITY_URL = "/finance/commodity";
+
+
+    /**
+     * @author Lenovo/LiGuanda
+     * @date 2024/8/24 PM 5:39:59
+     * @version 1.0.0
+     * @description 本程序所运行在的服务器的外网IP地址(开发环境下则为局域网的IP地址)
+     * @filename WebConstants.java
+     */
+    public static String SERVER_IP = "localhost";
+
+
+    static {
+
+        // 2024-8-2  18:13-获取本机的真实物理IP
+        String realIP = NetworkUtils.getRealIP();
+        if (StringUtils.hasLength(realIP)) {
+
+            SERVER_IP = realIP;
+
+        }
+
+    }
 
 
 }

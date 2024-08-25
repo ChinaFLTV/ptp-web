@@ -1,16 +1,19 @@
 package ptp.fltv.web.service.impl;
 
+import com.alibaba.fastjson2.JSON;
 import jakarta.annotation.Nonnull;
 import jakarta.websocket.Session;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import pfp.fltv.common.model.po.manage.User;
-import pfp.fltv.common.model.po.ws.GroupChatMessage;
+import pfp.fltv.common.model.po.ws.ChatRoom;
+import pfp.fltv.common.model.po.ws.GroupMessage;
 import ptp.fltv.web.service.ChatRoomService;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -25,19 +28,37 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ChatRoomServiceImpl implements ChatRoomService {
 
 
-    private static final Map<Long, Map<String, Session>> chatRoom2SessionsMap = new ConcurrentHashMap<>(); // 2024-6-23  23:46-存储房间号以及其当前持有的SESSION的映射 : roomId -> sessionId --> session
-    private static final Map<Long, Map<Long, String>> chatRoom2SessionIdsMap = new ConcurrentHashMap<>(); // 2024-6-25  9:11-存储用户ID与会话ID的映射 , 方便后续根据用户ID查找对应的会话 : roomId -> userId --> sessionId
+    private static final Map<Long, Map<String, Session>> chatRoomId2SessionsMap = new ConcurrentHashMap<>(); // 2024-6-23  23:46-存储房间号以及其当前持有的SESSION的映射 : roomId -> sessionId --> session
+    private static final Map<Long, Map<Long, String>> chatRoomId2SessionIdsMap = new ConcurrentHashMap<>(); // 2024-6-25  9:11-存储用户ID与会话ID的映射 , 方便后续根据用户ID查找对应的会话 : roomId -> userId --> sessionId
+    private static final Map<Long, ChatRoom> chatRoomId2ChatRoomsMap = new ConcurrentHashMap<>(); // 2024-8-23  12:41-存储房间号与房间信息的映射 : roomId -> roomInfo
+    private static final Long DEFAULT_CHAT_ROOM_ID = 666L; // 2024-8-23  20:42-默认的群聊房间ID
+
+
+    static {
+
+        // 2024-8-23  13:34-默认自动设置一个公告的聊天房间
+        ChatRoom defaultChatRoom = ChatRoom.builder()
+                .id(DEFAULT_CHAT_ROOM_ID)
+                .name("达达利亚和他的朋友们")
+                .avatarUrl("https://m.qqkw.com/d/tx/titlepic/c263a882a7ed7f099e6b48961af58b0b.jpg")
+                .rank(6.0)
+                .onlineUsers(chatRoomId2SessionIdsMap.getOrDefault(DEFAULT_CHAT_ROOM_ID, new ConcurrentHashMap<>()).keySet())
+                .build();
+
+        chatRoomId2ChatRoomsMap.put(DEFAULT_CHAT_ROOM_ID, defaultChatRoom);
+
+    }
 
 
     @Override
-    public Map<String, Object> getSingleRoomInfo(@Nonnull Long roomId) {
+    public ChatRoom getSingleRoomInfo(@Nonnull Long roomId) {
 
-        Map<String, Object> roomInfo = new HashMap<>();
+        ChatRoom chatRoom = chatRoomId2ChatRoomsMap.get(roomId);
 
-        roomInfo.put("live-count", chatRoom2SessionsMap.get(roomId).size());
-        roomInfo.put("live-user-ids", chatRoom2SessionIdsMap.get(roomId).keySet());
+        Set<Long> liveUserIds = chatRoomId2SessionIdsMap.getOrDefault(roomId, new ConcurrentHashMap<>()).keySet();
+        chatRoom.setOnlineUsers(liveUserIds);
 
-        return roomInfo;
+        return chatRoom;
 
     }
 
@@ -45,21 +66,21 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     @Override
     public boolean joinChatRoom(@Nonnull Long roomId, @Nonnull Long userId, @Nonnull Session session) throws IOException {
 
-        if (!chatRoom2SessionsMap.containsKey(roomId)) {
+        if (!chatRoomId2SessionsMap.containsKey(roomId)) {
 
-            chatRoom2SessionsMap.put(roomId, new HashMap<>());
+            chatRoomId2SessionsMap.put(roomId, new HashMap<>());
 
         }
-        if (!chatRoom2SessionIdsMap.containsKey(roomId)) {
+        if (!chatRoomId2SessionIdsMap.containsKey(roomId)) {
 
-            chatRoom2SessionIdsMap.put(roomId, new HashMap<>());
+            chatRoomId2SessionIdsMap.put(roomId, new HashMap<>());
 
         }
 
         // 2024-6-24  10:27-如果先前已经存在了同ID的会话 , 则释放掉先前存在的旧会话 , 以节约服务器资源
-        if (chatRoom2SessionsMap.get(roomId).containsKey(session.getId())) {
+        if (chatRoomId2SessionsMap.get(roomId).containsKey(session.getId())) {
 
-            Session oldSession = chatRoom2SessionsMap.get(roomId).get(session.getId());
+            Session oldSession = chatRoomId2SessionsMap.get(roomId).get(session.getId());
             if (oldSession != null && oldSession.isOpen()) {
 
                 oldSession.close();
@@ -68,8 +89,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
         }
 
-        chatRoom2SessionsMap.get(roomId).put(session.getId(), session);
-        chatRoom2SessionIdsMap.get(roomId).put(userId, session.getId());
+        chatRoomId2SessionsMap.get(roomId).put(session.getId(), session);
+        chatRoomId2SessionIdsMap.get(roomId).put(userId, session.getId());
 
         return true;
 
@@ -77,19 +98,25 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
 
     @Override
-    public boolean sendGroupChatMsg(@Nonnull Long roomId, @Nonnull User user, @Nonnull GroupChatMessage groupChatMessage) throws IOException {
+    public boolean sendGroupChatMsg(@Nonnull Long roomId, @Nonnull User user, @Nonnull GroupMessage groupChatMessage) throws IOException {
 
-        String msg = groupChatMessage.getMsg();
+        String content = groupChatMessage.getContent();
 
-        if (chatRoom2SessionsMap.containsKey(roomId) && StringUtils.hasLength(msg)) {
+        if (chatRoomId2SessionsMap.containsKey(roomId) && StringUtils.hasLength(content)) {
 
-            Map<String, Session> sessionsMap = chatRoom2SessionsMap.get(roomId);
+            Map<String, Session> sessionsMap = chatRoomId2SessionsMap.get(roomId);
 
             if (sessionsMap != null && !sessionsMap.isEmpty()) {
 
+                Map<String, Object> wrappedMsgDataMap = new HashMap<>();
+                wrappedMsgDataMap.put("room-id", roomId);
+                wrappedMsgDataMap.put("user", user);
+                wrappedMsgDataMap.put("message", groupChatMessage);
+
                 for (Map.Entry<String, Session> entry : sessionsMap.entrySet()) {
 
-                    entry.getValue().getBasicRemote().sendText(String.format("[%s] : %s", groupChatMessage.isSystem() ? "系统消息" : String.format("用户消息(%s)", user.getNickname()), msg));
+                    // entry.getValue().getBasicRemote().sendText(String.format("[%s] : %s", groupChatMessage.getType() == GroupMessage.MessageType.SYSTEM ? "系统消息" : String.format("用户消息(%s)", user.getNickname()), content));
+                    entry.getValue().getBasicRemote().sendText(JSON.toJSONString(wrappedMsgDataMap));
 
                 }
 
@@ -105,12 +132,12 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
 
     @Override
-    public boolean sendPrivateChatMsg(@Nonnull Long roomId, @Nonnull Long userId, @Nonnull GroupChatMessage groupChatMessage) throws IOException {
+    public boolean sendPrivateChatMsg(@Nonnull Long roomId, @Nonnull Long userId, @Nonnull GroupMessage groupChatMessage) throws IOException {
 
-        String sessionId = chatRoom2SessionIdsMap.get(roomId).get(userId);
-        Session session = chatRoom2SessionsMap.get(roomId).get(sessionId);
+        String sessionId = chatRoomId2SessionIdsMap.get(roomId).get(userId);
+        Session session = chatRoomId2SessionsMap.get(roomId).get(sessionId);
 
-        session.getBasicRemote().sendText(String.format("[%s] : %s", groupChatMessage.isSystem() ? "系统消息" : "用户消息", groupChatMessage.getMsg()));
+        session.getBasicRemote().sendText(String.format("[%s] : %s", groupChatMessage.getType() == GroupMessage.MessageType.SYSTEM ? "系统消息" : "用户消息", groupChatMessage.getContent()));
         return false;
 
     }
@@ -124,9 +151,9 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             session.close();
 
         }
-        Map<String, Session> sessionsMap = chatRoom2SessionsMap.get(roomId);
-        chatRoom2SessionsMap.get(roomId).remove(session.getId());
-        chatRoom2SessionIdsMap.get(roomId).remove(userId);
+        Map<String, Session> sessionsMap = chatRoomId2SessionsMap.get(roomId);
+        chatRoomId2SessionsMap.get(roomId).remove(session.getId());
+        chatRoomId2SessionIdsMap.get(roomId).remove(userId);
 
     }
 

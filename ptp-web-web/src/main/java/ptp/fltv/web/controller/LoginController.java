@@ -52,7 +52,7 @@ public class LoginController {
         cookie.setSecure(false); // 2024-8-4  17:26-带有该Secure属性的 cookie 仅通过 HTTPS 协议与加密请求一起发送到服务器 , 将此属性设置为 true 以防止中间人附加
         cookie.setHttpOnly(false); // 2024-8-4  17:27-JavaScript Document.cookie API 无法访问具有该属性的 cookie , 将此属性设置为 true 以防止跨站点脚本 (XSS) 攻击
         cookie.setMaxAge(7 * 24 * 60 * 60); // 2024-8-4  17:28-设置 cookie 的过期时间 , 默认为-1. -1表示它是一个会话 Cookie , 当用户关闭浏览器时 , 会话 cookie 将被删除
-        cookie.setDomain("localhost");
+        cookie.setDomain(ptp.fltv.web.constants.WebConstants.SERVER_IP);
         cookie.setPath("/");
 
         response.addCookie(cookie);

@@ -3,10 +3,10 @@ package ptp.fltv.web.service;
 import jakarta.annotation.Nonnull;
 import jakarta.websocket.Session;
 import pfp.fltv.common.model.po.manage.User;
-import pfp.fltv.common.model.po.ws.GroupChatMessage;
+import pfp.fltv.common.model.po.ws.ChatRoom;
+import pfp.fltv.common.model.po.ws.GroupMessage;
 
 import java.io.IOException;
-import java.util.Map;
 
 /**
  * @author Lenovo/LiGuanda
@@ -28,7 +28,7 @@ public interface ChatRoomService {
      * @description 获取单个房间的实时详细状态信息
      * @filename ChatRoomService.java
      */
-    Map<String, Object> getSingleRoomInfo(@Nonnull Long roomId);
+    ChatRoom getSingleRoomInfo(@Nonnull Long roomId);
 
 
     /**
@@ -58,7 +58,7 @@ public interface ChatRoomService {
      * @description 向指定房间号的聊天室发送群聊消息
      * @filename ChatRoomService.java
      */
-    boolean sendGroupChatMsg(@Nonnull Long roomId, @Nonnull User user, @Nonnull GroupChatMessage groupChatMessage) throws IOException;
+    boolean sendGroupChatMsg(@Nonnull Long roomId, @Nonnull User user, @Nonnull GroupMessage groupChatMessage) throws IOException;
 
 
     /**
@@ -73,7 +73,7 @@ public interface ChatRoomService {
      * @description 发送单条消息到同房间内的指定用户
      * @filename ChatRoomService.java
      */
-    boolean sendPrivateChatMsg(@Nonnull Long roomId, @Nonnull Long userId, @Nonnull GroupChatMessage groupChatMessage) throws IOException;
+    boolean sendPrivateChatMsg(@Nonnull Long roomId, @Nonnull Long userId, @Nonnull GroupMessage groupChatMessage) throws IOException;
 
 
     /**

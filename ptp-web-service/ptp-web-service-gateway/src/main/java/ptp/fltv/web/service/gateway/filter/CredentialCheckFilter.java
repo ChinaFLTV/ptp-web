@@ -133,8 +133,8 @@ public class CredentialCheckFilter implements GlobalFilter, Ordered {
                                 // 同时，客户端本地还需要强制清除用户的本地登录数据，准备进行重新登录
                                 // 该过程还需要向客户端返回当前最新的登录环境数据，以警告用户存在另一台物理设备正在同端登录
                                 log.info("============请求用户云端登录信息[未通过验证]============");
-                                log.warn("cloud-client-type = {}", cloudClientType);
-                                log.warn("cloud-device-id = {}", cloudDeviceId);
+                                log.info("cloud-client-type = {}", cloudClientType);
+                                log.info("cloud-device-id = {}", cloudDeviceId);
 
                                 ApplicationContext.clear();
 
@@ -151,8 +151,8 @@ public class CredentialCheckFilter implements GlobalFilter, Ordered {
 
                                 log.info("----> 校验通过，请求将被允许放行");
                                 log.info("============请求用户云端登录信息[通过验证]============");
-                                log.warn("cloud-client-type = {}", cloudClientType);
-                                log.warn("cloud-device-id = {}", cloudDeviceId);
+                                log.info("cloud-client-type = {}", cloudClientType);
+                                log.info("cloud-device-id = {}", cloudDeviceId);
 
                                 // 2024-5-5  21:00-缓存用户身份信息到ThreadLocal中，以便后续组件使用
                                 ApplicationContext.USER.set(compactUser);

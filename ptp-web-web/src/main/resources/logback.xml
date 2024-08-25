@@ -9,6 +9,15 @@
     <property name="LOG_HOME" value="D:/JavaProjects/ptp-web-backend/logs/logback/web"/>
 
 
+    <!-- 2024-8-24  15:30-控制台财色输出 -->
+    <!--<conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter"/>-->
+    <!-- 2024-8-24  15:30-spring 美化异常输出 -->
+    <!--<conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter"/>
+    <conversionRule conversionWord="wEx" converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter"/>-->
+
+    <!--  2024-8-24  16:16-引入的springboot文件中已经给我们制定好clr对应的转换器类了  -->
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
     <!--输出到控制台-->
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
 
@@ -21,10 +30,12 @@
         <encoder>
 
             <!--<pattern>%d %p (%file:%line)- %m%n</pattern>-->
+            <!--  2024-8-24  15:14-源码位置的格式应遵循 at 类名.方法名(文件名:行号) 这种常见的模式 , 只有这样写IDE才会识别到这种模式后会自动将其转换为可点击的链接  -->
+            <!--  2024-8-24  13:46-打印方法名、行号可能会比较消耗性能 , 请谨慎使用  -->
+            <!--  2024-8-24  13:46-相关的格式化字符请参阅 : https://www.cnblogs.com/sxdcgaq8080/p/7886251.html  -->
+            <!--  2024-8-24  13:45- %colorName(...) 可以给...的控制台字样设置字体颜色 -->
             <!--格式化输出：%d:表示日期    %thread:表示线程名     %-5level:级别从左显示5个字符宽度  %msg:日志消息    %n:是换行符-->
-            <pattern>%d{yyyy-MM-dd HH:mm:ss} %highlight(%-5level) -- %boldMagenta([%thread]) %boldCyan(%logger) :
-                %msg%n
-            </pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %highlight(%-5level) -- %boldMagenta([%-50thread]) %green(at %class.%method) \(%file:%line\) %cyan(--) %msg%n</pattern>
             <charset>UTF-8</charset>
 
         </encoder>
