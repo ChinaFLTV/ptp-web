@@ -24,10 +24,7 @@ import ptp.fltv.web.constants.WebConstants;
 import ptp.fltv.web.service.UserService;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Lenovo/LiGuanda
@@ -88,6 +85,31 @@ public class UserController {
 
         List<UserVo> userVos = new ArrayList<>();
         for (User user : userPage.getRecords()) {
+
+            UserVo userVo = new UserVo();
+            BeanUtils.copyProperties(user, userVo);
+            userVos.add(userVo);
+
+        }
+
+        return Result.success(userVos);
+
+    }
+
+
+    @LogRecord(description = "根据ID集合查询多条用户数据")
+    @SentinelResource("web-content-user-controller")
+    @Operation(description = "根据ID集合查询多条用户数据")
+    @GetMapping("/query/byIds")
+    public Result<List<UserVo>> queryUsersByIds(
+
+            @Parameter(name = "ids", description = "所要查询的用户ID集合", in = ParameterIn.QUERY, required = true) @RequestParam("ids") Set<Long> ids
+
+    ) {
+
+        List<User> users = userService.getBaseMapper().selectBatchIds(ids);
+        List<UserVo> userVos = new ArrayList<>();
+        for (User user : users) {
 
             UserVo userVo = new UserVo();
             BeanUtils.copyProperties(user, userVo);

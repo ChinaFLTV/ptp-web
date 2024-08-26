@@ -79,7 +79,7 @@ public class ChatRoomServer {
 
             groupChatMessage = GroupMessage.builder()
                     .chatRoomId(roomId)
-                    .type(GroupMessage.MessageType.SYSTEM)
+                    .type(GroupMessage.MessageType.SYSTEM_USER_ENTER)
                     .content(String.format("欢迎用户 %s 加入到当前聊天室 [%s] 中来!", user.getNickname(), chatRoomService.getSingleRoomInfo(roomId).getName()))
                     .dateTime(LocalDateTime.now())
                     .build();
@@ -89,7 +89,7 @@ public class ChatRoomServer {
 
             groupChatMessage = GroupMessage.builder()
                     .chatRoomId(roomId)
-                    .type(GroupMessage.MessageType.SYSTEM)
+                    .type(GroupMessage.MessageType.SYSTEM_ABNORMAL)
                     .content(String.format("欢迎用户 %s 加入到聊天室 [%s] 失败", user.getNickname(), chatRoomService.getSingleRoomInfo(roomId).getName()))
                     .dateTime(LocalDateTime.now())
                     .build();
@@ -111,7 +111,7 @@ public class ChatRoomServer {
         // 2024-66-24  23:16-发送用户退出群聊的全房间广播消息
         GroupMessage groupChatMessage = GroupMessage.builder()
                 .chatRoomId(roomId)
-                .type(GroupMessage.MessageType.SYSTEM)
+                .type(GroupMessage.MessageType.SYSTEM_USER_EXIT)
                 .content(String.format("用户 %s 已退出当前聊天室 [%s]", user.getNickname(), chatRoomService.getSingleRoomInfo(roomId).getName()))
                 .dateTime(LocalDateTime.now())
                 .build();
@@ -139,7 +139,7 @@ public class ChatRoomServer {
 
             GroupMessage groupChatMessage = GroupMessage.builder()
                     .chatRoomId(roomId)
-                    .type(GroupMessage.MessageType.SYSTEM)
+                    .type(GroupMessage.MessageType.SYSTEM_ABNORMAL)
                     .content(String.format("当前客户端 [%s] 本次发送消息异常 : %s", session.getId(), ex.getCause() == null ? ex.getLocalizedMessage() : ex.getCause().getMessage()))
                     .dateTime(LocalDateTime.now())
                     .build();

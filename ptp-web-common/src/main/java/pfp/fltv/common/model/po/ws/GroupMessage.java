@@ -38,8 +38,11 @@ public class GroupMessage {
 
         GROUP_CHAT(1701, "群聊消息"),
         PRIVATE_CHAT(1702, "私聊消息"),
-        SYSTEM(1703, "系统消息"),
-        UNKNOWN(1704, "未知类型的消息");
+        SYSTEM_USER_ENTER(1703, "系统消息:用户进入房间"),
+        SYSTEM_USER_EXIT(1704, "系统消息:用户退出房间"),
+        SYSTEM_ABNORMAL(1705, "系统消息:系统聊天服务出现异常"),
+        SYSTEM_RECOVER(1706, "系统消息:系统聊天服务恢复正常"), // 2024-8-26  14:06-继续增加新的系统消息时 , 请保持系统消息枚举的连续性 , 同时你还需要去ptp.fltv.web.service.impl.ChatRoomServiceImpl.sendPrivateChatMsg方法中修改对系统消息的上下限检测的代码(前端的代码也要同步进行修改)
+        UNKNOWN(1707, "未知类型的消息");
 
 
         @JsonValue
