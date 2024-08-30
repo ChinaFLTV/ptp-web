@@ -137,7 +137,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         String sessionId = chatRoomId2SessionIdsMap.get(roomId).get(userId);
         Session session = chatRoomId2SessionsMap.get(roomId).get(sessionId);
 
-        int messageTypeCode = groupChatMessage.getType().getCode();
+        int messageTypeCode = groupChatMessage.getMessageType().getCode();
 
         session.getBasicRemote().sendText(String.format("[%s] : %s", messageTypeCode >= 1703 && messageTypeCode <= 1706 ? "系统消息" : "用户消息", groupChatMessage.getContent()));
         return false;

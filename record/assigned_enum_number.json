@@ -88,5 +88,10 @@
     "start": 1700,
     "end": 1799,
     "enum": "GroupMessage.MessageType"
+  },
+  {
+    "start": 1800,
+    "end": 1899,
+    "enum": "GroupMessage.ContentType"
   }
 ]
