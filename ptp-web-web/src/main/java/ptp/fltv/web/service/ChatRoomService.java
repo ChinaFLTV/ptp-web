@@ -2,6 +2,7 @@ package ptp.fltv.web.service;
 
 import jakarta.annotation.Nonnull;
 import jakarta.websocket.Session;
+import org.springframework.web.multipart.MultipartFile;
 import pfp.fltv.common.model.po.manage.User;
 import pfp.fltv.common.model.po.ws.ChatRoom;
 import pfp.fltv.common.model.po.ws.GroupMessage;
@@ -88,6 +89,21 @@ public interface ChatRoomService {
      * @filename ChatRoomService.java
      */
     void leaveChatRoom(@Nonnull Long roomId, @Nonnull Long userId, @Nonnull Session session) throws IOException;
+
+
+    /**
+     * @param messageId   消息ID
+     * @param contentType 消息内容类型
+     * @param file        消息数据(多媒体内容)
+     * @return 上传成功则返回该资源的云端访问直链 , 失败则返回null
+     * @pa
+     * @author Lenovo/LiGuanda
+     * @date 2024/8/30 PM 11:51:52
+     * @version 1.0.0
+     * @description 上传聊天消息的多媒体数据到云端COS对象存储中
+     * @filename ChatRoomService.java
+     */
+    String uploadMediaFile(@Nonnull Long messageId, @Nonnull GroupMessage.ContentType contentType, @Nonnull MultipartFile file);
 
 
 }

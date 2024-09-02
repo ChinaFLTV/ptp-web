@@ -28,5 +28,26 @@ public class CosConstants {
      */
     public static final String PUBLIC_REQUEST_URL_PREFIX = "https://%s.cos.ap-nanjing.myqcloud.com%s";
 
+    /**
+     * @author Lenovo/LiGuanda
+     * @date 2024/8/31 PM 9:33:10
+     * @version 1.0.0
+     * @description 聊天室中产生的多媒体数据的存放的存储桶名称
+     * @filename CosConstants.java
+     */
+    public static final String BUCKET_CHAT_ROOM = "ptp-chat-room-1309498949";
+    /**
+     * @author Lenovo/LiGuanda
+     * @date 2024/8/30 PM 11:55:50
+     * @version 1.0.0
+     * @description 聊天消息相关的多媒体数据存放的存储桶下的KEY(桶内的相对路径)
+     * @filename CosConstants.java
+     */
+    public static final String BUCKET_CHAT_ROOM_PHOTO = "/photo";
+    public static final String BUCKET_CHAT_ROOM_VIDEO = "/video";
+    public static final String BUCKET_CHAT_ROOM_AUDIO = "/audio";
+    public static final String BUCKET_CHAT_ROOM_VOICE = "/voice";
+    public static final String BUCKET_CHAT_ROOM_FILE = "/file";
+
 
 }

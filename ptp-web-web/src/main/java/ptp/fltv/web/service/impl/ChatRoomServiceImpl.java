@@ -1,13 +1,22 @@
 package ptp.fltv.web.service.impl;
 
 import com.alibaba.fastjson2.JSON;
+import com.qcloud.cos.exception.CosClientException;
+import com.qcloud.cos.model.PutObjectRequest;
+import com.qcloud.cos.model.UploadResult;
+import com.qcloud.cos.transfer.TransferManager;
 import jakarta.annotation.Nonnull;
 import jakarta.websocket.Session;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 import pfp.fltv.common.model.po.manage.User;
 import pfp.fltv.common.model.po.ws.ChatRoom;
 import pfp.fltv.common.model.po.ws.GroupMessage;
+import pfp.fltv.common.utils.FileUtils;
+import ptp.fltv.web.constants.CosConstants;
 import ptp.fltv.web.service.ChatRoomService;
 
 import java.io.IOException;
@@ -24,9 +33,13 @@ import java.util.concurrent.ConcurrentHashMap;
  * @filename ChatRoomServiceImpl.java
  */
 
+@Slf4j
+@AllArgsConstructor
 @Service
 public class ChatRoomServiceImpl implements ChatRoomService {
 
+
+    private TransferManager transferManager;
 
     private static final Map<Long, Map<String, Session>> chatRoomId2SessionsMap = new ConcurrentHashMap<>(); // 2024-6-23  23:46-存储房间号以及其当前持有的SESSION的映射 : roomId -> sessionId --> session
     private static final Map<Long, Map<Long, String>> chatRoomId2SessionIdsMap = new ConcurrentHashMap<>(); // 2024-6-25  9:11-存储用户ID与会话ID的映射 , 方便后续根据用户ID查找对应的会话 : roomId -> userId --> sessionId
@@ -156,6 +169,42 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         Map<String, Session> sessionsMap = chatRoomId2SessionsMap.get(roomId);
         chatRoomId2SessionsMap.get(roomId).remove(session.getId());
         chatRoomId2SessionIdsMap.get(roomId).remove(userId);
+
+    }
+
+
+    @Override
+    public String uploadMediaFile(@Nonnull Long messageId, @Nonnull GroupMessage.ContentType contentType, @Nonnull MultipartFile file) {
+
+        try {
+
+            String extensionName = FileUtils.fetchFileExtensionFromPath(file.getOriginalFilename(), true);
+            String key = CosConstants.BUCKET_CHAT_ROOM_FILE + "/" + messageId + "." + extensionName;
+
+            String bucketName = CosConstants.BUCKET_CHAT_ROOM;
+
+            switch (contentType) {
+
+                case PHOTO -> key = CosConstants.BUCKET_CHAT_ROOM_PHOTO + "/" + messageId + ".png";
+                case VIDEO -> key = CosConstants.BUCKET_CHAT_ROOM_VIDEO + "/" + messageId + ".mp4";
+                case AUDIO -> key = CosConstants.BUCKET_CHAT_ROOM_AUDIO + "/" + messageId + ".mp3";
+                case VOICE -> key = CosConstants.BUCKET_CHAT_ROOM_VOICE + "/" + messageId + ".wav";
+
+            }
+
+            PutObjectRequest request = new PutObjectRequest(bucketName, key, file.getInputStream(), null);
+
+            // 2024-9-2  21:19-高级接口会返回一个异步结果Upload , 可同步地调用 waitForUploadResult 方法等待上传完成，成功返回 UploadResult, 失败抛出异常
+            UploadResult uploadResult = transferManager.upload(request).waitForUploadResult();
+
+            return String.format(CosConstants.PUBLIC_REQUEST_URL_PREFIX, bucketName, key);
+
+        } catch (CosClientException | InterruptedException | IOException ex) {
+
+            log.error("上传聊天室产生的多媒体文件到云端COS中失败 : {}", ex.getCause() == null ? ex.getLocalizedMessage() : ex.getCause().getMessage());
+            return null;
+
+        }
 
     }
 

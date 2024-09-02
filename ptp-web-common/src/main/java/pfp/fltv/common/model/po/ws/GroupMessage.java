@@ -2,6 +2,7 @@ package pfp.fltv.common.model.po.ws;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.*;
+import pfp.fltv.common.enums.base.ConvertableEnum;
 
 import java.time.LocalDateTime;
 
@@ -35,7 +36,7 @@ public class GroupMessage {
 
     @Getter
     @AllArgsConstructor
-    public enum MessageType {
+    public enum MessageType implements ConvertableEnum<Integer> {
 
 
         GROUP_CHAT(1701, "群聊消息"),
@@ -64,7 +65,7 @@ public class GroupMessage {
      */
     @Getter
     @AllArgsConstructor
-    public enum ContentType {
+    public enum ContentType implements ConvertableEnum<Integer> {
 
 
         TEXT(1801, "纯文本"),

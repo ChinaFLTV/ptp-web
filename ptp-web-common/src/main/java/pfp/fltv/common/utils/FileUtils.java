@@ -1,7 +1,7 @@
 package pfp.fltv.common.utils;
 
 import jakarta.annotation.Nonnull;
-import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.StringUtils;
 import pfp.fltv.common.enums.ContentType;
 
 import java.util.Set;
@@ -27,9 +27,9 @@ public class FileUtils {
      * @description 从文件路径中提取文件拓展名
      * @filename FileUtils.java
      */
-    public static String fetchFileExtensionFromPath(@Nonnull String path, boolean lowercase) {
+    public static String fetchFileExtensionFromPath(String path, boolean lowercase) {
 
-        if (StringUtils.isEmpty(path)) {
+        if (!StringUtils.hasLength(path)) {
 
             return null;
 
@@ -54,7 +54,7 @@ public class FileUtils {
      */
     public static ContentType fileExtension2ContentType(@Nonnull String fileExtension) {
 
-        if (StringUtils.isEmpty(fileExtension)) {
+        if (!StringUtils.hasLength(fileExtension)) {
 
             return ContentType.UNKNOWN;
 

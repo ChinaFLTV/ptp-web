@@ -6,13 +6,12 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import pfp.fltv.common.annotation.LogRecord;
 import pfp.fltv.common.model.po.response.Result;
 import pfp.fltv.common.model.po.ws.ChatRoom;
+import pfp.fltv.common.model.po.ws.GroupMessage;
 import ptp.fltv.web.service.ChatRoomService;
 
 /**
@@ -44,6 +43,24 @@ public class ChatRoomController {
     ) {
 
         return Result.success(chatRoomService.getSingleRoomInfo(id));
+
+    }
+
+
+    @LogRecord(description = "上传聊天消息中引用到的媒体数据")
+    @SentinelResource("web-content-user-chat-controller")
+    @Operation(description = "上传聊天消息中引用到的媒体数据")
+    @PostMapping("/upload/media")
+    public Result<String> uploadMediaFile(
+
+            @Parameter(name = "userId", description = "当前的用户ID", required = true) @RequestParam("userId") Long userId,
+            @Parameter(name = "messageId", description = "消息ID", required = true) @RequestParam("messageId") Long messageId,
+            @Parameter(name = "contentType", description = "消息内容类型", required = true) @RequestParam("contentType") GroupMessage.ContentType contentType,
+            @Parameter(name = "mediaFile", description = "多媒体文件", required = true) @RequestParam("mediaFile") MultipartFile mediaFile
+
+    ) {
+
+        return Result.success(chatRoomService.uploadMediaFile(messageId, contentType, mediaFile));
 
     }
 
