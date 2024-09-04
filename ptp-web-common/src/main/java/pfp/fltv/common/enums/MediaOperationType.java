@@ -3,6 +3,7 @@ package pfp.fltv.common.enums;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import pfp.fltv.common.enums.base.ConvertableEnum;
 
 /**
  * @author Lenovo/LiGuanda
@@ -14,7 +15,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum MediaOperationType {
+public enum MediaOperationType implements ConvertableEnum<Integer> {
 
 
     GET_STREAM(1101, "get the input stream of a file"),

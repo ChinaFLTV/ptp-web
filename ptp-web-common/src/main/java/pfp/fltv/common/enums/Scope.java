@@ -3,6 +3,7 @@ package pfp.fltv.common.enums;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import pfp.fltv.common.enums.base.ConvertableEnum;
 
 /**
  * @author Lenovo/LiGuanda
@@ -14,7 +15,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum Scope {
+public enum Scope implements ConvertableEnum<Integer> {
 
 
     DIALOGUE(501, "对话"),

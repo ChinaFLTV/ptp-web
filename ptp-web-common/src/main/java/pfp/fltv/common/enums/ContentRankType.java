@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import jakarta.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import pfp.fltv.common.enums.base.ConvertableEnum;
 
 import java.util.Objects;
 
@@ -17,7 +18,7 @@ import java.util.Objects;
 
 @AllArgsConstructor
 @Getter
-public enum ContentRankType {
+public enum ContentRankType implements ConvertableEnum<Integer> {
 
 
     TOTAL_100(1601, "rank100", "总排行TOP100"),

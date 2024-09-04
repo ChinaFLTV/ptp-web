@@ -16,6 +16,7 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 import pfp.fltv.common.enums.ContentStatus;
+import pfp.fltv.common.enums.base.ConvertableEnum;
 import pfp.fltv.common.model.po.info.AddressInfo;
 
 import java.io.Serializable;
@@ -137,7 +138,7 @@ public class BaseEntity implements Serializable {
      */
     @AllArgsConstructor
     @Getter
-    public enum ContentType implements Serializable {
+    public enum ContentType implements Serializable, ConvertableEnum<Integer> {
 
 
         ANNOUNCEMENT(1501, "announcement", "公告"),

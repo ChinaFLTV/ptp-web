@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import pfp.fltv.common.enums.base.ConvertableEnum;
 
 /**
  * @author Lenovo/LiGuanda
@@ -15,7 +16,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum CommodityStatus {
+public enum CommodityStatus implements ConvertableEnum<Integer> {
 
 
     ON_SALE(1201, "售卖中"),

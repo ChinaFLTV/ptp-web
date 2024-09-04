@@ -3,6 +3,7 @@ package pfp.fltv.common.enums;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import pfp.fltv.common.enums.base.ConvertableEnum;
 
 import java.util.Set;
 
@@ -17,7 +18,7 @@ import java.util.Set;
 @SuppressWarnings("DanglingJavadoc")
 @AllArgsConstructor
 @Getter
-public enum ContentType {
+public enum ContentType implements ConvertableEnum<Integer> {
 
 
     PLAIN_TEXT(1001, "text/plain", Set.of("txt", "md", "html", "css", "javascript")),

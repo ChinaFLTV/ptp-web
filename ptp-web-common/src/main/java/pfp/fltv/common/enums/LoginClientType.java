@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import jakarta.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import pfp.fltv.common.enums.base.ConvertableEnum;
 
 import java.util.Objects;
 
@@ -17,7 +18,7 @@ import java.util.Objects;
 
 @Getter
 @AllArgsConstructor
-public enum LoginClientType {
+public enum LoginClientType implements ConvertableEnum<Integer> {
 
 
     WEB(1401, "网页端"),

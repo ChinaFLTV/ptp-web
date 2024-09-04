@@ -11,8 +11,8 @@ spring:
     multipart:
       enabled: true
       # 2024-8-12  22:54-配置文件上传的文件大小上限(默认为1MB)
-      max-file-size: 50MB
-      max-request-size: 50MB
+      max-file-size: 2048MB
+      max-request-size: 2048MB
 
   datasource:
     # 2024-6-2  21:38-调整时区为北京时间，以避免自动填充日期时间时出现8个小时的时间差
