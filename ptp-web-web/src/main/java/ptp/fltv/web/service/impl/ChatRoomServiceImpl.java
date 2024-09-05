@@ -15,13 +15,13 @@ import org.springframework.web.multipart.MultipartFile;
 import pfp.fltv.common.model.po.manage.User;
 import pfp.fltv.common.model.po.ws.ChatRoom;
 import pfp.fltv.common.model.po.ws.GroupMessage;
-import pfp.fltv.common.utils.FileUtils;
 import ptp.fltv.web.constants.CosConstants;
 import ptp.fltv.web.service.ChatRoomService;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -178,8 +178,9 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
         try {
 
-            String extensionName = FileUtils.fetchFileExtensionFromPath(file.getOriginalFilename(), true);
-            String key = CosConstants.BUCKET_CHAT_ROOM_FILE + "/" + messageId + "." + extensionName;
+            String fileName = Objects.requireNonNull(file.getOriginalFilename());
+            // 2024-9-5  20:00-腾讯云COS支持文件名称最长为100个字符 , 因此这里在已有的限制条件上进一步进行限制 , 最多支持80个字符长度的文件名称 , 超出则进行截断处理
+            String key = CosConstants.BUCKET_CHAT_ROOM_FILE + "/" + messageId + "-" + (fileName.length() > 80 ? fileName.substring(0, 80) : fileName);
 
             String bucketName = CosConstants.BUCKET_CHAT_ROOM;
 
