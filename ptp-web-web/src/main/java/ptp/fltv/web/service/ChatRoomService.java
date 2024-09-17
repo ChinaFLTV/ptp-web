@@ -106,4 +106,16 @@ public interface ChatRoomService {
     String uploadMediaFile(@Nonnull Long messageId, @Nonnull GroupMessage.ContentType contentType, @Nonnull MultipartFile file);
 
 
+    /**
+     * @param id 聊天室ID
+     * @return 查询出来的聊天室信息
+     * @author Lenovo/LiGuanda
+     * @date 2024/9/10 PM 10:06:37
+     * @version 1.0.0
+     * @description 根据聊天室ID查询对应的聊天室信息
+     * @filename ChatRoomService.java
+     */
+    ChatRoom querySingleChatRoomById(@Nonnull Long id);
+
+
 }

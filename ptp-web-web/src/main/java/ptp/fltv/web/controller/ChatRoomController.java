@@ -13,6 +13,9 @@ import pfp.fltv.common.model.po.response.Result;
 import pfp.fltv.common.model.po.ws.ChatRoom;
 import pfp.fltv.common.model.po.ws.GroupMessage;
 import ptp.fltv.web.service.ChatRoomService;
+import ptp.fltv.web.service.GroupMessageService;
+
+import java.util.List;
 
 /**
  * @author Lenovo/LiGuanda
@@ -30,6 +33,7 @@ public class ChatRoomController {
 
 
     private ChatRoomService chatRoomService;
+    private GroupMessageService groupMessageService;
 
 
     @LogRecord(description = "获取聊天室的人数信息")
@@ -43,6 +47,23 @@ public class ChatRoomController {
     ) {
 
         return Result.success(chatRoomService.getSingleRoomInfo(id));
+
+    }
+
+
+    @LogRecord(description = "分页获取聊天室的聊天消息")
+    @SentinelResource("web-content-user-chat-controller")
+    @Operation(description = "分页获取聊天室的聊天消息")
+    @GetMapping("/query/groupMessage/page")
+    public Result<List<GroupMessage>> queryGroupMessagePage(
+
+            @Parameter(name = "chatRoomId", description = "待查询的房间号ID", required = true) @RequestParam("chatRoomId") Long chatRoomId,
+            @Parameter(name = "pageNumber", description = "当前的页码(即将请求的页码数)", required = true) @RequestParam("pageNumber") Long pageNumber,
+            @Parameter(name = "count", description = "查询的数量", required = true) @RequestParam("count") Long count
+
+    ) {
+
+        return Result.success(groupMessageService.queryGroupMessagePage(chatRoomId, pageNumber, count));
 
     }
 

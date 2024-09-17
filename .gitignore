@@ -39,7 +39,8 @@ docker/volumes/mysql/var/
 docker/volumes/minio/data/
 docker/volumes/nacos/standalone-logs/
 docker/volumes/redis/data/
-
+docker/volumes/mongodb/data
+docker/volumes/mongodb/logs
 
 # 2024-5-17  22:30-忽略各个微服务模块产生的日志文件
 logs/

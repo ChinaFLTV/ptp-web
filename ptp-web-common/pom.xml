@@ -47,6 +47,12 @@
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
         </dependency>
+        <!--  2024-9-10  21:19-解决引入MongoDB却没有@Document、@CompoundIndex等注解的问题  -->
+        <!--  单纯引入spring-boot-starter-data-mongodb依赖是不会有上面的注解的  -->
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-mongodb</artifactId>
+        </dependency>
 
     </dependencies>
 

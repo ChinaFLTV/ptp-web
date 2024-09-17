@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Set;
 
@@ -15,6 +17,8 @@ import java.util.Set;
  * @filename ChatRoom.java
  */
 
+
+@Document(collection = "ChatRoom") // 2024-9-10  21:44-指定该实体在MongoDB存放的表的表明 , 若不设置 , 则默认为类名开头小写的名称
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,6 +26,7 @@ import java.util.Set;
 public class ChatRoom {
 
 
+    @Id
     private Long id; // 2024-8-23  12:16-房间号
     private String name; // 2024-8-23  12:16-房间名称
     private String avatarUrl; // 2024-8-23  13:39-房间头像URL

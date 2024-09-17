@@ -620,6 +620,55 @@ services:
       - mysql
 
 
+  # 2024-9-8  22:22-每次重新构建该容器时 , 记得清除该容器对应的映射目录中的data目录以正常执行初始化docker-entrypoint-initdb.d目录下的JS/Shell脚本
+  # 2024-9-7  21:51-安装MongoDB数据库
+  mongodb:
+    container_name: ptp-backend-mongodb-1
+    labels:
+      name: ptp-backend-mongodb-1
+      author: LiGuanda
+      description: "主要用于存储聊天室群聊消息的MongoDB数据库"
+    image: mongo:${MONGODB_VERSION}
+    env_file:
+      - .env
+    dns: 8.8.8.8
+    hostname: ptp-backend-mongodb-1
+    extra_hosts:
+      - exthost:${EXTERNAL_LOCALHOST}
+    networks:
+      ptp-network:
+        ipv4_address: ${MONGODB_LOCALHOST}
+    ports:
+      - "27017:27017"
+    expose:
+      - 27017
+    volumes:
+      - "./volumes/mongodb/data:/data/db:rw"
+      - "./volumes/mongodb/config:/etc/mongo:rw"
+      - "./volumes/mongodb/logs:/var/log/mongodb:rw"
+      - "./volumes/mongodb/script/:/docker-entrypoint-initdb.d/:rw"
+      - "./volumes/mongodb/docker-entrypoint.sh:/usr/local/bin/docker-entrypoint.sh:rw"
+    environment:
+      # 2024-9-7  21:55-初始化一个 root 角色的用户 root 密码是 ptp-backend-mongodb-pwd
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: ptp-backend-mongodb-pwd
+      # ME_CONFIG_MONGODB_URL: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@docker_mongo:27017/
+      MONGO_INITDB_DATABASE: ptp_web # 2024-9-8  18:42- docker-entrypoint-initdb.d目录下的JS、Shell文件将在该数据库下的上下文环境中被执行
+    command:
+      # 2024-9-9  20:41-开启该参数后 , 容器首次启动的时间将会延迟一小会~
+      - "--auth" # 2024-9-7  22:03-表示连接mongodb需要用户名和密码
+      - "--config"
+      - "/etc/mongo/mongod.conf" # 2024-9-7  22:15-mongod默认情况下不读取配置文件，因此需要指定带有配置文件路径的 --config 选项
+      - "--wiredTigerCacheSizeGB"
+      - "1.5" # 2024-9-7  22:17-设置缓存大小配置为1.5GB
+    restart: on-failure
+    logging:
+      driver: json-file
+      options:
+        max-size: 256k
+        max-file: 64
+
+
 # 2024-4-10  15:28-新建一个自定义网络，将全部容器部署到同一个网络内，使其之间能够相互连通
 networks:
   ptp-network:

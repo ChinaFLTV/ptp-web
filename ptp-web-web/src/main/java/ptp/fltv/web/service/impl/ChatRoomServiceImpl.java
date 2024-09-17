@@ -16,13 +16,11 @@ import pfp.fltv.common.model.po.manage.User;
 import pfp.fltv.common.model.po.ws.ChatRoom;
 import pfp.fltv.common.model.po.ws.GroupMessage;
 import ptp.fltv.web.constants.CosConstants;
+import ptp.fltv.web.repository.ChatRoomRepository;
 import ptp.fltv.web.service.ChatRoomService;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -40,14 +38,15 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
 
     private TransferManager transferManager;
+    private ChatRoomRepository chatRoomRepository;
 
     private static final Map<Long, Map<String, Session>> chatRoomId2SessionsMap = new ConcurrentHashMap<>(); // 2024-6-23  23:46-存储房间号以及其当前持有的SESSION的映射 : roomId -> sessionId --> session
     private static final Map<Long, Map<Long, String>> chatRoomId2SessionIdsMap = new ConcurrentHashMap<>(); // 2024-6-25  9:11-存储用户ID与会话ID的映射 , 方便后续根据用户ID查找对应的会话 : roomId -> userId --> sessionId
-    private static final Map<Long, ChatRoom> chatRoomId2ChatRoomsMap = new ConcurrentHashMap<>(); // 2024-8-23  12:41-存储房间号与房间信息的映射 : roomId -> roomInfo
+    // private static final Map<Long, ChatRoom> chatRoomId2ChatRoomsMap = new ConcurrentHashMap<>(); // 2024-8-23  12:41-存储房间号与房间信息的映射 : roomId -> roomInfo
     private static final Long DEFAULT_CHAT_ROOM_ID = 666L; // 2024-8-23  20:42-默认的群聊房间ID
 
 
-    static {
+    /*static {
 
         // 2024-8-23  13:34-默认自动设置一个公告的聊天房间
         ChatRoom defaultChatRoom = ChatRoom.builder()
@@ -57,16 +56,29 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                 .rank(6.0)
                 .onlineUsers(chatRoomId2SessionIdsMap.getOrDefault(DEFAULT_CHAT_ROOM_ID, new ConcurrentHashMap<>()).keySet())
                 .build();
-
         chatRoomId2ChatRoomsMap.put(DEFAULT_CHAT_ROOM_ID, defaultChatRoom);
 
-    }
+    }*/
 
 
+    /**
+     * @author Lenovo/LiGuanda
+     * @date 2024/9/9 PM 9:53:53
+     * @version 1.0.0
+     * @description 该方法主要替换原来地写死方式注入默认房间信息而转向通过MongoDB拉取默认房间信息数据
+     * @filename ChatRoomServiceImpl.java
+     */
+    /*@PostConstruct
+    public void init() {
+
+        Optional<ChatRoom> defaultChatRoom = chatRoomRepository.findById(DEFAULT_CHAT_ROOM_ID);
+        defaultChatRoom.ifPresent(cp -> chatRoomId2ChatRoomsMap.put(DEFAULT_CHAT_ROOM_ID, cp));
+
+    }*/
     @Override
     public ChatRoom getSingleRoomInfo(@Nonnull Long roomId) {
 
-        ChatRoom chatRoom = chatRoomId2ChatRoomsMap.get(roomId);
+        ChatRoom chatRoom = querySingleChatRoomById(roomId);
 
         Set<Long> liveUserIds = chatRoomId2SessionIdsMap.getOrDefault(roomId, new ConcurrentHashMap<>()).keySet();
         chatRoom.setOnlineUsers(liveUserIds);
@@ -206,6 +218,16 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             return null;
 
         }
+
+    }
+
+
+    @Override
+    public ChatRoom querySingleChatRoomById(@Nonnull Long id) {
+
+        Optional<ChatRoom> optionalChatRoom = chatRoomRepository.findById(id);
+
+        return optionalChatRoom.orElse(null);
 
     }
 

@@ -91,6 +91,15 @@ spring:
           max-wait: -1 # 2024-4-7  9:30-连接池最大阻塞空闲时间(负数表示无限制)
           max-idle: 8 # 2024-4-7  9:31-连接池最大空闲连接数
           min-idle: 0 # 2024-4-7  9:31-连接池最小空闲连接数
+    # 2024-9-9  21:12-引入MongoDB数据库来存储聊天室相关的信息数据
+    mongodb:
+      host: 127.0.0.1
+      port: 27017
+      username: root # 2024-9-9  20:57-初始用户名和密码的配置请见docker-compose配置文件
+      password: ptp-backend-mongodb-pwd
+      database: ptp_web
+      authentication-database: admin # 2024-9-9  22:26-解决 MongoError: command find requires authentication 的问题
+      auto-index-creation: true # 2024-9-10  20:07-自动建立索引(MongoDB v3.0+ , 该功能默认关闭)
   cache:
     redis:
       time-to-live: 1800s
@@ -191,3 +200,4 @@ cos:
   secretId: AKIDRkAmPsT0mF7zpTG4nDo2KvNm6MRM4iLx
   secretKey: ccffoqmzDMUWURMAqeMsBey56De5Qd0O
   regionName: ap-nanjing
+

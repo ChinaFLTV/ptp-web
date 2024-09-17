@@ -1,5 +1,6 @@
 package ptp.fltv.web.server;
 
+import cn.hutool.core.lang.Snowflake;
 import com.alibaba.fastjson2.JSON;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.websocket.*;
@@ -12,6 +13,7 @@ import pfp.fltv.common.model.po.manage.User;
 import pfp.fltv.common.model.po.ws.GroupMessage;
 import ptp.fltv.web.config.WebSocketEndpointConfig;
 import ptp.fltv.web.service.ChatRoomService;
+import ptp.fltv.web.service.GroupMessageService;
 import ptp.fltv.web.service.UserService;
 
 import java.io.IOException;
@@ -39,6 +41,9 @@ public class ChatRoomServer {
 
     private static ChatRoomService chatRoomService;
     private static UserService userService;
+    private static GroupMessageService groupMessageService;
+    private static Snowflake snowflake;
+
     private Session session; // 2024-6-24  22:29-记录当前的会话 , 主要给onReceiveMessage方法使用
     private User user; // 2024-6-24  22:44-当前会话的用户
     private Long roomId; // 2024-6-24  22:44-当前房间号ID
@@ -48,10 +53,12 @@ public class ChatRoomServer {
     // 而Spring默认配置的Bean是单例的,也即仅在第一次创建Bean的时候注入一次依赖 , 而后续的新new出来的Bean实例都不再归IOC容器管理 , 也就不存在依赖注入的操作 , 因此才获取不到
     // 这里我们取了个巧 , 通过方法注入的方式注入一个类变量 , 巧妙的解决了后续不注入依赖而产生NPE的情况 , 当前你也可以通过实现ApplicationContextAware接口去解决这个问题
     @Autowired
-    public void setService(ChatRoomService chatRoomService, UserService userService) {
+    public void setService(ChatRoomService chatRoomService, UserService userService, GroupMessageService groupMessageService, Snowflake snowflake) {
 
         ChatRoomServer.chatRoomService = chatRoomService;
         ChatRoomServer.userService = userService;
+        ChatRoomServer.groupMessageService = groupMessageService;
+        ChatRoomServer.snowflake = snowflake;
 
     }
 
@@ -78,21 +85,31 @@ public class ChatRoomServer {
         if (isJoinSuccessfully) {
 
             groupChatMessage = GroupMessage.builder()
+                    .id(snowflake.nextId())
                     .chatRoomId(roomId)
                     .messageType(GroupMessage.MessageType.SYSTEM_USER_ENTER)
                     .content(String.format("欢迎用户 %s 加入到当前聊天室 [%s] 中来!", user.getNickname(), chatRoomService.getSingleRoomInfo(roomId).getName()))
                     .dateTime(LocalDateTime.now())
                     .build();
+
+            // 2024-9-10  22:30-系统消息也要进行持久化
+            groupMessageService.insertOne(groupChatMessage);
+
             log.info("用户 {} (USER ID = {}) 加入到当前聊天房(ROOM ID = {})", user.getNickname(), userId, roomId);
 
         } else {
 
             groupChatMessage = GroupMessage.builder()
+                    .id(snowflake.nextId())
                     .chatRoomId(roomId)
                     .messageType(GroupMessage.MessageType.SYSTEM_ABNORMAL)
                     .content(String.format("欢迎用户 %s 加入到聊天室 [%s] 失败", user.getNickname(), chatRoomService.getSingleRoomInfo(roomId).getName()))
                     .dateTime(LocalDateTime.now())
                     .build();
+
+            // 2024-9-10  22:31-系统消息也要进行持久化
+            groupMessageService.insertOne(groupChatMessage);
+
             log.warn("用户 {} (USER ID = {}) 加入到当前聊天房失败(ROOM ID = {})", user.getNickname(), userId, roomId);
 
         }
@@ -110,11 +127,16 @@ public class ChatRoomServer {
 
         // 2024-66-24  23:16-发送用户退出群聊的全房间广播消息
         GroupMessage groupChatMessage = GroupMessage.builder()
+                .id(snowflake.nextId())
                 .chatRoomId(roomId)
                 .messageType(GroupMessage.MessageType.SYSTEM_USER_EXIT)
                 .content(String.format("用户 %s 已退出当前聊天室 [%s]", user.getNickname(), chatRoomService.getSingleRoomInfo(roomId).getName()))
                 .dateTime(LocalDateTime.now())
                 .build();
+
+        // 2024-9-10  22:32-系统消息也要进行持久化
+        groupMessageService.insertOne(groupChatMessage);
+
         chatRoomService.sendGroupChatMsg(roomId, user, groupChatMessage);
 
         // 2024-6-24  22:47-加速GC , 毕竟每建立一次WS连接就要new一个ChatRoomServer实例
@@ -132,18 +154,44 @@ public class ChatRoomServer {
 
         try {
 
-            chatRoomService.sendGroupChatMsg(roomId, user, JSON.parseObject(msg, GroupMessage.class));
+            GroupMessage groupMessage = JSON.parseObject(msg, GroupMessage.class);
+            chatRoomService.sendGroupChatMsg(roomId, user, groupMessage);
+
+            groupMessage.setChatRoomId(roomId);
+
+            // 2024-9-11  20:10-如果前端ID为空的话 , 则使用前端传过来的建议ID(考虑到上传与消息ID关联的多媒体数据的操作需要先于插入消息操作的特殊情况)
+            // 2024-9-10  23:00-这里将覆盖掉前端生成的ID , 主要是如果使用UUID的话 , GroupMessage的存放顺序就不是按照时间顺序的先后存放的了 , 后期按照发送时间进行条件查询的话比较不方便
+            // 采用雪花ID , 能在一定程度上解决这个问题(当然存在小范围的时间顺序排列失真)
+            if (groupMessage.getId() != null && groupMessage.getId() > 0) {
+
+                groupMessage.setId(snowflake.nextId());
+
+            }
+
+            // 2024-9-10  22:33-持久化群聊消息
+            groupMessageService.insertOne(groupMessage);
+
             log.info("用户 {} (USER ID = {}) 在聊天房(ROOM ID = {}) 发送了一条全房间广播消息 : {}", user.getNickname(), user.getId(), roomId, msg);
 
         } catch (Exception ex) {
 
             GroupMessage groupChatMessage = GroupMessage.builder()
+                    .id(snowflake.nextId())
                     .chatRoomId(roomId)
                     .messageType(GroupMessage.MessageType.SYSTEM_ABNORMAL)
                     .content(String.format("当前客户端 [%s] 本次发送消息异常 : %s", session.getId(), ex.getCause() == null ? ex.getLocalizedMessage() : ex.getCause().getMessage()))
                     .dateTime(LocalDateTime.now())
                     .build();
+
             boolean isSendSuccessfully = chatRoomService.sendPrivateChatMsg(roomId, user.getId(), groupChatMessage);
+
+            if (isSendSuccessfully) {
+
+                // 2024-9-10  22:33-异常的群聊消息也要进行持久化
+                groupMessageService.insertOne(groupChatMessage);
+
+            }
+
             // 2024-6-24  23:58-客户端封装的消息格式不规范则静默本次消息的发送 , 避免因本次操作失误而使整个会话异常断连
             log.error("用户客户端 {} (USER ID = {}) 在聊天房(ROOM ID = {}) 发送的消息在解析时出现异常 : {}", user.getNickname(), user.getId(), roomId, ex.getCause() == null ? ex.getLocalizedMessage() : ex.getCause().getMessage());
 
