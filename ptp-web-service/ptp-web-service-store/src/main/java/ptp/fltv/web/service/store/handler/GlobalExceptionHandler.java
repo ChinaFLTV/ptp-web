@@ -1,9 +1,7 @@
 package ptp.fltv.web.service.store.handler;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import pfp.fltv.common.model.po.response.Result;
 
@@ -29,7 +27,8 @@ public class GlobalExceptionHandler {
      * @description 捕获全局异常
      * @filename GlobalExceptionHandler.java
      */
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    // 2024-9-29  15:35-抛出异常所属的父类为PTPException , 则说明该异常的出现并非原始错误 , 而是业务出错 , 因此响应码不会置为4XX , 而改写为响应体中返回给前端去进行个性化处理
+    // @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(Exception.class)
     public Result<String> handleException(Exception ex) {
 

@@ -32,7 +32,8 @@ public class GlobalExceptionHandler {
      * @description 捕获全局的PtpException异常(该异常一般由用户填写的数据非法导致的)
      * @filename PtpExceptionHandler.java
      */
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    // 2024-9-29  15:35-抛出异常所属的父类为PTPException , 则说明该异常的出现并非原始错误 , 而是业务出错 , 因此响应码不会置为4XX , 而改写为响应体中返回给前端去进行个性化处理
+    // @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(PtpException.class)
     public Result<String> handlePtpException(PtpException ex) {
 
