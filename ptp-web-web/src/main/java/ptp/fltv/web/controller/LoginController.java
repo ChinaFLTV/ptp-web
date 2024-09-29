@@ -41,7 +41,7 @@ public class LoginController {
     @Operation(description = "普通登录(用户名+密码)")
     @PermitAll
     @PostMapping("/login")
-    public Result<?> login(@RequestBody UserLoginVo userLoginVo, HttpServletResponse response) throws PtpException {
+    public Result<Map<String, Object>> login(@RequestBody UserLoginVo userLoginVo, HttpServletResponse response) throws PtpException {
 
         // 2024-4-7  22:26-登录前，客户端一侧一定要将本地的登录数据清理干净
 

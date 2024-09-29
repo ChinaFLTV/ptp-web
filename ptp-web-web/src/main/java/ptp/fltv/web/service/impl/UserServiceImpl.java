@@ -137,7 +137,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         String jwt2 = JwtUtils.encode(STORE_KEY);
         result.put("store_key", jwt2);
         // 2024-8-7  16:38-信息不需要脱敏,一方面是因为密码信息本身就是单向加密过的 , 另一方面则是因为该user数据仅流通于应用系统内部 , 并不会向用户/外界暴露
-        result.put("user", user);
+        // 2024-9-28  20:59-解决客户端无法反序列化User对象的问题 , 请注意 , 后端返回对象实体时必须将其以JSON字符串的形式进行填充后返回
+        result.put("user", JSON.toJSONString(user));
 
         // 2024-6-17  22:32-登录客户端类型和设备码无需返回给前端，因为这些数据完全可以再次由前端计算出来，而且计算是幂等的，至于每一次请求是否需要重新计算一遍，这得看前端那边怎么处理了，与我们后端无关~
         // 2024-4-3  21:33-返回给前端，保存到LocalStorage那里，用的时候再让前端带过来
