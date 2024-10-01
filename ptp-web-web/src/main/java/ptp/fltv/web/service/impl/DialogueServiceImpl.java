@@ -1,12 +1,17 @@
 package ptp.fltv.web.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.annotation.Nonnull;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import pfp.fltv.common.enums.ContentQuerySortType;
 import pfp.fltv.common.enums.ContentRankType;
 import pfp.fltv.common.model.po.content.Dialogue;
+import pfp.fltv.common.model.vo.DialogueVo;
 import ptp.fltv.web.mapper.DialogueMapper;
 import ptp.fltv.web.service.DialogueService;
 
@@ -59,6 +64,49 @@ public class DialogueServiceImpl extends ServiceImpl<DialogueMapper, Dialogue> i
 
         return dialogues;
 
+
+    }
+
+
+    @Override
+    public List<DialogueVo> queryDialoguePageWithSorting(ContentQuerySortType sortType, Long pageNum, Long pageSize) {
+
+        QueryWrapper<Dialogue> queryWrapper = new QueryWrapper<>();
+
+        switch (sortType) {
+
+            case LATEST -> queryWrapper.orderByDesc("create_time");
+            case HOTTEST -> queryWrapper.orderByDesc("like_num")
+                    .orderByDesc("star_num")
+                    .orderByDesc("comment_num")
+                    .orderByDesc("browse_num")
+                    .orderByAsc("unlike_num");
+            case LIKE -> queryWrapper.orderByDesc("like_num");
+            case STAR -> queryWrapper.orderByDesc("star_num");
+            case BROWSE -> queryWrapper.orderByDesc("browse_num");
+            case COMMENT -> queryWrapper.orderByDesc("comment_num");
+            case DEFAULT -> {
+
+
+            }
+
+        }
+
+        // 2024-10-2  1:33-最后兜底的参与排序的字段
+        queryWrapper.orderByDesc("id");
+
+        List<Dialogue> dialogues = page(new Page<>(pageNum, pageSize), queryWrapper).getRecords();
+
+        List<DialogueVo> dialogueVos = new ArrayList<>();
+        for (Dialogue dialogue : dialogues) {
+
+            DialogueVo dialogueVo = new DialogueVo();
+            BeanUtils.copyProperties(dialogue, dialogueVo);
+            dialogueVos.add(dialogueVo);
+
+        }
+
+        return dialogueVos;
 
     }
 

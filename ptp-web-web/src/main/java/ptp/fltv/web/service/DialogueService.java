@@ -2,9 +2,10 @@ package ptp.fltv.web.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import jakarta.annotation.Nonnull;
+import pfp.fltv.common.enums.ContentQuerySortType;
 import pfp.fltv.common.enums.ContentRankType;
-import pfp.fltv.common.model.po.content.Announcement;
 import pfp.fltv.common.model.po.content.Dialogue;
+import pfp.fltv.common.model.vo.DialogueVo;
 
 import java.util.List;
 
@@ -32,6 +33,20 @@ public interface DialogueService extends IService<Dialogue> {
      * @filename DialogueService.java
      */
     List<Dialogue> getRankListByPage(@Nonnull ContentRankType contentRankType, @Nonnull Long offset, @Nonnull Long count);
+
+
+    /**
+     * @param sortType 排序规则
+     * @param pageNum  页码(从1开始)
+     * @param pageSize 数据页大小
+     * @return 查询到的符合条件的指定数据页
+     * @author Lenovo/LiGuanda
+     * @date 2024/10/2 AM 12:46:54
+     * @version 1.0.0
+     * @description 根据指定的排序规则分页查询指定页码、指定大小的数据页
+     * @filename DialogueService.java
+     */
+    List<DialogueVo> queryDialoguePageWithSorting(ContentQuerySortType sortType, Long pageNum, Long pageSize);
 
 
 }

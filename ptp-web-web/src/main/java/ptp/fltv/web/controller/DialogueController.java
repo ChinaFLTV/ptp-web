@@ -12,11 +12,12 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import pfp.fltv.common.annotation.LogRecord;
+import pfp.fltv.common.enums.ContentQuerySortType;
 import pfp.fltv.common.enums.ContentRankType;
 import pfp.fltv.common.model.base.content.BaseEntity;
 import pfp.fltv.common.model.po.content.Dialogue;
-import pfp.fltv.common.model.vo.DialogueVo;
 import pfp.fltv.common.model.po.response.Result;
+import pfp.fltv.common.model.vo.DialogueVo;
 import ptp.fltv.web.constants.WebConstants;
 import ptp.fltv.web.mq.ContentRankMqService;
 import ptp.fltv.web.service.DialogueService;
@@ -91,6 +92,23 @@ public class DialogueController {
         }
 
         return Result.success(dialogueVos);
+
+    }
+
+
+    @LogRecord(description = "根据指定排序类型批量(分页)查询多条对话数据")
+    @SentinelResource("web-content-dialogue-controller")
+    @Operation(description = "根据指定排序类型批量(分页)查询多条对话数据")
+    @GetMapping("/query/page")
+    public Result<List<DialogueVo>> queryDialoguePageWithSorting(
+
+            @Parameter(name = "sortType", description = "排序规则", required = true) @RequestParam("sortType") ContentQuerySortType sortType,
+            @Parameter(name = "pageNum", description = "查询的一页对话数据的数据页页码", required = true) @RequestParam("pageNum") Long pageNum,
+            @Parameter(name = "pageSize", description = "查询的这一页对话数据的数量", required = true) @RequestParam("pageSize") Long pageSize
+
+    ) {
+
+        return Result.success(dialogueService.queryDialoguePageWithSorting(sortType, pageNum, pageSize));
 
     }
 

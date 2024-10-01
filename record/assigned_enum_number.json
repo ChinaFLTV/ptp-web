@@ -93,5 +93,10 @@
     "start": 1800,
     "end": 1899,
     "enum": "GroupMessage.ContentType"
+  },
+  {
+    "start": 1900,
+    "end": 1999,
+    "enum": "ContentQuerySortType"
   }
 ]
