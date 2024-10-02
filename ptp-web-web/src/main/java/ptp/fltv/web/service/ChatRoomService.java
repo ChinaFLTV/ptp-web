@@ -6,8 +6,10 @@ import org.springframework.web.multipart.MultipartFile;
 import pfp.fltv.common.model.po.manage.User;
 import pfp.fltv.common.model.po.ws.ChatRoom;
 import pfp.fltv.common.model.po.ws.GroupMessage;
+import pfp.fltv.common.model.vo.ChatVo;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @author Lenovo/LiGuanda
@@ -116,6 +118,17 @@ public interface ChatRoomService {
      * @filename ChatRoomService.java
      */
     ChatRoom querySingleChatRoomById(@Nonnull Long id);
+
+
+    /**
+     * @return 当前处于公开状态的聊天室数据列表
+     * @author Lenovo/LiGuanda
+     * @date 2024/10/2 PM 10:11:18
+     * @version 1.0.0
+     * @description 获取全部的公共聊天室信息
+     * @filename ChatRoomService.java
+     */
+    List<ChatVo> queryAllPublicChatRoom();
 
 
 }

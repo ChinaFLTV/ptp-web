@@ -1,5 +1,7 @@
 package ptp.fltv.web.service.impl;
 
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -11,9 +13,11 @@ import org.springframework.stereotype.Service;
 import pfp.fltv.common.enums.ContentQuerySortType;
 import pfp.fltv.common.enums.ContentRankType;
 import pfp.fltv.common.model.po.content.Dialogue;
+import pfp.fltv.common.model.po.manage.User;
 import pfp.fltv.common.model.vo.DialogueVo;
 import ptp.fltv.web.mapper.DialogueMapper;
 import ptp.fltv.web.service.DialogueService;
+import ptp.fltv.web.service.UserService;
 
 import java.util.*;
 
@@ -31,6 +35,7 @@ public class DialogueServiceImpl extends ServiceImpl<DialogueMapper, Dialogue> i
 
 
     private StringRedisTemplate stringRedisTemplate;
+    private UserService userService;
 
 
     @Override
@@ -102,6 +107,13 @@ public class DialogueServiceImpl extends ServiceImpl<DialogueMapper, Dialogue> i
 
             DialogueVo dialogueVo = new DialogueVo();
             BeanUtils.copyProperties(dialogue, dialogueVo);
+
+            // 2024-10-2  15:37-填充发布者的昵称和头像URL信息
+            User user = userService.getById(dialogueVo.getUid());
+            dialogueVo.setNickname(user.getNickname());
+            JSONObject avatarJSONObject = JSON.parseObject(user.getAvatar());
+            dialogueVo.setAvatarUrl(avatarJSONObject.getString("uri"));
+
             dialogueVos.add(dialogueVo);
 
         }

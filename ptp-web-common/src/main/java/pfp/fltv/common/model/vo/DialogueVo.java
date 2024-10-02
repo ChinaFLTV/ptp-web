@@ -32,6 +32,12 @@ public class DialogueVo implements Serializable {
     @Schema(description = "发布者ID")
     private Long uid;
 
+    @Schema(description = "发布者昵称")
+    private String nickname; // 2024-10-2  15:35-发布者昵称
+
+    @Schema(description = "发布者头像URL")
+    private String avatarUrl; // 2024-10-2  15:35-发布者头像URL
+
     @Schema(description = "标题", minLength = 2, maxLength = 128)
     private String title;
 
@@ -52,6 +58,9 @@ public class DialogueVo implements Serializable {
 
     @Schema(description = "点赞量")
     private Integer likeNum;
+
+    @Schema(description = "收藏量")
+    private Integer starNum; // 2024-10-2  15:42-增加收藏量字段
 
     @Schema(description = "发布时用户所在的地址信息")
     private AddressInfo addressInfo;

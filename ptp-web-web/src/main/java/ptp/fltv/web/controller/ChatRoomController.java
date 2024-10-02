@@ -12,6 +12,7 @@ import pfp.fltv.common.annotation.LogRecord;
 import pfp.fltv.common.model.po.response.Result;
 import pfp.fltv.common.model.po.ws.ChatRoom;
 import pfp.fltv.common.model.po.ws.GroupMessage;
+import pfp.fltv.common.model.vo.ChatVo;
 import ptp.fltv.web.service.ChatRoomService;
 import ptp.fltv.web.service.GroupMessageService;
 
@@ -64,6 +65,17 @@ public class ChatRoomController {
     ) {
 
         return Result.success(groupMessageService.queryGroupMessagePage(chatRoomId, pageNumber, count));
+
+    }
+
+
+    @LogRecord(description = "获取全部的公共聊天室信息")
+    @SentinelResource("web-content-user-chat-controller")
+    @Operation(description = "获取全部的公共聊天室信息")
+    @GetMapping("/query/chatRoom/public/all")
+    public Result<List<ChatVo>> queryAllPublicChatRoom() {
+
+        return Result.success(chatRoomService.queryAllPublicChatRoom());
 
     }
 

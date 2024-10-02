@@ -9,12 +9,17 @@ import jakarta.annotation.Nonnull;
 import jakarta.websocket.Session;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import pfp.fltv.common.model.po.manage.User;
 import pfp.fltv.common.model.po.ws.ChatRoom;
 import pfp.fltv.common.model.po.ws.GroupMessage;
+import pfp.fltv.common.model.vo.ChatVo;
 import ptp.fltv.web.constants.CosConstants;
 import ptp.fltv.web.repository.ChatRoomRepository;
 import ptp.fltv.web.service.ChatRoomService;
@@ -39,26 +44,30 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     private TransferManager transferManager;
     private ChatRoomRepository chatRoomRepository;
+    private MongoTemplate mongoTemplate;
 
     private static final Map<Long, Map<String, Session>> chatRoomId2SessionsMap = new ConcurrentHashMap<>(); // 2024-6-23  23:46-存储房间号以及其当前持有的SESSION的映射 : roomId -> sessionId --> session
     private static final Map<Long, Map<Long, String>> chatRoomId2SessionIdsMap = new ConcurrentHashMap<>(); // 2024-6-25  9:11-存储用户ID与会话ID的映射 , 方便后续根据用户ID查找对应的会话 : roomId -> userId --> sessionId
     // private static final Map<Long, ChatRoom> chatRoomId2ChatRoomsMap = new ConcurrentHashMap<>(); // 2024-8-23  12:41-存储房间号与房间信息的映射 : roomId -> roomInfo
     private static final Long DEFAULT_CHAT_ROOM_ID = 666L; // 2024-8-23  20:42-默认的群聊房间ID
+    private static final Set<Long> PUBLIC_CHAT_ROOM_IDS = new HashSet<>(); // 2024-10-2  22:43-当前处于公开状态的聊天室的ID集合
 
 
-    /*static {
+    static {
 
         // 2024-8-23  13:34-默认自动设置一个公告的聊天房间
-        ChatRoom defaultChatRoom = ChatRoom.builder()
+        /*ChatRoom defaultChatRoom = ChatRoom.builder()
                 .id(DEFAULT_CHAT_ROOM_ID)
                 .name("达达利亚和他的朋友们")
                 .avatarUrl("https://m.qqkw.com/d/tx/titlepic/c263a882a7ed7f099e6b48961af58b0b.jpg")
                 .rank(6.0)
                 .onlineUsers(chatRoomId2SessionIdsMap.getOrDefault(DEFAULT_CHAT_ROOM_ID, new ConcurrentHashMap<>()).keySet())
                 .build();
-        chatRoomId2ChatRoomsMap.put(DEFAULT_CHAT_ROOM_ID, defaultChatRoom);
+        chatRoomId2ChatRoomsMap.put(DEFAULT_CHAT_ROOM_ID, defaultChatRoom);*/
 
-    }*/
+        PUBLIC_CHAT_ROOM_IDS.add(DEFAULT_CHAT_ROOM_ID);
+
+    }
 
 
     /**
@@ -228,6 +237,50 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         Optional<ChatRoom> optionalChatRoom = chatRoomRepository.findById(id);
 
         return optionalChatRoom.orElse(null);
+
+    }
+
+
+    @Override
+    public List<ChatVo> queryAllPublicChatRoom() {
+
+        List<ChatRoom> chatRooms = chatRoomRepository.findAllById(PUBLIC_CHAT_ROOM_IDS);
+
+        List<ChatVo> chatVos = new ArrayList<>();
+        for (ChatRoom chatRoom : chatRooms) {
+
+            ChatVo chatVo = ChatVo.fromChatRoom(chatRoom);
+
+            Query query = new Query(
+
+                    Criteria.where("chatRoomId")
+                            .is(chatRoom.getId())
+                            .and("messageType")
+                            .is("GROUP_CHAT")
+                            .and("contentType")
+                            .is("TEXT")
+
+            ).with(Sort.by(Sort.Direction.DESC, "dateTime"))
+                    .limit(1);
+
+            GroupMessage groupMessage = mongoTemplate.findOne(query, GroupMessage.class);
+
+            // 2024-10-2  23:29-可能存在当前聊天室还没有人发过消息或者房间内的消息已经被清理过了 , 这种情况是存在的 , 因此需要判断一下
+            if (groupMessage != null) {
+
+                chatVo.setLatestMsgSendUserId(groupMessage.getSenderId());
+                chatVo.setLatestMsgSendUserNickname(groupMessage.getSenderNickname());
+                chatVo.setLatestMsgSendUserAvatarUrl(groupMessage.getSenderAvatarUrl());
+                chatVo.setLatestMsgContent(groupMessage.getContent());
+                chatVo.setLatestMsgPubdate(groupMessage.getDateTime());
+
+            }
+
+            chatVos.add(chatVo);
+
+        }
+
+        return chatVos;
 
     }
 
