@@ -6,10 +6,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pfp.fltv.common.enums.ChatType;
 import pfp.fltv.common.model.po.ws.ChatRoom;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Lenovo/LiGuanda
@@ -30,6 +32,9 @@ public class ChatVo {
     /*@Schema(description = "ID")
     private Long id;*/
 
+    @Schema(description = "聊天类型")
+    private ChatType chatType;
+
     @Schema(description = "如果是私聊的话 , 该字段不为空 , 其值为对方用户的ID")
     private Long uid;
 
@@ -41,6 +46,15 @@ public class ChatVo {
 
     @Schema(description = "群聊或私聊中聊天对方的头像URL")
     private String avatarUrl;
+
+    @Schema(description = "房间/聊天方等级")
+    private Double rank;
+
+    @Schema(description = "在线人数ID集合(仅聊天类型为群聊时有效)")
+    private Set<Long> onlineUsers;
+
+    @Schema(description = "总共人数ID集合(仅聊天类型为群聊时有效)")
+    private Set<Long> totalUsers;
 
     @Schema(description = "群聊/私聊中最新一条消息的发布者ID")
     private Long latestMsgSendUserId;
@@ -68,6 +82,8 @@ public class ChatVo {
 
 
     /**
+     * @param chatRoom 原来的ChatRoom数据实体
+     * @return 转换后的Chat数据实体
      * @author Lenovo/LiGuanda
      * @date 2024/10/2 PM 10:44:26
      * @version 1.0.0

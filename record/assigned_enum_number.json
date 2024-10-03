@@ -98,5 +98,10 @@
     "start": 1900,
     "end": 1999,
     "enum": "ContentQuerySortType"
+  },
+  {
+    "start": 2000,
+    "end": 2099,
+    "enum": "ChatType"
   }
 ]

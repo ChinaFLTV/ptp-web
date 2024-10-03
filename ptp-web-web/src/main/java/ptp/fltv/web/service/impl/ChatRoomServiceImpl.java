@@ -16,6 +16,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import pfp.fltv.common.enums.ChatType;
 import pfp.fltv.common.model.po.manage.User;
 import pfp.fltv.common.model.po.ws.ChatRoom;
 import pfp.fltv.common.model.po.ws.GroupMessage;
@@ -250,6 +251,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         for (ChatRoom chatRoom : chatRooms) {
 
             ChatVo chatVo = ChatVo.fromChatRoom(chatRoom);
+            chatVo.setChatType(ChatType.GROUP_CHAT);
 
             Query query = new Query(
 
