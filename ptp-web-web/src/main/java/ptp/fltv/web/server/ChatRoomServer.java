@@ -7,13 +7,13 @@ import jakarta.websocket.*;
 import jakarta.websocket.server.ServerEndpoint;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 import pfp.fltv.common.model.po.manage.User;
 import pfp.fltv.common.model.po.ws.GroupMessage;
 import ptp.fltv.web.config.WebSocketEndpointConfig;
 import ptp.fltv.web.service.ChatRoomService;
-import ptp.fltv.web.service.GroupMessageService;
 import ptp.fltv.web.service.UserService;
 
 import java.io.IOException;
@@ -41,7 +41,8 @@ public class ChatRoomServer {
 
     private static ChatRoomService chatRoomService;
     private static UserService userService;
-    private static GroupMessageService groupMessageService;
+    // private static GroupMessageService groupMessageService;
+    private static MongoTemplate mongoTemplate;
     private static Snowflake snowflake;
 
     private Session session; // 2024-6-24  22:29-记录当前的会话 , 主要给onReceiveMessage方法使用
@@ -53,11 +54,12 @@ public class ChatRoomServer {
     // 而Spring默认配置的Bean是单例的,也即仅在第一次创建Bean的时候注入一次依赖 , 而后续的新new出来的Bean实例都不再归IOC容器管理 , 也就不存在依赖注入的操作 , 因此才获取不到
     // 这里我们取了个巧 , 通过方法注入的方式注入一个类变量 , 巧妙的解决了后续不注入依赖而产生NPE的情况 , 当前你也可以通过实现ApplicationContextAware接口去解决这个问题
     @Autowired
-    public void setService(ChatRoomService chatRoomService, UserService userService, GroupMessageService groupMessageService, Snowflake snowflake) {
+    public void setService(ChatRoomService chatRoomService, UserService userService, /*GroupMessageService groupMessageService,*/MongoTemplate mongoTemplate, Snowflake snowflake) {
 
         ChatRoomServer.chatRoomService = chatRoomService;
         ChatRoomServer.userService = userService;
-        ChatRoomServer.groupMessageService = groupMessageService;
+        // ChatRoomServer.groupMessageService = groupMessageService;
+        ChatRoomServer.mongoTemplate = mongoTemplate;
         ChatRoomServer.snowflake = snowflake;
 
     }
@@ -92,8 +94,10 @@ public class ChatRoomServer {
                     .dateTime(LocalDateTime.now())
                     .build();
 
+            // 2024-10-6  12:38-仅在用户在当前聊天室时一次性通知一下即可 , 临时希瑞消息不必缓存进数据库中
             // 2024-9-10  22:30-系统消息也要进行持久化
-            groupMessageService.insertOne(groupChatMessage);
+            // groupMessageService.insertOne(groupChatMessage);
+            // mongoTemplate.insert(groupChatMessage);
 
             log.info("用户 {} (USER ID = {}) 加入到当前聊天房(ROOM ID = {})", user.getNickname(), userId, roomId);
 
@@ -107,8 +111,10 @@ public class ChatRoomServer {
                     .dateTime(LocalDateTime.now())
                     .build();
 
+            // 2024-10-6  12:39-仅在用户在当前聊天室时一次性通知一下即可 , 临时希瑞消息不必缓存进数据库中
             // 2024-9-10  22:31-系统消息也要进行持久化
-            groupMessageService.insertOne(groupChatMessage);
+            // groupMessageService.insertOne(groupChatMessage);
+            // mongoTemplate.insert(groupChatMessage);
 
             log.warn("用户 {} (USER ID = {}) 加入到当前聊天房失败(ROOM ID = {})", user.getNickname(), userId, roomId);
 
@@ -134,8 +140,10 @@ public class ChatRoomServer {
                 .dateTime(LocalDateTime.now())
                 .build();
 
+        // 2024-10-6  12:39-仅在用户在当前聊天室时一次性通知一下即可 , 临时希瑞消息不必缓存进数据库中
         // 2024-9-10  22:32-系统消息也要进行持久化
-        groupMessageService.insertOne(groupChatMessage);
+        // groupMessageService.insertOne(groupChatMessage);
+        // mongoTemplate.insert(groupChatMessage);
 
         chatRoomService.sendGroupChatMsg(roomId, user, groupChatMessage);
 
@@ -159,17 +167,18 @@ public class ChatRoomServer {
 
             groupMessage.setChatRoomId(roomId);
 
-            // 2024-9-11  20:10-如果前端ID为空的话 , 则使用前端传过来的建议ID(考虑到上传与消息ID关联的多媒体数据的操作需要先于插入消息操作的特殊情况)
+            // 2024-9-11  20:10-如果前端ID不为空的话 , 则使用前端传过来的建议ID(考虑到上传与消息ID关联的多媒体数据的操作需要先于插入消息操作的特殊情况)
             // 2024-9-10  23:00-这里将覆盖掉前端生成的ID , 主要是如果使用UUID的话 , GroupMessage的存放顺序就不是按照时间顺序的先后存放的了 , 后期按照发送时间进行条件查询的话比较不方便
             // 采用雪花ID , 能在一定程度上解决这个问题(当然存在小范围的时间顺序排列失真)
-            if (groupMessage.getId() != null && groupMessage.getId() > 0) {
+            if (groupMessage.getId() == null || groupMessage.getId() < 0) {
 
                 groupMessage.setId(snowflake.nextId());
 
             }
 
             // 2024-9-10  22:33-持久化群聊消息
-            groupMessageService.insertOne(groupMessage);
+            // groupMessageService.insertOne(groupMessage);
+            mongoTemplate.insert(groupMessage);
 
             log.info("用户 {} (USER ID = {}) 在聊天房(ROOM ID = {}) 发送了一条全房间广播消息 : {}", user.getNickname(), user.getId(), roomId, msg);
 
@@ -188,7 +197,8 @@ public class ChatRoomServer {
             if (isSendSuccessfully) {
 
                 // 2024-9-10  22:33-异常的群聊消息也要进行持久化
-                groupMessageService.insertOne(groupChatMessage);
+                // groupMessageService.insertOne(groupChatMessage);
+                mongoTemplate.insert(groupChatMessage);
 
             }
 

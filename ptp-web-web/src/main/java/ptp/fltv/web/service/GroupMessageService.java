@@ -19,7 +19,7 @@ public interface GroupMessageService {
 
 
     /**
-     * @param pageNumber 当前的页码(即将请求的页码数)
+     * @param pageNumber 当前的页码(即将请求的页码数 , 从0开始)
      * @param count      查询的数量
      * @param chatRoomId 群聊消息所属的房间号ID
      * @return 指定数据页上的群聊数据列表

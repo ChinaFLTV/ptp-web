@@ -4,6 +4,7 @@ import jakarta.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 import pfp.fltv.common.model.po.ws.GroupMessage;
 import ptp.fltv.web.repository.GroupMessageRepository;
@@ -30,7 +31,7 @@ public class GroupMessageServiceImpl implements GroupMessageService {
     @Override
     public List<GroupMessage> queryGroupMessagePage(@Nonnull Long chatRoomId, @Nonnull Long pageNumber, @Nonnull Long count) {
 
-        return groupMessageRepository.findAll(PageRequest.of(Math.toIntExact(pageNumber), Math.toIntExact(count), Sort.by(Sort.Direction.DESC, "dateTime"))).getContent();
+        return groupMessageRepository.findAll(PageRequest.of(Math.toIntExact(pageNumber), Math.toIntExact(count), Sort.by(Sort.Direction.DESC, "id", "dateTime"))).getContent();
 
     }
 

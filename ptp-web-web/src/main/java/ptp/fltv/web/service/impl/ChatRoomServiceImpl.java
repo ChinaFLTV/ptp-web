@@ -145,8 +145,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
                 Map<String, Object> wrappedMsgDataMap = new HashMap<>();
                 wrappedMsgDataMap.put("room-id", roomId);
-                wrappedMsgDataMap.put("user", user);
-                wrappedMsgDataMap.put("message", groupChatMessage);
+                wrappedMsgDataMap.put("user", JSON.toJSONString(user));
+                wrappedMsgDataMap.put("message", JSON.toJSONString(groupChatMessage));
 
                 for (Map.Entry<String, Session> entry : sessionsMap.entrySet()) {
 
