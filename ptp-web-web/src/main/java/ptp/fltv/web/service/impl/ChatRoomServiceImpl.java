@@ -201,6 +201,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         try {
 
             String fileName = Objects.requireNonNull(file.getOriginalFilename());
+            // 2024-10-6  21:03-获取到文件的拓展名 , 并将其作为云端资源的拓展名 , 注意 , 这里前端方面必须确保用户提交的资源的实际类型与所提交到的分类必须一致 , 后端不会对文件拓展名进行合法性校验
+            String extensionName = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
             // 2024-9-5  20:00-腾讯云COS支持文件名称最长为100个字符 , 因此这里在已有的限制条件上进一步进行限制 , 最多支持80个字符长度的文件名称 , 超出则进行截断处理
             String key = CosConstants.BUCKET_CHAT_ROOM_FILE + "/" + messageId + "-" + (fileName.length() > 80 ? fileName.substring(0, 80) : fileName);
 
@@ -208,10 +210,10 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
             switch (contentType) {
 
-                case PHOTO -> key = CosConstants.BUCKET_CHAT_ROOM_PHOTO + "/" + messageId + ".png";
-                case VIDEO -> key = CosConstants.BUCKET_CHAT_ROOM_VIDEO + "/" + messageId + ".mp4";
-                case AUDIO -> key = CosConstants.BUCKET_CHAT_ROOM_AUDIO + "/" + messageId + ".mp3";
-                case VOICE -> key = CosConstants.BUCKET_CHAT_ROOM_VOICE + "/" + messageId + ".wav";
+                case PHOTO -> key = CosConstants.BUCKET_CHAT_ROOM_PHOTO + "/" + messageId + "." + extensionName;
+                case VIDEO -> key = CosConstants.BUCKET_CHAT_ROOM_VIDEO + "/" + messageId + "." + extensionName;
+                case AUDIO -> key = CosConstants.BUCKET_CHAT_ROOM_AUDIO + "/" + messageId + "." + extensionName;
+                case VOICE -> key = CosConstants.BUCKET_CHAT_ROOM_VOICE + "/" + messageId + "." + extensionName;
 
             }
 
@@ -259,24 +261,31 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                             .is(chatRoom.getId())
                             .and("messageType")
                             .is("GROUP_CHAT")
-                            .and("contentType")
-                            .is("TEXT")
+                    // .and("contentType")
+                    // .is("TEXT")
 
-            ).with(Sort.by(Sort.Direction.DESC, "dateTime"))
+            ).with(Sort.by(Sort.Direction.DESC, "id", "dateTime"))
                     .limit(1);
 
             GroupMessage groupMessage = mongoTemplate.findOne(query, GroupMessage.class);
 
-            // 2024-10-2  23:29-可能存在当前聊天室还没有人发过消息或者房间内的消息已经被清理过了 , 这种情况是存在的 , 因此需要判断一下
-            if (groupMessage != null) {
+            // 2024-10-7  1:46-这里允许向用户展示指定聊天室中的最新的非文本类型的群聊消息预览 , 这里对消息内容作二次加工以改进用户体验
+            switch (Objects.requireNonNull(groupMessage).getContentType()) {
 
-                chatVo.setLatestMsgSendUserId(groupMessage.getSenderId());
-                chatVo.setLatestMsgSendUserNickname(groupMessage.getSenderNickname());
-                chatVo.setLatestMsgSendUserAvatarUrl(groupMessage.getSenderAvatarUrl());
-                chatVo.setLatestMsgContent(groupMessage.getContent());
-                chatVo.setLatestMsgPubdate(groupMessage.getDateTime());
+                case PHOTO -> groupMessage.setContent("[图片]");
+                case VIDEO -> groupMessage.setContent("[视频]");
+                case AUDIO -> groupMessage.setContent("[音频]");
+                case VOICE -> groupMessage.setContent("[语音]");
+                case FILE -> groupMessage.setContent("[文件]");
 
             }
+
+            // 2024-10-2  23:29-可能存在当前聊天室还没有人发过消息或者房间内的消息已经被清理过了 , 这种情况是存在的 , 因此需要判断一下
+            chatVo.setLatestMsgSendUserId(groupMessage.getSenderId());
+            chatVo.setLatestMsgSendUserNickname(groupMessage.getSenderNickname());
+            chatVo.setLatestMsgSendUserAvatarUrl(groupMessage.getSenderAvatarUrl());
+            chatVo.setLatestMsgContent(groupMessage.getContent());
+            chatVo.setLatestMsgPubdate(groupMessage.getDateTime());
 
             chatVos.add(chatVo);
 
