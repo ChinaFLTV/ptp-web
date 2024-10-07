@@ -70,4 +70,32 @@
 
     </dependencies>
 
+    <build>
+
+        <plugins>
+
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring.boot.maven.plugin.version}</version>
+                <configuration>
+                    <!--  2024-10-8  6:14-配置构建出来的jar包的存放位置  -->
+                    <outputDirectory>${jar.output.path}</outputDirectory>
+                    <!--  2024-10-8  6:14-解决通过 java -jar ... 的方式运行jar包时报 no main manifest attribute, in ... 的错误  -->
+                    <mainClass>ptp.fltv.web.service.store.StoreApplication</mainClass>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>repackage</id>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+
+    </build>
+
 </project>

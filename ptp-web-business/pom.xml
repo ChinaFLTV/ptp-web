@@ -4,7 +4,9 @@
     <parent>
         <groupId>ptp.fltv</groupId>
         <artifactId>ptp-web-backend</artifactId>
-        <version>1.0</version>
+        <version>${ptp.version}</version>
+        <!--  2024-10-8  1:21-解决在通过maven进行模块打包时报 :pom:1.0 was not found in https://repo.maven.apache.org/maven2 during a previous attempt 的错误(参考自https://www.cnblogs.com/johnnyzen/p/18061819)  -->
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>ptp-web-business</artifactId>

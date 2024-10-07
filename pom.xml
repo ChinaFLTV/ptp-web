@@ -60,11 +60,18 @@
     </modules>
 
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+
+        <!--  2024-10-8  5:59-指明各模块生成的jar包的存放路径  -->
+        <jar.output.path>D:\JavaProjects\ptp-web-backend\docker\jars\</jar.output.path>
+
+        <java.version>17</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <ptp.version>1.0</ptp.version>
 
+        <!--  2024-10-8  6:03-Spring Cloud整个框架的版本号  -->
+        <spring.cloud.framework.version>3.2.3</spring.cloud.framework.version>
         <knife4j.version>4.5.0</knife4j.version>
         <mybatis.plus.version>3.5.5</mybatis.plus.version>
         <lombok.version>1.18.30</lombok.version>
@@ -99,6 +106,8 @@
         <jedis.version>5.2.0-beta3</jedis.version>
         <skywalking.version>9.2.0</skywalking.version>
         <qcloud.cos.version>5.6.225</qcloud.cos.version>
+        <!--  2024-10-8  6:07-SpringBoot的Maven构建插件的版本号  -->
+        <spring.boot.maven.plugin.version>${spring.cloud.framework.version}</spring.boot.maven.plugin.version>
 
     </properties>
 
@@ -269,5 +278,54 @@
 
     </dependencyManagement>
 
+
+    <build>
+        <plugins>
+            <!--  2024-10-8  1:20-通过maven打包模块时所需的插件  -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            <!--  2024-10-8  1:26-配置构建jar时跳过测试  -->
+            <!--<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.2</version>
+                <configuration>
+                    <skipTests>true</skipTests>
+                </configuration>
+            </plugin>-->
+            <!--  2024-10-8  1:30-配置构建出来的jar包的存放位置  -->
+            <!--<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    &lt;!&ndash;  2024-10-8  1:52-由于这里如果按照环境变量去配置路径的话 , 生成的jar包还是会分散到各个module里面 , 不易集中管理 , 因此这里选择直接采用绝对路径  &ndash;&gt;
+                    &lt;!&ndash;  如果你要打包本项目的话 , 请首先修改下面的输出路径为对应的你本机的真实物理路径  &ndash;&gt;
+                    <outputDirectory>D:\JavaProjects\ptp-web-backend\docker\jars\</outputDirectory>
+                </configuration>
+            </plugin>-->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring.boot.maven.plugin.version}</version>
+                <!--<executions>
+                    <execution>
+                        <id>repackage</id>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>-->
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
