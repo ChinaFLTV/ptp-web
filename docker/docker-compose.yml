@@ -669,6 +669,63 @@ services:
         max-file: 64
 
 
+  # 2024-10-8-安装PTP后台管理微服务
+  spring-cloud-services:
+    container_name: ptp-backend-spring-cloud-services-1
+    labels:
+      name: ptp-backend-spring-cloud-services-1
+      author: LiGuanda
+      description: "PTP的后端管理Spring Cloud微服务"
+    build: # 2024-10-8  18:43-使用本文件所在目录中的Dockerfile构建生成的镜像
+      context: .
+      dockerfile: ./Dockerfile
+    env_file:
+      - .env
+    dns: 8.8.8.8
+    hostname: ptp-backend-spring-cloud-services-1
+    extra_hosts:
+      - exthost:${EXTERNAL_LOCALHOST}
+    networks:
+      ptp-network:
+        ipv4_address: ${PTP_SPRING_CLOUD_LOCALHOST}
+    ports:
+      - "8080:8080"
+      - "8090:8090"
+      - "8120:8120"
+      - "8150:8150"
+      - "8180:8180"
+      - "8210:8210"
+      - "9848:9848" # 2024-10-9  00:56-解决Docker运行微服务实例时nacos报  Server check fail, please check server 127.0.0.1 ,port 9848 is available 的错误
+    expose:
+      - 8080
+      - 8090
+      - 8120
+      - 8150
+      - 8180
+      - 8210
+      - 9848
+    restart: on-failure
+    logging:
+      driver: json-file
+      options:
+        max-size: 256k
+        max-file: 64
+    depends_on:
+      - mysql
+      - redis
+      - mongodb
+      - nacos
+      # - elasticsearch
+      # - logstash
+      # - minio
+      # - rocketmq-broker
+      # - rocketmq-nameserver
+      # - seata-server
+      # - skywalking-oap
+      # - xxl-job-admin
+      # condition: service_healthy
+
+
 # 2024-4-10  15:28-新建一个自定义网络，将全部容器部署到同一个网络内，使其之间能够相互连通
 networks:
   ptp-network:

@@ -5,6 +5,8 @@
 
     <!--获取springboot的yml配置信息-->
     <springProperty scope="context" name="applicationName" source="spring.application.name" defaultValue="default"/>
+    <!--  2024-10-9  00:20-本机物理IP信息  -->
+    <springProperty scope="context" name="selfHost" source="ip.physical.self-host" defaultValue="127.0.0.1"/>
     <!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径-->
     <property name="LOG_HOME" value="D:/JavaProjects/ptp-web-backend/logs/logback/service/es"/>
 
@@ -47,7 +49,7 @@
     <appender name="logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
 
         <!-- logstash的服务器地址和通信端口 -->
-        <destination>127.0.0.1:5043</destination>
+        <destination>${selfHost:127.0.0.1}:5043</destination>
         <!-- encoder is required -->
         <encoder class="net.logstash.logback.encoder.LogstashEncoder">
 

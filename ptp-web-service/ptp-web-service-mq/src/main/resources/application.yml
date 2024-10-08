@@ -15,7 +15,7 @@ spring:
   # 2024-6-1  23:48-配置MySQL数据库源
   datasource:
     # 2024-6-2  21:37-调整时区为北京时间，以避免自动填充日期时间时出现8个小时的时间差
-    url: jdbc:mysql://127.0.0.1:4407/ptp_web?serverTimezone=Asia/Shanghai&useSSL=false&useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true # 2024-6-1  23:50-必须要加 allowPublicKeyRetrieval=true ，否则会报错
+    url: jdbc:mysql://${ip.physical.self-host:127.0.0.1}:4407/ptp_web?serverTimezone=Asia/Shanghai&useSSL=false&useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true # 2024-6-1  23:50-必须要加 allowPublicKeyRetrieval=true ，否则会报错
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: ptp_backend
     password: 7758521
@@ -56,7 +56,7 @@ spring:
   # 2024-6-10  22:15-集成Redis所需配置
   data:
     redis:
-      host: 127.0.0.1
+      host: ${ip.physical.self-host:127.0.0.1}
       port: 7001
       username: default
       password: root
@@ -74,7 +74,7 @@ spring:
     # 2024-5-27  22:16-sentinel相关配置
     sentinel:
       transport:
-        dashboard: 127.0.0.1:9888
+        dashboard: ${ip.physical.self-host:127.0.0.1}:9888
       log:
         dir: D:\JavaProjects\ptp-web-backend\logs\sentinel\service\mq
         switch-pid: true
@@ -84,7 +84,7 @@ spring:
       rocketmq:
         binder:
           # 客户端接入点，必填rocketMQ的连接地址，binder高度抽象
-          name-server: 127.0.0.1:9876
+          name-server: ${ip.physical.self-host:127.0.0.1}:9876
           # 不加, 会报错：Property 'group' is required - producerGroup
           group: ptp-web-service-mq
       # 具体生产消息、消费消息的桥梁
@@ -121,5 +121,5 @@ springdoc:
 
 # 2024-6-1  23:19-RocketMQ相关配置
 rocketmq:
-  name-server: 127.0.0.1:9876
+  name-server: ${ip.physical.self-host:127.0.0.1}:9876
 

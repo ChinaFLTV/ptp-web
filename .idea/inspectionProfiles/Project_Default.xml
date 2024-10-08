@@ -21,6 +21,7 @@
     <inspection_tool class="HttpUrlsUsage" enabled="true" level="WEAK WARNING" enabled_by_default="true">
       <option name="ignoredUrls">
         <list>
+          <option value="http://" />
           <option value="http://${EXTERNAL_LOCALHOST}" />
           <option value="http://${KES_LOCALHOST}" />
           <option value="http://0.0.0.0" />

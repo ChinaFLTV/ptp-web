@@ -1,6 +1,7 @@
 package ptp.fltv.web.service.gateway.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.ratelimit.RedisRateLimiter;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
@@ -27,6 +28,10 @@ import reactor.core.publisher.Mono;
 @Configuration
 public class GatewayConfig {
 
+
+    // 2024-10-8  19:59-本机的真实物理IP
+    @Value("${ip.physical.self-host:127.0.0.1}")
+    private String SELF_HOST_IP;
 
     @Autowired
     private IpKeyResolver ipKeyResolver;
@@ -66,12 +71,12 @@ public class GatewayConfig {
                                 })
                                 .metadata("response-timeout", 10_000)
                                 .metadata("connect-timeout", 10_000)
-                                .uri("http://127.0.0.1:8080")
+                                .uri("http://" + SELF_HOST_IP + ":8080")
                 )
                 // 2024-5-6  21:06-禁止普通用户访问其他微服务(访问需带有内部员工凭证)(无需单独对内部微服务模块相互调用作特殊处理，因为它们之间的RPC不走微服务网关(想拦你也拦不住啊哈哈))
                 .route("ptp-web-service", r ->
                         r.order(-1)
-                                /*.host("127.0.0.1").negate().and()*/.path("/api/v1/service/**")
+                                /*.host(SELF_HOST_IP).negate().and()*/.path("/api/v1/service/**")
                                 .filters(f ->
                                         f.modifyRequestBody(String.class, String.class, MediaType.APPLICATION_JSON_VALUE,
                                                         (exchange, content) -> {
@@ -85,7 +90,7 @@ public class GatewayConfig {
                                 )
                                 .metadata("response-timeout", 10_000)
                                 .metadata("connect-timeout", 10_000)
-                                .uri("http://127.0.0.1:8080")
+                                .uri("http://" + SELF_HOST_IP + ":8080")
                 )
                 .build();
 

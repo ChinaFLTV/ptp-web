@@ -6,6 +6,7 @@ import io.seata.spring.boot.autoconfigure.SeataDataSourceAutoConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.context.ApplicationContext;
 
 /**
  * @author Lenovo/LiGuanda
@@ -21,9 +22,13 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 public class ElasticSearchApplication {
 
 
+    // 2024-10-8  23:38-保存应用上下文引用 , 供后续不受Spring接管的实例进行配置数据的获取(比如ptp.fltv.web.service.gateway.init.SentinelDatasourceInitFunc类)
+    public static ApplicationContext context;
+
+
     public static void main(String[] args) {
 
-        SpringApplication.run(ElasticSearchApplication.class, args);
+        context = SpringApplication.run(ElasticSearchApplication.class, args);
 
     }
 

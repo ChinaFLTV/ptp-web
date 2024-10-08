@@ -1,10 +1,11 @@
 package ptp.fltv.web.service.mq.consumer;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
 import org.apache.rocketmq.spring.core.RocketMQListener;
 import org.redisson.api.RedissonClient;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,21 +25,24 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @filename CommodityReplenishConsumer.java
  */
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RocketMQMessageListener(topic = "commodity-replenish-topic", consumerGroup = "commodity-replenish-consumer-group", consumeThreadNumber = 10, consumeThreadMax = 10, maxReconsumeTimes = 64, delayLevelWhenNextConsume = 2)
 @Slf4j
 @Service
 public class CommodityReplenishConsumer implements RocketMQListener<HashMap<String, Object>> {
 
 
-    private static final String ES_UPDATE_COMMODITY_URL = "http://127.0.0.1:8120/api/v1/service/es/finance/commodity/update/single";
+    // 2024-10-9  00:04-本机的真实物理IP
+    @Value("${ip.physical.self-host:127.0.0.1}")
+    private String SELF_HOST_IP;
+    private final String ES_UPDATE_COMMODITY_URL = "http://" + SELF_HOST_IP + ":8120/api/v1/service/es/finance/commodity/update/single";
 
 
-    private TransactionRecordService transactionRecordService;
-    private RestTemplate restTemplate;
-    private CommodityService commodityService;
-    private StringRedisTemplate stringRedisTemplate;
-    private RedissonClient redissonClient;
+    private final TransactionRecordService transactionRecordService;
+    private final RestTemplate restTemplate;
+    private final CommodityService commodityService;
+    private final StringRedisTemplate stringRedisTemplate;
+    private final RedissonClient redissonClient;
     public static final AtomicInteger successReplenishRecv = new AtomicInteger(0);
     public static final AtomicInteger failReplenishRecv = new AtomicInteger(0);
 

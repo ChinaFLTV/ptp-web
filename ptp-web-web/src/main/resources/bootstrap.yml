@@ -2,14 +2,15 @@
 spring:
   application:
     name: ptp-web-web
-  profiles:
-    active: dev
+    ## 2024-10-8  22:00-网关微服务模块的运行环境的指定暂时限制在这里 , 主要考虑到 ptp.fltv.web.service.gateway.init.SentinelDatasourceInitFunc 类是反射实例化的 , 需要主动根据运行环境来读取对应的本机物理IP数据
+  # profiles:
+    # active: dev
 
 
   cloud:
     nacos:
-      server-addr: 127.0.0.1:8848
+      server-addr: ${ip.physical.self-host:127.0.0.1}:8848
       config:
         file-extension: yaml
       discovery:
-        server-addr: 127.0.0.1:8848
+        server-addr: ${ip.physical.self-host:127.0.0.1}:8848

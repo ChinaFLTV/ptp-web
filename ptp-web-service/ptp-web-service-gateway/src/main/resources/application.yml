@@ -27,13 +27,13 @@ spring:
       # 2024-5-14  21:18-Sentinel 网关流控默认的粒度是 route 维度以及自定义 API 分组维度，默认不支持 URL 粒度。若通过 Spring Cloud Alibaba 接入，请将 spring.cloud.sentinel.filter.enabled 配置项置为 false
       # enabled: false
       transport:
-        dashboard: 127.0.0.1:9888
+        dashboard: ${ip.physical.self-host:127.0.0.1}:9888
 
 
     # 2024-4-4  20:30-集成Redis所需配置
   data:
     redis:
-      host: 127.0.0.1
+      host: ${ip.physical.self-host:127.0.0.1}
       port: 7001
       username: default
       password: root

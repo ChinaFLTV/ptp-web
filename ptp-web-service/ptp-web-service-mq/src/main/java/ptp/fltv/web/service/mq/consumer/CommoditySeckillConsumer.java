@@ -1,9 +1,10 @@
 package ptp.fltv.web.service.mq.consumer;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
 import org.apache.rocketmq.spring.core.RocketMQListener;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,20 +28,23 @@ import java.util.Map;
  * @filename CommoditySeckillRecordAddConsumer.java
  */
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RocketMQMessageListener(topic = "commodity-seckill-topic", consumerGroup = "commodity-seckill-consumer-group", consumeThreadNumber = 1, consumeThreadMax = 1, maxReconsumeTimes = 64, delayLevelWhenNextConsume = 2)
 @Slf4j
 @Service
 public class CommoditySeckillConsumer implements RocketMQListener<HashMap<String, Object>> {
 
 
-    private static final String ES_UPDATE_COMMODITY_URL = "http://127.0.0.1:8120/api/v1/service/es/finance/commodity/update/single";
+    // 2024-10-8  19:59-本机的真实物理IP
+    @Value("${ip.physical.self-host:127.0.0.1}")
+    private String SELF_HOST_IP;
+    private final String ES_UPDATE_COMMODITY_URL = "http://" + SELF_HOST_IP + ":8120/api/v1/service/es/finance/commodity/update/single";
 
 
-    private TransactionRecordService transactionRecordService;
-    private RestTemplate restTemplate;
-    private CommodityService commodityService;
-    private StringRedisTemplate stringRedisTemplate;
+    private final TransactionRecordService transactionRecordService;
+    private final RestTemplate restTemplate;
+    private final CommodityService commodityService;
+    private final StringRedisTemplate stringRedisTemplate;
 
 
     @Transactional

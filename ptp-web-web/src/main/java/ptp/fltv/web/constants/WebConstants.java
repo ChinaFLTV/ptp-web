@@ -1,5 +1,6 @@
 package ptp.fltv.web.constants;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 import pfp.fltv.common.utils.NetworkUtils;
 
@@ -14,6 +15,11 @@ import pfp.fltv.common.utils.NetworkUtils;
 public class WebConstants {
 
 
+    // 2024-10-8  19:59-本机的真实物理IP
+    @Value("${ip.physical.self-host:127.0.0.1}")
+    private static String SELF_HOST_IP;
+
+
     /**
      * @author Lenovo/LiGuanda
      * @date 2024/4/28 PM 8:56:16
@@ -21,7 +27,7 @@ public class WebConstants {
      * @description ES服务的基础路径
      * @filename WebConstants.java
      */
-    public static final String ES_BASE_URL = "http://127.0.0.1:8120";
+    public static final String ES_BASE_URL = "http://" + SELF_HOST_IP + ":8120";
 
 
     /**

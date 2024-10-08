@@ -2,14 +2,14 @@
 spring:
   application:
     name: ptp-web-service-job
-  profiles:
-    active: dev
+    # profiles:
+    # active: dev
 
 
   cloud:
     nacos:
-      server-addr: 127.0.0.1:8848
+      server-addr: ${ip.physical.self-host:127.0.0.1}:8848
       config:
         file-extension: yaml
       discovery:
-        server-addr: 127.0.0.1:8848
+        server-addr: ${ip.physical.self-host:127.0.0.1}:8848

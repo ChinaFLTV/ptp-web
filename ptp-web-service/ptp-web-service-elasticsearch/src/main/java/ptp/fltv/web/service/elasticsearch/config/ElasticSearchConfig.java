@@ -1,6 +1,7 @@
 package ptp.fltv.web.service.elasticsearch.config;
 
 import jakarta.annotation.Nonnull;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
@@ -31,12 +32,17 @@ import java.util.List;
 public class ElasticSearchConfig extends ElasticsearchConfiguration {
 
 
+    // 2024-10-8  23:21-本机的真实物理IP
+    @Value("${ip.physical.self-host:127.0.0.1}")
+    private String SELF_HOST_IP;
+
+
     @Nonnull
     @Override
     public ClientConfiguration clientConfiguration() {
 
         return ClientConfiguration.builder()
-                .connectedTo(new InetSocketAddress("127.0.0.1", 9200))
+                .connectedTo(new InetSocketAddress(SELF_HOST_IP, 9200))
                 .build();
 
     }

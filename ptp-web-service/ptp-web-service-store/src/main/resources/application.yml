@@ -13,7 +13,7 @@ spring:
     # 2024-5-18  21:52-sentinel相关配置
     sentinel:
       transport:
-        dashboard: 127.0.0.1:9888
+        dashboard: ${ip.physical.self-host:127.0.0.1}:9888
       log:
         dir: D:\JavaProjects\ptp-web-backend\logs\sentinel\service\store
         switch-pid: true
@@ -39,7 +39,7 @@ springdoc:
 
 # 2024-4-23  21:28-minio相关配置
 minio:
-  endpoint: 127.0.0.1
+  endpoint: ${ip.physical.self-host:127.0.0.1}
   port: 9000
   secure: false
   access-key: ptp_minio_access_key

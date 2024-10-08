@@ -7,7 +7,7 @@ server:
 # 2024-4-14  19:29-配置ElasticSearch
 spring:
   elasticsearch:
-    uris: http://127.0.0.1:9200
+    uris: http://${ip.physical.self-host:127.0.0.1}:9200
     # 2024-4-14  19:36-由于关闭了ElasticSearch的安全设置，因此这边无需使用用户名+密码的方式登录
     # username: elastic
     # password: # 2024-4-14  19:36-在容器中运行elasticsearch-reset-password -u elastic -i --url=http://localhost:9200生成(PS：没开安全配置，则为http协议，反之则为https)
@@ -15,7 +15,7 @@ spring:
     # 2024-5-18  21:51-sentinel相关配置
     sentinel:
       transport:
-        dashboard: 127.0.0.1:9888
+        dashboard: ${ip.physical.self-host:127.0.0.1}:9888
       log:
         dir: D:\JavaProjects\ptp-web-backend\logs\sentinel\service\elasticsearch
         switch-pid: true
@@ -46,7 +46,7 @@ seata:
     # support: nacos, consul, apollo, zk, etcd3
     type: nacos
     nacos:
-      server-addr: 127.0.0.1:8848
+      server-addr: ${ip.physical.self-host:127.0.0.1}:8848
       # namespace: seata
       group: SEATA_GROUP
       # username: nacos
@@ -60,7 +60,7 @@ seata:
     type: nacos
     nacos:
       application: seata-server
-      server-addr: 127.0.0.1:8848
+      server-addr: ${ip.physical.self-host:127.0.0.1}:8848
       group: "SEATA_GROUP"
       # namespace: "seata"
   tx-service-group: "content-operation-transaction-group"

@@ -16,7 +16,7 @@ spring:
 
   datasource:
     # 2024-6-2  21:38-调整时区为北京时间，以避免自动填充日期时间时出现8个小时的时间差
-    url: jdbc:mysql://127.0.0.1:4407/ptp_web?serverTimezone=Asia/Shanghai&useSSL=false&useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true # 2024-4-8  22:14-必须要加 allowPublicKeyRetrieval=true ，否则会报错
+    url: jdbc:mysql://${ip.physical.self-host:127.0.0.1}:4407/ptp_web?serverTimezone=Asia/Shanghai&useSSL=false&useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true # 2024-4-8  22:14-必须要加 allowPublicKeyRetrieval=true ，否则会报错
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: ptp_backend
     password: 7758521
@@ -72,14 +72,14 @@ spring:
         login-username: druid
         login-password: druid
         # IP白名单
-        allow: 127.0.0.1
+        allow: ${ip.physical.self-host:127.0.0.1}
         # IP黑名单（共同存在时，deny优先于allow）
         deny:
 
         # 2024-4-4  20:30-集成Redis所需配置
   data:
     redis:
-      host: 127.0.0.1
+      host: ${ip.physical.self-host:127.0.0.1}
       port: 7001
       username: default
       password: root
@@ -93,7 +93,7 @@ spring:
           min-idle: 0 # 2024-4-7  9:31-连接池最小空闲连接数
     # 2024-9-9  21:12-引入MongoDB数据库来存储聊天室相关的信息数据
     mongodb:
-      host: 127.0.0.1
+      host: ${ip.physical.self-host:127.0.0.1}
       port: 27017
       username: root # 2024-9-9  20:57-初始用户名和密码的配置请见docker-compose配置文件
       password: ptp-backend-mongodb-pwd
@@ -113,7 +113,7 @@ spring:
     # 2024-5-16  20:30-Sentinel相关配置
     sentinel:
       transport:
-        dashboard: 127.0.0.1:9888 # 2024-5-16  20:30-关联Sentinel控制台
+        dashboard: ${ip.physical.self-host:127.0.0.1}:9888 # 2024-5-16  20:30-关联Sentinel控制台
         # Sentinel 默认会对资源请求链路进行整合，这样会导致流控模式中的链路模式无法使用
         # 因此需要关闭 context 整合，这样 sentinel 监控界面会单独展示出每种链路请求路径
         # web-context-unify: false
@@ -162,7 +162,7 @@ mybatis-plus:
 
 # 2024-6-1  17:36-RocketMQ相关配置
 rocketmq:
-  name-server: 127.0.0.1:9876
+  name-server: ${ip.physical.self-host:127.0.0.1}:9876
   producer:
     group: commodity-seckill-record-producer-group
 
@@ -173,7 +173,7 @@ seata:
     # support: nacos, consul, apollo, zk, etcd3
     type: nacos
     nacos:
-      server-addr: 127.0.0.1:8848
+      server-addr: ${ip.physical.self-host:127.0.0.1}:8848
       # namespace: seata
       group: SEATA_GROUP
       # username: nacos
@@ -187,7 +187,7 @@ seata:
     type: nacos
     nacos:
       application: seata-server
-      server-addr: 127.0.0.1:8848
+      server-addr: ${ip.physical.self-host:127.0.0.1}:8848
       group: "SEATA_GROUP"
       # namespace: "seata"
   tx-service-group: "content-operation-transaction-group"

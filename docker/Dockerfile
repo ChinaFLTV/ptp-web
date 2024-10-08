@@ -22,7 +22,7 @@ COPY ./scripts /app/scripts
 RUN chmod +x /app/scripts/start_spring_cloud_services.sh
 
 # 2024-10-8  2:15-暴露端口(仅作提醒 , 实际并不会发布端口 , 需要在容器运行时主动进行端口映射)
-EXPOSE 8080 8090 8120 8150 8180 8210
+EXPOSE 8080 8090 8120 8150 8180 8210 9848
 
 # 2024-10-8  2:33-ENTRYPOINT指令仅在容器运行时执行 , 且不宜被覆盖 , CMD指令可以作为其参数使用
 ENTRYPOINT ["/bin/bash", "-c", "/app/scripts/start_spring_cloud_services.sh"]

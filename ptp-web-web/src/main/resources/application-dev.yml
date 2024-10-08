@@ -1,3 +1,10 @@
+# 2024-10-8  19:14-配置程序运行时可能用到的本机物理IP和其他服务的IP
+ip:
+  # 2024-10-8  19:16-物理IP
+  physical:
+    self-host: 192.168.1.10 # 2024-10-8  19:17-本机IP地址(除了修改此地方 , 还需要单独修改logback.xml中的IP配置)
+
+
 # 2024-3-25  21:02-MyBatisPlus配置
 mybatis-plus:
   configuration:

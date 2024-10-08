@@ -45,3 +45,6 @@ docker/volumes/mongodb/logs
 # 2024-5-17  22:30-忽略各个微服务模块产生的日志文件
 logs/
 docker/volumes/rocketmq/logs
+
+# 2024-10-9  1:01-忽略构建Docker镜像时无用的上下文文件
+docker/jars
