@@ -6,7 +6,7 @@ CUSTOM_MYSQL_USER=root
 CUSTOM_MYSQL_PASSWORD=root
 
 # 2024-4-13  20:50-修改配置文件权限，防止Warning: World-writable config file '/etc/mysql/my.cnf' is ignored
-                              #ERROR 2002 (HY000): Can't connect to local MySQL server through socket '/var/run/mysqld/mysqld.sock'的情况
+# ERROR 2002 (HY000): Can't connect to local MySQL server through socket '/var/run/mysqld/mysqld.sock'的情况
 if [ "$(id -u)" -eq 0 ]; then
 
   echo "当前用户为ROOT用户，开始执行配置文件权限变更操作"
