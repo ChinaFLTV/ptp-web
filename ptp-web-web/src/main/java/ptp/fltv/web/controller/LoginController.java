@@ -78,7 +78,7 @@ public class LoginController {
         cookie.setSecure(false);
         cookie.setHttpOnly(false);
         cookie.setMaxAge(0);
-        cookie.setDomain("localhost");
+        cookie.setDomain(ptp.fltv.web.constants.WebConstants.SERVER_IP);
         cookie.setPath("/");
         response.addCookie(cookie);
 

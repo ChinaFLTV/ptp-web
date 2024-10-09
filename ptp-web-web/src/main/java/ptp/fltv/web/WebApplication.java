@@ -7,6 +7,7 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 
 /**
@@ -26,9 +27,13 @@ import org.springframework.context.annotation.ComponentScan;
 public class WebApplication {
 
 
+    // 2024-10-9  17:38-保存应用上下文引用 , 供后续不受Spring接管的实例进行配置数据的获取(比如ptp.fltv.web.service.gateway.init.SentinelDatasourceInitFunc类)
+    public static ApplicationContext context;
+
+
     public static void main(String[] args) {
 
-        SpringApplication.run(WebApplication.class, args);
+        context = SpringApplication.run(WebApplication.class, args);
 
     }
 

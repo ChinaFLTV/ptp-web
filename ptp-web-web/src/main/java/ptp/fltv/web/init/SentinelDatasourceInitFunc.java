@@ -12,9 +12,8 @@ import com.alibaba.csp.sentinel.util.TimeUtil;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.TypeReference;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+import ptp.fltv.web.WebApplication;
 
 import java.util.List;
 
@@ -26,19 +25,17 @@ import java.util.List;
  * @filename SentinelDatasourceInitFunc.java
  */
 
-@Component("hahaha")
+
 @Slf4j
 public class SentinelDatasourceInitFunc implements InitFunc {
-
-
-    @Autowired
-    private ApplicationContext context;
 
 
     @Override
     public void init() {
 
-        ReadableDataSource<String, List<FlowRule>> flowRuleDatasource = new NacosDataSource<>("127.0.0.1:8848", "DEFAULT_GROUP", "ptp-web-web-flow-rules",
+        String SELF_HOST_IP = confirmSelfHostIp();
+
+        ReadableDataSource<String, List<FlowRule>> flowRuleDatasource = new NacosDataSource<>(SELF_HOST_IP + ":8848", "DEFAULT_GROUP", "ptp-web-web-flow-rules",
 
                 source ->
 
@@ -49,7 +46,7 @@ public class SentinelDatasourceInitFunc implements InitFunc {
 
         FlowRuleManager.register2Property(flowRuleDatasource.getProperty());
 
-        ReadableDataSource<String, List<DegradeRule>> degradationRuleDatasource = new NacosDataSource<>("127.0.0.1:8848", "DEFAULT_GROUP", "ptp-web-web-degradation-rules",
+        ReadableDataSource<String, List<DegradeRule>> degradationRuleDatasource = new NacosDataSource<>(SELF_HOST_IP + ":8848", "DEFAULT_GROUP", "ptp-web-web-degradation-rules",
 
                 source ->
                         JSON.parseObject(source, new TypeReference<>() {
@@ -67,6 +64,23 @@ public class SentinelDatasourceInitFunc implements InitFunc {
                                 TimeUtil.currentTimeMillis(), snapshotValue)
 
         );
+
+    }
+
+
+    /**
+     * @return 如果已经配置了物理IP , 则返回配置好的数据 , 否则则返回127.0.0.1
+     * @author Lenovo/LiGuanda
+     * @date 2024/10/9 PM 5:38:08
+     * @version 1.0.0
+     * @description 确定好本机的真实物理IP
+     * @apiNote 该方法主要解决该类因反射实例化而导致@Value注解失效的问题
+     * @filename SentinelDatasourceInitFunc.java
+     */
+    private String confirmSelfHostIp() {
+
+        String configIp = WebApplication.context.getEnvironment().getProperty("ip.physical.self-host");
+        return StringUtils.hasLength(configIp) ? configIp : "127.0.0.1";
 
     }
 

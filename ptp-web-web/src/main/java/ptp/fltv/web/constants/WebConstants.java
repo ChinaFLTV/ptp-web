@@ -62,7 +62,7 @@ public class WebConstants {
      * @description 本程序所运行在的服务器的外网IP地址(开发环境下则为局域网的IP地址)
      * @filename WebConstants.java
      */
-    public static String SERVER_IP = "localhost";
+    public static String SERVER_IP = SELF_HOST_IP;
 
 
     static {
