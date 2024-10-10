@@ -289,9 +289,9 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                 chatVo.setLatestMsgContent(groupMessage.getContent());
                 chatVo.setLatestMsgPubdate(groupMessage.getDateTime());
 
-                chatVos.add(chatVo);
-
             }
+
+            chatVos.add(chatVo);
 
         }
 
