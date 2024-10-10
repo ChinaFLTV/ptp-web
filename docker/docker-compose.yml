@@ -3,7 +3,7 @@ version: "3.9"
 services:
 
 
-  # 2024-10-9  22:44-远程部署该容器实例时 , 请先对 ./volumes/mysql/usr/local/bin/docker-entrypoint.sh。。 文件做个无副作用的写操作(比如 , 你可以对空行处做个回车等操作使该文件变成被修改过的文件即可) , 否则部署容器实例将失败
+  ## 2024-10-9  22:44-远程部署该容器实例时 , 请先对 ./volumes/mysql/usr/local/bin/docker-entrypoint.sh。。 文件做个无副作用的写操作(比如 , 你可以对空行处做个回车等操作使该文件变成被修改过的文件即可) , 否则部署容器实例将失败
   # 2024-5-28  17:42-启动MySQL容器失败请参照下面的方案进行修改：修改docker-entrypoint.sh和init.sh脚本文件的#!/bin/bash部分，重新写一遍
   #  我的头发与此非常相似。在我的情况下 /bin/bash 确实存在。但实际上问题是 Windows 行尾。
   #
@@ -40,14 +40,14 @@ services:
     expose:
       - 3306
     volumes:
-      - ./volumes/mysql/usr/local/bin/docker-entrypoint.sh:/usr/local/bin/docker-entrypoint.sh:rw
+      # - ./volumes/mysql/usr/local/bin/docker-entrypoint.sh:/usr/local/bin/docker-entrypoint.sh:rw
       - ./volumes/mysql/etc/mysql/conf.d:/etc/mysql/conf.d:r
       - ./volumes/mysql/var/log:/var/log:rw
       # - ./volumes/mysql/var/lib/mysql:/var/lib/mysql:rw
       # - ./volumes/mysql/run/mysqld:/run/mysqld:rw
       - ./volumes/mysql/etc/my.cnf:/etc/my.cnf:r
-      - ./volumes/mysql/sql:/docker-entrypoint-initdb.d/sql/:rw
-      - ./volumes/mysql/script:/docker-entrypoint-initdb.d/:r
+      - ./volumes/mysql/sql/:/docker-entrypoint-initdb.d/:rw # 2024-10-10  1:29-此目录存放默认执行的SQL脚本文件 , 这些脚本仅在镜像容器第一次启动时被执行 , 后续不再执行(参考自https://www.cnblogs.com/gradyblog/p/16057694.html)
+      # - ./volumes/mysql/script:/docker-entrypoint-initdb.d/:r
     environment:
       MYSQL_ROOT_PASSWORD: root
       TZ: Asia/Shanghai
