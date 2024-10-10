@@ -29,14 +29,15 @@ public class GroupMessage {
     private Long id; // 2024-8-23:58-消息ID
     private String content; //  2024-8-23  11:59-消息内容
     // 2024-9-11  21:35-将background值设置为true , 使得索引创建的过程将异步执行 , 因为索引创建过程比较耗费时间 , 因此异步执行可有效避免索引的创建导致主线程被阻塞的风险
-    @Indexed(background = true)
+    // 2024-10-10  16:24-已经在MongoDB首次启动时预先创建了对应字段的索引 , 因此这里不需要再次创建了 , 否则将会报错
+    // @Indexed(background = true)
     private Long senderId; // 2024-8-23  1:59-发送者ID
     private String senderNickname; // 2024-8-23  11:59-发送者昵称
     private String senderAvatarUrl; // 2024-8-23  12:00-发送者头像URL
     private Long receiverId = -1L; // 2024-8-23  12:00-接受者ID(-1则为全部聊天成员接收)
-    @Indexed(background = true)
+    // @Indexed(background = true)
     private Long chatRoomId; // 2024-8-23  13:20-如果是群聊消息 , 则该字段有效
-    @Indexed(background = true)
+    // @Indexed(background = true)
     private LocalDateTime dateTime = LocalDateTime.now(); // 2024-6-25  11:02-消息产生时间
     private String dataUri; // 2024-8-30  22:58-如果内容类型是多媒体(非纯文本)数据类型 , 则该字段存储对应数据的直链
     private ContentType contentType = ContentType.TEXT; // 2024-8-30  22:42-消息内容类型

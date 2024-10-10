@@ -15,10 +15,23 @@ db.createCollection("GroupMessage", {
     }, expireAfterSeconds: 14 * 24 * 60 * 60 // 2024-9-8  22:16-该集合下的文档最长存活时间为14d
 
 });
+// 2024-10-10  15:26-传入对象类型的参数以解决 class java.lang.String cannot be cast to class java.util.Map (java.lang.String and java.util.Map are in module java.base of loader 'bootstrap') 的错误
 // 2024-9-11  21:56-由于群聊消息写少读多(写操作顶多是插入操作) , 同时为了加速条件查询于是建立索引
-db.GroupMessage.createIndex("senderId");
-db.GroupMessage.createIndex("chatRoomId");
-db.GroupMessage.createIndex("dateTime");
+db.GroupMessage.createIndex({
+
+    "senderId": 1
+
+});
+db.GroupMessage.createIndex({
+
+    "chatRoomId": 1
+
+});
+db.GroupMessage.createIndex({
+
+    "dateTime": 1
+
+});
 
 
 // 2024-9-9  20:19-创建存放聊天房间信息的ChatRoom集合

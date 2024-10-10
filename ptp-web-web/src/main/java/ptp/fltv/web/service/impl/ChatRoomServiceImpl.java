@@ -269,25 +269,29 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
             GroupMessage groupMessage = mongoTemplate.findOne(query, GroupMessage.class);
 
-            // 2024-10-7  1:46-这里允许向用户展示指定聊天室中的最新的非文本类型的群聊消息预览 , 这里对消息内容作二次加工以改进用户体验
-            switch (Objects.requireNonNull(groupMessage).getContentType()) {
+            if (groupMessage != null) {
 
-                case PHOTO -> groupMessage.setContent("[图片]");
-                case VIDEO -> groupMessage.setContent("[视频]");
-                case AUDIO -> groupMessage.setContent("[音频]");
-                case VOICE -> groupMessage.setContent("[语音]");
-                case FILE -> groupMessage.setContent("[文件]");
+                // 2024-10-7  1:46-这里允许向用户展示指定聊天室中的最新的非文本类型的群聊消息预览 , 这里对消息内容作二次加工以改进用户体验
+                switch (Objects.requireNonNull(groupMessage).getContentType()) {
+
+                    case PHOTO -> groupMessage.setContent("[图片]");
+                    case VIDEO -> groupMessage.setContent("[视频]");
+                    case AUDIO -> groupMessage.setContent("[音频]");
+                    case VOICE -> groupMessage.setContent("[语音]");
+                    case FILE -> groupMessage.setContent("[文件]");
+
+                }
+
+                // 2024-10-2  23:29-可能存在当前聊天室还没有人发过消息或者房间内的消息已经被清理过了 , 这种情况是存在的 , 因此需要判断一下
+                chatVo.setLatestMsgSendUserId(groupMessage.getSenderId());
+                chatVo.setLatestMsgSendUserNickname(groupMessage.getSenderNickname());
+                chatVo.setLatestMsgSendUserAvatarUrl(groupMessage.getSenderAvatarUrl());
+                chatVo.setLatestMsgContent(groupMessage.getContent());
+                chatVo.setLatestMsgPubdate(groupMessage.getDateTime());
+
+                chatVos.add(chatVo);
 
             }
-
-            // 2024-10-2  23:29-可能存在当前聊天室还没有人发过消息或者房间内的消息已经被清理过了 , 这种情况是存在的 , 因此需要判断一下
-            chatVo.setLatestMsgSendUserId(groupMessage.getSenderId());
-            chatVo.setLatestMsgSendUserNickname(groupMessage.getSenderNickname());
-            chatVo.setLatestMsgSendUserAvatarUrl(groupMessage.getSenderAvatarUrl());
-            chatVo.setLatestMsgContent(groupMessage.getContent());
-            chatVo.setLatestMsgPubdate(groupMessage.getDateTime());
-
-            chatVos.add(chatVo);
 
         }
 
