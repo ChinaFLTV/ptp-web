@@ -20,7 +20,7 @@ import java.util.Objects;
  */
 
 @Component
-public class StringToEnumConverterFactory implements ConverterFactory<String, ConvertableEnum<?>> {
+public class String2EnumConverterFactory implements ConverterFactory<String, ConvertableEnum<?>> {
 
 
     @Nonnull

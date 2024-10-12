@@ -48,7 +48,7 @@ db.createCollection("ChatRoom", {
 // 2024-9-8  23:27-下面是模拟插入历史聊天数据
 db.GroupMessage.insertOne({
 
-    _id: 7758521, content: "能不能给我一首歌的时间？", senderId: 9, senderAvatarUrl: "heihei", receiverId: -1, chatRoomId: 666, dataUri: "Nothing~", dateTime: new Date(), contentType: 1801, messageType: 1701
+    _id: 7758521, content: "能不能给我一首歌的时间？", senderId: 9, senderAvatarUrl: "heihei", receiverId: -1, chatRoomId: 666, dataUri: "Nothing~", dateTime: new Date(), contentType: 'TEXT', messageType: 'GROUP_CHAT'
 
 });
 

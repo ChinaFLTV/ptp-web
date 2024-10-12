@@ -9,7 +9,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import ptp.fltv.web.converter.StringToEnumConverterFactory;
+import ptp.fltv.web.converter.String2EnumConverterFactory;
 
 /**
  * @author Lenovo/LiGuanda
@@ -25,7 +25,7 @@ import ptp.fltv.web.converter.StringToEnumConverterFactory;
 public class WebConfig implements WebMvcConfigurer {
 
 
-    private StringToEnumConverterFactory stringToEnumConverterFactory;
+    private String2EnumConverterFactory stringToEnumConverterFactory;
 
 
     /**
