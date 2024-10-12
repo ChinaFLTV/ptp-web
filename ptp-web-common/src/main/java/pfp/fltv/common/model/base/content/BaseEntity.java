@@ -94,6 +94,10 @@ public class BaseEntity implements Serializable {
     @Schema(description = "收藏量")
     private Integer starNum = 0;
 
+    @Field(name = "share_num", type = FieldType.Integer)
+    @Schema(description = "转发量")
+    private Integer shareNum = 0; // 2024-10-12  20:18-增加转发量字段
+
     @Transient
     @Schema(description = "发布时用户所在的地址信息")
     @TableField(typeHandler = JacksonTypeHandler.class)

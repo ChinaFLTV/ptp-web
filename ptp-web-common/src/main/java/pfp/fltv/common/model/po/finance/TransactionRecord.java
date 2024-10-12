@@ -108,6 +108,10 @@ public class TransactionRecord implements Serializable {
     @Schema(description = "收藏量")
     private Integer starNum = 0;
 
+    @Field(name = "share_num", type = FieldType.Integer)
+    @Schema(description = "转发量")
+    private Integer shareNum = 0; // 2024-10-12  20:18-增加转发量字段
+
     @Schema(description = "中间处理该订单的人员ID")
     @TableField(typeHandler = JacksonTypeHandler.class)
     private List<Long> processors = new ArrayList<>();

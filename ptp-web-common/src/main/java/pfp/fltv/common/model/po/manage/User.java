@@ -88,6 +88,10 @@ public class User implements Serializable {
     @Schema(description = "用户被点赞数量")
     private Integer likeNum = 0;
 
+    @Field(name = "share_num", type = FieldType.Integer)
+    @Schema(description = "用户被转发的数量")
+    private Integer shareNum = 0; // 2024-10-12  20:18-增加转发量字段
+
     @Field(name = "user_rank", type = FieldType.Double)
     @Schema(description = "用户等级")
     private Double userRank = 0D;

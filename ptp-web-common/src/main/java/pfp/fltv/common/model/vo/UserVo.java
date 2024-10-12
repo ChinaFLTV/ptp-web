@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 import pfp.fltv.common.enums.Gender;
 
 import java.io.Serializable;
@@ -65,6 +67,10 @@ public class UserVo implements Serializable {
 
     @Schema(description = "用户被点赞数量")
     private Integer likeNum;
+
+    @Field(name = "share_num", type = FieldType.Integer)
+    @Schema(description = "用户被转发的数量")
+    private Integer shareNum = 0; // 2024-10-12  20:20-增加转发量字段
 
     @Schema(description = "用户等级")
     private Double userRank;

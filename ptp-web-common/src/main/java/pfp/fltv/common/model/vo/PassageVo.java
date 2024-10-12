@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 import pfp.fltv.common.model.po.info.AddressInfo;
 
 import java.io.Serializable;
@@ -63,6 +65,10 @@ public class PassageVo implements Serializable {
 
     @Schema(description = "收藏量")
     private Integer starNum = 0;
+
+    @Field(name = "share_num", type = FieldType.Integer)
+    @Schema(description = "转发量")
+    private Integer shareNum = 0; // 2024-10-12  20:19-增加转发量字段
 
     @Schema(description = "发布时用户所在的地址信息")
     private AddressInfo addressInfo;
