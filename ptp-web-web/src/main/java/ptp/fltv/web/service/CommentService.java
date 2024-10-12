@@ -3,7 +3,7 @@ package ptp.fltv.web.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import jakarta.annotation.Nonnull;
 import pfp.fltv.common.enums.ContentRankType;
-import pfp.fltv.common.model.po.content.PassageComment;
+import pfp.fltv.common.model.po.content.Comment;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ import java.util.List;
  * @filename PassageCommentService.java
  */
 
-public interface PassageCommentService extends IService<PassageComment> {
+public interface CommentService extends IService<Comment> {
 
 
     /**
@@ -30,7 +30,7 @@ public interface PassageCommentService extends IService<PassageComment> {
      * @description 分页获取指定文章评论实体类型的指定排行类型的数据条目集合
      * @filename PassageCommentService.java
      */
-    List<PassageComment> getRankListByPage(@Nonnull ContentRankType contentRankType, @Nonnull Long offset, @Nonnull Long count);
+    List<Comment> getRankListByPage(@Nonnull ContentRankType contentRankType, @Nonnull Long offset, @Nonnull Long count);
 
 
 }

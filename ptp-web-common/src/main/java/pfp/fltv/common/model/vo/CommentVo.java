@@ -7,6 +7,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
+import pfp.fltv.common.model.po.content.Comment;
 import pfp.fltv.common.model.po.info.AddressInfo;
 
 import java.io.Serializable;
@@ -15,24 +18,29 @@ import java.util.List;
 /**
  * @author Lenovo/LiGuanda
  * @date 2024/3/18 下午 9:32:56
- * @description 前端传过来的文章评论信息
- * @filename PassageCommentVo.java
+ * @description 前端传过来的内容评论信息
+ * @filename CommentVo.java
  */
 
-@Schema(description = "前端传过来的文章评论信息")
+@Schema(description = "前端传过来的内容评论信息")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PassageCommentVo implements Serializable {
+public class CommentVo implements Serializable {
 
 
     @Schema(description = "评论ID")
     @TableId(type = IdType.ASSIGN_ID)
     private Long id;
 
-    @Schema(description = "评论的文章ID")
-    private Long passageId;
+    @Field(name = "content_id", type = FieldType.Constant_Keyword)
+    @Schema(description = "评论的内容的ID")
+    private Long contentId;
+
+    @Field(name = "belong_type", type = FieldType.Constant_Keyword)
+    @Schema(description = "评论所附属的内容类型")
+    private Comment.BelongType belongType;
 
     @Schema(description = "评论所属用户(发布者)ID")
     private Long fromUid;

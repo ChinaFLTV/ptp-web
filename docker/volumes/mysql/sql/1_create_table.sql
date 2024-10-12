@@ -182,11 +182,12 @@ CREATE TABLE IF NOT EXISTS `passage`
     COMMENT = '文章';
 
 
-# 2024-3-24  16:26-创建passage_comment表
-CREATE TABLE IF NOT EXISTS `passage_comment`
+# 2024-3-24  16:26-创建comment表
+CREATE TABLE IF NOT EXISTS `comment`
 (
     `id`           BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT COMMENT '文章评论ID',
-    `passage_id`   BIGINT UNSIGNED NOT NULL COMMENT '评论的文章ID',
+    `content_id`   BIGINT UNSIGNED NOT NULL COMMENT '评论所归属的内容的ID',
+    `belong_type`  INT UNSIGNED    NOT NULL COMMENT '评论所附属的内容类型',
     `from_uid`     BIGINT UNSIGNED NOT NULL COMMENT '评论所属用户(发布者)ID',
     `to_uid`       BIGINT UNSIGNED   DEFAULT NULL COMMENT '回复的用户ID(如果是文章的一级评论，则此值为null)',
     `parent_uid`   BIGINT UNSIGNED   DEFAULT NULL COMMENT '父评论ID(如果有的话)',
@@ -208,7 +209,7 @@ CREATE TABLE IF NOT EXISTS `passage_comment`
     `is_deleted`   INT UNSIGNED      DEFAULT 0 COMMENT '文章评论是否已被逻辑删除',
     `version`      INT UNSIGNED      DEFAULT 1 COMMENT '当前文章评论实体的版本(用于辅助实现乐观锁)',
 
-    FOREIGN KEY (passage_id) REFERENCES passage (id),
+    # FOREIGN KEY (passage_id) REFERENCES passage (id),
     FOREIGN KEY (from_uid) REFERENCES user (id),
     FOREIGN KEY (to_uid) REFERENCES user (id),
     FOREIGN KEY (parent_uid) REFERENCES user (id)
@@ -216,7 +217,7 @@ CREATE TABLE IF NOT EXISTS `passage_comment`
 )
     ENGINE = InnoDB
     DEFAULT CHARSET = utf8mb4
-    COMMENT = '文章评论';
+    COMMENT = '内容评论';
 
 
 # 2024-5-20  22:00-创建commodity表

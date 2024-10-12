@@ -10,7 +10,7 @@ import org.springframework.test.context.ContextConfiguration;
 import pfp.fltv.common.model.po.content.Announcement;
 import pfp.fltv.common.model.po.content.Dialogue;
 import pfp.fltv.common.model.po.content.Passage;
-import pfp.fltv.common.model.po.content.PassageComment;
+import pfp.fltv.common.model.po.content.Comment;
 import pfp.fltv.common.model.po.finance.Commodity;
 import pfp.fltv.common.model.po.manage.User;
 import ptp.fltv.web.WebApplication;
@@ -41,7 +41,7 @@ public class ElasticSearchDataFillScript {
     @Autowired
     private PassageService passageService;
     @Autowired
-    private PassageCommentService passageCommentService;
+    private CommentService commentService;
     @Autowired
     private UserService userService;
     @Autowired
@@ -69,14 +69,14 @@ public class ElasticSearchDataFillScript {
             List<Announcement> announcements = announcementService.list();
             List<Dialogue> dialogues = dialogueService.list();
             List<Passage> passages = passageService.list();
-            List<PassageComment> passageComments = passageCommentService.list();
+            List<Comment> comments = commentService.list();
             List<User> users = userService.list();
             List<Commodity> commodities = commodityService.list();
 
             elasticsearchOperations.save(announcements);
             elasticsearchOperations.save(dialogues);
             elasticsearchOperations.save(passages);
-            elasticsearchOperations.save(passageComments);
+            elasticsearchOperations.save(comments);
             elasticsearchOperations.save(users);
             elasticsearchOperations.save(commodities);
 
@@ -103,7 +103,7 @@ public class ElasticSearchDataFillScript {
         elasticsearchOperations.indexOps(Announcement.class).delete();
         elasticsearchOperations.indexOps(Dialogue.class).delete();
         elasticsearchOperations.indexOps(Passage.class).delete();
-        elasticsearchOperations.indexOps(PassageComment.class).delete();
+        elasticsearchOperations.indexOps(Comment.class).delete();
         elasticsearchOperations.indexOps(User.class).delete();
         elasticsearchOperations.indexOps(Commodity.class).delete();
 

@@ -6,17 +6,16 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
+import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 import org.springframework.data.elasticsearch.annotations.Setting;
+import pfp.fltv.common.enums.base.ConvertableEnum;
 import pfp.fltv.common.model.po.info.AddressInfo;
 
 import java.io.Serializable;
@@ -25,18 +24,18 @@ import java.util.List;
 /**
  * @author Lenovo/LiGuanda
  * @date 2024/3/14 下午 9:31:59
- * @description 文章评论的实体类(PO)
- * @filename PassageComment.java
+ * @description 言论/文章等内容的评论的实体类(PO)
+ * @filename Comment.java
  */
 
 @Setting(sortOrders = Setting.SortOrder.desc)
-@Document(indexName = "passage_comment")
-@TableName(value = "passage_comment", autoResultMap = true)
+@Document(indexName = "comment")
+@TableName(value = "comment", autoResultMap = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PassageComment implements Serializable {
+public class Comment implements Serializable {
 
 
     @Id
@@ -45,9 +44,14 @@ public class PassageComment implements Serializable {
     @Schema(description = "ID")
     private Long id;
 
-    @Field(name = "passage_id", type = FieldType.Constant_Keyword)
-    @Schema(description = "评论的文章ID")
-    private Long passageId;
+    @Field(name = "content_id", type = FieldType.Constant_Keyword)
+    @Schema(description = "评论的内容的ID")
+    private Long contentId;
+
+    @Field(name = "belong_type", type = FieldType.Constant_Keyword)
+    @Schema(description = "评论所附属的内容类型")
+    private BelongType belongType;
+
 
     @Field(name = "from_uid", type = FieldType.Constant_Keyword)
     @Schema(description = "评论所属用户(发布者)ID")
@@ -100,9 +104,35 @@ public class PassageComment implements Serializable {
     private Integer starNum;
 
     @Transient
-    @Schema(description = "记录文章评论发布时的地址信息")
+    @Schema(description = "记录评论发布时的地址信息")
     @TableField(typeHandler = JacksonTypeHandler.class)
     private AddressInfo addressInfo;
+
+
+    /**
+     * @author Lenovo/LiGuanda
+     * @version 1.0.0
+     * @date 2024/10/12 PM 1:42:19
+     * @description 评论所附属的内容类型枚举
+     * @filename Comment.java
+     */
+    @Getter
+    @AllArgsConstructor
+    public enum BelongType implements ConvertableEnum<Integer> {
+
+
+        DIALOGUE(2101, "言论"),
+        PASSAGE(2102, "文章"),
+        COMMENT(2103, "评论"),
+        USER(2104, "用户");
+
+
+        @JsonValue
+        private final Integer code;
+        private final String comment;
+
+
+    }
 
 
 }

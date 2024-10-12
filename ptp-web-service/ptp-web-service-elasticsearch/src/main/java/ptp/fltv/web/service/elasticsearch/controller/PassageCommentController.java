@@ -11,8 +11,8 @@ import org.springframework.data.elasticsearch.core.query.ByQueryResponse;
 import org.springframework.data.elasticsearch.core.query.UpdateResponse;
 import org.springframework.web.bind.annotation.*;
 import pfp.fltv.common.annotation.LogRecord;
-import pfp.fltv.common.model.po.content.PassageComment;
-import pfp.fltv.common.model.vo.PassageCommentVo;
+import pfp.fltv.common.model.po.content.Comment;
+import pfp.fltv.common.model.vo.CommentVo;
 import pfp.fltv.common.model.po.response.Result;
 import pfp.fltv.common.utils.ReflectUtils;
 import ptp.fltv.web.service.elasticsearch.service.EsSearchService;
@@ -45,7 +45,7 @@ public class PassageCommentController {
     @SentinelResource("service-elasticsearch-content-passage-comment-controller")
     @Operation(description = "根据给定的关键词分页查询符合条件的文章评论数据")
     @PostMapping("/fuzzy_query/page/{offset}/{limit}")
-    public Result<List<PassageCommentVo>> fuzzyQueryPassageCommentPage(
+    public Result<List<CommentVo>> fuzzyQueryPassageCommentPage(
 
             @Parameter(name = "keywords", description = "查询文章评论数据用到的关键词", in = ParameterIn.DEFAULT) @RequestParam("keywords") List<String> keywords,
             @Parameter(name = "offset", description = "查询的一页文章评论数据的起始偏移量", in = ParameterIn.PATH) @PathVariable("offset") Long offset,
@@ -53,18 +53,18 @@ public class PassageCommentController {
 
     ) {
 
-        List<PassageComment> passageComments = esSearchService.pagingQueryByKeywords(keywords, "content", offset, limit, PassageComment.class);
+        List<Comment> comments = esSearchService.pagingQueryByKeywords(keywords, "content", offset, limit, Comment.class);
 
-        List<PassageCommentVo> passageCommentVos = new ArrayList<>();
-        for (PassageComment passageComment : passageComments) {
+        List<CommentVo> commentVos = new ArrayList<>();
+        for (Comment comment : comments) {
 
-            PassageCommentVo passageCommentVo = new PassageCommentVo();
-            BeanUtils.copyProperties(passageComment, passageCommentVo);
-            passageCommentVos.add(passageCommentVo);
+            CommentVo commentVo = new CommentVo();
+            BeanUtils.copyProperties(comment, commentVo);
+            commentVos.add(commentVo);
 
         }
 
-        return Result.success(passageCommentVos);
+        return Result.success(commentVos);
 
     }
 
@@ -75,11 +75,11 @@ public class PassageCommentController {
     @PutMapping("/update/single")
     public Result<Map<String, Object>> updateSinglePassageComment(
 
-            @Parameter(name = "passageComment", description = "待修改的单条文章评论数据") @RequestBody PassageComment passageComment
+            @Parameter(name = "passageComment", description = "待修改的单条文章评论数据") @RequestBody Comment comment
 
     ) {
 
-        UpdateResponse response = esSearchService.updateEntity(passageComment, null);
+        UpdateResponse response = esSearchService.updateEntity(comment, null);
         return Result.neutral(ReflectUtils.toJSONObjectForcibly(response, null));
 
     }
@@ -91,13 +91,13 @@ public class PassageCommentController {
     @PostMapping("/insert/single")
     public Result<Map<String, Object>> insertSinglePassageComment(
 
-            @Parameter(name = "passageComment", description = "待添加的单条文章评论数据") @RequestBody PassageComment passageComment
+            @Parameter(name = "passageComment", description = "待添加的单条文章评论数据") @RequestBody Comment comment
 
     ) {
 
-        PassageComment savedPassageComment = esSearchService.insertEntity(passageComment, null);
+        Comment savedComment = esSearchService.insertEntity(comment, null);
         Map<String, Object> map = new HashMap<>();
-        map.put("savedEntity", savedPassageComment);
+        map.put("savedEntity", savedComment);
         return Result.neutral(map);
 
     }
@@ -113,7 +113,7 @@ public class PassageCommentController {
 
     ) {
 
-        ByQueryResponse response = esSearchService.deleteEntityById(id, PassageComment.class, null);
+        ByQueryResponse response = esSearchService.deleteEntityById(id, Comment.class, null);
         return Result.neutral(ReflectUtils.toJSONObjectForcibly(response, null));
 
     }
