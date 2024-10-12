@@ -15,8 +15,8 @@ import pfp.fltv.common.annotation.LogRecord;
 import pfp.fltv.common.enums.ContentRankType;
 import pfp.fltv.common.model.base.content.BaseEntity;
 import pfp.fltv.common.model.po.content.Comment;
-import pfp.fltv.common.model.vo.CommentVo;
 import pfp.fltv.common.model.po.response.Result;
+import pfp.fltv.common.model.vo.CommentVo;
 import ptp.fltv.web.constants.WebConstants;
 import ptp.fltv.web.mq.ContentRankMqService;
 import ptp.fltv.web.service.CommentService;
@@ -57,9 +57,10 @@ public class CommentController {
     @Operation(description = "根据ID查询单条内容评论数据")
     @GetMapping("/query/single/{id}")
     public Result<Comment> querySingleComment(
-            @Parameter(name = "id", description = "待查询的单条内容评论ID", in = ParameterIn.PATH, required = true)
-            @PathVariable("id")
-            Long id) {
+
+            @Parameter(name = "id", description = "待查询的单条内容评论ID", in = ParameterIn.PATH, required = true) @PathVariable("id") Long id
+
+    ) {
 
         Comment comment = commentService.getById(id);
 
@@ -73,8 +74,11 @@ public class CommentController {
     @Operation(description = "批量(分页)查询多条内容评论数据")
     @GetMapping("/query/page/{offset}/{limit}")
     public Result<List<CommentVo>> queryCommentPage(
+
             @Parameter(name = "offset", description = "查询的一页内容评论数据的起始偏移量", in = ParameterIn.PATH, required = true) @PathVariable("offset") Long offset,
-            @Parameter(name = "limit", description = "查询的这一页内容评论数据的数量", in = ParameterIn.PATH, required = true) @PathVariable("limit") Long limit) {
+            @Parameter(name = "limit", description = "查询的这一页内容评论数据的数量", in = ParameterIn.PATH, required = true) @PathVariable("limit") Long limit
+
+    ) {
 
         Page<Comment> commentPage = new Page<>(offset, limit);
         commentPage = commentService.page(commentPage);
@@ -99,9 +103,10 @@ public class CommentController {
     @Operation(description = "添加单条内容评论数据")
     @PostMapping("/insert/single")
     public Result<?> insertSingleComment(
-            @Parameter(name = "commentVo", description = "待添加的单条内容评论数据VO", required = true)
-            @RequestBody
-            CommentVo commentVo) {
+
+            @Parameter(name = "commentVo", description = "待添加的单条内容评论数据VO", required = true) @RequestBody CommentVo commentVo
+
+    ) {
 
         Comment comment = new Comment();
         BeanUtils.copyProperties(commentVo, comment);
@@ -131,9 +136,10 @@ public class CommentController {
     @Operation(description = "修改单条内容评论数据")
     @PutMapping("/update/single")
     public Result<?> updateSingleComment(
-            @Parameter(name = "CommentVo", description = "待修改的单条内容评论数据VO", required = true)
-            @RequestBody
-            CommentVo commentVo) {
+
+            @Parameter(name = "CommentVo", description = "待修改的单条内容评论数据VO", required = true) @RequestBody CommentVo commentVo
+
+    ) {
 
         Comment comment = commentService.getById(commentVo.getId());
         BeanUtils.copyProperties(commentVo, comment);
@@ -168,9 +174,10 @@ public class CommentController {
     @Operation(description = "删除单条内容评论数据")
     @DeleteMapping("/delete/single/{id}")
     public Result<?> deleteSingleComment(
-            @Parameter(name = "id", description = "待删除的单条内容评论ID", in = ParameterIn.PATH, required = true)
-            @PathVariable("id")
-            Long id) {
+
+            @Parameter(name = "id", description = "待删除的单条内容评论ID", in = ParameterIn.PATH, required = true) @PathVariable("id") Long id
+
+    ) {
 
         boolean isDeleted = commentService.removeById(id);
 
@@ -189,23 +196,6 @@ public class CommentController {
         }
 
         return Result.neutral(map);
-
-    }
-
-
-    @LogRecord(description = "分页获取指定类型的排行榜的内容评论数据")
-    @SentinelResource("web-content-announcement-controller")
-    @Operation(description = "分页获取指定类型的排行榜的内容评论数据")
-    @DeleteMapping("/query/rank/page")
-    public Result<List<Comment>> queryAnnouncementRankPage(
-
-            @Parameter(name = "offset", description = "查询的一页排行榜内容评论数据的起始偏移量", required = true) @RequestParam("offset") Long offset,
-            @Parameter(name = "limit", description = "查询的这一页排行榜内容评论数据的数量", required = true) @RequestParam("limit") Long limit,
-            @Parameter(name = "rankType", description = "排行榜的类型", required = true) @RequestParam("rankType") ContentRankType rankType
-
-    ) {
-
-        return Result.success(commentService.getRankListByPage(rankType, offset, limit));
 
     }
 
