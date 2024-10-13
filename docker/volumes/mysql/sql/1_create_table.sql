@@ -191,7 +191,7 @@ CREATE TABLE IF NOT EXISTS `comment`
 (
     `id`              BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT COMMENT '文章评论ID',
     `content_id`      BIGINT UNSIGNED NOT NULL COMMENT '评论所归属的内容的ID',
-    `belong_type`     CHAR(255)         DEFAULT 'ALL' COMMENT '评论所附属的内容类型',
+    `belong_type`     INT UNSIGNED    NOT NULL COMMENT '评论所附属的内容类型',
     `from_uid`        BIGINT UNSIGNED NOT NULL COMMENT '评论所属用户(发布者)ID',
     `from_nickname`   CHAR(255)         DEFAULT '' COMMENT '评论所属用户(发布者)昵称',
     `from_avatar_url` CHAR(255)         DEFAULT '' COMMENT '评论所属用户(发布者)头像URL',

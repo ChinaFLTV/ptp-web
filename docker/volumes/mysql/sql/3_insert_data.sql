@@ -466,10 +466,10 @@ INSERT
 INTO `comment` (`id`, `content_id`, `belong_type`, `from_uid`, `from_nickname`, `from_avatar_url`, `to_uid`, `parent_uid`, `topic_id`, `content`, `tags`,
                 `category`, `browse_num`, `like_num`, `unlike_num`, `comment_num`, `star_num`, `share_num`,
                 `address_info`)
-VALUES (1, 3, 'PASSAGE', 10, '清风徐来', 'https://q.qlogo.cn/g?b=qq&nk=123456789&s=640', 5, NULL, 2, '这篇帖子内容非常丰富，对我的工作帮助很大，谢谢作者的分享！', '["工作", "分享"]',
+VALUES (1, 3, 2101, 10, '清风徐来', 'https://q.qlogo.cn/g?b=qq&nk=123456789&s=640', 5, NULL, 2, '这篇帖子内容非常丰富，对我的工作帮助很大，谢谢作者的分享！', '["工作", "分享"]',
         '["职场", "学习"]', 8000, 5000, 200, 1500, 3000, 521,
         '{"altitude": 100.5, "longitude": 120.12345, "latitude": 30.98765, "country": "中国", "countryID": "CN", "province": "浙江省", "provinceID": "330000", "city": "杭州市", "cityID": "330100", "county": "西湖区", "countyID": "330106", "detailedLocation": "华星路123号"}'),
-       (2, 12, 'PASSAGE', 4, '梦回江南', 'https://q.qlogo.cn/g?b=qq&nk=987654321&s=640', 8, NULL, 5, '这篇帖子有点过时了，希望作者能够更新一下最新的资讯，让我们得到更多的信息。',
+       (2, 12, 2101, 4, '梦回江南', 'https://q.qlogo.cn/g?b=qq&nk=987654321&s=640', 8, NULL, 5, '这篇帖子有点过时了，希望作者能够更新一下最新的资讯，让我们得到更多的信息。',
         '["过时", "更新"]', '["资讯", "学习"]', 6000, 3000, 1000, 800, 2000, 486,
         '{"altitude": 90.8, "longitude": 116.395645, "latitude": 39.929986, "country": "中国", "countryID": "CN", "province": "北京市", "provinceID": "110000", "city": "北京市", "cityID": "110100", "county": "东城区", "countyID": "110101", "detailedLocation": "天安门广场"}'),
        (3, 5, 2101, 2, '星空下的约定', 'https://pic.qqans.com/up/2024-6/17189512656033766.jpg', 1, NULL, 3, '对这篇帖子的看法颇有分歧，我认为作者的观点有待商榷，需要更多证据支持。', '["分歧", "商榷"]',
