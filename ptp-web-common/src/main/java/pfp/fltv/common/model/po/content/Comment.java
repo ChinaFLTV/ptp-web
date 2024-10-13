@@ -151,6 +151,7 @@ public class Comment implements Serializable {
         ALL(2105, "不区分类型");
 
 
+        @EnumValue
         @JsonValue
         private final Integer code;
         private final String comment;

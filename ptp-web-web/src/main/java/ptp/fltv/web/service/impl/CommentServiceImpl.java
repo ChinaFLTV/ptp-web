@@ -69,6 +69,13 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
     public List<Comment> queryCommentPageWithSorting(@Nonnull ContentQuerySortType sortType, @Nonnull Comment.BelongType belongType, @Nonnull Long pageNum, @Nonnull Long pageSize) {
 
         QueryWrapper<Comment> queryWrapper = new QueryWrapper<>();
+
+        if (belongType != Comment.BelongType.ALL) {
+
+            queryWrapper.eq("belong_type", belongType.getCode());
+
+        }
+
         switch (sortType) {
 
             case LATEST -> queryWrapper.orderByDesc("create_time");
@@ -86,12 +93,6 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
 
 
             }
-
-        }
-
-        if (belongType != Comment.BelongType.ALL) {
-
-            queryWrapper.eq("belong_type", belongType.getCode());
 
         }
 
