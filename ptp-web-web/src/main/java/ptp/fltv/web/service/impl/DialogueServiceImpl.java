@@ -90,6 +90,7 @@ public class DialogueServiceImpl extends ServiceImpl<DialogueMapper, Dialogue> i
             case STAR -> queryWrapper.orderByDesc("star_num");
             case BROWSE -> queryWrapper.orderByDesc("browse_num");
             case COMMENT -> queryWrapper.orderByDesc("comment_num");
+            case SHARE -> queryWrapper.orderByDesc("share_num");
             case DEFAULT -> {
 
 

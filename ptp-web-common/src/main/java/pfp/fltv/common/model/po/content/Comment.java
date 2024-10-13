@@ -1,10 +1,7 @@
 package pfp.fltv.common.model.po.content;
 
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -19,6 +16,7 @@ import pfp.fltv.common.enums.base.ConvertableEnum;
 import pfp.fltv.common.model.po.info.AddressInfo;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -52,10 +50,17 @@ public class Comment implements Serializable {
     @Schema(description = "评论所附属的内容类型")
     private BelongType belongType;
 
-
     @Field(name = "from_uid", type = FieldType.Constant_Keyword)
     @Schema(description = "评论所属用户(发布者)ID")
     private Long fromUid;
+
+    @Field(name = "from_nickname", type = FieldType.Constant_Keyword)
+    @Schema(description = "评论所属用户(发布者)昵称")
+    private String fromNickname;
+
+    @Field(name = "from_avatar_url", type = FieldType.Constant_Keyword)
+    @Schema(description = "评论所属用户(发布者)头像URL")
+    private String fromAvatarUrl;
 
     @Field(name = "to_uid", type = FieldType.Constant_Keyword)
     @Schema(description = "回复的用户ID(如果是文章的一级评论，则此值为null)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
@@ -103,10 +108,27 @@ public class Comment implements Serializable {
     @Schema(description = "收藏量")
     private Integer starNum;
 
+    @Field(name = "star_num", type = FieldType.Integer)
+    @Schema(description = "转发量")
+    private Integer shareNum;
+
     @Transient
     @Schema(description = "记录评论发布时的地址信息")
     @TableField(typeHandler = JacksonTypeHandler.class)
     private AddressInfo addressInfo;
+
+    @Field(name = "create_time", type = FieldType.Date)
+    @Schema(description = "内容创建时间")
+    private LocalDateTime createTime;
+
+    @Field(name = "update_time", type = FieldType.Date)
+    @Schema(description = "(最后)更新时间")
+    private LocalDateTime updateTime;
+
+    @Field(name = "is_deleted", type = FieldType.Keyword)
+    @Schema(description = "当前实体是否已被逻辑删除", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    @TableLogic
+    private Integer isDeleted = 0;
 
 
     /**
