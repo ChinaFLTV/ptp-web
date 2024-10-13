@@ -147,7 +147,8 @@ public class Comment implements Serializable {
         DIALOGUE(2101, "言论"),
         PASSAGE(2102, "文章"),
         COMMENT(2103, "评论"),
-        USER(2104, "用户");
+        USER(2104, "用户"),
+        ALL(2105, "不区分类型");
 
 
         @JsonValue

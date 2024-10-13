@@ -5,7 +5,6 @@ import jakarta.annotation.Nonnull;
 import pfp.fltv.common.enums.ContentQuerySortType;
 import pfp.fltv.common.enums.ContentRankType;
 import pfp.fltv.common.model.po.content.Comment;
-import pfp.fltv.common.model.vo.DialogueVo;
 
 import java.util.List;
 
@@ -36,9 +35,10 @@ public interface CommentService extends IService<Comment> {
 
 
     /**
-     * @param sortType 排序规则
-     * @param pageNum  页码(从1开始)
-     * @param pageSize 数据页大小
+     * @param sortType   排序规则
+     * @param belongType 评论归属的实体类型
+     * @param pageNum    页码(从1开始)
+     * @param pageSize   数据页大小
      * @return 查询到的符合条件的指定数据页
      * @author Lenovo/LiGuanda
      * @date 2024/10/13 AM 12:41:17
@@ -46,7 +46,7 @@ public interface CommentService extends IService<Comment> {
      * @description 根据指定的排序规则分页查询指定页码、指定大小的数据页
      * @filename CommentService.java
      */
-    List<Comment> queryCommentPageWithSorting(ContentQuerySortType sortType, Long pageNum, Long pageSize);
+    List<Comment> queryCommentPageWithSorting(@Nonnull ContentQuerySortType sortType, @Nonnull Comment.BelongType belongType, @Nonnull Long pageNum, @Nonnull Long pageSize);
 
 
 }
