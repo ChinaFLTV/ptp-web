@@ -16,7 +16,6 @@ import pfp.fltv.common.enums.ContentQuerySortType;
 import pfp.fltv.common.model.base.content.BaseEntity;
 import pfp.fltv.common.model.po.content.Comment;
 import pfp.fltv.common.model.po.response.Result;
-import pfp.fltv.common.model.vo.CommentVo;
 import ptp.fltv.web.constants.WebConstants;
 import ptp.fltv.web.mq.ContentRankMqService;
 import ptp.fltv.web.service.CommentService;
@@ -73,7 +72,7 @@ public class CommentController {
     @SentinelResource("web-content-comment-controller")
     @Operation(description = "批量(分页)查询多条内容评论数据")
     @GetMapping("/query/page/{offset}/{limit}")
-    public Result<List<CommentVo>> queryCommentPage(
+    public Result<List<Comment>> queryCommentPage(
 
             @Parameter(name = "offset", description = "查询的一页内容评论数据的起始偏移量", in = ParameterIn.PATH, required = true) @PathVariable("offset") Long offset,
             @Parameter(name = "limit", description = "查询的这一页内容评论数据的数量", in = ParameterIn.PATH, required = true) @PathVariable("limit") Long limit
@@ -83,16 +82,7 @@ public class CommentController {
         Page<Comment> commentPage = new Page<>(offset, limit);
         commentPage = commentService.page(commentPage);
 
-        List<CommentVo> commentVos = new ArrayList<>();
-        for (Comment comment : commentPage.getRecords()) {
-
-            CommentVo commentVo = new CommentVo();
-            BeanUtils.copyProperties(comment, commentVo);
-            commentVos.add(commentVo);
-
-        }
-
-        return Result.success(commentVos);
+        return commentPage.getRecords() == null ? Result.failure(new ArrayList<>()) : Result.success(commentPage.getRecords());
 
     }
 
@@ -106,12 +96,13 @@ public class CommentController {
             @Parameter(name = "sortType", description = "排序规则", required = true) @RequestParam("sortType") ContentQuerySortType sortType,
             @Parameter(name = "belongType", description = "评论归属的实体类型", required = true) @RequestParam("belongType") Comment.BelongType belongType,
             @Parameter(name = "contentId", description = "评论归属的实体ID(值为-1则该参数失效)", required = true) @RequestParam("contentId") Long contentId,
+            @Parameter(name = "uid", description = "内容发布者的ID(非必需)(仅在排序类型为拥有者类型下生效)") @RequestParam(name = "uid", required = false) Long uid,
             @Parameter(name = "pageNum", description = "查询的一页内容评论数据的数据页页码", required = true) @RequestParam("pageNum") Long pageNum,
             @Parameter(name = "pageSize", description = "查询的这一页内容评论数据的数量", required = true) @RequestParam("pageSize") Long pageSize
 
     ) {
 
-        return Result.success(commentService.queryCommentPageWithSorting(sortType, belongType, contentId, pageNum, pageSize));
+        return Result.success(commentService.queryCommentPageWithSorting(sortType, belongType, contentId, uid, pageNum, pageSize));
 
     }
 
@@ -123,12 +114,9 @@ public class CommentController {
     @PostMapping("/insert/single")
     public Result<?> insertSingleComment(
 
-            @Parameter(name = "commentVo", description = "待添加的单条内容评论数据VO", required = true) @RequestBody CommentVo commentVo
+            @Parameter(name = "comment", description = "待添加的单条内容评论数据", required = true) @RequestBody Comment comment
 
     ) {
-
-        Comment comment = new Comment();
-        BeanUtils.copyProperties(commentVo, comment);
 
         boolean isSaved = commentService.save(comment);
 
@@ -156,14 +144,14 @@ public class CommentController {
     @PutMapping("/update/single")
     public Result<?> updateSingleComment(
 
-            @Parameter(name = "CommentVo", description = "待修改的单条内容评论数据VO", required = true) @RequestBody CommentVo commentVo
+            @Parameter(name = "comment", description = "待修改的单条内容评论数据", required = true) @RequestBody Comment comment
 
     ) {
 
-        Comment comment = commentService.getById(commentVo.getId());
-        BeanUtils.copyProperties(commentVo, comment);
+        Comment oldComment = commentService.getById(comment.getId());
+        BeanUtils.copyProperties(comment, oldComment);
 
-        boolean isUpdated = commentService.updateById(comment);
+        boolean isUpdated = commentService.updateById(oldComment);
 
         Map<String, Object> map = new HashMap<>();
         Map<String, Object> mysqlResult = new HashMap<>();
