@@ -105,12 +105,13 @@ public class CommentController {
 
             @Parameter(name = "sortType", description = "排序规则", required = true) @RequestParam("sortType") ContentQuerySortType sortType,
             @Parameter(name = "belongType", description = "评论归属的实体类型", required = true) @RequestParam("belongType") Comment.BelongType belongType,
+            @Parameter(name = "contentId", description = "评论归属的实体ID(值为-1则该参数失效)", required = true) @RequestParam("contentId") Long contentId,
             @Parameter(name = "pageNum", description = "查询的一页内容评论数据的数据页页码", required = true) @RequestParam("pageNum") Long pageNum,
             @Parameter(name = "pageSize", description = "查询的这一页内容评论数据的数量", required = true) @RequestParam("pageSize") Long pageSize
 
     ) {
 
-        return Result.success(commentService.queryCommentPageWithSorting(sortType, belongType, pageNum, pageSize));
+        return Result.success(commentService.queryCommentPageWithSorting(sortType, belongType, contentId, pageNum, pageSize));
 
     }
 

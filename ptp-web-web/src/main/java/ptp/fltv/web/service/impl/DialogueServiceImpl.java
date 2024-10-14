@@ -124,4 +124,28 @@ public class DialogueServiceImpl extends ServiceImpl<DialogueMapper, Dialogue> i
     }
 
 
+    @Override
+    public DialogueVo querySingleDialogue(@Nonnull Long id) {
+
+        DialogueVo dialogueVo = new DialogueVo();
+        Dialogue dialogue = getById(id);
+
+        if (dialogue != null) {
+
+            BeanUtils.copyProperties(dialogue, dialogueVo);
+            User user = userService.getById(dialogue.getUid());
+            if (user != null) {
+
+                dialogueVo.setNickname(user.getNickname());
+                dialogueVo.setAvatarUrl(JSON.parseObject(user.getAvatar()).getString("uri"));
+
+            }
+
+        }
+
+        return dialogueVo;
+
+    }
+
+
 }

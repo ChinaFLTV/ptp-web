@@ -57,15 +57,15 @@ public class DialogueController {
     @SentinelResource("web-content-dialogue-controller")
     @Operation(description = "根据ID查询单条对话数据")
     @GetMapping("/query/single/{id}")
-    public Result<Dialogue> querySingleDialogue(
+    public Result<DialogueVo> querySingleDialogue(
 
             @Parameter(name = "id", description = "待查询的单条对话ID", in = ParameterIn.PATH, required = true) @PathVariable("id") Long id
 
     ) {
 
-        Dialogue dialogue = dialogueService.getById(id);
+        DialogueVo dialogueVo = dialogueService.querySingleDialogue(id);
 
-        return (dialogue == null) ? Result.failure(null) : Result.success(dialogue);
+        return (dialogueVo == null) ? Result.failure(null) : Result.success(dialogueVo);
 
     }
 

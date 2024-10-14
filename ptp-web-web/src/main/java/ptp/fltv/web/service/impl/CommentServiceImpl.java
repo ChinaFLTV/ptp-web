@@ -66,13 +66,19 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
 
 
     @Override
-    public List<Comment> queryCommentPageWithSorting(@Nonnull ContentQuerySortType sortType, @Nonnull Comment.BelongType belongType, @Nonnull Long pageNum, @Nonnull Long pageSize) {
+    public List<Comment> queryCommentPageWithSorting(@Nonnull ContentQuerySortType sortType, @Nonnull Comment.BelongType belongType, @Nonnull Long contentId, @Nonnull Long pageNum, @Nonnull Long pageSize) {
 
         QueryWrapper<Comment> queryWrapper = new QueryWrapper<>();
 
         if (belongType != Comment.BelongType.ALL) {
 
             queryWrapper.eq("belong_type", belongType.getCode());
+
+        }
+
+        if (contentId != -1) {
+
+            queryWrapper.eq("content_id", contentId);
 
         }
 

@@ -37,6 +37,7 @@ public interface CommentService extends IService<Comment> {
     /**
      * @param sortType   排序规则
      * @param belongType 评论归属的实体类型
+     * @param contentId  评论归属的实体ID(值为-1则该参数失效)
      * @param pageNum    页码(从1开始)
      * @param pageSize   数据页大小
      * @return 查询到的符合条件的指定数据页
@@ -46,7 +47,7 @@ public interface CommentService extends IService<Comment> {
      * @description 根据指定的排序规则分页查询指定页码、指定大小的数据页
      * @filename CommentService.java
      */
-    List<Comment> queryCommentPageWithSorting(@Nonnull ContentQuerySortType sortType, @Nonnull Comment.BelongType belongType, @Nonnull Long pageNum, @Nonnull Long pageSize);
+    List<Comment> queryCommentPageWithSorting(@Nonnull ContentQuerySortType sortType, @Nonnull Comment.BelongType belongType, @Nonnull Long contentId, @Nonnull Long pageNum, @Nonnull Long pageSize);
 
 
 }

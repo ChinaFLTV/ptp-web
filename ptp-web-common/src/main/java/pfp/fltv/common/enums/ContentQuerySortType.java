@@ -25,7 +25,8 @@ public enum ContentQuerySortType implements ConvertableEnum<Integer> {
     BROWSE(1905, "浏览量"),
     COMMENT(1906, "评论量"),
     SHARE(1907, "转发量"),
-    DEFAULT(1908, "默认");
+    OWNER(1908,"内容所有者"),
+    DEFAULT(1909, "默认");
 
 
     @JsonValue

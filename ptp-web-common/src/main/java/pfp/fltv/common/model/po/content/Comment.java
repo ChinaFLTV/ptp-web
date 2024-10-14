@@ -46,7 +46,7 @@ public class Comment implements Serializable {
     @Schema(description = "评论的内容的ID")
     private Long contentId;
 
-    @TableField(typeHandler = JacksonTypeHandler.class) // 2024-10-13  20:04-解决 java.lang.IllegalArgumentException: No enum constant pfp.fltv.common.model.po.content.Comment.BelongType.XXXX 的问题
+    @TableField(typeHandler = JacksonTypeHandler.class)
     @Field(name = "belong_type", type = FieldType.Constant_Keyword)
     @Schema(description = "评论所附属的内容类型")
     private BelongType belongType;
@@ -151,7 +151,7 @@ public class Comment implements Serializable {
         ALL(2105, "不区分类型");
 
 
-        @EnumValue
+        @EnumValue // 2024-10-13  21:33-解决 java.lang.IllegalArgumentException: No enum constant pfp.fltv.common.model.po.content.Comment.BelongType.XXXX 的问题
         @JsonValue
         private final Integer code;
         private final String comment;

@@ -49,4 +49,16 @@ public interface DialogueService extends IService<Dialogue> {
     List<DialogueVo> queryDialoguePageWithSorting(ContentQuerySortType sortType, Long pageNum, Long pageSize);
 
 
+    /**
+     * @param id 待查询的单条对话ID
+     * @return 查询到的ID所对应的言论VO数据实体
+     * @author Lenovo/LiGuanda
+     * @date 2024/10/14 PM 8:14:18
+     * @version 1.0.0
+     * @description 根据ID查询单条对话数据
+     * @filename DialogueService.java
+     */
+    DialogueVo querySingleDialogue(@Nonnull Long id);
+
+
 }
