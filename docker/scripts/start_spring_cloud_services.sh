@@ -12,26 +12,26 @@ START_MODE="dev"
 SELF_IP=${REAL_MACHINE_IP:-"127.0.0.1"}
 
 # 2024-10-8  2:48-不再进行睡眠等待了 , 因为咱的各个微服务模块之间并不是强依赖启动关系~
-#-2024-10-8  2:47-睡眠10s以等待前一个任务充分启动完成
+# 2024-10-8  2:47-睡眠10s以等待前一个任务充分启动完成
 # sleep 10
-# echo "正在启动ES服务..."
-# java -jar "${BASE_PATH}/ptp-web-service-elasticsearch-1.0.jar" --spring.profiles.active=${START_MODE} --ip.physical.self-host=${SELF_IP} &
-# echo "启动ES服务成功!"
+echo "正在启动ES服务..."
+java -jar "${BASE_PATH}/ptp-web-service-elasticsearch-1.0.jar" --spring.profiles.active=${START_MODE} --ip.physical.self-host="${SELF_IP}" &
+echo "启动ES服务成功!"
 echo "正在启动网关服务..."
-java -jar "${BASE_PATH}/ptp-web-service-gateway-1.0.jar" --spring.profiles.active=${START_MODE} --ip.physical.self-host=${SELF_IP} &
+java -jar "${BASE_PATH}/ptp-web-service-gateway-1.0.jar" --spring.profiles.active=${START_MODE} --ip.physical.self-host="${SELF_IP}" &
 echo "启动网关服务成功!"
 # echo "正在启动定时任务服务..."
-# java -jar "${BASE_PATH}/ptp-web-service-job-1.0.jar" --spring.profiles.active=${START_MODE} --ip.physical.self-host=${SELF_IP} &
+# java -jar "${BASE_PATH}/ptp-web-service-job-1.0.jar" --spring.profiles.active=${START_MODE} --ip.physical.self-host="${SELF_IP}" &
 # echo "启动定时任务服务成功!"
 # echo "正在启动消息中间件服务..."
-# java -jar "${BASE_PATH}/ptp-web-service-mq-1.0.jar" --spring.profiles.active=${START_MODE} --ip.physical.self-host=${SELF_IP} &
+# java -jar "${BASE_PATH}/ptp-web-service-mq-1.0.jar" --spring.profiles.active=${START_MODE} --ip.physical.self-host="${SELF_IP}" &
 # echo "启动消息中间件服务成功!"
 # echo "正在启动OSS存储服务..."
-# java -jar "${BASE_PATH}/ptp-web-service-store-1.0.jar" --spring.profiles.active=${START_MODE} --ip.physical.self-host=${SELF_IP} &
+# java -jar "${BASE_PATH}/ptp-web-service-store-1.0.jar" --spring.profiles.active=${START_MODE} --ip.physical.self-host="${SELF_IP}" &
 # echo "启动OSS存储服务成功!"
 echo "正在启动Web服务..."
 # 2024-10-8  2:50-shell命令结尾加&意为后台启动/执行命令 , 不会同步阻塞住后续指令的执行(但是当前脚本被杀死后 , 其附属的后台进程可能也会被同步杀死)
-java -jar "${BASE_PATH}/ptp-web-web-1.0.jar" --spring.profiles.active=${START_MODE} --ip.physical.self-host=${SELF_IP} &
+java -jar "${BASE_PATH}/ptp-web-web-1.0.jar" --spring.profiles.active=${START_MODE} --ip.physical.self-host="${SELF_IP}" &
 echo "启动Web服务成功!"
 echo "全部的PTP后台服务启动成功!!!"
 
