@@ -14,9 +14,9 @@ SELF_IP=${REAL_MACHINE_IP:-"127.0.0.1"}
 # 2024-10-8  2:48-不再进行睡眠等待了 , 因为咱的各个微服务模块之间并不是强依赖启动关系~
 # 2024-10-8  2:47-睡眠10s以等待前一个任务充分启动完成
 # sleep 10
-echo "正在启动ES服务..."
-java -jar "${BASE_PATH}/ptp-web-service-elasticsearch-1.0.jar" --spring.profiles.active=${START_MODE} --ip.physical.self-host="${SELF_IP}" &
-echo "启动ES服务成功!"
+# echo "正在启动ES服务..."
+# java -jar "${BASE_PATH}/ptp-web-service-elasticsearch-1.0.jar" --spring.profiles.active=${START_MODE} --ip.physical.self-host="${SELF_IP}" &
+# echo "启动ES服务成功!"
 echo "正在启动网关服务..."
 java -jar "${BASE_PATH}/ptp-web-service-gateway-1.0.jar" --spring.profiles.active=${START_MODE} --ip.physical.self-host="${SELF_IP}" &
 echo "启动网关服务成功!"
