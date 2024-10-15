@@ -195,7 +195,7 @@ CREATE TABLE IF NOT EXISTS `comment`
     `from_uid`        BIGINT UNSIGNED NOT NULL COMMENT '评论所属用户(发布者)ID',
     `from_nickname`   CHAR(255)         DEFAULT NULL COMMENT '评论所属用户(发布者)昵称',
     `from_avatar_url` CHAR(255)         DEFAULT NULL COMMENT '评论所属用户(发布者)头像URL',
-    `to_uid`          BIGINT UNSIGNED   DEFAULT -1 COMMENT '回复的用户ID(如果是文章的一级评论，则此值为null)',
+    `to_uid`          BIGINT UNSIGNED   DEFAULT NULL COMMENT '回复的用户ID(如果是文章的一级评论，则此值为null)',
     `to_nickname`     CHAR(255)         DEFAULT NULL COMMENT '回复的用户昵称',
     `to_avatar_url`   CHAR(255)         DEFAULT NULL COMMENT '回复的用户头像URL',
     `parent_uid`      BIGINT UNSIGNED   DEFAULT NULL COMMENT '父评论ID(如果有的话)',
