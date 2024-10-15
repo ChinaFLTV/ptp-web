@@ -45,8 +45,24 @@ public class CommentVo implements Serializable {
     @Schema(description = "评论所属用户(发布者)ID")
     private Long fromUid;
 
+    @Field(name = "from_nickname", type = FieldType.Constant_Keyword)
+    @Schema(description = "评论所属用户(发布者)昵称")
+    private String fromNickname;
+
+    @Field(name = "from_avatar_url", type = FieldType.Constant_Keyword)
+    @Schema(description = "评论所属用户(发布者)头像URL")
+    private String fromAvatarUrl;
+
     @Schema(description = "回复的用户ID(如果是文章的一级评论，则此值为null)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private Long toUid;
+
+    @Field(name = "to_nickname", type = FieldType.Constant_Keyword)
+    @Schema(description = "回复的用户昵称")
+    private String toNickname; // 2024-10-16  00:44-新增 回复的用户昵称 属性
+
+    @Field(name = "to_avatar_url", type = FieldType.Constant_Keyword)
+    @Schema(description = "回复的用户头像URL")
+    private String toAvatarUrl; // 2024-10-16  00:44-新增 回复的用户头像URL 属性
 
     @Schema(description = "父评论ID(如果有的话),因为可能存在这样的评论：在一条已评论了文章的评论下，回复该评论收到的其他回复", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private Long parentUid;
