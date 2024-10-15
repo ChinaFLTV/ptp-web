@@ -95,7 +95,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
             case BROWSE -> queryWrapper.orderByDesc("browse_num");
             case COMMENT -> queryWrapper.orderByDesc("comment_num");
             case SHARE -> queryWrapper.orderByDesc("share_num");
-            case OWNER -> queryWrapper.eq("uid", uid); // 2024-10-14  20:47-拥有者排序类型下将只筛选出内容发布者的评论
+            case OWNER -> queryWrapper.eq("from_uid", uid); // 2024-10-14  20:47-拥有者排序类型下将只筛选出内容发布者的评论
             case DEFAULT -> {
 
 
