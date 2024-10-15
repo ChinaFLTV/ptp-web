@@ -14,7 +14,6 @@ import org.springframework.web.client.RestTemplate;
 import pfp.fltv.common.annotation.LogRecord;
 import pfp.fltv.common.enums.ContentQuerySortType;
 import pfp.fltv.common.enums.ContentRankType;
-import pfp.fltv.common.model.base.content.BaseEntity;
 import pfp.fltv.common.model.po.content.Dialogue;
 import pfp.fltv.common.model.po.response.Result;
 import pfp.fltv.common.model.vo.DialogueVo;
@@ -23,9 +22,7 @@ import ptp.fltv.web.mq.ContentRankMqService;
 import ptp.fltv.web.service.DialogueService;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Lenovo/LiGuanda
@@ -120,7 +117,7 @@ public class DialogueController {
     @SentinelResource("web-content-dialogue-controller")
     @Operation(description = "添加单条对话数据")
     @PostMapping("/insert/single")
-    public Result<?> insertSingleDialogue(
+    public Result<Long> insertSingleDialogue(
 
             @Parameter(name = "dialogueVo", description = "待添加的单条对话数据VO", required = true) @RequestBody DialogueVo dialogueVo
 
@@ -131,19 +128,15 @@ public class DialogueController {
 
         boolean isSaved = dialogueService.save(dialogue);
 
-        Map<String, Object> map = new HashMap<>();
-        Map<String, Object> mysqlResult = new HashMap<>();
-        mysqlResult.put("isSaved", isSaved);
-        map.put("mysql_result", mysqlResult);
-
-        if (isSaved) {
+        // 2024-10-15  13:23-非Passage实体将不再同步数据到ES中
+        /*if (isSaved) {
 
             Result<?> result = restTemplate.postForObject(ES_INSERT_DIALOGUE_URL, dialogue, Result.class);
             map.put("es_result", result);
 
-        }
+        }*/
 
-        return Result.neutral(map);
+        return isSaved ? Result.success(dialogue.getId()) : Result.failure(-1L);
 
     }
 
@@ -164,12 +157,8 @@ public class DialogueController {
 
         boolean isUpdated = dialogueService.updateById(dialogue);
 
-        Map<String, Object> map = new HashMap<>();
-        Map<String, Object> mysqlResult = new HashMap<>();
-        mysqlResult.put("isUpdated", isUpdated);
-        map.put("mysql_result", mysqlResult);
-
-        if (isUpdated) {
+        // 2024-10-15  13:35-非Passage实体将不再同步数据到ES中
+       /* if (isUpdated) {
 
             restTemplate.put(ES_UPDATE_DIALOGUE_URL, dialogue);
             map.put("es_result", Result.BLANK);
@@ -177,9 +166,9 @@ public class DialogueController {
             // 2024-6-19  23:34-每次内容实体更新都需要重新计算一次得分，以避免上一次计算失误，尽快恢复内容实体的正常得分
             contentRankMqService.sendIndexChangeMsg(dialogue, BaseEntity.ContentType.DIALOGUE);
 
-        }
+        }*/
 
-        return Result.neutral(map);
+        return isUpdated ? Result.success(null) : Result.failure(null);
 
     }
 
@@ -197,21 +186,17 @@ public class DialogueController {
 
         boolean isDeleted = dialogueService.removeById(id);
 
-        Map<String, Object> map = new HashMap<>();
-        Map<String, Object> mysqlResult = new HashMap<>();
-        mysqlResult.put("isDeleted", isDeleted);
-        map.put("mysql_result", mysqlResult);
-
-        if (isDeleted) {
+        // 2024-10-15  13:36-非Passage实体将不再同步数据到ES中
+        /*if (isDeleted) {
 
             Map<String, Object> urlValues = new HashMap<>();
             urlValues.put("id", id);
             restTemplate.delete(ES_DELETE_DIALOGUE_URL, urlValues);
             map.put("es_result", Result.BLANK);
 
-        }
+        }*/
 
-        return Result.neutral(map);
+        return isDeleted ? Result.success(null) : Result.failure(null);
 
     }
 

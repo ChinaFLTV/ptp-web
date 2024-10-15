@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -18,7 +17,6 @@ import pfp.fltv.common.exceptions.PtpException;
 import pfp.fltv.common.model.po.info.AddressInfo;
 import pfp.fltv.common.model.po.manage.User;
 import pfp.fltv.common.model.po.response.Result;
-import pfp.fltv.common.model.vo.UserVo;
 import pfp.fltv.common.utils.ReflectUtils;
 import ptp.fltv.web.constants.WebConstants;
 import ptp.fltv.web.service.UserService;
@@ -73,7 +71,7 @@ public class UserController {
     @SentinelResource("web-content-user-controller")
     @Operation(description = "批量(分页)查询多条用户数据")
     @GetMapping("/query/page/{offset}/{limit}")
-    public Result<List<UserVo>> queryUserPage(
+    public Result<List<User>> queryUserPage(
 
             @Parameter(name = "offset", description = "查询的一页用户数据的起始偏移量", in = ParameterIn.PATH, required = true) @PathVariable("offset") Long offset,
             @Parameter(name = "limit", description = "查询的这一页用户数据的数量", in = ParameterIn.PATH, required = true) @PathVariable("limit") Long limit
@@ -83,16 +81,7 @@ public class UserController {
         Page<User> userPage = new Page<>(offset, limit);
         userPage = userService.page(userPage);
 
-        List<UserVo> userVos = new ArrayList<>();
-        for (User user : userPage.getRecords()) {
-
-            UserVo userVo = new UserVo();
-            BeanUtils.copyProperties(user, userVo);
-            userVos.add(userVo);
-
-        }
-
-        return Result.success(userVos);
+        return Result.success(userPage.getRecords() == null ? new ArrayList<>() : userPage.getRecords());
 
     }
 
@@ -101,23 +90,15 @@ public class UserController {
     @SentinelResource("web-content-user-controller")
     @Operation(description = "根据ID集合查询多条用户数据")
     @GetMapping("/query/byIds")
-    public Result<List<UserVo>> queryUsersByIds(
+    public Result<List<User>> queryUsersByIds(
 
             @Parameter(name = "ids", description = "所要查询的用户ID集合", in = ParameterIn.QUERY, required = true) @RequestParam("ids") Set<Long> ids
 
     ) {
 
         List<User> users = userService.getBaseMapper().selectBatchIds(ids);
-        List<UserVo> userVos = new ArrayList<>();
-        for (User user : users) {
 
-            UserVo userVo = new UserVo();
-            BeanUtils.copyProperties(user, userVo);
-            userVos.add(userVo);
-
-        }
-
-        return Result.success(userVos);
+        return Result.success(users == null ? new ArrayList<>() : users);
 
     }
 
@@ -139,7 +120,7 @@ public class UserController {
     @SentinelResource("web-content-user-controller")
     @Operation(description = "添加用户信息")
     @PostMapping("/insert/single")
-    public Result<?> insertSingleUser(
+    public Result<Long> insertSingleUser(
 
             @Parameter(name = "user", description = "待添加的用户信息", required = true) @RequestBody User user
 
@@ -151,19 +132,15 @@ public class UserController {
 
         boolean isSaved = userService.save(user);
 
-        Map<String, Object> map = new HashMap<>();
-        Map<String, Object> mysqlResult = new HashMap<>();
-        mysqlResult.put("isSaved", isSaved);
-        map.put("mysql_result", mysqlResult);
-
-        if (isSaved) {
+        // 2024-10-15  14:04-非Passage实体将不再同步数据到ES中
+        /*if (isSaved) {
 
             Result<?> result = restTemplate.postForObject(ES_INSERT_USER_URL, user, Result.class);
             map.put("es_result", result);
 
-        }
+        }*/
 
-        return Result.neutral(map);
+        return isSaved ? Result.success(user.getId()) : Result.failure(-1L);
 
     }
 
@@ -181,19 +158,15 @@ public class UserController {
 
         boolean isUpdated = userService.updateById(user);
 
-        Map<String, Object> map = new HashMap<>();
-        Map<String, Object> mysqlResult = new HashMap<>();
-        mysqlResult.put("isUpdated", isUpdated);
-        map.put("mysql_result", mysqlResult);
-
-        if (isUpdated) {
+        // 2024-10-15  14:05-非Passage实体将不再同步数据到ES中
+        /*if (isUpdated) {
 
             restTemplate.put(ES_UPDATE_USER_URL, user);
             map.put("es_result", Result.BLANK);
 
-        }
+        }*/
 
-        return Result.neutral(map);
+        return isUpdated ? Result.success(null) : Result.failure(null);
 
     }
 
@@ -211,21 +184,17 @@ public class UserController {
 
         boolean isDeleted = userService.removeById(userId);
 
-        Map<String, Object> map = new HashMap<>();
-        Map<String, Object> mysqlResult = new HashMap<>();
-        mysqlResult.put("isDeleted", isDeleted);
-        map.put("mysql_result", mysqlResult);
-
-        if (isDeleted) {
+        // 2024-10-15  14:29-非Passage实体将不再同步数据到ES中
+        /*if (isDeleted) {
 
             Map<String, Object> urlValues = new HashMap<>();
             urlValues.put("id", userId);
             restTemplate.delete(ES_DELETE_USER_URL, urlValues);
             map.put("es_result", Result.BLANK);
 
-        }
+        }*/
 
-        return Result.neutral(map);
+        return isDeleted ? Result.success(null) : Result.failure(null);
 
     }
 

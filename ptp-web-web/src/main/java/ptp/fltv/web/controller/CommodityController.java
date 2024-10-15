@@ -95,7 +95,7 @@ public class CommodityController {
     @SentinelResource("web-finance-commodity-controller")
     @Operation(description = "添加单个商品数据")
     @PostMapping("/insert/single")
-    public Result<?> insertSingleAnnouncement(
+    public Result<Long> insertSingleAnnouncement(
 
             @Parameter(name = "commodity", description = "待添加的单个商品数据", required = true) @RequestBody Commodity commodity
 
@@ -103,19 +103,20 @@ public class CommodityController {
 
         boolean isSaved = commodityService.insertOne(commodity) > 0;
 
-        Map<String, Object> map = new HashMap<>();
+        /*Map<String, Object> map = new HashMap<>();
         Map<String, Object> mysqlResult = new HashMap<>();
         mysqlResult.put("isSaved", isSaved);
         map.put("mysql_result", mysqlResult);
 
+        // 2024-10-15  14:35-非Passage实体将不再同步数据到ES中
         if (isSaved) {
 
             Result<?> result = restTemplate.postForObject(ES_INSERT_COMMODITY_URL, commodity, Result.class);
             map.put("es_result", result);
 
-        }
+        }*/
 
-        return Result.neutral(map);
+        return isSaved ? Result.success(commodity.getId()) : Result.failure(-1L);
 
     }
 
@@ -133,19 +134,15 @@ public class CommodityController {
 
         boolean isUpdated = commodityService.updateOne(commodity) > 0;
 
-        Map<String, Object> map = new HashMap<>();
-        Map<String, Object> mysqlResult = new HashMap<>();
-        mysqlResult.put("isUpdated", isUpdated);
-        map.put("mysql_result", mysqlResult);
-
-        if (isUpdated) {
+        // 2024-10-15  14:38-非Passage实体将不再同步数据到ES中
+        /*if (isUpdated) {
 
             restTemplate.put(ES_UPDATE_COMMODITY_URL, commodity);
             map.put("es_result", Result.BLANK);
 
-        }
+        }*/
 
-        return Result.neutral(map);
+        return isUpdated ? Result.success(null) : Result.failure(null);
 
     }
 
@@ -159,12 +156,8 @@ public class CommodityController {
 
         boolean isDeleted = commodityService.deleteOne(id) > 0;
 
-        Map<String, Object> map = new HashMap<>();
-        Map<String, Object> mysqlResult = new HashMap<>();
-        mysqlResult.put("isDeleted", isDeleted);
-        map.put("mysql_result", mysqlResult);
-
-        if (isDeleted) {
+        // 2024-10-15  14:38-非Passage实体将不再同步数据到ES中
+        /*if (isDeleted) {
 
             Map<String, Object> urlValues = new HashMap<>();
             urlValues.put("id", id);
@@ -175,9 +168,9 @@ public class CommodityController {
 
             throw new PtpException(807);
 
-        }
+        }*/
 
-        return Result.neutral(map);
+        return isDeleted ? Result.success(null) : Result.failure(null);
 
     }
 
@@ -190,11 +183,7 @@ public class CommodityController {
     @PutMapping("/extension/seckill")
     public Result<?> seckillSingleCommodity(
 
-            @Parameter(name = "id", description = "待秒杀的单个商品ID", required = true) @RequestParam("id") Long id,
-            @Parameter(name = "count", description = "待秒杀的单个商品的数量", required = true) @RequestParam("count") Integer count,
-            @Parameter(name = "uid", description = "参与秒杀活动的用户ID", required = true) @RequestHeader("uid") Long uid,
-            @Parameter(name = "X-Forward-For", description = "客户端的原始IP地址") @RequestHeader(name = "X-Forward-For", required = false) String xForwardFor,
-            @Parameter(name = "userAgent", description = "发出请求的客户端应用程序、操作系统、设备类型及其版本信息") @RequestHeader(HttpHeaders.USER_AGENT) String userAgent
+            @Parameter(name = "id", description = "待秒杀的单个商品ID", required = true) @RequestParam("id") Long id, @Parameter(name = "count", description = "待秒杀的单个商品的数量", required = true) @RequestParam("count") Integer count, @Parameter(name = "uid", description = "参与秒杀活动的用户ID", required = true) @RequestHeader("uid") Long uid, @Parameter(name = "X-Forward-For", description = "客户端的原始IP地址") @RequestHeader(name = "X-Forward-For", required = false) String xForwardFor, @Parameter(name = "userAgent", description = "发出请求的客户端应用程序、操作系统、设备类型及其版本信息") @RequestHeader(HttpHeaders.USER_AGENT) String userAgent
 
     ) throws InterruptedException {
 
@@ -330,11 +319,7 @@ public class CommodityController {
     @PutMapping("/extension/replenish")
     public Result<?> replenishSingleCommodity(
 
-            @Parameter(name = "id", description = "待补货的单个商品ID", required = true) @RequestParam("id") Long id,
-            @Parameter(name = "count", description = "待补货的单个商品的数量", required = true) @RequestParam("count") Integer count,
-            @Parameter(name = "uid", description = "参与秒杀活动的用户ID", required = true) @RequestHeader("uid") Long uid,
-            @Parameter(name = "X-Forward-For", description = "客户端的原始IP地址") @RequestHeader(name = "X-Forward-For", required = false) String xForwardFor,
-            @Parameter(name = "userAgent", description = "发出请求的客户端应用程序、操作系统、设备类型及其版本信息") @RequestHeader(HttpHeaders.USER_AGENT) String userAgent
+            @Parameter(name = "id", description = "待补货的单个商品ID", required = true) @RequestParam("id") Long id, @Parameter(name = "count", description = "待补货的单个商品的数量", required = true) @RequestParam("count") Integer count, @Parameter(name = "uid", description = "参与秒杀活动的用户ID", required = true) @RequestHeader("uid") Long uid, @Parameter(name = "X-Forward-For", description = "客户端的原始IP地址") @RequestHeader(name = "X-Forward-For", required = false) String xForwardFor, @Parameter(name = "userAgent", description = "发出请求的客户端应用程序、操作系统、设备类型及其版本信息") @RequestHeader(HttpHeaders.USER_AGENT) String userAgent
 
     ) {
 

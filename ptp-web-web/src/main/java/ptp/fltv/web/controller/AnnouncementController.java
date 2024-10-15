@@ -8,23 +8,18 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import pfp.fltv.common.annotation.LogRecord;
 import pfp.fltv.common.enums.ContentRankType;
-import pfp.fltv.common.model.base.content.BaseEntity;
 import pfp.fltv.common.model.po.content.Announcement;
-import pfp.fltv.common.model.vo.AnnouncementVo;
 import pfp.fltv.common.model.po.response.Result;
 import ptp.fltv.web.constants.WebConstants;
 import ptp.fltv.web.mq.ContentRankMqService;
 import ptp.fltv.web.service.AnnouncementService;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Lenovo/LiGuanda
@@ -74,7 +69,7 @@ public class AnnouncementController {
     @SentinelResource("web-content-announcement-controller")
     @Operation(description = "批量(分页)查询多条公告数据")
     @GetMapping("/query/page/{offset}/{limit}")
-    public Result<List<AnnouncementVo>> queryAnnouncementPage(
+    public Result<List<Announcement>> queryAnnouncementPage(
 
             @Parameter(name = "offset", description = "查询的一页公告数据的起始偏移量", in = ParameterIn.PATH, required = true) @PathVariable("offset") Long offset,
             @Parameter(name = "limit", description = "查询的这一页公告数据的数量", in = ParameterIn.PATH, required = true) @PathVariable("limit") Long limit
@@ -84,16 +79,7 @@ public class AnnouncementController {
         Page<Announcement> announcementPage = new Page<>(offset, limit);
         announcementPage = announcementService.page(announcementPage);
 
-        List<AnnouncementVo> announcementVos = new ArrayList<>();
-        for (Announcement announcement : announcementPage.getRecords()) {
-
-            AnnouncementVo announcementVo = new AnnouncementVo();
-            BeanUtils.copyProperties(announcement, announcementVo);
-            announcementVos.add(announcementVo);
-
-        }
-
-        return Result.success(announcementVos);
+        return Result.success(announcementPage.getRecords() == null ? new ArrayList<>() : announcementPage.getRecords());
 
     }
 
@@ -103,30 +89,23 @@ public class AnnouncementController {
     @SentinelResource("web-content-announcement-controller")
     @Operation(description = "添加单条公告数据")
     @PostMapping("/insert/single")
-    public Result<?> insertSingleAnnouncement(
+    public Result<Long> insertSingleAnnouncement(
 
-            @Parameter(name = "announcementVo", description = "待添加的单条公告数据VO", required = true) @RequestBody AnnouncementVo announcementVo
+            @Parameter(name = "announcement", description = "待添加的单条公告数据VO", required = true) @RequestBody Announcement announcement
 
     ) {
 
-        Announcement announcement = new Announcement();
-        BeanUtils.copyProperties(announcementVo, announcement);
-
         boolean isSaved = announcementService.save(announcement);
 
-        Map<String, Object> map = new HashMap<>();
-        Map<String, Object> mysqlResult = new HashMap<>();
-        mysqlResult.put("isSaved", isSaved);
-        map.put("mysql_result", mysqlResult);
-
-        if (isSaved) {
+        // 2024-10-15  13:38-非Passage实体将不再同步数据到ES中
+        /*if (isSaved) {
 
             Result<?> result = restTemplate.postForObject(ES_INSERT_ANNOUNCEMENT_URL, announcement, Result.class);
             map.put("es_result", result);
 
-        }
+        }*/
 
-        return Result.neutral(map);
+        return isSaved ? Result.success(announcement.getId()) : Result.failure(-1L);
 
     }
 
@@ -138,21 +117,14 @@ public class AnnouncementController {
     @PutMapping("/update/single")
     public Result<?> updateSingleAnnouncement(
 
-            @Parameter(name = "announcementVo", description = "待修改的单条公告数据VO", required = true) @RequestBody AnnouncementVo announcementVo
+            @Parameter(name = "announcement", description = "待修改的单条公告数据VO", required = true) @RequestBody Announcement announcement
 
     ) {
 
-        Announcement announcement = announcementService.getById(announcementVo.getId());
-        BeanUtils.copyProperties(announcementVo, announcement);
-
         boolean isUpdated = announcementService.updateById(announcement);
 
-        Map<String, Object> map = new HashMap<>();
-        Map<String, Object> mysqlResult = new HashMap<>();
-        mysqlResult.put("isUpdated", isUpdated);
-        map.put("mysql_result", mysqlResult);
-
-        if (isUpdated) {
+        // 2024-10-15  13:39-非Passage实体将不再同步数据到ES中
+        /*if (isUpdated) {
 
             restTemplate.put(ES_UPDATE_ANNOUNCEMENT_URL, announcement);
             map.put("es_result", Result.BLANK);
@@ -160,9 +132,9 @@ public class AnnouncementController {
             // 2024-6-19  23:33-每次内容实体更新都需要重新计算一次得分，以避免上一次计算失误，尽快恢复内容实体的正常得分
             contentRankMqService.sendIndexChangeMsg(announcement, BaseEntity.ContentType.ANNOUNCEMENT);
 
-        }
+        }*/
 
-        return Result.neutral(map);
+        return isUpdated ? Result.success(null) : Result.failure(null);
 
     }
 
@@ -180,21 +152,17 @@ public class AnnouncementController {
 
         boolean isDeleted = announcementService.removeById(id);
 
-        Map<String, Object> map = new HashMap<>();
-        Map<String, Object> mysqlResult = new HashMap<>();
-        mysqlResult.put("isDeleted", isDeleted);
-        map.put("mysql_result", mysqlResult);
-
-        if (isDeleted) {
+        // 2024-10-15  13:47-非Passage实体将不再同步数据到ES中
+        /*if (isDeleted) {
 
             Map<String, Object> urlValues = new HashMap<>();
             urlValues.put("id", id);
             restTemplate.delete(ES_DELETE_ANNOUNCEMENT_URL, urlValues);
             map.put("es_result", Result.BLANK);
 
-        }
+        }*/
 
-        return Result.neutral(map);
+        return isDeleted ? Result.success(null) : Result.failure(null);
 
     }
 

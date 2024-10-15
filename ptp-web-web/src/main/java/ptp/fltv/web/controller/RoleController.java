@@ -7,18 +7,14 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 import pfp.fltv.common.annotation.LogRecord;
 import pfp.fltv.common.model.po.manage.Role;
-import pfp.fltv.common.model.vo.RoleVo;
 import pfp.fltv.common.model.po.response.Result;
 import ptp.fltv.web.service.RoleService;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Lenovo/LiGuanda
@@ -43,12 +39,12 @@ public class RoleController {
     @Operation(description = "根据ID查询角色信息")
     @GetMapping("/query/single/{roleId}")
     public Result<Role> queryRoleById(
-            @Parameter(name = "roleId", description = "待查询的角色ID", in = ParameterIn.PATH, required = true)
-            @PathVariable("roleId")
-            Long roleId) {
+
+            @Parameter(name = "roleId", description = "待查询的角色ID", in = ParameterIn.PATH, required = true) @PathVariable("roleId") Long roleId
+
+    ) {
 
         Role role = roleService.getById(roleId);
-
         return (role == null) ? Result.failure(null) : Result.success(role);
 
     }
@@ -58,7 +54,7 @@ public class RoleController {
     @SentinelResource("web-content-user-role-controller")
     @Operation(description = "批量(分页)查询多条角色数据")
     @GetMapping("/query/page/{offset}/{limit}")
-    public Result<List<RoleVo>> queryPassagePage(
+    public Result<List<Role>> queryPassagePage(
 
             @Parameter(name = "offset", description = "查询的一页角色数据的起始偏移量", in = ParameterIn.PATH, required = true) @PathVariable("offset") Long offset,
             @Parameter(name = "limit", description = "查询的这一页角色数据的数量", in = ParameterIn.PATH, required = true) @PathVariable("limit") Long limit
@@ -68,16 +64,7 @@ public class RoleController {
         Page<Role> rolePage = new Page<>(offset, limit);
         rolePage = roleService.page(rolePage);
 
-        List<RoleVo> roleVos = new ArrayList<>();
-        for (Role role : rolePage.getRecords()) {
-
-            RoleVo roleVo = new RoleVo();
-            BeanUtils.copyProperties(role, roleVo);
-            roleVos.add(roleVo);
-
-        }
-
-        return Result.success(roleVos);
+        return Result.success(rolePage.getRecords() == null ? new ArrayList<>() : rolePage.getRecords());
 
     }
 
@@ -98,16 +85,14 @@ public class RoleController {
     @SentinelResource("web-content-user-role-controller")
     @Operation(description = "添加角色信息")
     @PostMapping("/insert/single")
-    public Result<?> insertRole(
-            @Parameter(name = "role", description = "待添加的角色信息", required = true)
-            @RequestBody
-            Role role) {
+    public Result<Long> insertRole(
+
+            @Parameter(name = "role", description = "待添加的角色信息", required = true) @RequestBody Role role
+
+    ) {
 
         boolean isSaved = roleService.save(role);
-
-        Map<String, Object> map = new HashMap<>();
-        map.put("isSaved", isSaved);
-        return isSaved ? Result.success(map) : Result.failure(map);
+        return isSaved ? Result.success(role.getId()) : Result.failure(-1L);
 
     }
 
@@ -117,15 +102,13 @@ public class RoleController {
     @Operation(description = "修改角色信息")
     @PutMapping("/update/single")
     public Result<?> updateRole(
-            @Parameter(name = "role", description = "待修改的角色信息", required = true)
-            @RequestBody
-            Role role) {
+
+            @Parameter(name = "role", description = "待修改的角色信息", required = true) @RequestBody Role role
+
+    ) {
 
         boolean isUpdated = roleService.updateById(role);
-
-        Map<String, Object> map = new HashMap<>();
-        map.put("isUpdated", isUpdated);
-        return isUpdated ? Result.success(map) : Result.failure(map);
+        return isUpdated ? Result.success(null) : Result.failure(null);
 
     }
 
@@ -135,15 +118,13 @@ public class RoleController {
     @Operation(description = "删除角色信息")
     @DeleteMapping("/delete/single/{roleId}")
     public Result<?> deleteRole(
-            @Parameter(name = "roleId", description = "待删除的角色ID", in = ParameterIn.PATH, required = true)
-            @PathVariable("roleId")
-            Long roleId) {
+
+            @Parameter(name = "roleId", description = "待删除的角色ID", in = ParameterIn.PATH, required = true) @PathVariable("roleId") Long roleId
+
+    ) {
 
         boolean isDeleted = roleService.removeById(roleId);
-
-        Map<String, Object> map = new HashMap<>();
-        map.put("isDeleted", isDeleted);
-        return isDeleted ? Result.success(map) : Result.failure(map);
+        return isDeleted ? Result.success(null) : Result.failure(null);
 
     }
 

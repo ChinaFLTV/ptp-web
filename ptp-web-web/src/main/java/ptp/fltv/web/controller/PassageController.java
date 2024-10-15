@@ -8,14 +8,12 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import pfp.fltv.common.annotation.LogRecord;
 import pfp.fltv.common.enums.ContentRankType;
 import pfp.fltv.common.model.base.content.BaseEntity;
 import pfp.fltv.common.model.po.content.Passage;
-import pfp.fltv.common.model.vo.PassageVo;
 import pfp.fltv.common.model.po.response.Result;
 import ptp.fltv.web.constants.WebConstants;
 import ptp.fltv.web.mq.ContentRankMqService;
@@ -56,12 +54,13 @@ public class PassageController {
     @SentinelResource("web-content-passage-controller")
     @Operation(description = "根据ID查询单条文章数据")
     @GetMapping("/query/single/{id}")
-    public Result<Passage> querySinglePassage(@Parameter(name = "id", description = "待查询的单条文章ID", in = ParameterIn.PATH, required = true)
-                                              @PathVariable("id")
-                                              Long id) {
+    public Result<Passage> querySinglePassage(
+
+            @Parameter(name = "id", description = "待查询的单条文章ID", in = ParameterIn.PATH, required = true) @PathVariable("id") Long id
+
+    ) {
 
         Passage passage = passageService.getById(id);
-
         return (passage == null) ? Result.failure(null) : Result.success(passage);
 
     }
@@ -71,22 +70,17 @@ public class PassageController {
     @SentinelResource("web-content-passage-controller")
     @Operation(description = "批量(分页)查询多条文章数据")
     @GetMapping("/query/page/{offset}/{limit}")
-    public Result<List<PassageVo>> queryPassagePage(@Parameter(name = "offset", description = "查询的一页文章数据的起始偏移量", in = ParameterIn.PATH, required = true) @PathVariable("offset") Long offset,
-                                                    @Parameter(name = "limit", description = "查询的这一页文章数据的数量", in = ParameterIn.PATH, required = true) @PathVariable("limit") Long limit) {
+    public Result<List<Passage>> queryPassagePage(
+
+            @Parameter(name = "offset", description = "查询的一页文章数据的起始偏移量", in = ParameterIn.PATH, required = true) @PathVariable("offset") Long offset,
+            @Parameter(name = "limit", description = "查询的这一页文章数据的数量", in = ParameterIn.PATH, required = true) @PathVariable("limit") Long limit
+
+    ) {
 
         Page<Passage> passagePage = new Page<>(offset, limit);
         passagePage = passageService.page(passagePage);
 
-        List<PassageVo> passageVos = new ArrayList<>();
-        for (Passage passage : passagePage.getRecords()) {
-
-            PassageVo passageVo = new PassageVo();
-            BeanUtils.copyProperties(passage, passageVo);
-            passageVos.add(passageVo);
-
-        }
-
-        return Result.success(passageVos);
+        return Result.success(passagePage.getRecords() == null ? new ArrayList<>() : passagePage.getRecords());
 
     }
 
@@ -96,12 +90,11 @@ public class PassageController {
     @SentinelResource("web-content-passage-controller")
     @Operation(description = "添加单条文章数据")
     @PostMapping("/insert/single")
-    public Result<?> insertSinglePassage(@Parameter(name = "dialogueVo", description = "待添加的单条文章数据VO", required = true)
-                                         @RequestBody
-                                         PassageVo passageVo) {
+    public Result<?> insertSinglePassage(
 
-        Passage passage = new Passage();
-        BeanUtils.copyProperties(passageVo, passage);
+            @Parameter(name = "passage", description = "待添加的单条文章数据VO", required = true) @RequestBody Passage passage
+
+    ) {
 
         boolean isSaved = passageService.save(passage);
 
@@ -128,12 +121,10 @@ public class PassageController {
     @Operation(description = "修改单条文章数据")
     @PutMapping("/update/single")
     public Result<?> updateSinglePassage(
-            @Parameter(name = "dialogueVo", description = "待修改的单条文章数据VO", required = true)
-            @RequestBody
-            PassageVo passageVo) {
 
-        Passage passage = passageService.getById(passageVo.getId());
-        BeanUtils.copyProperties(passageVo, passage);
+            @Parameter(name = "dialogue", description = "待修改的单条文章数据", required = true) @RequestBody Passage passage
+
+    ) {
 
         boolean isUpdated = passageService.updateById(passage);
 
@@ -162,9 +153,11 @@ public class PassageController {
     @SentinelResource("web-content-passage-controller")
     @Operation(description = "删除单条文章数据")
     @DeleteMapping("/delete/single/{id}")
-    public Result<?> deleteSinglePassage(@Parameter(name = "id", description = "待删除的单条文章ID", in = ParameterIn.PATH, required = true)
-                                         @PathVariable("id")
-                                         Long id) {
+    public Result<?> deleteSinglePassage(
+
+            @Parameter(name = "id", description = "待删除的单条文章ID", in = ParameterIn.PATH, required = true) @PathVariable("id") Long id
+
+    ) {
 
         boolean isDeleted = passageService.removeById(id);
 
