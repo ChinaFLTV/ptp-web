@@ -198,7 +198,7 @@ CREATE TABLE IF NOT EXISTS `comment`
     `to_uid`          BIGINT UNSIGNED   DEFAULT NULL COMMENT '回复的用户ID(如果是文章的一级评论，则此值为null)',
     `to_nickname`     CHAR(255)         DEFAULT NULL COMMENT '回复的用户昵称',
     `to_avatar_url`   CHAR(255)         DEFAULT NULL COMMENT '回复的用户头像URL',
-    `parent_uid`      BIGINT UNSIGNED   DEFAULT NULL COMMENT '父评论ID(如果有的话)',
+    `parent_id`       BIGINT UNSIGNED   DEFAULT NULL COMMENT '父评论ID(如果有的话)',
     `topic_id`        BIGINT UNSIGNED   DEFAULT NULL COMMENT '所属主题ID(用于根据主题进行分库分表以减缓数据库压力)',
     `content`         CHAR(255)       NOT NULL COMMENT '文章评论内容',
     `accessary`       TEXT COMMENT '附加的其他类型的媒体内容(JSON格式)',
@@ -221,7 +221,7 @@ CREATE TABLE IF NOT EXISTS `comment`
     # FOREIGN KEY (passage_id) REFERENCES passage (id),
     FOREIGN KEY (from_uid) REFERENCES user (id),
     FOREIGN KEY (to_uid) REFERENCES user (id),
-    FOREIGN KEY (parent_uid) REFERENCES user (id)
+    FOREIGN KEY (parent_id) REFERENCES comment (id)
 
 )
     ENGINE = InnoDB

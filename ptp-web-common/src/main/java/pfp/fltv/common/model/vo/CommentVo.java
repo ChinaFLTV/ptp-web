@@ -65,7 +65,7 @@ public class CommentVo implements Serializable {
     private String toAvatarUrl; // 2024-10-16  00:44-新增 回复的用户头像URL 属性
 
     @Schema(description = "父评论ID(如果有的话),因为可能存在这样的评论：在一条已评论了文章的评论下，回复该评论收到的其他回复", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-    private Long parentUid;
+    private Long parentId;
 
     @Schema(description = "所属主题ID(用于根据主题进行分库分表以减缓数据库压力),该ID的生成将由其他服务根据文章的分类和标签动态生成(一般是约定好了的)")
     private Long topicId;
