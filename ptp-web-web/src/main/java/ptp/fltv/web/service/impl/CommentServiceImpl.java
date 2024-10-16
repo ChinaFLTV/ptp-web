@@ -113,4 +113,40 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
     }
 
 
+    @Override
+    public boolean deleteSingleComment(@Nonnull Long id) {
+
+        boolean isRemoved = false;
+
+        Comment comment = getById(id);
+
+        if (comment != null) {
+
+            isRemoved = removeById(id);
+            // 2024-10-17  1:42-如果当前删除的评论为二级评论，则还需要给其父级评论的评论数-1
+            if (isRemoved && comment.getParentId() != null && comment.getParentId() > 0) {
+
+                Comment parentComment = getById(comment.getParentId());
+                if (parentComment != null) {
+
+                    parentComment.setCommentNum(parentComment.getCommentNum() - 1);
+                    if (parentComment.getCommentNum() < 0) {
+
+                        parentComment.setCommentNum(0);
+
+                    }
+
+                    updateById(parentComment);
+
+                }
+
+            }
+
+        }
+
+        return isRemoved;
+
+    }
+
+
 }

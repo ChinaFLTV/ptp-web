@@ -171,7 +171,7 @@ public class CommentController {
 
     ) {
 
-        boolean isDeleted = commentService.removeById(id);
+        boolean isDeleted = commentService.deleteSingleComment(id);
 
         // 2024-10-15  14:01-非Passage实体将不再同步数据到ES中
         /*if (isDeleted) {
