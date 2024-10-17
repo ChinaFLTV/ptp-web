@@ -345,3 +345,39 @@ CREATE TABLE `undo_log`
   AUTO_INCREMENT = 15
   DEFAULT CHARSET = utf8mb3
   ROW_FORMAT = DYNAMIC;
+
+
+# 2024-10-17  20:09-创建实体举报表
+CREATE TABLE IF NOT EXISTS `report`
+(
+    `id`           BIGINT UNSIGNED PRIMARY KEY NOT NULL COMMENT 'ID',
+    `uid`          BIGINT UNSIGNED             NOT NULL COMMENT '举报者ID',
+    `title`        VARCHAR(128) DEFAULT NULL COMMENT '标题',
+    `content`      TEXT                        NOT NULL COMMENT '举报内容',
+    `content_type` INT UNSIGNED                NOT NULL COMMENT '内容实体类型',
+    `content_id`   BIGINT UNSIGNED             NOT NULL COMMENT '内容实体ID',
+    `nickname`     VARCHAR(255) DEFAULT NULL COMMENT '举报者昵称',
+    `avatar_url`   VARCHAR(255) DEFAULT NULL COMMENT '举报者头像URL',
+    `accessary`    TEXT         DEFAULT NULL COMMENT '附加的其他类型的媒体内容(JSON格式)',
+    `tags`         CHAR(255)    DEFAULT NULL COMMENT '标签',
+    `category`     CHAR(255)    DEFAULT NULL COMMENT '分类',
+    `browse_num`   INT UNSIGNED DEFAULT 0 COMMENT '浏览量',
+    `like_num`     INT UNSIGNED DEFAULT 0 COMMENT '点赞量',
+    `unlike_num`   INT UNSIGNED DEFAULT 0 COMMENT '倒赞量',
+    `comment_num`  INT UNSIGNED DEFAULT 0 COMMENT '评论量',
+    `star_num`     INT UNSIGNED DEFAULT 0 COMMENT '收藏量',
+    `share_num`    INT UNSIGNED DEFAULT 0 COMMENT '转发量',
+    `status`       INT UNSIGNED DEFAULT 1201 COMMENT '实例状态',
+    `meta`         TEXT         DEFAULT NULL COMMENT '其他数据配置(JSON)',
+    `address_info` TEXT         DEFAULT NULL COMMENT '发布时用户所在的地址信息',
+    `create_time`  TIMESTAMP    DEFAULT CURRENT_TIMESTAMP COMMENT '内容创建时间',
+    `update_time`  TIMESTAMP    DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '(最后)更新时间',
+    `is_deleted`   INT UNSIGNED DEFAULT 0 COMMENT '当前实体是否已被逻辑删除',
+    `version`      INT UNSIGNED DEFAULT 1 COMMENT '当前实体的版本(用于辅助实现乐观锁)',
+
+    FOREIGN KEY (uid) REFERENCES user (`id`)
+
+)
+    ENGINE = InnoDB
+    DEFAULT CHARSET = utf8mb4
+    COMMENT ='内容举报实体(PO实体类)';

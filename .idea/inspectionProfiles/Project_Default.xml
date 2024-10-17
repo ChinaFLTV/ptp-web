@@ -58,6 +58,7 @@
         <set>
           <option value="uid" />
           <option value="X-Forward-For" />
+          <option value="X-Hydrogen-Client-ID" />
         </set>
       </option>
     </inspection_tool>

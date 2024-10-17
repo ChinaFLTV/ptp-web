@@ -4,7 +4,7 @@
 ip:
   # 2024-10-8  19:16-物理IP
   physical:
-    self-host: 192.168.1.10 # 2024-10-8  19:17-本机IP地址(除了修改此地方 , 还需要单独修改logback.xml中的IP配置)
+    self-host: 192.168.1.12 # 2024-10-8  19:17-本机IP地址(除了修改此地方 , 还需要单独修改logback.xml中的IP配置)
 
 
 # 2024-3-25  21:02-MyBatisPlus配置
@@ -28,3 +28,9 @@ spring:
 logging:
   level:
     com.alibaba.cloud.stream.binder.rocketmq: info
+
+
+# 2024-10-17  19:10-知晓云Codaily应用的ID和密钥信息
+minapp:
+  client-id: 0d9eba85f0081c2303d4
+  client-secret: 4e6ed6bcceec184de6102269090cbb86f7de5a15
