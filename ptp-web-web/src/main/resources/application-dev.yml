@@ -22,12 +22,15 @@ spring:
           github:
             client-id: 4900da741269901ec6ca
             client-secret: 36133e1b6cf952a636cab52b78d1eba24e214fda
+  jackson:
+    time-zone: Asia/Shanghai # 2024-10-18  22:02-解决在群里消息中生成消息使用的LocalDateTime生成的时间晚8个小时的问题
 
 
 # 2024-5-30  22:26-设置RocketMQ的开发环境下的日志级别
 logging:
   level:
     com.alibaba.cloud.stream.binder.rocketmq: info
+
 
 
 # 2024-10-17  19:10-知晓云Codaily应用的ID和密钥信息

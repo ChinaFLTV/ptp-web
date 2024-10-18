@@ -29,6 +29,7 @@ import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.Objects;
 
 /**
  * @author Lenovo/LiGuanda
@@ -101,7 +102,6 @@ public class CredentialCheckFilter implements GlobalFilter, Ordered {
                     HttpCookie loginClientInfo = request.getCookies().getFirst(WebConstants.USER_LOGIN_COOKIE_KEY);
                     if (loginClientInfo != null) {
 
-
                         String encodedLoginClientInfo = loginClientInfo.getValue();
                         // 2024-6-17  23:04-之所以强制前端先加密登录环境信息再发送登录请求，是因为这样可在一定程度上避免客户端伪造登录信息的情况
                         String decodedLoginClientInfo = JwtUtils.decode(encodedLoginClientInfo);
@@ -112,7 +112,7 @@ public class CredentialCheckFilter implements GlobalFilter, Ordered {
 
                         UserLoginVo userLoginVo = JSON.parseObject(decodedLoginClientInfo, UserLoginVo.class);
 
-                        String nativeDeviceId = userLoginVo.getLoginInfo().getDeviceInfo().getDeviceID().split(":")[1];
+                        String nativeDeviceId = Objects.requireNonNull(userLoginVo).getLoginInfo().getDeviceInfo().getDeviceID().split(":")[1];
                         LoginClientType nativeClientType = LoginClientType.valueOf(userLoginVo.getLoginInfo().getDeviceInfo().getDeviceID().split(":")[0]);
 
                         String loginEnvInfoStr = stringRedisTemplate.opsForValue().get(String.format("user:login:env:%s:%s", nativeClientType.name().toLowerCase(), STORE_KEY));

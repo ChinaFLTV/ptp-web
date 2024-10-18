@@ -3,12 +3,15 @@ package ptp.fltv.web;
 import io.seata.spring.boot.autoconfigure.SeataAutoConfiguration;
 import io.seata.spring.boot.autoconfigure.SeataCoreAutoConfiguration;
 import io.seata.spring.boot.autoconfigure.SeataDataSourceAutoConfiguration;
+import jakarta.annotation.PostConstruct;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
+
+import java.util.TimeZone;
 
 /**
  * @author Lenovo/LiGuanda
@@ -34,6 +37,15 @@ public class WebApplication {
     public static void main(String[] args) {
 
         context = SpringApplication.run(WebApplication.class, args);
+
+    }
+
+
+    @PostConstruct
+    void started() {
+
+        // 2024-10-18  22:02-解决在群里消息中生成消息使用的LocalDateTime生成的时间晚8个小时的问题(参考自https://www.cnblogs.com/sxdcgaq8080/p/12747752.html)
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT+8"));
 
     }
 
