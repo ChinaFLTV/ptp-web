@@ -1,0 +1,17 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="WebApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+    <option name="ACTIVE_PROFILES" value="dev" />
+    <module name="ptp-web-web" />
+    <option name="PROGRAM_PARAMETERS" value="--ip.physical.self-host=192.168.1.12" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="ptp.fltv.web.WebApplication" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="ptp.fltv.web.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

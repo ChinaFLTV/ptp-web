@@ -767,3 +767,11 @@ values (101, 1, 100, 'Apple', 0.226, '160.8 x 78.1 x 7.65 mm', '深空灰色', '
         '69431234567871'),
        (121, 21, 1000, '杰威尔音乐', 0.10, '12cm x 12cm x 1cm', '无', '塑料', '中国',
         'https://img.alicdn.com/tfs/img01.alicdn.com/imcp/v1/O1CN01/21z0Q7y1174nY55745v9.jpg', '69431234567881');
+
+
+# 2024-10-20  1:40-往banner表中插入数据
+INSERT INTO `banner`(`id`, `uid`, `title`, `img_url`)
+VALUES (1, 5, '能不能给我一首歌的时间', 'https://d35kvm5iuwjt9t.cloudfront.net/dbimages/sfx293837.jpg'),
+       (2, 8, '鞠婧祎 么么叽', 'https://img.win3000.com/m00/e1/57/0272abb760114f889b3e79c3042ace54.jpg'),
+       (3, 1, '李知恩I Love You', 'https://cdn.i-scmp.com/sites/default/files/d8/images/canvas/2023/09/20/7bbf6337-8997-46f2-9616-ca6c4da9a112_70fdfdcb.jpg'),
+       (4, 2, 'StarShip第五次测试取得圆满成功', 'https://www.ascend.events/wp-content/uploads/2024/03/SpaceX-Launch-14Mar2024-banner.jpg')

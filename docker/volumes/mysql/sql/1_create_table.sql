@@ -367,7 +367,7 @@ CREATE TABLE IF NOT EXISTS `report`
     `comment_num`  INT UNSIGNED DEFAULT 0 COMMENT '评论量',
     `star_num`     INT UNSIGNED DEFAULT 0 COMMENT '收藏量',
     `share_num`    INT UNSIGNED DEFAULT 0 COMMENT '转发量',
-    `status`       INT UNSIGNED DEFAULT 1201 COMMENT '实例状态',
+    `status`       INT UNSIGNED DEFAULT 100 COMMENT '实例状态',
     `meta`         TEXT         DEFAULT NULL COMMENT '其他数据配置(JSON)',
     `address_info` TEXT         DEFAULT NULL COMMENT '发布时用户所在的地址信息',
     `create_time`  TIMESTAMP    DEFAULT CURRENT_TIMESTAMP COMMENT '内容创建时间',
@@ -381,3 +381,36 @@ CREATE TABLE IF NOT EXISTS `report`
     ENGINE = InnoDB
     DEFAULT CHARSET = utf8mb4
     COMMENT ='内容举报实体(PO实体类)';
+
+
+# 2024-10-19  1:34-创建轮播表
+CREATE TABLE IF NOT EXISTS `banner`
+(
+    `id`           BIGINT UNSIGNED PRIMARY KEY NOT NULL COMMENT 'ID',
+    `uid`          BIGINT UNSIGNED             NOT NULL COMMENT '发布者ID',
+    `title`        VARCHAR(128)                NOT NULL COMMENT '轮播标题',
+    `content`      TEXT         DEFAULT NULL COMMENT '轮播内容',
+    `img_url`      CHAR(255)                   NOT NULL COMMENT '轮播插图的云端资源直链(建议比例为>16:9)',
+    `accessary`    TEXT         DEFAULT NULL COMMENT '附加的其他类型的媒体内容(JSON格式)',
+    `tags`         CHAR(255)    DEFAULT NULL COMMENT '标签',
+    `category`     CHAR(255)    DEFAULT NULL COMMENT '分类',
+    `browse_num`   INT UNSIGNED DEFAULT 0 COMMENT '浏览量',
+    `like_num`     INT UNSIGNED DEFAULT 0 COMMENT '点赞量',
+    `unlike_num`   INT UNSIGNED DEFAULT 0 COMMENT '倒赞量',
+    `comment_num`  INT UNSIGNED DEFAULT 0 COMMENT '评论量',
+    `star_num`     INT UNSIGNED DEFAULT 0 COMMENT '收藏量',
+    `share_num`    INT UNSIGNED DEFAULT 0 COMMENT '转发量',
+    `status`       INT UNSIGNED DEFAULT 100 COMMENT '实例状态',
+    `meta`         TEXT         DEFAULT NULL COMMENT '其他数据配置(JSON)',
+    `address_info` TEXT         DEFAULT NULL COMMENT '发布时用户所在的地址信息',
+    `create_time`  TIMESTAMP    DEFAULT CURRENT_TIMESTAMP COMMENT '内容创建时间',
+    `update_time`  TIMESTAMP    DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '(最后)更新时间',
+    `is_deleted`   INT UNSIGNED DEFAULT 0 COMMENT '当前实体是否已被逻辑删除',
+    `version`      INT UNSIGNED DEFAULT 1 COMMENT '当前实体的版本(用于辅助实现乐观锁)',
+
+    FOREIGN KEY (uid) REFERENCES user (`id`)
+
+)
+    ENGINE = InnoDB
+    DEFAULT CHARSET = utf8mb4
+    COMMENT ='轮播实体(PO实体类)';
