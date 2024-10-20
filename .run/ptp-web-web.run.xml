@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="WebApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+  <configuration default="false" name="ptp-web-web" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
     <option name="ACTIVE_PROFILES" value="dev" />
     <module name="ptp-web-web" />
     <option name="PROGRAM_PARAMETERS" value="--ip.physical.self-host=192.168.1.12" />

@@ -1,6 +1,7 @@
 package ptp.fltv.web.controller;
 
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.seata.spring.annotation.GlobalTransactional;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import pfp.fltv.common.annotation.LogRecord;
 import pfp.fltv.common.enums.ContentRankType;
+import pfp.fltv.common.enums.ContentStatus;
 import pfp.fltv.common.model.po.content.Announcement;
 import pfp.fltv.common.model.po.response.Result;
 import ptp.fltv.web.constants.WebConstants;
@@ -80,6 +82,20 @@ public class AnnouncementController {
         announcementPage = announcementService.page(announcementPage);
 
         return Result.success(announcementPage.getRecords() == null ? new ArrayList<>() : announcementPage.getRecords());
+
+    }
+
+
+    @LogRecord(description = "查询全部可见的公告数据")
+    @SentinelResource("web-content-announcement-controller")
+    @Operation(description = "查询全部可见的公告数据")
+    @GetMapping("/query/all/available")
+    public Result<List<Announcement>> queryAllAnnouncements() {
+
+        QueryWrapper<Announcement> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("status", ContentStatus.NORMAL.getCode());
+        List<Announcement> announcements = announcementService.list(queryWrapper);
+        return Result.success(announcements);
 
     }
 
