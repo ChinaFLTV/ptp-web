@@ -200,10 +200,10 @@ public class PassageController {
 
 
     @LogRecord(description = "分页获取指定类型的排行榜的文章数据")
-    @SentinelResource("web-content-announcement-controller")
+    @SentinelResource("web-content-passage-controller")
     @Operation(description = "分页获取指定类型的排行榜的文章数据")
     @DeleteMapping("/query/rank/page")
-    public Result<List<Passage>> queryAnnouncementRankPage(
+    public Result<List<Passage>> queryPassageRankPage(
 
             @Parameter(name = "offset", description = "查询的一页排行榜文章数据的起始偏移量", required = true) @RequestParam("offset") Long offset,
             @Parameter(name = "limit", description = "查询的这一页排行榜文章数据的数量", required = true) @RequestParam("limit") Long limit,
