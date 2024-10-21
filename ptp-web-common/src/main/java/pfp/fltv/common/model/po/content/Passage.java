@@ -31,4 +31,8 @@ public class Passage extends BaseEntity {
     private String introduction;
 
 
+    @Schema(description = "文章封面图片资源URL")
+    private String coverImgUrl; // 2024-10-21  16:36-增加 文章封面图片资源URL 字段
+
+
 }

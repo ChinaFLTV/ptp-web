@@ -16,7 +16,6 @@ import pfp.fltv.common.enums.ContentRankType;
 import pfp.fltv.common.enums.ContentStatus;
 import pfp.fltv.common.model.po.content.Announcement;
 import pfp.fltv.common.model.po.response.Result;
-import ptp.fltv.web.constants.WebConstants;
 import ptp.fltv.web.mq.ContentRankMqService;
 import ptp.fltv.web.service.AnnouncementService;
 
@@ -37,12 +36,6 @@ import java.util.List;
 // @PreAuthorize("@pc.hasAnyPermission('content:announcement:add','content:announcement:remove','content:announcement:list','content:announcement:update')") // 2024-5-3  20:55-权限控制将委托给spring cloud gateway 处理
 @RequestMapping("/content/announcement")
 public class AnnouncementController {
-
-
-    private static final String ES_PREFIX_ANNOUNCEMENT_URL = WebConstants.ES_BASE_URL + WebConstants.ES_CONTEXT_URL + WebConstants.ES_BASE_ANNOUNCEMENT_URL;
-    private static final String ES_INSERT_ANNOUNCEMENT_URL = ES_PREFIX_ANNOUNCEMENT_URL + "/insert/single";
-    private static final String ES_UPDATE_ANNOUNCEMENT_URL = ES_PREFIX_ANNOUNCEMENT_URL + "/update/single";
-    private static final String ES_DELETE_ANNOUNCEMENT_URL = ES_PREFIX_ANNOUNCEMENT_URL + "/delete/single/{id}";
 
 
     private AnnouncementService announcementService;

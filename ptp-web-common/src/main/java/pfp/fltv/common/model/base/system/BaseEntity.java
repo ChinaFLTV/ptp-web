@@ -38,6 +38,7 @@ public class BaseEntity implements Serializable {
     @Schema(description = "动作发起者ID")
     private Long uid;
 
+    @TableField(typeHandler = JacksonTypeHandler.class)
     @Schema(description = "流水状态")
     private TaskStatus status = TaskStatus.NORMAL;
 

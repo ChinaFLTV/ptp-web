@@ -9,13 +9,10 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 import pfp.fltv.common.annotation.LogRecord;
 import pfp.fltv.common.enums.ContentQuerySortType;
 import pfp.fltv.common.model.po.content.Comment;
 import pfp.fltv.common.model.po.response.Result;
-import ptp.fltv.web.constants.WebConstants;
-import ptp.fltv.web.mq.ContentRankMqService;
 import ptp.fltv.web.service.CommentService;
 
 import java.util.ArrayList;
@@ -36,15 +33,7 @@ import java.util.List;
 public class CommentController {
 
 
-    private static final String ES_PREFIX_COMMENT_URL = WebConstants.ES_BASE_URL + WebConstants.ES_CONTEXT_URL + WebConstants.ES_BASE_PASSAGE_COMMENT_URL;
-    private static final String ES_INSERT_COMMENT_URL = ES_PREFIX_COMMENT_URL + "/insert/single";
-    private static final String ES_UPDATE_COMMENT_URL = ES_PREFIX_COMMENT_URL + "/update/single";
-    private static final String ES_DELETE_COMMENT_URL = ES_PREFIX_COMMENT_URL + "/delete/single/{id}";
-
-
     private CommentService commentService;
-    private RestTemplate restTemplate;
-    private ContentRankMqService contentRankMqService;
 
 
     @LogRecord(description = "根据ID查询单条内容评论数据")
@@ -58,7 +47,6 @@ public class CommentController {
     ) {
 
         Comment comment = commentService.getById(id);
-
         return (comment == null) ? Result.failure(null) : Result.success(comment);
 
     }
@@ -103,7 +91,7 @@ public class CommentController {
     }
 
 
-    @GlobalTransactional(name = "insert-single-passage-comment", rollbackFor = Exception.class)
+    @GlobalTransactional(name = "insert-single-content-comment", rollbackFor = Exception.class)
     @LogRecord(description = "添加单条内容评论数据")
     @SentinelResource("web-content-comment-controller")
     @Operation(description = "添加单条内容评论数据")
@@ -129,7 +117,7 @@ public class CommentController {
     }
 
 
-    @GlobalTransactional(name = "update-single-passage-comment", rollbackFor = Exception.class)
+    @GlobalTransactional(name = "update-single-content-comment", rollbackFor = Exception.class)
     @LogRecord(description = "修改单条内容评论数据")
     @SentinelResource("web-content-comment-controller")
     @Operation(description = "修改单条内容评论数据")
@@ -160,7 +148,7 @@ public class CommentController {
     }
 
 
-    @GlobalTransactional(name = "delete-single-passage-comment", rollbackFor = Exception.class)
+    @GlobalTransactional(name = "delete-single-content-comment", rollbackFor = Exception.class)
     @LogRecord(description = "删除单条内容评论数据")
     @SentinelResource("web-content-comment-controller")
     @Operation(description = "删除单条内容评论数据")
@@ -173,7 +161,7 @@ public class CommentController {
 
         boolean isDeleted = commentService.deleteSingleComment(id);
 
-        // 2024-10-15  14:01-非Passage实体将不再同步数据到ES中
+        // 2024-10-15  14:01-非content实体将不再同步数据到ES中
         /*if (isDeleted) {
 
             Map<String, Object> urlValues = new HashMap<>();

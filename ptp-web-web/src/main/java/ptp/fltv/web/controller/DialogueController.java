@@ -17,7 +17,6 @@ import pfp.fltv.common.enums.ContentRankType;
 import pfp.fltv.common.model.po.content.Dialogue;
 import pfp.fltv.common.model.po.response.Result;
 import pfp.fltv.common.model.vo.DialogueVo;
-import ptp.fltv.web.constants.WebConstants;
 import ptp.fltv.web.mq.ContentRankMqService;
 import ptp.fltv.web.service.DialogueService;
 
@@ -37,12 +36,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/content/dialogue")
 public class DialogueController {
-
-
-    private static final String ES_PREFIX_DIALOGUE_URL = WebConstants.ES_BASE_URL + WebConstants.ES_CONTEXT_URL + WebConstants.ES_BASE_DIALOGUE_URL;
-    private static final String ES_INSERT_DIALOGUE_URL = ES_PREFIX_DIALOGUE_URL + "/insert/single";
-    private static final String ES_UPDATE_DIALOGUE_URL = ES_PREFIX_DIALOGUE_URL + "/update/single";
-    private static final String ES_DELETE_DIALOGUE_URL = ES_PREFIX_DIALOGUE_URL + "/delete/single/{id}";
 
 
     private DialogueService dialogueService;

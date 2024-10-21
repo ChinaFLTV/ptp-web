@@ -39,6 +39,9 @@ public class PassageVo implements Serializable {
     @Schema(description = "文章内容引子需要单独发送过来，因为用户那可能以上传文件/远程URL的形式发布文章，服务端这边不方便处理", maxLength = 35)
     private String introduction;
 
+    @Schema(description = "文章封面图片资源URL")
+    private String coverImgUrl; // 2024-10-21  19:21-增加 文章封面图片资源URL 字段
+
     @Schema(accessMode = Schema.AccessMode.READ_WRITE, description = "用户填写的文章内容")
     private String content;
 

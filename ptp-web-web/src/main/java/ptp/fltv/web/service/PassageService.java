@@ -2,6 +2,7 @@ package ptp.fltv.web.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import jakarta.annotation.Nonnull;
+import pfp.fltv.common.enums.ContentQuerySortType;
 import pfp.fltv.common.enums.ContentRankType;
 import pfp.fltv.common.model.po.content.Passage;
 
@@ -31,6 +32,21 @@ public interface PassageService extends IService<Passage> {
      * @filename PassageService.java
      */
     List<Passage> getRankListByPage(@Nonnull ContentRankType contentRankType, @Nonnull Long offset, @Nonnull Long count);
+
+
+    /**
+     * @param sortType 排序规则
+     * @param uid      当前请求发起用户的ID(非必需)(仅在排序类型为订阅类型下生效)
+     * @param pageNum  页码(从1开始)
+     * @param pageSize 数据页大小
+     * @return 查询到的符合条件的指定数据页
+     * @author Lenovo/LiGuanda
+     * @date 2024/10/21 PM 4:50:59
+     * @version 1.0.0
+     * @description 根据指定的排序规则分页查询指定页码、指定大小的数据页
+     * @filename PassageService.java
+     */
+    List<Passage> queryPassagePageWithSorting(@Nonnull ContentQuerySortType sortType, @Nonnull Long pageNum, @Nonnull Long pageSize, @Nonnull Long uid);
 
 
 }

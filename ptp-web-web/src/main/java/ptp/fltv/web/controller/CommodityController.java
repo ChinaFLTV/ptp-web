@@ -20,7 +20,6 @@ import pfp.fltv.common.annotation.LogRecord;
 import pfp.fltv.common.exceptions.PtpException;
 import pfp.fltv.common.model.po.finance.Commodity;
 import pfp.fltv.common.model.po.response.Result;
-import ptp.fltv.web.constants.WebConstants;
 import ptp.fltv.web.mq.CommodityMqService;
 import ptp.fltv.web.service.CommodityService;
 
@@ -42,12 +41,6 @@ import java.util.concurrent.TimeUnit;
 @RestController
 @RequestMapping("/finance/commodity")
 public class CommodityController {
-
-
-    private static final String ES_PREFIX_COMMODITY_URL = WebConstants.ES_BASE_URL + WebConstants.ES_CONTEXT_URL + WebConstants.ES_BASE_COMMODITY_URL;
-    private static final String ES_INSERT_COMMODITY_URL = ES_PREFIX_COMMODITY_URL + "/insert/single";
-    private static final String ES_UPDATE_COMMODITY_URL = ES_PREFIX_COMMODITY_URL + "/update/single";
-    private static final String ES_DELETE_COMMODITY_URL = ES_PREFIX_COMMODITY_URL + "/delete/single/{id}";
 
 
     private CommodityService commodityService;

@@ -18,7 +18,6 @@ import pfp.fltv.common.model.po.info.AddressInfo;
 import pfp.fltv.common.model.po.manage.User;
 import pfp.fltv.common.model.po.response.Result;
 import pfp.fltv.common.utils.ReflectUtils;
-import ptp.fltv.web.constants.WebConstants;
 import ptp.fltv.web.service.UserService;
 
 import java.io.IOException;
@@ -37,12 +36,6 @@ import java.util.*;
 @RestController
 @RequestMapping("/content/user")
 public class UserController {
-
-
-    private static final String ES_PREFIX_USER_URL = WebConstants.ES_BASE_URL + WebConstants.ES_CONTEXT_URL + WebConstants.ES_BASE_USER_URL;
-    private static final String ES_INSERT_USER_URL = ES_PREFIX_USER_URL + "/insert/single";
-    private static final String ES_UPDATE_USER_URL = ES_PREFIX_USER_URL + "/update/single";
-    private static final String ES_DELETE_USER_URL = ES_PREFIX_USER_URL + "/delete/single/{id}";
 
 
     private UserService userService;
