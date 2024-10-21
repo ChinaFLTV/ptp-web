@@ -156,28 +156,30 @@ CREATE TABLE IF NOT EXISTS `announcement`
 # 2024-3-24  16:18-创建passage表
 CREATE TABLE IF NOT EXISTS `passage`
 (
-    `id`            BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT COMMENT '文章ID', -- 主键，自增长
-    `uid`           BIGINT UNSIGNED NOT NULL COMMENT '发布者ID',                 -- 不能为空
-    `title`         VARCHAR(128)    NOT NULL COMMENT '标题',
-    `introduction`  CHAR(50)        NOT NULL COMMENT '内容介绍',
-    `cover_img_url` CHAR(255)         DEFAULT NULL COMMENT '文章封面图片资源URL',
-    `content`       TEXT            NOT NULL COMMENT '内容',
-    `accessary`     TEXT              DEFAULT NULL COMMENT '附加的其他类型的媒体内容(JSON格式)',
-    `tags`          VARCHAR(255)      DEFAULT NULL COMMENT '标签',
-    `category`      VARCHAR(255)      DEFAULT NULL COMMENT '分类',
-    `browse_num`    INT UNSIGNED      DEFAULT 0 COMMENT '浏览量',
-    `like_num`      INT UNSIGNED      DEFAULT 0 COMMENT '点赞量',
-    `unlike_num`    INT UNSIGNED      DEFAULT 0 COMMENT '倒赞量',
-    `comment_num`   INT UNSIGNED      DEFAULT 0 COMMENT '评论量',
-    `star_num`      INT UNSIGNED      DEFAULT 0 COMMENT '收藏量',
-    `share_num`     INT UNSIGNED      DEFAULT 0 COMMENT '转发量',
-    `address_info`  TEXT              DEFAULT NULL COMMENT '发布时用户所在的地址信息',
-    `status`        SMALLINT UNSIGNED DEFAULT 100 COMMENT '实例状态',
-    `meta`          TEXT              DEFAULT NULL COMMENT '其他数据配置(JSON)',
-    `create_time`   TIMESTAMP         DEFAULT CURRENT_TIMESTAMP COMMENT '内容创建时间',
-    `update_time`   TIMESTAMP         DEFAULT CURRENT_TIMESTAMP COMMENT '(最后)更新时间' ON UPDATE CURRENT_TIMESTAMP,
-    `is_deleted`    INT UNSIGNED      DEFAULT 0 COMMENT '当前实体是否已被逻辑删除',
-    `version`       INT UNSIGNED      DEFAULT 1 COMMENT '当前文章实体的版本(用于辅助实现乐观锁)',
+    `id`                   BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT COMMENT '文章ID', -- 主键，自增长
+    `uid`                  BIGINT UNSIGNED NOT NULL COMMENT '发布者ID',                 -- 不能为空
+    `publisher_nickname`   CHAR(255)         DEFAULT '' COMMENT '文章发布者昵称',
+    `publisher_avatar_url` CHAR(255)         DEFAULT '' COMMENT '文章发布者头像URL',
+    `title`                VARCHAR(128)    NOT NULL COMMENT '标题',
+    `introduction`         CHAR(50)        NOT NULL COMMENT '内容介绍',
+    `cover_img_url`        CHAR(255)         DEFAULT NULL COMMENT '文章封面图片资源URL',
+    `content`              TEXT            NOT NULL COMMENT '内容',
+    `accessary`            TEXT              DEFAULT NULL COMMENT '附加的其他类型的媒体内容(JSON格式)',
+    `tags`                 VARCHAR(255)      DEFAULT NULL COMMENT '标签',
+    `category`             VARCHAR(255)      DEFAULT NULL COMMENT '分类',
+    `browse_num`           INT UNSIGNED      DEFAULT 0 COMMENT '浏览量',
+    `like_num`             INT UNSIGNED      DEFAULT 0 COMMENT '点赞量',
+    `unlike_num`           INT UNSIGNED      DEFAULT 0 COMMENT '倒赞量',
+    `comment_num`          INT UNSIGNED      DEFAULT 0 COMMENT '评论量',
+    `star_num`             INT UNSIGNED      DEFAULT 0 COMMENT '收藏量',
+    `share_num`            INT UNSIGNED      DEFAULT 0 COMMENT '转发量',
+    `address_info`         TEXT              DEFAULT NULL COMMENT '发布时用户所在的地址信息',
+    `status`               SMALLINT UNSIGNED DEFAULT 100 COMMENT '实例状态',
+    `meta`                 TEXT              DEFAULT NULL COMMENT '其他数据配置(JSON)',
+    `create_time`          TIMESTAMP         DEFAULT CURRENT_TIMESTAMP COMMENT '内容创建时间',
+    `update_time`          TIMESTAMP         DEFAULT CURRENT_TIMESTAMP COMMENT '(最后)更新时间' ON UPDATE CURRENT_TIMESTAMP,
+    `is_deleted`           INT UNSIGNED      DEFAULT 0 COMMENT '当前实体是否已被逻辑删除',
+    `version`              INT UNSIGNED      DEFAULT 1 COMMENT '当前文章实体的版本(用于辅助实现乐观锁)',
 
     FOREIGN KEY (uid) REFERENCES user (id)
 

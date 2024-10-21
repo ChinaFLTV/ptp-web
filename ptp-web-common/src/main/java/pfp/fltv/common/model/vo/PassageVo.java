@@ -33,6 +33,12 @@ public class PassageVo implements Serializable {
     @Schema(description = "发布者ID")
     private Long uid;
 
+    @Schema(description = "文章发布者昵称")
+    private String publisherNickname; // 2024-10-21  21:33-增加 文章发布者昵称 字段
+
+    @Schema(description = "文章发布者头像URL")
+    private String publisherAvatarUrl; // 2024-10-21  21:33-增加 文章发布者头像URL 字段
+
     @Schema(accessMode = Schema.AccessMode.READ_WRITE, description = "用户填写的文章标题")
     private String title;
 

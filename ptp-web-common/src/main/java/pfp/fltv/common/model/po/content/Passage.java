@@ -27,9 +27,14 @@ import pfp.fltv.common.model.base.content.BaseEntity;
 public class Passage extends BaseEntity {
 
 
+    @Schema(description = "文章发布者昵称")
+    private String publisherNickname; // 2024-10-21  21:33-增加 文章发布者昵称 字段
+
+    @Schema(description = "文章发布者头像URL")
+    private String publisherAvatarUrl; // 2024-10-21  21:33-增加 文章发布者头像URL 字段
+
     @Schema(description = "内容介绍", maxLength = 35)
     private String introduction;
-
 
     @Schema(description = "文章封面图片资源URL")
     private String coverImgUrl; // 2024-10-21  16:36-增加 文章封面图片资源URL 字段
