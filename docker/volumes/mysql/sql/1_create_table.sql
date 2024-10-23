@@ -161,7 +161,7 @@ CREATE TABLE IF NOT EXISTS `passage`
     `publisher_nickname`   CHAR(255)         DEFAULT '' COMMENT '文章发布者昵称',
     `publisher_avatar_url` CHAR(255)         DEFAULT '' COMMENT '文章发布者头像URL',
     `title`                VARCHAR(128)    NOT NULL COMMENT '标题',
-    `introduction`         CHAR(50)        NOT NULL COMMENT '内容介绍',
+    `introduction`         CHAR(255)       NOT NULL COMMENT '内容介绍',
     `cover_img_url`        CHAR(255)         DEFAULT NULL COMMENT '文章封面图片资源URL',
     `content`              TEXT            NOT NULL COMMENT '内容',
     `accessary`            TEXT              DEFAULT NULL COMMENT '附加的其他类型的媒体内容(JSON格式)',
