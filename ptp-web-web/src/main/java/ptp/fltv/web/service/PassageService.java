@@ -49,4 +49,28 @@ public interface PassageService extends IService<Passage> {
     List<Passage> queryPassagePageWithSorting(@Nonnull ContentQuerySortType sortType, @Nonnull Long pageNum, @Nonnull Long pageSize, @Nonnull Long uid);
 
 
+    /**
+     * @return 是否保存文章成功
+     * @author Lenovo/LiGuanda
+     * @date 2024/10/26 AM 1:41:47
+     * @version 1.0.0
+     * @apiNote 之所以需要重写保存单个文章的API , 是因为需要在保存文章之前先保存一条对应的文章评分统计记录 , 然后再同步给需要保存的文章中
+     * @description 保存单个文章
+     * @filename PassageService.java
+     */
+    boolean saveSinglePassage(@Nonnull Passage passage);
+
+
+    /**
+     * @return 是否删除文章成功
+     * @author Lenovo/LiGuanda
+     * @date 2024/10/26 AM 1:54:10
+     * @version 1.0.0
+     * @apiNote 之所以需要重写删除单个文章的API , 是因为需要在删除文章之后还要删除文章所关联的文章评分统计记录(即使删除不成功也无伤大雅 , 这仅会产生浮动垃圾 , 不会产生副作用 , 可以定期排查删除掉)
+     * @description 删除单个文章
+     * @filename PassageService.java
+     */
+    boolean deleteSinglePassage(@Nonnull Long id);
+
+
 }

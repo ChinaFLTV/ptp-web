@@ -9,10 +9,13 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import pfp.fltv.common.enums.ContentQuerySortType;
 import pfp.fltv.common.enums.ContentRankType;
+import pfp.fltv.common.model.po.content.Comment;
 import pfp.fltv.common.model.po.content.Passage;
+import pfp.fltv.common.model.po.manage.Rate;
 import pfp.fltv.common.model.po.manage.SubscriberShip;
 import ptp.fltv.web.mapper.PassageMapper;
 import ptp.fltv.web.service.PassageService;
+import ptp.fltv.web.service.RateService;
 import ptp.fltv.web.service.SubscriberShipService;
 
 import java.util.*;
@@ -32,6 +35,7 @@ public class PassageServiceImpl extends ServiceImpl<PassageMapper, Passage> impl
 
     private StringRedisTemplate stringRedisTemplate;
     private SubscriberShipService subscriberShipService;
+    private RateService rateService;
 
 
     @Override
@@ -115,6 +119,52 @@ public class PassageServiceImpl extends ServiceImpl<PassageMapper, Passage> impl
         List<Passage> passages = page(new Page<>(pageNum, pageSize), queryWrapper).getRecords();
 
         return passages == null ? new ArrayList<>() : passages;
+
+    }
+
+
+    @Override
+    public boolean saveSinglePassage(@Nonnull Passage passage) {
+
+        boolean isSaved = false;
+
+        // 2024-10-26  1:47-先新增一条对应的文章评分统计记录
+        Rate rate = Rate.builder()
+                .uid(passage.getUid())
+                .contentType(Comment.BelongType.PASSAGE)
+                .contentId(passage.getId())
+                .contentTitle(passage.getTitle())
+                .build();
+
+        boolean isSaveRateSuccessfully = rateService.save(rate);
+
+        // 2024-10-26  1:50-只有新增了一条对应的文章评分统计记录之后才能进一步地去创建文章
+        if (isSaveRateSuccessfully) {
+
+            passage.setRateId(rate.getId());
+            isSaved = save(passage); // 2024-10-26  1:51-即使文章插入失败也不再主动回滚刚刚创建好的评分记录了 , 顶多会产生冗余垃圾 , 不会产生其他副作用 , 可以定期排查删除掉
+
+        }
+
+        return isSaved;
+
+    }
+
+
+    @Override
+    public boolean deleteSinglePassage(@Nonnull Long id) {
+
+        boolean isDeleted = false;
+
+        Passage passage = getById(id);
+        if (passage != null) {
+
+            isDeleted = removeById(id);
+            rateService.removeById(passage.getRateId());
+
+        }
+
+        return isDeleted;
 
     }
 

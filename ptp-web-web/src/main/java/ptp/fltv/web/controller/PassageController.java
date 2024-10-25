@@ -19,6 +19,7 @@ import pfp.fltv.common.model.po.response.Result;
 import ptp.fltv.web.constants.WebConstants;
 import ptp.fltv.web.mq.ContentRankMqService;
 import ptp.fltv.web.service.PassageService;
+import ptp.fltv.web.service.RateService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,6 +50,7 @@ public class PassageController {
     private PassageService passageService;
     private RestTemplate restTemplate;
     private ContentRankMqService contentRankMqService;
+    private RateService rateService;
 
 
     @LogRecord(description = "根据ID查询单条文章数据")
@@ -115,7 +117,7 @@ public class PassageController {
 
     ) {
 
-        boolean isSaved = passageService.save(passage);
+        boolean isSaved = passageService.saveSinglePassage(passage);
 
         Map<String, Object> map = new HashMap<>();
         Map<String, Object> mysqlResult = new HashMap<>();
@@ -178,7 +180,7 @@ public class PassageController {
 
     ) {
 
-        boolean isDeleted = passageService.removeById(id);
+        boolean isDeleted = passageService.deleteSinglePassage(id);
 
         Map<String, Object> map = new HashMap<>();
         Map<String, Object> mysqlResult = new HashMap<>();

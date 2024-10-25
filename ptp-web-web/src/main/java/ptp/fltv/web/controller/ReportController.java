@@ -36,7 +36,7 @@ public class ReportController {
 
 
     @LogRecord(description = "根据ID查询单条举报数据")
-    @SentinelResource("web-content-report-controller")
+    @SentinelResource("web-manage-report-controller")
     @Operation(description = "根据ID查询单条举报数据")
     @GetMapping("/query/single/{id}")
     public Result<Report> querySingleReport(@PathVariable("id") Long id) {
@@ -48,7 +48,7 @@ public class ReportController {
 
 
     @LogRecord(description = "批量(分页)查询多条举报数据")
-    @SentinelResource("web-content-report-controller")
+    @SentinelResource("web-manage-report-controller")
     @Operation(description = "批量(分页)查询多条举报数据")
     @GetMapping("/query/page/{offset}/{limit}")
     public Result<List<Report>> queryReportPage(
@@ -68,7 +68,7 @@ public class ReportController {
 
     @GlobalTransactional(name = "insert-single-report", rollbackFor = Exception.class)
     @LogRecord(description = "添加单条举报数据")
-    @SentinelResource("web-content-report-controller")
+    @SentinelResource("web-manage-report-controller")
     @Operation(description = "添加单条举报数据")
     @PostMapping("/insert/single")
     public Result<Long> insertSingleReport(
@@ -85,7 +85,7 @@ public class ReportController {
 
     @GlobalTransactional(name = "update-single-report", rollbackFor = Exception.class)
     @LogRecord(description = "修改单条举报数据")
-    @SentinelResource("web-content-report-controller")
+    @SentinelResource("web-manage-report-controller")
     @Operation(description = "修改单条举报数据")
     @PutMapping("/update/single")
     public Result<?> updateSingleReport(@RequestBody Report report) {
@@ -98,7 +98,7 @@ public class ReportController {
 
     @GlobalTransactional(name = "delete-single-report", rollbackFor = Exception.class)
     @LogRecord(description = "删除单条举报数据")
-    @SentinelResource("web-content-report-controller")
+    @SentinelResource("web-manage-report-controller")
     @Operation(description = "删除单条举报数据")
     @DeleteMapping("/delete/single/{id}")
     public Result<?> deleteSingleReport(@PathVariable("id") Long id) {

@@ -33,6 +33,9 @@ public class PassageVo implements Serializable {
     @Schema(description = "发布者ID")
     private Long uid;
 
+    @Schema(description = "评分记录统计ID(建议在创建文章记录时 , 同步新增对应的评分统计记录)")
+    private Long rateId; // 2024-10-25  20:07-增加 评分记录统计ID 字段(建议在创建文章记录时 , 同步新增对应的评分统计记录)
+
     @Schema(description = "文章发布者昵称")
     private String publisherNickname; // 2024-10-21  21:33-增加 文章发布者昵称 字段
 

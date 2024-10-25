@@ -153,11 +153,42 @@ CREATE TABLE IF NOT EXISTS `announcement`
     COMMENT = '公告';
 
 
+# 2024-10-25  20:40-创建实体评分表
+CREATE TABLE IF NOT EXISTS `rate`
+(
+    `id`                  BIGINT UNSIGNED PRIMARY KEY NOT NULL COMMENT 'ID',
+    `uid`                 BIGINT UNSIGNED             NOT NULL COMMENT '评分者ID',
+    `content_type`        INT UNSIGNED                NOT NULL COMMENT '内容实体类型',
+    `content_id`          BIGINT UNSIGNED             NOT NULL COMMENT '内容实体ID',
+    `content_title`       VARCHAR(128)    DEFAULT NULL COMMENT '内容实体标题(如果有的话)',
+    `content_tags`        TEXT            DEFAULT NULL COMMENT '内容实体的评分标签(JSON)',
+    `status`              INT UNSIGNED    DEFAULT 200 COMMENT '实例状态',
+    `average_score`       DOUBLE          DEFAULT -1 COMMENT '平均评分',
+    `max_score`           DOUBLE          DEFAULT -1 COMMENT '最高评分',
+    `min_score`           DOUBLE          DEFAULT -1 COMMENT '最低评分',
+    `rate_user_count`     BIGINT UNSIGNED DEFAULT 0 COMMENT '评分人数',
+    `rate_user_count_map` TEXT            DEFAULT NULL COMMENT '评分人数分布映射(JSON)',
+    `rate_map`            TEXT            DEFAULT NULL COMMENT '具体的评分详情(JSON)',
+    `meta`                TEXT            DEFAULT NULL COMMENT '其他数据配置(JSON)',
+    `create_time`         TIMESTAMP       DEFAULT CURRENT_TIMESTAMP COMMENT '内容创建时间',
+    `update_time`         TIMESTAMP       DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '(最后)更新时间',
+    `is_deleted`          INT UNSIGNED    DEFAULT 0 COMMENT '当前实体是否已被逻辑删除',
+    `version`             INT UNSIGNED    DEFAULT 1 COMMENT '当前实体的版本(用于辅助实现乐观锁)',
+
+    FOREIGN KEY (uid) REFERENCES user (`id`)
+
+)
+    ENGINE = InnoDB
+    DEFAULT CHARSET = utf8mb4
+    COMMENT ='内容评分实体(PO实体类)';
+
+
 # 2024-3-24  16:18-创建passage表
 CREATE TABLE IF NOT EXISTS `passage`
 (
-    `id`                   BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT COMMENT '文章ID', -- 主键，自增长
-    `uid`                  BIGINT UNSIGNED NOT NULL COMMENT '发布者ID',                 -- 不能为空
+    `id`                   BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT COMMENT '文章ID',                                          -- 主键，自增长
+    `uid`                  BIGINT UNSIGNED NOT NULL COMMENT '发布者ID',                                                          -- 不能为空
+    `rate_id`              BIGINT UNSIGNED NOT NULL COMMENT '评分记录统计ID(建议在创建文章记录时 , 同步新增对应的评分统计记录)', -- 不能为空
     `publisher_nickname`   CHAR(255)         DEFAULT '' COMMENT '文章发布者昵称',
     `publisher_avatar_url` CHAR(255)         DEFAULT '' COMMENT '文章发布者头像URL',
     `title`                VARCHAR(128)    NOT NULL COMMENT '标题',
@@ -181,7 +212,8 @@ CREATE TABLE IF NOT EXISTS `passage`
     `is_deleted`           INT UNSIGNED      DEFAULT 0 COMMENT '当前实体是否已被逻辑删除',
     `version`              INT UNSIGNED      DEFAULT 1 COMMENT '当前文章实体的版本(用于辅助实现乐观锁)',
 
-    FOREIGN KEY (uid) REFERENCES user (id)
+    FOREIGN KEY (uid) REFERENCES user (id),
+    FOREIGN KEY (rate_id) REFERENCES rate (id)
 
 )
     ENGINE = InnoDB

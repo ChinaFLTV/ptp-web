@@ -17,7 +17,7 @@ import pfp.fltv.common.model.po.content.Comment;
  * @version 1.0.0
  * @date 2024/10/17 PM 12:45:30
  * @description 内容举报实体(PO)
- * * @apiNote 该实体主要存放在后端云中 , 很少存放在本地数据库中
+ * @apiNote 该实体主要存放在后端云中 , 很少存放在本地数据库中
  * @filename Report.java
  */
 

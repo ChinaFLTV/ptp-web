@@ -39,6 +39,12 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:1.4.14")
     implementation("net.logstash.logback:logstash-logback-encoder:7.4")
 
+    // 2024-10-25  21:48-生成批量插入Rate的SQL语句所需依赖
+    testImplementation("com.alibaba.fastjson2:fastjson2:2.0.53")
+    // 2024-10-25  21:53-随机生成汉字成语的库(仓库地址 : https://github.com/yindz/common-random)
+    testImplementation("com.apifan.common:common-random:1.0.21")
+    testImplementation("org.springframework.boot:spring-boot-starter-test:3.2.4")
+
 }
 
 

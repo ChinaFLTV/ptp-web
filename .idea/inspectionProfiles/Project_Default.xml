@@ -70,6 +70,30 @@
     <inspection_tool class="MavenPropertyInParent" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="SpringJavaAutowiredFieldsWarningInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="SqlWithoutWhereInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="VulnerableLibrariesLocal" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="isIgnoringEnabled" value="true" />
+      <option name="ignoredModules">
+        <list>
+          <option value="ptp-web-test" />
+          <option value="ptp-web-test" />
+          <option value="ptp-web-test" />
+        </list>
+      </option>
+      <option name="ignoredPackages">
+        <list>
+          <option value="io.netty:netty-codec-http:4.1.107.Final" />
+          <option value="com.google.guava:guava:31.1-jre" />
+          <option value="commons-io:commons-io:2.7" />
+        </list>
+      </option>
+      <option name="ignoredReasons">
+        <list>
+          <option value="Not exploitable" />
+          <option value="Not exploitable" />
+          <option value="Not exploitable" />
+        </list>
+      </option>
+    </inspection_tool>
     <inspection_tool class="unused" enabled="false" level="WARNING" enabled_by_default="false" checkParameterExcludingHierarchy="false">
       <option name="LOCAL_VARIABLE" value="true" />
       <option name="FIELD" value="true" />

@@ -108,5 +108,10 @@
     "start": 2100,
     "end": 2199,
     "enum": "Comment.BelongType"
+  },
+  {
+    "start": 2200,
+    "end": 2299,
+    "enum": "Passage.Standard"
   }
 ]
