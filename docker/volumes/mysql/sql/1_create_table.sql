@@ -55,6 +55,7 @@ CREATE TABLE IF NOT EXISTS `user`
     `nickname`      VARCHAR(255)      DEFAULT NULL COMMENT '用户昵称',           -- 随机生成昵称
     `realname`      VARCHAR(255)      DEFAULT NULL COMMENT '用户真实姓名(管理员必需)',
     `gender`        TINYINT UNSIGNED  DEFAULT 2 COMMENT '用户性别',
+    `age`           INT UNSIGNED      DEFAULT NULL COMMENT '用户年龄',
     `idiograph`     VARCHAR(255)      DEFAULT '这个家伙很懒，什么都没写> - <' COMMENT '用户的个性签名',
     `avatar`        TEXT              DEFAULT NULL COMMENT '用户头像(JSON)',     -- 用户个人资料背景图片(JSON)
     `background`    TEXT              DEFAULT NULL COMMENT '用户个人资料背景图片(JSON)',

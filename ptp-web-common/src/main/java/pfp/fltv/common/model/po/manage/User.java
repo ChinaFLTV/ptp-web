@@ -72,6 +72,10 @@ public class User implements Serializable {
     @TableField(typeHandler = JacksonTypeHandler.class)
     private Gender gender = Gender.SECRET;
 
+    @Field(name = "age", type = FieldType.Integer)
+    @Schema(description = "用户年龄")
+    private Integer age;
+
     @Field(type = FieldType.Text, analyzer = "analysis-ik")
     @Schema(description = "用户的个性签名")
     private String idiograph;

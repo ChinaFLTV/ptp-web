@@ -56,6 +56,9 @@ public class UserVo implements Serializable {
     @TableField(typeHandler = JacksonTypeHandler.class)
     private Gender gender;
 
+    @Schema(description = "用户年龄")
+    private Integer age;
+
     @Schema(description = "用户的个性签名")
     private String idiograph;
 
