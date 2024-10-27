@@ -78,4 +78,21 @@ public interface CommentService extends IService<Comment> {
     List<CommentVo> queryCommentVoPage(@Nonnull Long offset, @Nonnull Long limit);
 
 
+    /**
+     * @param sortType   排序规则
+     * @param belongType 评论归属的实体类型
+     * @param contentId  评论归属的实体ID(值为-1则该参数失效)
+     * @param uid        内容发布者的ID(非必需)(仅在排序类型为拥有者类型下生效)
+     * @param pageNum    页码(从1开始)
+     * @param pageSize   数据页大小
+     * @return 查询到的符合条件的指定数据页
+     * @author Lenovo/LiGuanda
+     * @date 2024/10/27 PM 8:48:34
+     * @version 1.0.0
+     * @description 根据指定排序类型批量(分页)查询多条内容评论VO数据(相较于内容评论PO数据多了内容评分相关的内容)
+     * @filename CommentService.java
+     */
+    List<CommentVo> queryCommentVoPageWithSorting(@Nonnull ContentQuerySortType sortType, @Nonnull Comment.BelongType belongType, @Nonnull Long contentId, @Nonnull Long uid, @Nonnull Long pageNum, @Nonnull Long pageSize);
+
+
 }

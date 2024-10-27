@@ -201,4 +201,45 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
     }
 
 
+    @Override
+    public List<CommentVo> queryCommentVoPageWithSorting(@Nonnull ContentQuerySortType sortType, @Nonnull Comment.BelongType belongType, @Nonnull Long contentId, @Nonnull Long uid, @Nonnull Long pageNum, @Nonnull Long pageSize) {
+
+        List<Comment> comments = queryCommentPageWithSorting(sortType, belongType, contentId, uid, pageNum, pageSize);
+
+        List<CommentVo> commentVos = new ArrayList<>();
+        for (Comment comment : comments) {
+
+            CommentVo commentVo = new CommentVo();
+            BeanUtils.copyProperties(comment, commentVo);
+
+            QueryWrapper<Rate> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("content_id", comment.getContentId());
+            queryWrapper.eq("uid", comment.getFromUid());
+            Rate userRate = rateService.getOne(queryWrapper);
+
+            commentVo.setAverageScore(-1D); // 2024-10-27  20:51-这里设置-1是为了便于前端处理有些用户尚未进行评分时的评论展示的情况 , 客户端可根据该字段是否为-1来确认当前用户有没有评分过
+            if (userRate != null) {
+
+                commentVo.setContentTags(userRate.getContentTags());
+
+                double userAverageScore = userRate.getRateMap()
+                        .values()
+                        .stream()
+                        .mapToDouble(Double::doubleValue)
+                        .average()
+                        .orElse(-1D);
+
+                commentVo.setAverageScore(userAverageScore);
+
+            }
+
+            commentVos.add(commentVo);
+
+        }
+
+        return commentVos;
+
+    }
+
+
 }
