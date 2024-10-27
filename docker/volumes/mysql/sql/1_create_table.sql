@@ -169,6 +169,8 @@ CREATE TABLE IF NOT EXISTS `rate`
     `rate_user_count`     BIGINT UNSIGNED DEFAULT 0 COMMENT '评分人数',
     `rate_user_count_map` TEXT            DEFAULT NULL COMMENT '评分人数分布映射(JSON)',
     `rate_map`            TEXT            DEFAULT NULL COMMENT '具体的评分详情(JSON)',
+    `rate_type`           INT UNSIGNED    DEFAULT 2302 COMMENT '评分记录的类型',
+    `statistic_rate_id`   BIGINT UNSIGNED DEFAULT NULL COMMENT '对应内容实体的评分统计记录的ID',
     `meta`                TEXT            DEFAULT NULL COMMENT '其他数据配置(JSON)',
     `create_time`         TIMESTAMP       DEFAULT CURRENT_TIMESTAMP COMMENT '内容创建时间',
     `update_time`         TIMESTAMP       DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '(最后)更新时间',

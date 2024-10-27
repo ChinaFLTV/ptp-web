@@ -113,5 +113,10 @@
     "start": 2200,
     "end": 2299,
     "enum": "Passage.Standard"
+  },
+  {
+    "start": 2300,
+    "end": 2399,
+    "enum": "Rate.RateType"
   }
 ]

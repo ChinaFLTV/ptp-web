@@ -70,6 +70,8 @@ class SqlGenerateTest {
             rateMap["LOGICALITY"] = String.format("%.1f", random.nextDouble(0.0, 10.0)).toDouble()
             rateMap["TIMELINESS"] = String.format("%.1f", random.nextDouble(0.0, 10.0)).toDouble()
 
+            val rateType = 2301
+
             builder.append("(")
                 .append("$id,")
                 .append("$uid,")
@@ -81,7 +83,8 @@ class SqlGenerateTest {
                 .append("${String.format("%.1f", minScore)},")
                 .append("$rateUserCount,")
                 .append("'${JSON.toJSONString(rateUserCountMap)}',")
-                .append("'${JSON.toJSONString(rateMap)}'")
+                .append("'${JSON.toJSONString(rateMap)}',")
+                .append("$rateType")
                 .append(")")
                 .append(if (i == 35) ";\n" else ",\n")
 

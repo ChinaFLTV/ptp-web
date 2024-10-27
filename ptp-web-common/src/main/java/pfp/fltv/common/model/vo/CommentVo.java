@@ -1,7 +1,9 @@
 package pfp.fltv.common.model.vo;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,6 +15,7 @@ import pfp.fltv.common.model.po.content.Comment;
 import pfp.fltv.common.model.po.info.AddressInfo;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -82,8 +85,48 @@ public class CommentVo implements Serializable {
     @Schema(description = "分类")
     private List<String> category;
 
+    @Field(name = "browse_num", type = FieldType.Integer)
+    @Schema(description = "浏览量")
+    private Integer browseNum;
+
+    @Field(name = "like_num", type = FieldType.Integer)
+    @Schema(description = "点赞量")
+    private Integer likeNum;
+
+    @Field(name = "unlike_num", type = FieldType.Integer)
+    @Schema(description = "倒赞量")
+    private Integer unlikeNum;
+
+    @Field(name = "comment_num", type = FieldType.Integer)
+    @Schema(description = "评论量")
+    private Integer commentNum;
+
+    @Field(name = "star_num", type = FieldType.Integer)
+    @Schema(description = "收藏量")
+    private Integer starNum;
+
+    @Field(name = "star_num", type = FieldType.Integer)
+    @Schema(description = "转发量")
+    private Integer shareNum;
+
     @Schema(description = "记录文章评论发布时的地址信息")
     private AddressInfo addressInfo;
+
+    @Field(name = "create_time", type = FieldType.Date)
+    @Schema(description = "内容创建时间")
+    private LocalDateTime createTime;
+
+    @Field(name = "update_time", type = FieldType.Date)
+    @Schema(description = "(最后)更新时间")
+    private LocalDateTime updateTime;
+
+    @TableField(typeHandler = JacksonTypeHandler.class)
+    @Schema(description = "内容实体的评分标签")
+    private List<String> contentTags;
+
+    // 2024-10-27  19:26-这里的评分均为10分制的
+    @Schema(description = "平均评分")
+    private Double averageScore; // 2024-10-27  19:26-平均评分(评分统计类型的评分记录所需)
 
 
 }

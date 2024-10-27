@@ -5,6 +5,7 @@ import jakarta.annotation.Nonnull;
 import pfp.fltv.common.enums.ContentQuerySortType;
 import pfp.fltv.common.enums.ContentRankType;
 import pfp.fltv.common.model.po.content.Comment;
+import pfp.fltv.common.model.vo.CommentVo;
 
 import java.util.List;
 
@@ -61,6 +62,20 @@ public interface CommentService extends IService<Comment> {
      * @filename CommentService.java
      */
     boolean deleteSingleComment(@Nonnull Long id);
+
+
+    /**
+     * @param offset 查询的一页内容评论VO数据的起始偏移量
+     * @param limit  查询的这一页内容评论VO数据的数量
+     * @return 查询到的指定数据页的评论VO实体数据列表
+     * @apiNote 该API返回的评论VO列表数据中的评论实体将带有内容评分相关的数据内容(如果对应用户已经在对应内容实体评分过的话)
+     * @author Lenovo/LiGuanda
+     * @date 2024/10/27 PM 7:28:52
+     * @version 1.0.0
+     * @description 批量(分页)查询多条内容评论VO数据(相较于内容评论PO数据多了内容评分相关的内容)
+     * @filename CommentService.java
+     */
+    List<CommentVo> queryCommentVoPage(@Nonnull Long offset, @Nonnull Long limit);
 
 
 }

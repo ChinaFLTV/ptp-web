@@ -4,14 +4,18 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.annotation.Nonnull;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import pfp.fltv.common.enums.ContentQuerySortType;
 import pfp.fltv.common.enums.ContentRankType;
 import pfp.fltv.common.model.po.content.Comment;
+import pfp.fltv.common.model.po.manage.Rate;
+import pfp.fltv.common.model.vo.CommentVo;
 import ptp.fltv.web.mapper.CommentMapper;
 import ptp.fltv.web.service.CommentService;
+import ptp.fltv.web.service.RateService;
 
 import java.util.*;
 
@@ -23,12 +27,13 @@ import java.util.*;
  * @filename CommentServiceImpl.java
  */
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Service
 public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> implements CommentService {
 
 
-    private StringRedisTemplate stringRedisTemplate;
+    private final StringRedisTemplate stringRedisTemplate;
+    private final RateService rateService;
 
 
     @Override
@@ -145,6 +150,53 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         }
 
         return isRemoved;
+
+    }
+
+
+    @Override
+    public List<CommentVo> queryCommentVoPage(@Nonnull Long offset, @Nonnull Long limit) {
+
+        Page<Comment> commentPage = new Page<>(offset, limit);
+        commentPage = page(commentPage);
+
+        List<CommentVo> commentVos = new ArrayList<>();
+
+        if (commentPage != null && !commentPage.getRecords().isEmpty()) {
+
+            for (Comment comment : commentPage.getRecords()) {
+
+                CommentVo commentVo = new CommentVo();
+                BeanUtils.copyProperties(comment, commentVo);
+
+                QueryWrapper<Rate> queryWrapper = new QueryWrapper<>();
+                queryWrapper.eq("content_id", comment.getContentId());
+                queryWrapper.eq("uid", comment.getFromUid());
+                Rate userRate = rateService.getOne(queryWrapper);
+
+                commentVo.setAverageScore(-1D); // 2024-10-27  19:37-这里设置-1是为了便于前端处理有些用户尚未进行评分时的评论展示的情况 , 客户端可根据该字段是否为-1来确认当前用户有没有评分过
+                if (userRate != null) {
+
+                    commentVo.setContentTags(userRate.getContentTags());
+
+                    double userAverageScore = userRate.getRateMap()
+                            .values()
+                            .stream()
+                            .mapToDouble(Double::doubleValue)
+                            .average()
+                            .orElse(-1D);
+
+                    commentVo.setAverageScore(userAverageScore);
+
+                }
+
+                commentVos.add(commentVo);
+
+            }
+
+        }
+
+        return commentVos;
 
     }
 

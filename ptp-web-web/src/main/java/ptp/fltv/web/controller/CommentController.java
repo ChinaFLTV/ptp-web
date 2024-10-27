@@ -13,6 +13,7 @@ import pfp.fltv.common.annotation.LogRecord;
 import pfp.fltv.common.enums.ContentQuerySortType;
 import pfp.fltv.common.model.po.content.Comment;
 import pfp.fltv.common.model.po.response.Result;
+import pfp.fltv.common.model.vo.CommentVo;
 import ptp.fltv.web.service.CommentService;
 
 import java.util.ArrayList;
@@ -67,6 +68,24 @@ public class CommentController {
         commentPage = commentService.page(commentPage);
 
         return commentPage.getRecords() == null ? Result.failure(new ArrayList<>()) : Result.success(commentPage.getRecords());
+
+    }
+
+
+    @LogRecord(description = "批量(分页)查询多条内容评论VO数据(相较于内容评论PO数据多了内容评分相关的内容)")
+    @SentinelResource("web-content-comment-controller")
+    @Operation(description = "批量(分页)查询多条内容评论VO数据(相较于内容评论PO数据多了内容评分相关的内容)")
+    @GetMapping("/query/page/vo/{offset}/{limit}")
+    public Result<List<CommentVo>> queryCommentVoPage(
+
+            @Parameter(name = "offset", description = "查询的一页内容评论VO数据的起始偏移量", in = ParameterIn.PATH, required = true) @PathVariable("offset") Long offset,
+            @Parameter(name = "limit", description = "查询的这一页内容评论VO数据的数量", in = ParameterIn.PATH, required = true) @PathVariable("limit") Long limit
+
+    ) {
+
+        List<CommentVo> commentVos = commentService.queryCommentVoPage(offset, limit);
+
+        return commentVos == null ? Result.failure(new ArrayList<>()) : Result.success(commentVos);
 
     }
 

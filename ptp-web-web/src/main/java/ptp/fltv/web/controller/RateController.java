@@ -35,13 +35,30 @@ public class RateController {
     private RateService rateService;
 
 
-    @LogRecord(description = "根据ID查询单条评分数据")
+    @LogRecord(description = "根据ID查询单条内容分统计数据")
     @SentinelResource("web-manage-rate-controller")
-    @Operation(description = "根据ID查询单条评分数据")
-    @GetMapping("/query/single/{id}")
-    public Result<Rate> querySingleRate(@PathVariable("id") Long id) {
+    @Operation(description = "根据ID查询单条内容评分统计数据")
+    @GetMapping("/query/single/statistic/{id}")
+    public Result<Rate> querySingleContentRate(@PathVariable("id") Long id) {
 
         Rate rate = rateService.getById(id);
+        return (rate == null) ? Result.failure(null) : Result.success(rate);
+
+    }
+
+
+    @LogRecord(description = "根据内容ID和用户ID去查询用户在某个内容的评分记录数据")
+    @SentinelResource("web-manage-rate-controller")
+    @Operation(description = "根据内容ID和用户ID去查询用户在某个内容的评分记录数据")
+    @GetMapping("/query/single")
+    public Result<Rate> querySingleUserRate(
+
+            @Parameter(name = "contentId", description = "内容实体的ID", required = true) @RequestParam("contentId") Long contentId,
+            @Parameter(name = "uid", description = "评分用户的ID", required = true) @RequestParam("uid") Long uid
+
+    ) {
+
+        Rate rate = rateService.querySingleUserRate(contentId, uid);
         return (rate == null) ? Result.failure(null) : Result.success(rate);
 
     }
@@ -53,8 +70,7 @@ public class RateController {
     @GetMapping("/query/page/{offset}/{limit}")
     public Result<List<Rate>> queryRatePage(
 
-            @Parameter(name = "offset", description = "查询的一页评分数据的起始偏移量", in = ParameterIn.PATH, required = true) @PathVariable("offset") Long offset,
-            @Parameter(name = "limit", description = "查询的这一页评分数据的数量", in = ParameterIn.PATH, required = true) @PathVariable("limit") Long limit
+            @Parameter(name = "offset", description = "查询的一页评分数据的起始偏移量", in = ParameterIn.PATH, required = true) @PathVariable("offset") Long offset, @Parameter(name = "limit", description = "查询的这一页评分数据的数量", in = ParameterIn.PATH, required = true) @PathVariable("limit") Long limit
 
     ) {
 
@@ -77,7 +93,7 @@ public class RateController {
 
     ) {
 
-        boolean isSaved = rateService.save(rate);
+        boolean isSaved = rateService.insertSingleRate(rate);
         return isSaved ? Result.success(rate.getId()) : Result.failure(-1L);
 
     }
