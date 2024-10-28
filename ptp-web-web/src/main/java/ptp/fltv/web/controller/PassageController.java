@@ -88,6 +88,24 @@ public class PassageController {
     }
 
 
+    @LogRecord(description = "批量(分页)查询指定用户的多条文章数据")
+    @SentinelResource("web-content-passage-controller")
+    @Operation(description = "批量(分页)查询指定用户的多条文章数据")
+    @GetMapping("/queryAvailablePassagePageByUid")
+    public Result<List<Passage>> queryAvailablePassagePageByUid(
+
+            @Parameter(name = "uid", description = "文章所属的用户ID", required = true) @RequestParam("uid") Long uid,
+            @Parameter(name = "offset", description = "查询的一页文章数据的起始偏移量", required = true) @RequestParam("offset") Long offset,
+            @Parameter(name = "limit", description = "查询的这一页文章数据的数量", required = true) @RequestParam("limit") Long limit
+
+    ) {
+
+        List<Passage> passages = passageService.queryAvailablePassagePageByUid(uid, offset, limit);
+        return Result.success(passages);
+
+    }
+
+
     @LogRecord(description = "根据指定排序类型批量(分页)查询多条文章数据")
     @SentinelResource("web-content-dialogue-controller")
     @Operation(description = "根据指定排序类型批量(分页)查询多条文章数据")

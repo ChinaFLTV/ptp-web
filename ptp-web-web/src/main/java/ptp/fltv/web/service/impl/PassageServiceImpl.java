@@ -9,6 +9,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import pfp.fltv.common.enums.ContentQuerySortType;
 import pfp.fltv.common.enums.ContentRankType;
+import pfp.fltv.common.enums.ContentStatus;
 import pfp.fltv.common.model.po.content.Comment;
 import pfp.fltv.common.model.po.content.Passage;
 import pfp.fltv.common.model.po.manage.Rate;
@@ -165,6 +166,21 @@ public class PassageServiceImpl extends ServiceImpl<PassageMapper, Passage> impl
         }
 
         return isDeleted;
+
+    }
+
+
+    @Override
+    public List<Passage> queryAvailablePassagePageByUid(@Nonnull Long uid, @Nonnull Long offset, @Nonnull Long limit) {
+
+        Page<Passage> passagePage = new Page<>(offset, limit);
+
+        QueryWrapper<Passage> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("uid", uid)
+                .eq("status", ContentStatus.NORMAL.getCode());
+
+        passagePage = page(passagePage, queryWrapper);
+        return passagePage.getRecords() == null ? new ArrayList<>() : passagePage.getRecords();
 
     }
 

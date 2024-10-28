@@ -73,4 +73,18 @@ public interface PassageService extends IService<Passage> {
     boolean deleteSinglePassage(@Nonnull Long id);
 
 
+    /**
+     * @param uid    文章所属的用户ID
+     * @param offset 查询的一页文章数据的起始偏移量
+     * @param limit  查询的这一页文章数据的数量
+     * @return 指定用户发布的指定偏移量的指定大小的文章数据页
+     * @author Lenovo/LiGuanda
+     * @date 2024/10/28 PM 7:24:22
+     * @version 1.0.0
+     * @description 批量(分页)查询指定用户的多条文章数据
+     * @filename PassageService.java
+     */
+    List<Passage> queryAvailablePassagePageByUid(@Nonnull Long uid, @Nonnull Long offset, @Nonnull Long limit);
+
+
 }
