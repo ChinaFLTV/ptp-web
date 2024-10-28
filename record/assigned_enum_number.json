@@ -118,5 +118,10 @@
     "start": 2300,
     "end": 2399,
     "enum": "Rate.RateType"
+  },
+  {
+    "start": 2400,
+    "end": 2499,
+    "enum": "EventRecord.EventType"
   }
 ]

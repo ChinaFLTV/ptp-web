@@ -476,3 +476,30 @@ CREATE TABLE IF NOT EXISTS `subscriber_ship`
     ENGINE = InnoDB
     DEFAULT CHARSET = utf8mb4
     COMMENT ='订阅关系数据实体(PO实体类)';
+
+
+# 2024-10-29  1:48-创建事件记录表
+CREATE TABLE IF NOT EXISTS `event_record`
+(
+    `id`            BIGINT UNSIGNED PRIMARY KEY NOT NULL COMMENT 'ID',
+    `uid`           BIGINT UNSIGNED             NOT NULL COMMENT '事件记录产生者ID',
+    `nickname`      VARCHAR(255) DEFAULT NULL COMMENT '事件记录产生者昵称',
+    `avatar_url`    VARCHAR(255) DEFAULT NULL COMMENT '事件记录产生者头像URL',
+    `content_type`  INT UNSIGNED                NOT NULL COMMENT '内容实体类型',
+    `content_id`    BIGINT UNSIGNED             NOT NULL COMMENT '内容实体ID',
+    `content_title` VARCHAR(128) DEFAULT NULL COMMENT '内容实体标题(如果有的话)',
+    `event_type`    INT UNSIGNED DEFAULT NULL COMMENT '事件类型',
+    `remark`        TEXT         DEFAULT NULL COMMENT '事件备注',
+    `status`        INT UNSIGNED DEFAULT 200 COMMENT '实例状态',
+    `meta`          TEXT         DEFAULT NULL COMMENT '其他数据配置(JSON)',
+    `create_time`   TIMESTAMP    DEFAULT CURRENT_TIMESTAMP COMMENT '内容创建时间',
+    `update_time`   TIMESTAMP    DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '(最后)更新时间',
+    `is_deleted`    INT UNSIGNED DEFAULT 0 COMMENT '当前实体是否已被逻辑删除',
+    `version`       INT UNSIGNED DEFAULT 1 COMMENT '当前实体的版本(用于辅助实现乐观锁)',
+
+    FOREIGN KEY (uid) REFERENCES user (`id`)
+
+)
+    ENGINE = InnoDB
+    DEFAULT CHARSET = utf8mb4
+    COMMENT ='事件记录数据实体(PO实体类)';

@@ -156,7 +156,20 @@ public class Comment implements Serializable {
         PASSAGE(2102, "文章"),
         COMMENT(2103, "评论"),
         USER(2104, "用户"),
-        ALL(2105, "不区分类型");
+        ROLE(2105, "角色"),
+        ASSET(2106, "财产"),
+        BANNER(2107, "轮播"),
+        ANNOUNCEMENT(2108, "公告"),
+        COMMODITY(2109, "商品"),
+        REPORT(2110, "举报"),
+        RATE(2111, "评分"),
+        GROUP_MESSAGE(2112, "群聊消息"),
+        PRIVATE_MESSAGE(2113, "私聊消息"),
+        SYSTEM_MESSAGE(2114, "系统消息"),
+        LIKE_RECORD(2115, "点赞/取消点赞记录"),
+        STAR_RECORD(2116, "收藏/取消收藏记录"),
+        SHARED_RECORD(2116, "收藏/取消收藏记录"),
+        ALL(2117, "不区分类型");
 
 
         @EnumValue // 2024-10-13  21:33-解决 java.lang.IllegalArgumentException: No enum constant pfp.fltv.common.model.po.content.Comment.BelongType.XXXX 的问题
