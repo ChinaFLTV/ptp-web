@@ -10,13 +10,11 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 import pfp.fltv.common.annotation.LogRecord;
 import pfp.fltv.common.enums.ContentRankType;
 import pfp.fltv.common.enums.ContentStatus;
 import pfp.fltv.common.model.po.content.Announcement;
 import pfp.fltv.common.model.po.response.Result;
-import ptp.fltv.web.mq.ContentRankMqService;
 import ptp.fltv.web.service.AnnouncementService;
 
 import java.util.ArrayList;
@@ -39,8 +37,6 @@ public class AnnouncementController {
 
 
     private AnnouncementService announcementService;
-    private RestTemplate restTemplate;
-    private ContentRankMqService contentRankMqService;
 
 
     @LogRecord(description = "根据ID查询单条公告数据")

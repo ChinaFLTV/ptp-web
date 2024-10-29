@@ -147,7 +147,7 @@ public class RateServiceImpl extends ServiceImpl<RateMapper, Rate> implements Ra
 
                 } else {
 
-                    throw new PtpException(817, "当前用户已经评分过!");
+                    throw new PtpException(817, "重复评分!");
 
                 }
 

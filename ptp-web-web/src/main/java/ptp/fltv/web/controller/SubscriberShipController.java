@@ -51,6 +51,23 @@ public class SubscriberShipController {
     }
 
 
+    @LogRecord(description = "根据订阅操作的双方ID查询单条订阅关系数据")
+    @SentinelResource("web-content-user-controller")
+    @Operation(description = "根据订阅操作的双方ID查询单条订阅关系数据")
+    @GetMapping("/query/single/subscription")
+    public Result<SubscriberShip> querySingleSubscription(
+
+            @Parameter(name = "followerId", description = "订阅发起方的用户ID", required = true) @RequestParam("followerId") Long followerId,
+            @Parameter(name = "followeeId", description = "被订阅方的用户ID", required = true) @RequestParam("followeeId") Long followeeId
+
+    ) {
+
+        SubscriberShip subscriberShip = subscriberShipService.querySingleSubscription(followerId, followeeId);
+        return (subscriberShip == null) ? Result.failure(null) : Result.success(subscriberShip);
+
+    }
+
+
     @LogRecord(description = "批量(分页)查询多条订阅关系数据")
     @SentinelResource("web-user-subscriberShip-controller")
     @Operation(description = "批量(分页)查询多条订阅关系数据")
@@ -87,6 +104,24 @@ public class SubscriberShipController {
     }
 
 
+    @GlobalTransactional(name = "insert-single-user-subscriberShip", rollbackFor = Exception.class)
+    @LogRecord(description = "根据订阅操作的双方ID添加单条订阅关系数据")
+    @SentinelResource("web-user-subscriberShip-controller")
+    @Operation(description = "根据订阅操作的双方ID添加单条订阅关系数据")
+    @PostMapping("/insert/single/subscription")
+    public Result<?> insertSingleSubscription(
+
+            @Parameter(name = "followerId", description = "订阅发起方的用户ID", required = true) @RequestParam("followerId") Long followerId,
+            @Parameter(name = "followeeId", description = "被订阅方的用户ID", required = true) @RequestParam("followeeId") Long followeeId
+
+    ) {
+
+        long savedSubscriptionId = subscriberShipService.insertSingleSubscription(followerId, followeeId);
+        return savedSubscriptionId > 0 ? Result.success(savedSubscriptionId) : Result.failure(null);
+
+    }
+
+
     @GlobalTransactional(name = "update-single-user-subscriberShip", rollbackFor = Exception.class)
     @LogRecord(description = "修改单条订阅关系数据")
     @SentinelResource("web-user-subscriberShip-controller")
@@ -105,9 +140,9 @@ public class SubscriberShipController {
 
 
     @GlobalTransactional(name = "delete-single-user-subscriberShip", rollbackFor = Exception.class)
-    @LogRecord(description = "删除单条订阅关系数据")
+    @LogRecord(description = "根据ID删除单条订阅关系数据")
     @SentinelResource("web-user-subscriberShip-controller")
-    @Operation(description = "删除单条订阅关系数据")
+    @Operation(description = "根据ID删除单条订阅关系数据")
     @DeleteMapping("/delete/single/{id}")
     public Result<?> deleteSingleSubscriberShip(
 
@@ -116,6 +151,24 @@ public class SubscriberShipController {
     ) {
 
         boolean isDeleted = subscriberShipService.removeById(id);
+        return isDeleted ? Result.success(null) : Result.failure(null);
+
+    }
+
+
+    @GlobalTransactional(name = "delete-single-user-subscriberShip", rollbackFor = Exception.class)
+    @LogRecord(description = "根据解除订阅操作的双方ID删除单条订阅关系数据")
+    @SentinelResource("web-user-subscriberShip-controller")
+    @Operation(description = "根据解除订阅操作的双方ID删除单条订阅关系数据")
+    @DeleteMapping("/delete/single/subscription")
+    public Result<?> deleteSingleSubscription(
+
+            @Parameter(name = "followerId", description = "解除订阅发起方的用户ID", required = true) @RequestParam("followerId") Long followerId,
+            @Parameter(name = "followeeId", description = "被解除订阅方的用户ID", required = true) @RequestParam("followeeId") Long followeeId
+
+    ) {
+
+        boolean isDeleted = subscriberShipService.deleteSingleSubscription(followerId, followeeId);
         return isDeleted ? Result.success(null) : Result.failure(null);
 
     }

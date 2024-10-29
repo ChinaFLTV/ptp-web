@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import pfp.fltv.common.annotation.LogRecord;
 import pfp.fltv.common.exceptions.PtpException;
 import pfp.fltv.common.model.po.info.AddressInfo;
+import pfp.fltv.common.model.po.manage.SubscriberShip;
 import pfp.fltv.common.model.po.manage.User;
 import pfp.fltv.common.model.po.response.Result;
 import pfp.fltv.common.utils.ReflectUtils;

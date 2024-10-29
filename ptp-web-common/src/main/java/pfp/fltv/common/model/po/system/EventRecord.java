@@ -91,7 +91,11 @@ public class EventRecord extends BaseEntity {
         UPLOAD(2421, "上传"),
         CANCEL_UPLOAD(2422, "取消上传"),
         DOWNLOAD(2423, "下载"),
-        CANCEL_DOWNLOAD(2424, "取消下载");
+        CANCEL_DOWNLOAD(2424, "取消下载"),
+        UNLIKE(2425, "倒赞"),
+        CANCEL_UNLIKE(2426, "取消倒赞"),
+        BROWSE(2427, "浏览"),
+        CANCEL_BROWSE(2428, "取消浏览");
 
 
         @JsonValue
