@@ -128,7 +128,7 @@ public class PassageServiceImpl extends ServiceImpl<PassageMapper, Passage> impl
 
 
     @Override
-    public List<Passage> queryOperatedPassagePageByUid(@Nonnull EventRecord.EventType eventType, @Nonnull Long uid, @Nonnull Long offset, @Nonnull Long limit) {
+    public List<Passage> queryOperatedPassagePage(@Nonnull EventRecord.EventType eventType, @Nonnull Long uid, @Nonnull Long offset, @Nonnull Long limit) {
 
         QueryWrapper<EventRecord> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("event_type", eventType.getCode())

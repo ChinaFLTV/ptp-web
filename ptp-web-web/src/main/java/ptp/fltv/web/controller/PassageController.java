@@ -111,7 +111,7 @@ public class PassageController {
     @SentinelResource("web-content-passage-controller")
     @Operation(description = "批量(分页)查询指定用户采取过指定动作的多条文章数据")
     @GetMapping("/queryOperatedPassagePage")
-    public Result<List<Passage>> queryOperatedPassagePageByUid(
+    public Result<List<Passage>> queryOperatedPassagePage(
 
             @Parameter(name = "eventType", description = "内容事件的类型", required = true) @RequestParam("eventType") EventRecord.EventType eventType,
             @Parameter(name = "uid", description = "事件操作的发出者ID", required = true) @RequestParam("uid") Long uid,
@@ -120,7 +120,7 @@ public class PassageController {
 
     ) {
 
-        List<Passage> passages = passageService.queryOperatedPassagePageByUid(eventType, uid, offset, limit);
+        List<Passage> passages = passageService.queryOperatedPassagePage(eventType, uid, offset, limit);
         return Result.success(passages);
 
     }

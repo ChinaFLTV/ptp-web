@@ -63,7 +63,7 @@ public interface PassageService extends IService<Passage> {
      * @description 批量(分页)查询指定用户采取过指定动作的多条文章数据
      * @filename PassageService.java
      */
-    List<Passage> queryOperatedPassagePageByUid(@Nonnull EventRecord.EventType eventType, @Nonnull Long uid, @Nonnull Long offset, @Nonnull Long limit);
+    List<Passage> queryOperatedPassagePage(@Nonnull EventRecord.EventType eventType, @Nonnull Long uid, @Nonnull Long offset, @Nonnull Long limit);
 
 
     /**
