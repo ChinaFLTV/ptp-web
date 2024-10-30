@@ -17,6 +17,21 @@ public interface EventRecordService extends IService<EventRecord> {
 
 
     /**
+     * @param eventType   内容事件的类型
+     * @param contentType 内容事件所关联的内容实体的类型
+     * @param contentId   内容事件所关联的内容实体的ID
+     * @param uid         内容事件发出者ID
+     * @return 查询到的符合条件的内容事件记录数据(不存在符合条件的内容记录数据则返回null)
+     * @author Lenovo/LiGuanda
+     * @date 2024/10/30 PM 4:28:05
+     * @version 1.0.0
+     * @description 查询单条内容事件记录数据
+     * @filename EventRecordService.java
+     */
+    EventRecord querySingleContentEventRecord(@Nonnull EventRecord.EventType eventType, @Nonnull Comment.BelongType contentType, @Nonnull Long contentId, @Nonnull Long uid);
+
+
+    /**
      * @param eventRecord 待插入的事件记录数据
      * @return 记录是否插入成功(暗含对应的额外的业务逻辑是否同步执行成功)
      * @author Lenovo/LiGuanda

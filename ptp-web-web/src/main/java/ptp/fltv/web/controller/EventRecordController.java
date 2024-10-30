@@ -55,6 +55,25 @@ public class EventRecordController {
     }
 
 
+    @LogRecord(description = "查询单条内容事件记录数据")
+    @SentinelResource("web-content-event-record-controller")
+    @Operation(description = "查询单条内容事件记录数据")
+    @GetMapping("/querySingleContentEventRecord")
+    public Result<EventRecord> querySingleContentEventRecord(
+
+            @Parameter(name = "eventType", description = "内容事件的类型", required = true) @RequestParam("eventType") EventRecord.EventType eventType,
+            @Parameter(name = "contentType", description = "内容事件的目标内容实体的类型", required = true) @RequestParam("contentType") Comment.BelongType contentType,
+            @Parameter(name = "contentId", description = "内容事件的目标内容实体的ID", required = true) @RequestParam("contentId") Long contentId,
+            @Parameter(name = "uid", description = "内容事件的发出者ID", required = true) @RequestParam("uid") Long uid
+
+    ) {
+
+        EventRecord eventRecord = eventRecordService.querySingleContentEventRecord(eventType, contentType, contentId, uid);
+        return (eventRecord == null) ? Result.failure(null) : Result.success(eventRecord);
+
+    }
+
+
     @LogRecord(description = "批量(分页)查询多条事件记录数据")
     @SentinelResource("web-content-event-record-controller")
     @Operation(description = "批量(分页)查询多条事件记录数据")

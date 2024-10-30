@@ -14,6 +14,7 @@ import ptp.fltv.web.mapper.EventRecordMapper;
 import ptp.fltv.web.service.*;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 /**
  * @author Lenovo/LiGuanda
@@ -35,6 +36,29 @@ public class EventRecordServiceImpl extends ServiceImpl<EventRecordMapper, Event
     private final BannerService bannerService;
     private final UserService userService;
     private final CommodityService commodityService;
+
+
+    @Override
+    public EventRecord querySingleContentEventRecord(@Nonnull EventRecord.EventType eventType, @Nonnull Comment.BelongType contentType, @Nonnull Long contentId, @Nonnull Long uid) {
+
+        QueryWrapper<EventRecord> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("event_type", eventType.getCode())
+                .eq("content_type", contentType.getCode())
+                .eq("content_id", contentId)
+                .eq("uid", uid);
+
+        List<EventRecord> eventRecords = list(queryWrapper);
+        if (eventRecords.isEmpty()) {
+
+            return null;
+
+        } else {
+
+            return eventRecords.get(0);
+
+        }
+
+    }
 
 
     @Override
