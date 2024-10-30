@@ -128,5 +128,9 @@ public class CommentVo implements Serializable {
     @Schema(description = "平均评分")
     private Double averageScore; // 2024-10-27  19:26-平均评分(评分统计类型的评分记录所需)
 
+    @Field(name = "is_liked", type = FieldType.Boolean)
+    @Schema(description = "当前用户(一般为发起请求的用户)是否点赞过该评论(该字段不存在于数据库中 , 仅用于客户端处理数据所需)")
+    private Boolean isLiked;
+
 
 }

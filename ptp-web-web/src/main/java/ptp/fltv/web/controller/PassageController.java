@@ -16,6 +16,7 @@ import pfp.fltv.common.enums.ContentRankType;
 import pfp.fltv.common.model.base.content.BaseEntity;
 import pfp.fltv.common.model.po.content.Passage;
 import pfp.fltv.common.model.po.response.Result;
+import pfp.fltv.common.model.po.system.EventRecord;
 import ptp.fltv.web.constants.WebConstants;
 import ptp.fltv.web.mq.ContentRankMqService;
 import ptp.fltv.web.service.PassageService;
@@ -101,6 +102,25 @@ public class PassageController {
     ) {
 
         List<Passage> passages = passageService.queryAvailablePassagePageByUid(uid, offset, limit);
+        return Result.success(passages);
+
+    }
+
+
+    @LogRecord(description = "批量(分页)查询指定用户采取过指定动作的多条文章数据")
+    @SentinelResource("web-content-passage-controller")
+    @Operation(description = "批量(分页)查询指定用户采取过指定动作的多条文章数据")
+    @GetMapping("/queryOperatedPassagePage")
+    public Result<List<Passage>> queryOperatedPassagePageByUid(
+
+            @Parameter(name = "eventType", description = "内容事件的类型", required = true) @RequestParam("eventType") EventRecord.EventType eventType,
+            @Parameter(name = "uid", description = "事件操作的发出者ID", required = true) @RequestParam("uid") Long uid,
+            @Parameter(name = "offset", description = "查询的一页文章数据的起始偏移量", required = true) @RequestParam("offset") Long offset,
+            @Parameter(name = "limit", description = "查询的这一页文章数据的数量", required = true) @RequestParam("limit") Long limit
+
+    ) {
+
+        List<Passage> passages = passageService.queryOperatedPassagePageByUid(eventType, uid, offset, limit);
         return Result.success(passages);
 
     }

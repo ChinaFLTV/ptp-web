@@ -1,5 +1,6 @@
 package ptp.fltv.web.service.impl;
 
+import cn.hutool.extra.spring.SpringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -12,9 +13,11 @@ import pfp.fltv.common.enums.ContentQuerySortType;
 import pfp.fltv.common.enums.ContentRankType;
 import pfp.fltv.common.model.po.content.Comment;
 import pfp.fltv.common.model.po.manage.Rate;
+import pfp.fltv.common.model.po.system.EventRecord;
 import pfp.fltv.common.model.vo.CommentVo;
 import ptp.fltv.web.mapper.CommentMapper;
 import ptp.fltv.web.service.CommentService;
+import ptp.fltv.web.service.EventRecordService;
 import ptp.fltv.web.service.RateService;
 
 import java.util.*;
@@ -232,6 +235,11 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
                 commentVo.setAverageScore(userAverageScore);
 
             }
+
+            // 2024-10-31  2:27-这里之所以没有直接注入EventRecordService然后使用 , 是因为这样做可能会导致循环依赖
+            // 2024-10-31  00:55-这里还需要额外统计一下当前评论是否被当前请求用户点赞过 , 以向用户在展示评论的同时展示评论点赞与否的状态
+            EventRecord eventRecord = SpringUtil.getBean(EventRecordService.class).querySingleContentEventRecord(EventRecord.EventType.LIKE, Comment.BelongType.COMMENT, comment.getId(), uid);
+            commentVo.setIsLiked(eventRecord != null);
 
             commentVos.add(commentVo);
 

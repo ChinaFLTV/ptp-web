@@ -1,5 +1,6 @@
 package ptp.fltv.web.service.impl;
 
+import cn.hutool.extra.spring.SpringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -14,7 +15,9 @@ import pfp.fltv.common.model.po.content.Comment;
 import pfp.fltv.common.model.po.content.Passage;
 import pfp.fltv.common.model.po.manage.Rate;
 import pfp.fltv.common.model.po.manage.SubscriberShip;
+import pfp.fltv.common.model.po.system.EventRecord;
 import ptp.fltv.web.mapper.PassageMapper;
+import ptp.fltv.web.service.EventRecordService;
 import ptp.fltv.web.service.PassageService;
 import ptp.fltv.web.service.RateService;
 import ptp.fltv.web.service.SubscriberShipService;
@@ -120,6 +123,40 @@ public class PassageServiceImpl extends ServiceImpl<PassageMapper, Passage> impl
         List<Passage> passages = page(new Page<>(pageNum, pageSize), queryWrapper).getRecords();
 
         return passages == null ? new ArrayList<>() : passages;
+
+    }
+
+
+    @Override
+    public List<Passage> queryOperatedPassagePageByUid(@Nonnull EventRecord.EventType eventType, @Nonnull Long uid, @Nonnull Long offset, @Nonnull Long limit) {
+
+        QueryWrapper<EventRecord> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("event_type", eventType.getCode())
+                .eq("uid", uid)
+                .eq("content_type", Comment.BelongType.PASSAGE.getCode());
+
+        Page<EventRecord> eventRecordPage = new Page<>(offset, limit);
+        eventRecordPage = SpringUtil.getBean(EventRecordService.class).page(eventRecordPage, queryWrapper); // 2024-10-31  2:22-这里之所以没有直接注入EventRecordService然后使用 , 是因为这样做可能会导致循环依赖
+
+        List<EventRecord> eventRecords = eventRecordPage.getRecords();
+
+        if (eventRecords != null && !eventRecords.isEmpty()) {
+
+            List<Long> passageIds = eventRecords.stream()
+                    .sorted(Comparator.comparingLong(EventRecord::getId).reversed())// 2024-10-31  1:59-这里采用ID进行降序排序 , 因为主键ID与记录创建时间的数值变化趋势是成正相关的 , 在效果上没有差异 , 但是为了效率考量 , 这里选用主键ID
+                    .map(EventRecord::getContentId)
+                    .toList();
+
+            if (!passageIds.isEmpty()) {
+
+                List<Passage> passages = listByIds(passageIds);
+                return passages == null ? new ArrayList<>() : passages;
+
+            }
+
+        }
+
+        return new ArrayList<>();
 
     }
 

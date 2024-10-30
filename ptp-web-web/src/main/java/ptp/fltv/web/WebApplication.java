@@ -10,6 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Import;
 
 import java.util.TimeZone;
 
@@ -23,7 +24,8 @@ import java.util.TimeZone;
 // @EnableWebSocket // 2024-6-23  22:46-开启WebSocket功能
 // @EnableAspectJAutoProxy(proxyTargetClass = true)// 2024-6-10  00:01-开启对AspectJ的支持，以实现自定义的AOP切面
 @EnableDiscoveryClient // 2024-4-27  20:52-开启nacos服务注册发现功能
-@ComponentScan(basePackages = "ptp.fltv")
+@Import(cn.hutool.extra.spring.SpringUtil.class) // 2024-10-31  2:32-启用Hutool的SpringUtil工具类所需配置
+@ComponentScan(basePackages = {"ptp.fltv", "cn.hutool.extra.spring"})
 // 2024-8-7  13:58-开发环境下 , 暂时禁用seata的自动配置(主要是在目前还没有用到seata的需求)
 @SpringBootApplication(/*exclude = DataSourceAutoConfiguration.class*/exclude = {SeataCoreAutoConfiguration.class, SeataAutoConfiguration.class, SeataDataSourceAutoConfiguration.class})
 @MapperScan("ptp.fltv.web.mapper")
