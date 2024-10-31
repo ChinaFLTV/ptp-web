@@ -5,14 +5,16 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.fastjson2.JSONWriter;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.qcloud.cos.COSClient;
 import com.qcloud.cos.model.PutObjectRequest;
 import com.qcloud.cos.model.UploadResult;
 import com.qcloud.cos.transfer.TransferManager;
 import jakarta.annotation.Nonnull;
-import lombok.AllArgsConstructor;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.geo.Point;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -24,12 +26,14 @@ import pfp.fltv.common.enums.LoginClientType;
 import pfp.fltv.common.exceptions.PtpException;
 import pfp.fltv.common.model.po.info.AddressInfo;
 import pfp.fltv.common.model.po.manage.Role;
+import pfp.fltv.common.model.po.manage.SubscriberShip;
 import pfp.fltv.common.model.po.manage.User;
 import pfp.fltv.common.model.vo.UserLoginVo;
 import pfp.fltv.common.utils.JwtUtils;
 import ptp.fltv.web.constants.CosConstants;
 import ptp.fltv.web.mapper.UserMapper;
 import ptp.fltv.web.service.RoleService;
+import ptp.fltv.web.service.SubscriberShipService;
 import ptp.fltv.web.service.UserService;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.args.GeoUnit;
@@ -49,16 +53,17 @@ import java.util.concurrent.TimeUnit;
  * @filename UserServiceImpl.java
  */
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
 
-    private StringRedisTemplate redisTemplate;
-    private RoleService roleService;
-    private Jedis jedis;
-    private TransferManager transferManager;
-    private COSClient cosClient;
+    private final StringRedisTemplate redisTemplate;
+    private final RoleService roleService;
+    private final Jedis jedis;
+    private final TransferManager transferManager;
+    private final COSClient cosClient;
+    private final SubscriberShipService subscriberShipService;
 
 
     @Override
@@ -395,6 +400,60 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
 
         return newAvatarUri;
+
+    }
+
+
+    @Override
+    public List<User> queryFollowerPage(@Nonnull Long userId, @Nonnull Long pageNum, @Nonnull Long pageSize) {
+
+        QueryWrapper<SubscriberShip> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("followee_id", userId);
+
+        List<SubscriberShip> records = subscriberShipService.page(new Page<>(pageNum, pageSize), queryWrapper).getRecords();
+        if (records != null && !records.isEmpty()) {
+
+            List<Long> followerIds = records.stream()
+                    .map(SubscriberShip::getFollowerId)
+                    .toList();
+
+            List<User> users = listByIds(followerIds);
+            if (users != null && !users.isEmpty()) {
+
+                return users;
+
+            }
+
+        }
+
+        return new ArrayList<>();
+
+    }
+
+
+    @Override
+    public List<User> queryFolloweePage(@Nonnull Long userId, @Nonnull Long pageNum, @Nonnull Long pageSize) {
+
+        QueryWrapper<SubscriberShip> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("follower_id", userId);
+
+        List<SubscriberShip> records = subscriberShipService.page(new Page<>(pageNum, pageSize), queryWrapper).getRecords();
+        if (records != null && !records.isEmpty()) {
+
+            List<Long> followeeIds = records.stream()
+                    .map(SubscriberShip::getFolloweeId)
+                    .toList();
+
+            List<User> users = listByIds(followeeIds);
+            if (users != null && !users.isEmpty()) {
+
+                return users;
+
+            }
+
+        }
+
+        return new ArrayList<>();
 
     }
 

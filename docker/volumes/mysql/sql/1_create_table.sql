@@ -157,10 +157,10 @@ CREATE TABLE IF NOT EXISTS `announcement`
 # 2024-10-25  20:40-创建实体评分表
 CREATE TABLE IF NOT EXISTS `rate`
 (
-    `id`                  BIGINT UNSIGNED PRIMARY KEY NOT NULL COMMENT 'ID',
-    `uid`                 BIGINT UNSIGNED             NOT NULL COMMENT '评分者ID',
-    `content_type`        INT UNSIGNED                NOT NULL COMMENT '内容实体类型',
-    `content_id`          BIGINT UNSIGNED             NOT NULL COMMENT '内容实体ID',
+    `id`                  BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT NOT NULL COMMENT 'ID',
+    `uid`                 BIGINT UNSIGNED                            NOT NULL COMMENT '评分者ID',
+    `content_type`        INT UNSIGNED                               NOT NULL COMMENT '内容实体类型',
+    `content_id`          BIGINT UNSIGNED                            NOT NULL COMMENT '内容实体ID',
     `content_title`       VARCHAR(128)    DEFAULT NULL COMMENT '内容实体标题(如果有的话)',
     `content_tags`        TEXT            DEFAULT NULL COMMENT '内容实体的评分标签(JSON)',
     `status`              INT UNSIGNED    DEFAULT 200 COMMENT '实例状态',
@@ -270,9 +270,9 @@ CREATE TABLE IF NOT EXISTS `comment`
 # 2024-5-20  22:00-创建commodity表
 CREATE TABLE IF NOT EXISTS `commodity`
 (
-    `id`           BIGINT UNSIGNED PRIMARY KEY NOT NULL COMMENT '商品唯一标识符',
-    `user_id`      BIGINT UNSIGNED             NOT NULL COMMENT '商品卖家ID',
-    `name`         VARCHAR(255)                NOT NULL COMMENT '商品名称',
+    `id`           BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT NOT NULL COMMENT '商品唯一标识符',
+    `user_id`      BIGINT UNSIGNED                            NOT NULL COMMENT '商品卖家ID',
+    `name`         VARCHAR(255)                               NOT NULL COMMENT '商品名称',
     `description`  TEXT                    DEFAULT NULL COMMENT '商品详细描述',
     `tags`         CHAR(255)               DEFAULT NULL COMMENT '标签',
     `category`     CHAR(255)               DEFAULT NULL COMMENT '分类',
@@ -329,14 +329,14 @@ CREATE TABLE IF NOT EXISTS `commodity_details`
 # 2024-5-25  22:45-创建transaction_record表
 CREATE TABLE `transaction_record`
 (
-    `id`           BIGINT UNSIGNED PRIMARY KEY NOT NULL COMMENT 'ID',
-    `uid`          BIGINT UNSIGNED             NOT NULL COMMENT '交易者ID',
-    `commodity_id` BIGINT UNSIGNED             NOT NULL COMMENT '商品ID',
+    `id`           BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT NOT NULL COMMENT 'ID',
+    `uid`          BIGINT UNSIGNED                            NOT NULL COMMENT '交易者ID',
+    `commodity_id` BIGINT UNSIGNED                            NOT NULL COMMENT '商品ID',
     `remark`       TEXT            DEFAULT NULL COMMENT '交易备注',
-    `count`        INT(11)         DEFAULT 0   NOT NULL COMMENT '下单数量',
-    `total_price`  DOUBLE UNSIGNED DEFAULT 0   NOT NULL COMMENT '总价',
-    `discount`     DOUBLE UNSIGNED DEFAULT 0   NOT NULL COMMENT '折扣',
-    `payment_mode` TEXT                        NOT NULL COMMENT '支付方式',
+    `count`        INT(11)         DEFAULT 0                  NOT NULL COMMENT '下单数量',
+    `total_price`  DOUBLE UNSIGNED DEFAULT 0                  NOT NULL COMMENT '总价',
+    `discount`     DOUBLE UNSIGNED DEFAULT 0                  NOT NULL COMMENT '折扣',
+    `payment_mode` TEXT                                       NOT NULL COMMENT '支付方式',
     `tags`         TEXT            DEFAULT NULL COMMENT '标签',
     `category`     TEXT            DEFAULT NULL COMMENT '分类',
     `browse_num`   INT UNSIGNED    DEFAULT 0 DEFAULT NULL COMMENT '浏览量',
@@ -388,12 +388,12 @@ CREATE TABLE `undo_log`
 # 2024-10-17  20:09-创建实体举报表
 CREATE TABLE IF NOT EXISTS `report`
 (
-    `id`           BIGINT UNSIGNED PRIMARY KEY NOT NULL COMMENT 'ID',
-    `uid`          BIGINT UNSIGNED             NOT NULL COMMENT '举报者ID',
+    `id`           BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT NOT NULL COMMENT 'ID',
+    `uid`          BIGINT UNSIGNED                            NOT NULL COMMENT '举报者ID',
     `title`        VARCHAR(128) DEFAULT NULL COMMENT '标题',
-    `content`      TEXT                        NOT NULL COMMENT '举报内容',
-    `content_type` INT UNSIGNED                NOT NULL COMMENT '内容实体类型',
-    `content_id`   BIGINT UNSIGNED             NOT NULL COMMENT '内容实体ID',
+    `content`      TEXT                                       NOT NULL COMMENT '举报内容',
+    `content_type` INT UNSIGNED                               NOT NULL COMMENT '内容实体类型',
+    `content_id`   BIGINT UNSIGNED                            NOT NULL COMMENT '内容实体ID',
     `nickname`     VARCHAR(255) DEFAULT NULL COMMENT '举报者昵称',
     `avatar_url`   VARCHAR(255) DEFAULT NULL COMMENT '举报者头像URL',
     `accessary`    TEXT         DEFAULT NULL COMMENT '附加的其他类型的媒体内容(JSON格式)',
@@ -424,11 +424,11 @@ CREATE TABLE IF NOT EXISTS `report`
 # 2024-10-19  1:34-创建轮播表
 CREATE TABLE IF NOT EXISTS `banner`
 (
-    `id`           BIGINT UNSIGNED PRIMARY KEY NOT NULL COMMENT 'ID',
-    `uid`          BIGINT UNSIGNED             NOT NULL COMMENT '发布者ID',
-    `title`        VARCHAR(128)                NOT NULL COMMENT '轮播标题',
+    `id`           BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT NOT NULL COMMENT 'ID',
+    `uid`          BIGINT UNSIGNED                            NOT NULL COMMENT '发布者ID',
+    `title`        VARCHAR(128)                               NOT NULL COMMENT '轮播标题',
     `content`      TEXT         DEFAULT NULL COMMENT '轮播内容',
-    `img_url`      CHAR(255)                   NOT NULL COMMENT '轮播插图的云端资源直链(建议比例为>16:9)',
+    `img_url`      CHAR(255)                                  NOT NULL COMMENT '轮播插图的云端资源直链(建议比例为>16:9)',
     `accessary`    TEXT         DEFAULT NULL COMMENT '附加的其他类型的媒体内容(JSON格式)',
     `tags`         CHAR(255)    DEFAULT NULL COMMENT '标签',
     `category`     CHAR(255)    DEFAULT NULL COMMENT '分类',
@@ -457,10 +457,10 @@ CREATE TABLE IF NOT EXISTS `banner`
 # 2024-10-21  17:07-创建订阅关系表
 CREATE TABLE IF NOT EXISTS `subscriber_ship`
 (
-    `id`          BIGINT UNSIGNED PRIMARY KEY NOT NULL COMMENT 'ID',
-    `uid`         BIGINT UNSIGNED             NOT NULL COMMENT '订阅关系创建者ID',
-    `follower_id` BIGINT UNSIGNED             NOT NULL COMMENT '订阅者的ID(也即订阅操作发起者)',
-    `followee_id` BIGINT UNSIGNED             NOT NULL COMMENT '被订阅者的ID',
+    `id`          BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT NOT NULL COMMENT 'ID',
+    `uid`         BIGINT UNSIGNED                            NOT NULL COMMENT '订阅关系创建者ID',
+    `follower_id` BIGINT UNSIGNED                            NOT NULL COMMENT '订阅者的ID(也即订阅操作发起者)',
+    `followee_id` BIGINT UNSIGNED                            NOT NULL COMMENT '被订阅者的ID',
     `status`      INT UNSIGNED DEFAULT 200 COMMENT '实例状态',
     `meta`        TEXT         DEFAULT NULL COMMENT '其他数据配置(JSON)',
     `create_time` TIMESTAMP    DEFAULT CURRENT_TIMESTAMP COMMENT '内容创建时间',
@@ -481,12 +481,12 @@ CREATE TABLE IF NOT EXISTS `subscriber_ship`
 # 2024-10-29  1:48-创建事件记录表
 CREATE TABLE IF NOT EXISTS `event_record`
 (
-    `id`            BIGINT UNSIGNED PRIMARY KEY NOT NULL COMMENT 'ID',
-    `uid`           BIGINT UNSIGNED             NOT NULL COMMENT '事件记录产生者ID',
+    `id`            BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT NOT NULL COMMENT 'ID',
+    `uid`           BIGINT UNSIGNED                            NOT NULL COMMENT '事件记录产生者ID',
     `nickname`      VARCHAR(255) DEFAULT NULL COMMENT '事件记录产生者昵称',
     `avatar_url`    VARCHAR(255) DEFAULT NULL COMMENT '事件记录产生者头像URL',
-    `content_type`  INT UNSIGNED                NOT NULL COMMENT '内容实体类型',
-    `content_id`    BIGINT UNSIGNED             NOT NULL COMMENT '内容实体ID',
+    `content_type`  INT UNSIGNED                               NOT NULL COMMENT '内容实体类型',
+    `content_id`    BIGINT UNSIGNED                            NOT NULL COMMENT '内容实体ID',
     `content_title` VARCHAR(128) DEFAULT NULL COMMENT '内容实体标题(如果有的话)',
     `event_type`    INT UNSIGNED DEFAULT NULL COMMENT '事件类型',
     `remark`        TEXT         DEFAULT NULL COMMENT '事件备注',

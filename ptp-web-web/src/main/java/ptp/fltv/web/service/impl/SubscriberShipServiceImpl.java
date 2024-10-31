@@ -81,4 +81,24 @@ public class SubscriberShipServiceImpl extends ServiceImpl<SubscriberShipMapper,
     }
 
 
+    @Override
+    public Long countAllSubscriptionsByFollowerId(@Nonnull Long followerId) {
+
+        QueryWrapper<SubscriberShip> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("follower_id", followerId);
+        return count(queryWrapper);
+
+    }
+
+
+    @Override
+    public Long countAllSubscriptionsByFolloweeId(@Nonnull Long followeeId) {
+
+        QueryWrapper<SubscriberShip> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("followee_id", followeeId);
+        return count(queryWrapper);
+
+    }
+
+
 }

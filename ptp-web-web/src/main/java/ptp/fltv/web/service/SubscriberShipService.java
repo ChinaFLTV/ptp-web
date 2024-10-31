@@ -55,4 +55,28 @@ public interface SubscriberShipService extends IService<SubscriberShip> {
     boolean deleteSingleSubscription(@Nonnull Long followerId, @Nonnull Long followeeId);
 
 
+    /**
+     * @param followerId 订阅发起方的用户ID
+     * @return 该订阅发起方订阅的全部订阅关系的总数
+     * @author Lenovo/LiGuanda
+     * @date 2024/10/31 PM 8:33:42
+     * @version 1.0.0
+     * @description 根据订阅发起方ID查询全部发起的订阅关系的总数
+     * @filename SubscriberShipService.java
+     */
+    Long countAllSubscriptionsByFollowerId(@Nonnull Long followerId);
+
+
+    /**
+     * @param followeeId 被订阅方的用户ID
+     * @return 该被订阅方被订阅的全部订阅关系的总数
+     * @author Lenovo/LiGuanda
+     * @date 2024/10/31 PM 8:41:33
+     * @version 1.0.0
+     * @description 根据被订阅方ID查询全部被发起的订阅关系的总数
+     * @filename SubscriberShipService.java
+     */
+    Long countAllSubscriptionsByFolloweeId(@Nonnull Long followeeId);
+
+
 }

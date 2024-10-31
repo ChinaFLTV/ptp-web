@@ -143,14 +143,28 @@ public class PassageServiceImpl extends ServiceImpl<PassageMapper, Passage> impl
         if (eventRecords != null && !eventRecords.isEmpty()) {
 
             List<Long> passageIds = eventRecords.stream()
+                    // 2024-10-31  20:08-由于在拉取数据后再对数据进行按照文章ID集合的顺序重排序比较困难 , 因此这里还是需要进行预先排序以建立文章ID到文章的映射卷积核
+                    //// 2024-10-31  19:55-由于不管输入的ID集合是什么顺序的 , MyBatisPlus默认返回ID集合的对应数据实体的集合都是按照数据库的顺序返回的 , 因此这里在返回数据的提前排序是徒劳的 , 应该放到数据返回之后再进行排序
                     .sorted(Comparator.comparingLong(EventRecord::getId).reversed())// 2024-10-31  1:59-这里采用ID进行降序排序 , 因为主键ID与记录创建时间的数值变化趋势是成正相关的 , 在效果上没有差异 , 但是为了效率考量 , 这里选用主键ID
                     .map(EventRecord::getContentId)
                     .toList();
 
             if (!passageIds.isEmpty()) {
 
+                Map<Long, Passage> map = new HashMap<>();
+
                 List<Passage> passages = listByIds(passageIds);
-                return passages == null ? new ArrayList<>() : passages;
+                if (passages != null && !passages.isEmpty()) {
+
+                    passages.forEach(p -> map.put(p.getId(), p));
+
+                }
+
+                return passageIds.stream()
+                        .map(id -> map.getOrDefault(id, null))
+                        .filter(Objects::nonNull)
+                        .toList();
+
 
             }
 

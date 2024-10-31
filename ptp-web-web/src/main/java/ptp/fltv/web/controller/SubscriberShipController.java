@@ -174,4 +174,36 @@ public class SubscriberShipController {
     }
 
 
+    @LogRecord(description = "根据订阅发起方ID查询全部发起的订阅关系的总数")
+    @SentinelResource("web-user-subscriberShip-controller")
+    @Operation(description = "根据订阅发起方ID查询全部发起的订阅关系的总数")
+    @GetMapping("/countAllSubscriptionsByFollowerId")
+    public Result<Long> countAllSubscriptionsByFollowerId(
+
+            @Parameter(name = "followerId", description = "订阅发起方的用户ID", required = true) @RequestParam("followerId") Long followerId
+
+    ) {
+
+        Long count = subscriberShipService.countAllSubscriptionsByFollowerId(followerId);
+        return count >= 0 ? Result.success(count) : Result.failure(-1L);
+
+    }
+
+
+    @LogRecord(description = "根据被订阅方ID查询全部被发起的订阅关系的总数")
+    @SentinelResource("web-user-subscriberShip-controller")
+    @Operation(description = "根据被订阅方ID查询全部被发起的订阅关系的总数")
+    @GetMapping("/countAllSubscriptionsByFolloweeId")
+    public Result<Long> countAllSubscriptionsByFolloweeId(
+
+            @Parameter(name = "followeeId", description = "被订阅方的用户ID", required = true) @RequestParam("followeeId") Long followeeId
+
+    ) {
+
+        Long count = subscriberShipService.countAllSubscriptionsByFolloweeId(followeeId);
+        return count >= 0 ? Result.success(count) : Result.failure(-1L);
+
+    }
+
+
 }
