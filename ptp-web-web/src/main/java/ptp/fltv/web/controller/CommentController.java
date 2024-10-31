@@ -121,11 +121,12 @@ public class CommentController {
             @Parameter(name = "contentId", description = "评论归属的实体ID(值为-1则该参数失效)", required = true) @RequestParam("contentId") Long contentId,
             @Parameter(name = "uid", description = "内容发布者的ID(非必需)(仅在排序类型为拥有者类型下生效)") @RequestParam(name = "uid", required = false) Long uid,
             @Parameter(name = "pageNum", description = "查询的一页内容评论数据的数据页页码", required = true) @RequestParam("pageNum") Long pageNum,
-            @Parameter(name = "pageSize", description = "查询的这一页内容评论数据的数量", required = true) @RequestParam("pageSize") Long pageSize
+            @Parameter(name = "pageSize", description = "查询的这一页内容评论数据的数量", required = true) @RequestParam("pageSize") Long pageSize,
+            @Parameter(name = "requestUserId", description = "API请求者的用户ID", required = true) @RequestParam(name = "requestUserId") Long requestUserId
 
     ) {
 
-        return Result.success(commentService.queryCommentVoPageWithSorting(sortType, belongType, contentId, uid, pageNum, pageSize));
+        return Result.success(commentService.queryCommentVoPageWithSorting(sortType, belongType, contentId, uid, pageNum, pageSize, requestUserId));
 
     }
 

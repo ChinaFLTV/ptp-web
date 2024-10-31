@@ -205,7 +205,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
 
 
     @Override
-    public List<CommentVo> queryCommentVoPageWithSorting(@Nonnull ContentQuerySortType sortType, @Nonnull Comment.BelongType belongType, @Nonnull Long contentId, @Nonnull Long uid, @Nonnull Long pageNum, @Nonnull Long pageSize) {
+    public List<CommentVo> queryCommentVoPageWithSorting(@Nonnull ContentQuerySortType sortType, @Nonnull Comment.BelongType belongType, @Nonnull Long contentId, @Nonnull Long uid, @Nonnull Long pageNum, @Nonnull Long pageSize, @Nonnull Long requestUserId) {
 
         List<Comment> comments = queryCommentPageWithSorting(sortType, belongType, contentId, uid, pageNum, pageSize);
 
@@ -238,7 +238,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
 
             // 2024-10-31  2:27-这里之所以没有直接注入EventRecordService然后使用 , 是因为这样做可能会导致循环依赖
             // 2024-10-31  00:55-这里还需要额外统计一下当前评论是否被当前请求用户点赞过 , 以向用户在展示评论的同时展示评论点赞与否的状态
-            EventRecord eventRecord = SpringUtil.getBean(EventRecordService.class).querySingleContentEventRecord(EventRecord.EventType.LIKE, Comment.BelongType.COMMENT, comment.getId(), uid);
+            EventRecord eventRecord = SpringUtil.getBean(EventRecordService.class).querySingleContentEventRecord(EventRecord.EventType.LIKE, Comment.BelongType.COMMENT, comment.getId(), requestUserId);
             commentVo.setIsLiked(eventRecord != null);
 
             commentVos.add(commentVo);
