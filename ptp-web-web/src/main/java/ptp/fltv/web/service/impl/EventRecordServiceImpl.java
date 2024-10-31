@@ -6,6 +6,7 @@ import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pfp.fltv.common.exceptions.PtpException;
+import pfp.fltv.common.model.base.content.BaseEntity;
 import pfp.fltv.common.model.po.content.*;
 import pfp.fltv.common.model.po.finance.Commodity;
 import pfp.fltv.common.model.po.manage.User;
@@ -98,6 +99,34 @@ public class EventRecordServiceImpl extends ServiceImpl<EventRecordMapper, Event
             return false;
 
         }
+
+    }
+
+
+    @Override
+    public Long insertSingleContentBrowseEventRecord(@Nonnull Comment.BelongType contentType, @Nonnull Long contentId, @Nonnull Long uid) {
+
+        // 2024-10-31  15:19-需要删除先前存在的针对于同一种内容类型的同一个内容实体的浏览内容事件 , 以为提供 浏览历史 的功能做准备
+        QueryWrapper<EventRecord> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("uid", uid)
+                .eq("content_type", contentType.getCode())
+                .eq("content_id", contentId)
+                .eq("event_type", EventRecord.EventType.BROWSE.getCode());
+
+        remove(queryWrapper); // 2024-10-31  15:21-这里的删除成功与否的结果没有价值 , 因为即使删除失败 , 后续同一个操作执行时 , 还会再将先前存在的浏览事件给删一遍
+
+        EventRecord eventRecord = EventRecord.builder()
+                .uid(uid)
+                .contentType(contentType)
+                .contentId(contentId)
+                .eventType(EventRecord.EventType.BROWSE)
+                .build();
+
+        boolean isSaved = save(eventRecord);
+
+        boolean isHandled = handleContentEvent(EventRecord.EventType.BROWSE, contentType, contentId, uid);
+
+        return isSaved && isHandled && eventRecord.getId() == null ? -1L : eventRecord.getId();
 
     }
 
@@ -270,7 +299,7 @@ public class EventRecordServiceImpl extends ServiceImpl<EventRecordMapper, Event
 
             Class<?> clazz = obj.getClass();
             Field field;
-            if (clazz.getSuperclass() != null) {
+            if (clazz.getSuperclass() == BaseEntity.class) {
 
                 field = clazz.getSuperclass().getDeclaredField(fieldName);
 

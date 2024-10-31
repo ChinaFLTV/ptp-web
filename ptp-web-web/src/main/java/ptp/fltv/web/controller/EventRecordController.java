@@ -141,6 +141,25 @@ public class EventRecordController {
     }
 
 
+    @GlobalTransactional(name = "insert-single-event-record", rollbackFor = Exception.class)
+    @LogRecord(description = "添加单条内容实体相关的浏览事件记录数据")
+    @SentinelResource("web-content-event-record-controller")
+    @Operation(description = "添加单条内容实体相关的浏览事件记录数据")
+    @PostMapping("/insertSingleContentBrowseEventRecord")
+    public Result<Long> insertSingleContentBrowseEventRecord(
+
+            @Parameter(name = "contentType", description = "内容浏览事件的目标内容实体的类型", required = true) @RequestParam("contentType") Comment.BelongType contentType,
+            @Parameter(name = "contentId", description = "内容浏览事件的目标内容实体的ID", required = true) @RequestParam("contentId") Long contentId,
+            @Parameter(name = "uid", description = "内容浏览事件的发出者ID", required = true) @RequestParam("uid") Long uid
+
+    ) {
+
+        Long insertedEventRecordId = eventRecordService.insertSingleContentBrowseEventRecord(contentType, contentId, uid);
+        return insertedEventRecordId > 0 ? Result.success(insertedEventRecordId) : Result.failure(-1L);
+
+    }
+
+
     @GlobalTransactional(name = "update-single-event-record", rollbackFor = Exception.class)
     @LogRecord(description = "修改单条事件记录数据")
     @SentinelResource("web-content-event-record-controller")

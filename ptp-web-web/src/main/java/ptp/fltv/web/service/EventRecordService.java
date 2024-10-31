@@ -45,6 +45,20 @@ public interface EventRecordService extends IService<EventRecord> {
 
 
     /**
+     * @param contentType 内容浏览事件的目标内容实体的类型
+     * @param contentId   内容浏览事件的目标内容实体的ID
+     * @param uid         内容浏览事件的发出者ID
+     * @return 如果内容浏览事件插入成功 , 则返回对应插入后的事件记录的ID , 否则 , 插入失败则返回-1
+     * @author Lenovo/LiGuanda
+     * @date 2024/10/31 PM 3:13:17
+     * @version 1.0.0
+     * @description 添加单条内容实体相关的浏览事件记录数据
+     * @filename EventRecordService.java
+     */
+    Long insertSingleContentBrowseEventRecord(@Nonnull Comment.BelongType contentType, @Nonnull Long contentId, @Nonnull Long uid);
+
+
+    /**
      * @param eventType   内容事件的类型
      * @param contentType 内容事件所关联的内容实体的类型
      * @param contentId   内容事件所关联的内容实体的ID
