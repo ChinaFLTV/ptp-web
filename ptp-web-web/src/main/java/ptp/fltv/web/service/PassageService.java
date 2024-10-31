@@ -52,8 +52,8 @@ public interface PassageService extends IService<Passage> {
 
     /**
      * @param uid       当前请求发起用户的ID(非必需)(仅在排序类型为订阅类型下生效)
-     * @param offset    数据页的第一条记录的起始偏移量
-     * @param limit     数据页的页大小
+     * @param pageNum   查询的一页文章数据的数据页页码
+     * @param pageSize  查询的这一页文章数据的数量
      * @param eventType 内容事件的类型
      * @return 符合条件的指定文章PO数据列表
      * @apiNote 该API返回的文章列表是按照文章点赞时间的倒序排序的(即列表中的第一个记录是最新点赞的文章)
@@ -63,7 +63,7 @@ public interface PassageService extends IService<Passage> {
      * @description 批量(分页)查询指定用户采取过指定动作的多条文章数据
      * @filename PassageService.java
      */
-    List<Passage> queryOperatedPassagePage(@Nonnull EventRecord.EventType eventType, @Nonnull Long uid, @Nonnull Long offset, @Nonnull Long limit);
+    List<Passage> queryOperatedPassagePage(@Nonnull EventRecord.EventType eventType, @Nonnull Long uid, @Nonnull Long pageNum, @Nonnull Long pageSize);
 
 
     /**

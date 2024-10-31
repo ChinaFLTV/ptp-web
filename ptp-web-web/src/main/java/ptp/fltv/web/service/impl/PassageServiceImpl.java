@@ -128,14 +128,14 @@ public class PassageServiceImpl extends ServiceImpl<PassageMapper, Passage> impl
 
 
     @Override
-    public List<Passage> queryOperatedPassagePage(@Nonnull EventRecord.EventType eventType, @Nonnull Long uid, @Nonnull Long offset, @Nonnull Long limit) {
+    public List<Passage> queryOperatedPassagePage(@Nonnull EventRecord.EventType eventType, @Nonnull Long uid, @Nonnull Long pageNum, @Nonnull Long pageSize) {
 
         QueryWrapper<EventRecord> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("event_type", eventType.getCode())
                 .eq("uid", uid)
                 .eq("content_type", Comment.BelongType.PASSAGE.getCode());
 
-        Page<EventRecord> eventRecordPage = new Page<>(offset, limit);
+        Page<EventRecord> eventRecordPage = new Page<>(pageNum, pageSize);
         eventRecordPage = SpringUtil.getBean(EventRecordService.class).page(eventRecordPage, queryWrapper); // 2024-10-31  2:22-这里之所以没有直接注入EventRecordService然后使用 , 是因为这样做可能会导致循环依赖
 
         List<EventRecord> eventRecords = eventRecordPage.getRecords();
