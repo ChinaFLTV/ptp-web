@@ -112,7 +112,7 @@ public class DialogueController {
     @PostMapping("/insert/single")
     public Result<Long> insertSingleDialogue(
 
-            @Parameter(name = "dialogueVo", description = "待添加的单条对话数据VO", required = true) @RequestBody Dialogue dialogue
+            @Parameter(name = "dialogueVo", description = "待添加的单条对话数据", required = true) @RequestBody Dialogue dialogue
 
     ) {
 
@@ -138,12 +138,9 @@ public class DialogueController {
     @PutMapping("/update/single")
     public Result<?> updateSingleDialogue(
 
-            @Parameter(name = "dialogueVo", description = "待修改的单条对话数据VO", required = true) @RequestBody DialogueVo dialogueVo
+            @Parameter(name = "dialogue", description = "待修改的单条对话数据", required = true) @RequestBody Dialogue dialogue
 
     ) {
-
-        Dialogue dialogue = dialogueService.getById(dialogueVo.getId());
-        BeanUtils.copyProperties(dialogueVo, dialogue);
 
         boolean isUpdated = dialogueService.updateById(dialogue);
 
