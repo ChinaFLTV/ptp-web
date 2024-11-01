@@ -112,12 +112,9 @@ public class DialogueController {
     @PostMapping("/insert/single")
     public Result<Long> insertSingleDialogue(
 
-            @Parameter(name = "dialogueVo", description = "待添加的单条对话数据VO", required = true) @RequestBody DialogueVo dialogueVo
+            @Parameter(name = "dialogueVo", description = "待添加的单条对话数据VO", required = true) @RequestBody Dialogue dialogue
 
     ) {
-
-        Dialogue dialogue = new Dialogue();
-        BeanUtils.copyProperties(dialogueVo, dialogue);
 
         boolean isSaved = dialogueService.save(dialogue);
 

@@ -95,7 +95,9 @@ public class EventRecord extends BaseEntity {
         UNLIKE(2425, "倒赞"),
         CANCEL_UNLIKE(2426, "取消倒赞"),
         BROWSE(2427, "浏览"),
-        CANCEL_BROWSE(2428, "取消浏览");
+        CANCEL_BROWSE(2428, "取消浏览"),
+        FOLLOWED(2429, "被关注"),
+        CANCEL_FOLLOWED(2430, "取消被关注");
 
 
         @JsonValue
