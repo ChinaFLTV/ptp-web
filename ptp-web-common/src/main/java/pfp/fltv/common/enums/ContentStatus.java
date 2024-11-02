@@ -25,7 +25,9 @@ public enum ContentStatus implements ConvertableEnum<Integer> {
     BLOCK(105, "锁定"),
     HIDDEN(106, "隐藏"),
     DELETED(107, "删除"),
-    FORBIDDEN(107, "封禁");
+    FORBIDDEN(107, "封禁"),
+    VISIBLE_ONLY_TO_FANS(108, "仅粉丝可见"),
+    VISIBLE_ONLY_TO_FRIENDS(109, "仅朋友可见");
 
 
     @JsonValue

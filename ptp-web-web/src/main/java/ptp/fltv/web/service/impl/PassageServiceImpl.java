@@ -120,6 +120,8 @@ public class PassageServiceImpl extends ServiceImpl<PassageMapper, Passage> impl
         // 2024-10-21  16:54-最后兜底的参与排序的字段
         queryWrapper.orderByDesc("id");
 
+        queryWrapper.eq("status", ContentStatus.NORMAL.getCode()); // 2024-11-3  1:20-只筛选出当前处于公开状态的文章(后续将根据请求用户增加选择性展示部分可见性文章)
+
         List<Passage> passages = page(new Page<>(pageNum, pageSize), queryWrapper).getRecords();
 
         return passages == null ? new ArrayList<>() : passages;
@@ -162,9 +164,8 @@ public class PassageServiceImpl extends ServiceImpl<PassageMapper, Passage> impl
 
                 return passageIds.stream()
                         .map(id -> map.getOrDefault(id, null))
-                        .filter(Objects::nonNull)
+                        .filter(p -> p != null && p.getStatus() == ContentStatus.NORMAL) // 2024-11-3  1:22-只筛选出当前处于公开状态的文章(后续将根据请求用户增加选择性展示部分可见性文章)
                         .toList();
-
 
             }
 

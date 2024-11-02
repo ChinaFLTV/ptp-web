@@ -127,7 +127,7 @@ public class PassageController {
 
 
     @LogRecord(description = "根据指定排序类型批量(分页)查询多条文章数据")
-    @SentinelResource("web-content-dialogue-controller")
+    @SentinelResource("web-content-passage-controller")
     @Operation(description = "根据指定排序类型批量(分页)查询多条文章数据")
     @GetMapping("/query/page")
     public Result<List<Passage>> queryPassagePageWithSorting(
@@ -151,7 +151,7 @@ public class PassageController {
     @PostMapping("/insert/single")
     public Result<?> insertSinglePassage(
 
-            @Parameter(name = "passage", description = "待添加的单条文章数据VO", required = true) @RequestBody Passage passage
+            @Parameter(name = "passage", description = "待添加的单条文章数据PO", required = true) @RequestBody Passage passage
 
     ) {
 
@@ -181,7 +181,7 @@ public class PassageController {
     @PutMapping("/update/single")
     public Result<?> updateSinglePassage(
 
-            @Parameter(name = "dialogue", description = "待修改的单条文章数据", required = true) @RequestBody Passage passage
+            @Parameter(name = "passage", description = "待修改的单条文章数据", required = true) @RequestBody Passage passage
 
     ) {
 
