@@ -222,9 +222,9 @@ public class PassageServiceImpl extends ServiceImpl<PassageMapper, Passage> impl
 
 
     @Override
-    public List<Passage> queryAvailablePassagePageByUid(@Nonnull Long uid, @Nonnull Long offset, @Nonnull Long limit) {
+    public List<Passage> queryAvailablePassagePageByUid(@Nonnull Long uid, @Nonnull Long pageNum, @Nonnull Long pageSize) {
 
-        Page<Passage> passagePage = new Page<>(offset, limit);
+        Page<Passage> passagePage = new Page<>(pageNum, pageSize);
 
         QueryWrapper<Passage> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("uid", uid)

@@ -142,7 +142,7 @@ public class CommentController {
 
     ) {
 
-        boolean isSaved = commentService.save(comment);
+        boolean isSaved = commentService.insertSingleComment(comment);
 
         // 2024-10-15  13:58-非Passage实体将不再同步数据到ES中
         /*if (isSaved) {

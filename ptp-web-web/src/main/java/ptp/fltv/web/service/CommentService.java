@@ -53,18 +53,6 @@ public interface CommentService extends IService<Comment> {
 
 
     /**
-     * @param id 内容评论ID
-     * @author Lenovo/LiGuanda
-     * @date 2024/10/17 AM 1:39:53
-     * @version 1.0.0
-     * @apiNote 这里之所以又自定义了删除评论的逻辑 , 是因为删除评论的同时可能还需要给可能存在的父级评论的评论数-1
-     * @description 根据评论ID(逻辑)删除单条内容评论
-     * @filename CommentService.java
-     */
-    boolean deleteSingleComment(@Nonnull Long id);
-
-
-    /**
      * @param offset 查询的一页内容评论VO数据的起始偏移量
      * @param limit  查询的这一页内容评论VO数据的数量
      * @return 查询到的指定数据页的评论VO实体数据列表
@@ -95,6 +83,30 @@ public interface CommentService extends IService<Comment> {
      * @filename CommentService.java
      */
     List<CommentVo> queryCommentVoPageWithSorting(@Nonnull ContentQuerySortType sortType, @Nonnull Comment.BelongType belongType, @Nonnull Long contentId, @Nonnull Long uid, @Nonnull Long pageNum, @Nonnull Long pageSize, @Nonnull Long requestUserId);
+
+
+    /**
+     * @param comment 待添加的单条内容评论数据
+     * @return 是否成功添加一条内容评论(结果不包括关联的内容实体的评论量值的更新结果)
+     * @author Lenovo/LiGuanda
+     * @date 2024/11/2 PM 11:13:19
+     * @version 1.0.0
+     * @description 添加单条内容评论数据
+     * @filename CommentService.java
+     */
+    boolean insertSingleComment(@Nonnull Comment comment);
+
+
+    /**
+     * @param id 内容评论ID
+     * @author Lenovo/LiGuanda
+     * @date 2024/10/17 AM 1:39:53
+     * @version 1.0.0
+     * @apiNote 这里之所以又自定义了删除评论的逻辑 , 是因为删除评论的同时可能还需要给可能存在的父级评论的评论数-1
+     * @description 根据评论ID(逻辑)删除单条内容评论
+     * @filename CommentService.java
+     */
+    boolean deleteSingleComment(@Nonnull Long id);
 
 
 }

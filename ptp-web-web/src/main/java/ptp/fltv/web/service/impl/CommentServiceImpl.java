@@ -11,14 +11,15 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import pfp.fltv.common.enums.ContentQuerySortType;
 import pfp.fltv.common.enums.ContentRankType;
+import pfp.fltv.common.model.po.content.Announcement;
 import pfp.fltv.common.model.po.content.Comment;
+import pfp.fltv.common.model.po.content.Dialogue;
+import pfp.fltv.common.model.po.content.Passage;
 import pfp.fltv.common.model.po.manage.Rate;
 import pfp.fltv.common.model.po.system.EventRecord;
 import pfp.fltv.common.model.vo.CommentVo;
 import ptp.fltv.web.mapper.CommentMapper;
-import ptp.fltv.web.service.CommentService;
-import ptp.fltv.web.service.EventRecordService;
-import ptp.fltv.web.service.RateService;
+import ptp.fltv.web.service.*;
 
 import java.util.*;
 
@@ -122,42 +123,6 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
 
 
     @Override
-    public boolean deleteSingleComment(@Nonnull Long id) {
-
-        boolean isRemoved = false;
-
-        Comment comment = getById(id);
-
-        if (comment != null) {
-
-            isRemoved = removeById(id);
-            // 2024-10-17  1:42-如果当前删除的评论为二级评论，则还需要给其父级评论的评论数-1
-            if (isRemoved && comment.getParentId() != null && comment.getParentId() > 0) {
-
-                Comment parentComment = getById(comment.getParentId());
-                if (parentComment != null) {
-
-                    parentComment.setCommentNum(parentComment.getCommentNum() - 1);
-                    if (parentComment.getCommentNum() < 0) {
-
-                        parentComment.setCommentNum(0);
-
-                    }
-
-                    updateById(parentComment);
-
-                }
-
-            }
-
-        }
-
-        return isRemoved;
-
-    }
-
-
-    @Override
     public List<CommentVo> queryCommentVoPage(@Nonnull Long offset, @Nonnull Long limit) {
 
         Page<Comment> commentPage = new Page<>(offset, limit);
@@ -246,6 +211,163 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         }
 
         return commentVos;
+
+    }
+
+
+    @Override
+    public boolean insertSingleComment(@Nonnull Comment comment) {
+
+        boolean isSaved = save(comment);
+        if (isSaved) {
+
+            // 2024-11-2  23:17-如果当前删除的评论为二级评论，则还需要给其父级评论的评论数+1
+            if (comment.getParentId() != null && comment.getParentId() > 0) {
+
+                updateContentCommentNum(EventRecord.EventType.COMMENT, Comment.BelongType.COMMENT, comment.getParentId());
+
+            } else {
+
+                // 2024-11-2  23:18-其他类型的内容实体的更新则交由这里进行处理
+                updateContentCommentNum(EventRecord.EventType.COMMENT, comment.getBelongType(), comment.getContentId());
+
+            }
+
+        }
+
+        return isSaved;
+
+    }
+
+
+    @Override
+    public boolean deleteSingleComment(@Nonnull Long id) {
+
+        boolean isRemoved = false;
+
+        Comment comment = getById(id);
+
+        if (comment != null) {
+
+            isRemoved = removeById(id);
+            if (isRemoved) {
+
+                // 2024-10-17  1:42-如果当前删除的评论为二级评论，则还需要给其父级评论的评论数-1
+                if (comment.getParentId() != null && comment.getParentId() > 0) {
+
+                    updateContentCommentNum(EventRecord.EventType.CANCEL_COMMENT, Comment.BelongType.COMMENT, comment.getParentId());
+
+                } else {
+
+                    // 2024-11-2  23:11-其他类型的内容实体的更新则交由这里进行处理
+                    updateContentCommentNum(EventRecord.EventType.CANCEL_COMMENT, comment.getBelongType(), comment.getContentId());
+
+                }
+
+            }
+
+        }
+
+        return isRemoved;
+
+    }
+
+
+    /**
+     * @param eventType   内容实体评论量的事件类型
+     * @param contentType 内容实体的类型
+     * @param contentId   内容实体的ID
+     * @apiNote 注意 : 即使本次内容实体的评论量数据更新失败 , 也不会抛出异常 , 因此一次操作的失败并不会导致致命的错误(有时候 , 忽略它比解决它更具价值)
+     * @author Lenovo/LiGuanda
+     * @date 2024/11/2 PM 10:41:39
+     * @version 1.0.0
+     * @description 同步更新评论所附属的内容实体的评论量数据
+     * @filename CommentServiceImpl.java
+     */
+    private void updateContentCommentNum(@Nonnull EventRecord.EventType eventType, @Nonnull Comment.BelongType contentType, @Nonnull Long contentId) {
+
+        int delta = switch (eventType) {
+
+            case COMMENT -> 1;
+            case CANCEL_COMMENT -> -1;
+            default -> 0;
+
+        };
+
+        switch (contentType) {
+
+            case ANNOUNCEMENT -> {
+
+                AnnouncementService announcementService = SpringUtil.getBean(AnnouncementService.class);
+                Announcement announcement = announcementService.getById(contentId);
+                if (announcement != null) {
+
+                    announcement.setCommentNum(announcement.getCommentNum() + delta);
+                    if (announcement.getCommentNum() < 0) {
+
+                        announcement.setCommentNum(0);
+
+                    }
+                    announcementService.updateById(announcement);
+
+                }
+
+            }
+
+            case DIALOGUE -> {
+
+                DialogueService dialogueService = SpringUtil.getBean(DialogueService.class);
+                Dialogue dialogue = dialogueService.getById(contentId);
+                if (dialogue != null) {
+
+                    dialogue.setCommentNum(dialogue.getCommentNum() + delta);
+                    if (dialogue.getCommentNum() < 0) {
+
+                        dialogue.setCommentNum(0);
+
+                    }
+                    dialogueService.updateById(dialogue);
+
+                }
+
+            }
+
+            case PASSAGE -> {
+
+                PassageService passageService = SpringUtil.getBean(PassageService.class);
+                Passage passage = passageService.getById(contentId);
+                if (passage != null) {
+
+                    passage.setCommentNum(passage.getCommentNum() + delta);
+                    if (passage.getCommentNum() < 0) {
+
+                        passage.setCommentNum(0);
+
+                    }
+                    passageService.updateById(passage);
+
+                }
+
+            }
+
+            case COMMENT -> {
+
+                Comment comment = getById(contentId);
+                if (comment != null) {
+
+                    comment.setCommentNum(comment.getCommentNum() + delta);
+                    if (comment.getCommentNum() < 0) {
+
+                        comment.setCommentNum(0);
+
+                    }
+                    updateById(comment);
+
+                }
+
+            }
+
+        }
 
     }
 

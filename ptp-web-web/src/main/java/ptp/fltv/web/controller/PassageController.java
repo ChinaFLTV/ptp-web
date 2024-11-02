@@ -96,12 +96,12 @@ public class PassageController {
     public Result<List<Passage>> queryAvailablePassagePageByUid(
 
             @Parameter(name = "uid", description = "文章所属的用户ID", required = true) @RequestParam("uid") Long uid,
-            @Parameter(name = "offset", description = "查询的一页文章数据的起始偏移量", required = true) @RequestParam("offset") Long offset,
-            @Parameter(name = "limit", description = "查询的这一页文章数据的数量", required = true) @RequestParam("limit") Long limit
+            @Parameter(name = "pageNum", description = "查询的一页文章数据的数据页页码", required = true) @RequestParam("pageNum") Long pageNum,
+            @Parameter(name = "pageSize", description = "查询的这一页文章数据的数量", required = true) @RequestParam("pageSize") Long pageSize
 
     ) {
 
-        List<Passage> passages = passageService.queryAvailablePassagePageByUid(uid, offset, limit);
+        List<Passage> passages = passageService.queryAvailablePassagePageByUid(uid, pageNum, pageSize);
         return Result.success(passages);
 
     }
