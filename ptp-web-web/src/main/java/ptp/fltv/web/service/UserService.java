@@ -9,6 +9,7 @@ import pfp.fltv.common.exceptions.PtpException;
 import pfp.fltv.common.model.po.info.AddressInfo;
 import pfp.fltv.common.model.po.manage.User;
 import pfp.fltv.common.model.vo.UserLoginVo;
+import pfp.fltv.common.model.vo.UserVo;
 
 import java.io.IOException;
 import java.util.List;
@@ -147,6 +148,20 @@ public interface UserService extends IService<User> {
      * @param userId   当前的用户ID
      * @param pageNum  查询的一页用户数据的起始偏移量
      * @param pageSize 查询的这一页用户数据的数量
+     * @return 查询到的指定数据页上的粉丝VO列表数据
+     * @author Lenovo/LiGuanda
+     * @date 2024/11/4 PM 4:32:56
+     * @version 1.0.0
+     * @description 批量(分页)查询某个用户的多条粉丝VO数据
+     * @filename UserService.java
+     */
+    List<UserVo> queryFollowerVoPage(@Nonnull Long userId, @Nonnull Long pageNum, @Nonnull Long pageSize);
+
+
+    /**
+     * @param userId   当前的用户ID
+     * @param pageNum  查询的一页用户数据的起始偏移量
+     * @param pageSize 查询的这一页用户数据的数量
      * @return 查询到的指定数据页上的被关注者列表数据
      * @author Lenovo/LiGuanda
      * @date 2024/10/31 PM 8:58:02
@@ -155,6 +170,20 @@ public interface UserService extends IService<User> {
      * @filename UserService.java
      */
     List<User> queryFolloweePage(@Nonnull Long userId, @Nonnull Long pageNum, @Nonnull Long pageSize);
+
+
+    /**
+     * @param userId   当前的用户ID
+     * @param pageNum  查询的一页用户数据的起始偏移量
+     * @param pageSize 查询的这一页用户数据的数量
+     * @return 查询到的指定数据页上的被关注者VO列表数据
+     * @author Lenovo/LiGuanda
+     * @date 2024/11/4 PM 4:33:54
+     * @version 1.0.0
+     * @description 批量(分页)查询某个用户关注的多条用户VO数据
+     * @filename UserService.java
+     */
+    List<UserVo> queryFolloweeVoPage(@Nonnull Long userId, @Nonnull Long pageNum, @Nonnull Long pageSize);
 
 
 }

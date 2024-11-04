@@ -15,6 +15,7 @@ import com.qcloud.cos.transfer.TransferManager;
 import jakarta.annotation.Nonnull;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.geo.Point;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ import pfp.fltv.common.model.po.manage.Role;
 import pfp.fltv.common.model.po.manage.SubscriberShip;
 import pfp.fltv.common.model.po.manage.User;
 import pfp.fltv.common.model.vo.UserLoginVo;
+import pfp.fltv.common.model.vo.UserVo;
 import pfp.fltv.common.utils.JwtUtils;
 import ptp.fltv.web.constants.CosConstants;
 import ptp.fltv.web.mapper.UserMapper;
@@ -432,6 +434,47 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
 
     @Override
+    public List<UserVo> queryFollowerVoPage(@Nonnull Long userId, @Nonnull Long pageNum, @Nonnull Long pageSize) {
+
+        QueryWrapper<SubscriberShip> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("followee_id", userId);
+
+        List<SubscriberShip> records = subscriberShipService.page(new Page<>(pageNum, pageSize), queryWrapper).getRecords();
+        if (records != null && !records.isEmpty()) {
+
+            List<Long> followerIds = records.stream()
+                    .map(SubscriberShip::getFollowerId)
+                    .toList();
+
+            List<User> users = listByIds(followerIds);
+            if (users != null && !users.isEmpty()) {
+
+                List<UserVo> userVos = new ArrayList<>();
+                for (User user : users) {
+
+                    UserVo userVo = new UserVo();
+                    BeanUtils.copyProperties(user, userVo);
+
+                    // 2024-11-4  16:37-单独查询当前订阅发起者与当前遍历的用户之间是否存在订阅关系(即当前请求用户是否订阅了当前遍历到的用户)
+                    SubscriberShip subscriberShip = subscriberShipService.querySingleSubscription(userId, user.getId());
+                    userVo.setIsSubscribed(subscriberShip != null);
+
+                    userVos.add(userVo);
+
+                }
+
+                return userVos;
+
+            }
+
+        }
+
+        return new ArrayList<>();
+
+    }
+
+
+    @Override
     public List<User> queryFolloweePage(@Nonnull Long userId, @Nonnull Long pageNum, @Nonnull Long pageSize) {
 
         QueryWrapper<SubscriberShip> queryWrapper = new QueryWrapper<>();
@@ -448,6 +491,47 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             if (users != null && !users.isEmpty()) {
 
                 return users;
+
+            }
+
+        }
+
+        return new ArrayList<>();
+
+    }
+
+
+    @Override
+    public List<UserVo> queryFolloweeVoPage(@Nonnull Long userId, @Nonnull Long pageNum, @Nonnull Long pageSize) {
+
+        QueryWrapper<SubscriberShip> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("follower_id", userId);
+
+        List<SubscriberShip> records = subscriberShipService.page(new Page<>(pageNum, pageSize), queryWrapper).getRecords();
+        if (records != null && !records.isEmpty()) {
+
+            List<Long> followeeIds = records.stream()
+                    .map(SubscriberShip::getFolloweeId)
+                    .toList();
+
+            List<User> users = listByIds(followeeIds);
+            if (users != null && !users.isEmpty()) {
+
+                List<UserVo> userVos = new ArrayList<>();
+                for (User user : users) {
+
+                    UserVo userVo = new UserVo();
+                    BeanUtils.copyProperties(user, userVo);
+
+                    // 2024-11-4  16:39-单独查询当前订阅发起者与当前遍历的用户之间是否存在订阅关系(即当前请求用户是否订阅了当前遍历到的用户)
+                    SubscriberShip subscriberShip = subscriberShipService.querySingleSubscription(userId, user.getId());
+                    userVo.setIsSubscribed(subscriberShip != null);
+
+                    userVos.add(userVo);
+
+                }
+
+                return userVos;
 
             }
 

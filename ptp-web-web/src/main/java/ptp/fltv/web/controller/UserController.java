@@ -17,6 +17,7 @@ import pfp.fltv.common.exceptions.PtpException;
 import pfp.fltv.common.model.po.info.AddressInfo;
 import pfp.fltv.common.model.po.manage.User;
 import pfp.fltv.common.model.po.response.Result;
+import pfp.fltv.common.model.vo.UserVo;
 import pfp.fltv.common.utils.ReflectUtils;
 import ptp.fltv.web.service.UserService;
 
@@ -315,6 +316,24 @@ public class UserController {
     }
 
 
+    @LogRecord(description = "批量(分页)查询某个用户的多条粉丝VO数据")
+    @SentinelResource("web-content-user-controller")
+    @Operation(description = "批量(分页)查询某个用户的多条粉丝VO数据")
+    @GetMapping("/query/follower/page/vo")
+    public Result<List<UserVo>> queryFollowerVoPage(
+
+            @Parameter(name = "userId", description = "当前的用户ID", required = true) @RequestParam("userId") Long userId,
+            @Parameter(name = "pageNum", description = "查询的一页用户数据的起始偏移量", required = true) @RequestParam("pageNum") Long pageNum,
+            @Parameter(name = "pageSize", description = "查询的这一页用户数据的数量", required = true) @RequestParam("pageSize") Long pageSize
+
+    ) {
+
+        List<UserVo> userVos = userService.queryFollowerVoPage(userId, pageNum, pageSize);
+        return Result.success(userVos);
+
+    }
+
+
     @LogRecord(description = "批量(分页)查询某个用户关注的多条用户数据")
     @SentinelResource("web-content-user-controller")
     @Operation(description = "批量(分页)查询某个用户关注的多条用户数据")
@@ -329,6 +348,24 @@ public class UserController {
 
         List<User> users = userService.queryFolloweePage(userId, pageNum, pageSize);
         return Result.success(users);
+
+    }
+
+
+    @LogRecord(description = "批量(分页)查询某个用户关注的多条用户VO数据")
+    @SentinelResource("web-content-user-controller")
+    @Operation(description = "批量(分页)查询某个用户关注的多条用户VO数据")
+    @GetMapping("/query/followee/page/vo")
+    public Result<List<UserVo>> queryFolloweeVoPage(
+
+            @Parameter(name = "userId", description = "当前的用户ID", required = true) @RequestParam("userId") Long userId,
+            @Parameter(name = "pageNum", description = "查询的一页用户数据的起始偏移量", required = true) @RequestParam("pageNum") Long pageNum,
+            @Parameter(name = "pageSize", description = "查询的这一页用户数据的数量", required = true) @RequestParam("pageSize") Long pageSize
+
+    ) {
+
+        List<UserVo> userVos = userService.queryFolloweeVoPage(userId, pageNum, pageSize);
+        return Result.success(userVos);
 
     }
 

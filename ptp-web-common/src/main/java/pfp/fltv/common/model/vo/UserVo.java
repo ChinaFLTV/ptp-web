@@ -97,5 +97,8 @@ public class UserVo implements Serializable {
     @Schema(description = "用户资产ID")
     private Long assetId;
 
+    @Schema(description = "当前请求用户是否关注了当前用户实体")
+    private Boolean isSubscribed;
+
 
 }
