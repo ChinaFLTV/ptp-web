@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
+import pfp.fltv.common.enums.ContentFormat;
 import pfp.fltv.common.model.po.content.Comment;
 import pfp.fltv.common.model.po.info.AddressInfo;
 
@@ -75,6 +76,11 @@ public class CommentVo implements Serializable {
 
     @Schema(description = "内容", minLength = 1, maxLength = 255)
     private String content;
+
+    @Field(type = FieldType.Keyword)
+    @Schema(description = "内容形式")
+    @TableField(typeHandler = JacksonTypeHandler.class)
+    private ContentFormat contentFormat;
 
     @Schema(description = "附加的其他类型的媒体内容(JSON格式)")
     private String accessary;

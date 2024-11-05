@@ -196,10 +196,16 @@ public class PassageServiceImpl extends ServiceImpl<PassageMapper, Passage> impl
 
             passage.setRateId(rate.getId());
             isSaved = save(passage); // 2024-10-26  1:51-即使文章插入失败也不再主动回滚刚刚创建好的评分记录了 , 顶多会产生冗余垃圾 , 不会产生其他副作用 , 可以定期排查删除掉
+            if (isSaved) {
+
+                rate.setContentId(passage.getId());
+                rateService.updateById(rate); // 2024-11-5  1:14-待文章成功插入后 , 再同步更新对应的评分统计记录的内容实体的ID字段
+
+            }
 
         }
 
-        return isSaved;
+        return isSaved; // 2024-11-5  1:15-只要文章的rateId正确就行 , 评分统计记录的contentId准确与否不作要求(暂时)
 
     }
 

@@ -12,6 +12,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 import org.springframework.data.elasticsearch.annotations.Setting;
+import pfp.fltv.common.enums.ContentFormat;
 import pfp.fltv.common.enums.base.ConvertableEnum;
 import pfp.fltv.common.model.po.info.AddressInfo;
 
@@ -86,6 +87,11 @@ public class Comment implements Serializable {
     @Field(type = FieldType.Text, analyzer = "analysis-ik")
     @Schema(description = "内容", minLength = 1, maxLength = 255)
     private String content;
+
+    @Field(type = FieldType.Keyword)
+    @Schema(description = "内容形式")
+    @TableField(typeHandler = JacksonTypeHandler.class)
+    private ContentFormat contentFormat;
 
     @Transient
     @Schema(description = "标签")

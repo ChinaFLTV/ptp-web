@@ -13,7 +13,6 @@ import org.springframework.web.client.RestTemplate;
 import pfp.fltv.common.annotation.LogRecord;
 import pfp.fltv.common.enums.ContentQuerySortType;
 import pfp.fltv.common.enums.ContentRankType;
-import pfp.fltv.common.model.base.content.BaseEntity;
 import pfp.fltv.common.model.po.content.Passage;
 import pfp.fltv.common.model.po.response.Result;
 import pfp.fltv.common.model.po.system.EventRecord;
@@ -23,9 +22,7 @@ import ptp.fltv.web.service.PassageService;
 import ptp.fltv.web.service.RateService;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Lenovo/LiGuanda
@@ -149,7 +146,7 @@ public class PassageController {
     @SentinelResource("web-content-passage-controller")
     @Operation(description = "添加单条文章数据")
     @PostMapping("/insert/single")
-    public Result<?> insertSinglePassage(
+    public Result<Long> insertSinglePassage(
 
             @Parameter(name = "passage", description = "待添加的单条文章数据PO", required = true) @RequestBody Passage passage
 
@@ -157,7 +154,7 @@ public class PassageController {
 
         boolean isSaved = passageService.saveSinglePassage(passage);
 
-        Map<String, Object> map = new HashMap<>();
+        /*Map<String, Object> map = new HashMap<>();
         Map<String, Object> mysqlResult = new HashMap<>();
         mysqlResult.put("isSaved", isSaved);
         map.put("mysql_result", mysqlResult);
@@ -167,9 +164,9 @@ public class PassageController {
             Result<?> result = restTemplate.postForObject(ES_INSERT_PASSAGE_URL, passage, Result.class);
             map.put("es_result", result);
 
-        }
+        }*/
 
-        return Result.neutral(map);
+        return isSaved ? Result.success(passage.getId()) : Result.failure(-1L);
 
     }
 
@@ -179,7 +176,7 @@ public class PassageController {
     @SentinelResource("web-content-passage-controller")
     @Operation(description = "修改单条文章数据")
     @PutMapping("/update/single")
-    public Result<?> updateSinglePassage(
+    public Result<Long> updateSinglePassage(
 
             @Parameter(name = "passage", description = "待修改的单条文章数据", required = true) @RequestBody Passage passage
 
@@ -187,7 +184,7 @@ public class PassageController {
 
         boolean isUpdated = passageService.updateById(passage);
 
-        Map<String, Object> map = new HashMap<>();
+        /*Map<String, Object> map = new HashMap<>();
         Map<String, Object> mysqlResult = new HashMap<>();
         mysqlResult.put("isUpdated", isUpdated);
         map.put("mysql_result", mysqlResult);
@@ -200,9 +197,9 @@ public class PassageController {
             // 2024-6-19  22:36-每次内容实体更新都需要重新计算一次得分，以避免上一次计算失误，尽快恢复内容实体的正常得分
             contentRankMqService.sendIndexChangeMsg(passage, BaseEntity.ContentType.PASSAGE);
 
-        }
+        }*/
 
-        return Result.neutral(map);
+        return isUpdated ? Result.success(passage.getId()) : Result.failure(-1L);
 
     }
 
@@ -220,7 +217,7 @@ public class PassageController {
 
         boolean isDeleted = passageService.deleteSinglePassage(id);
 
-        Map<String, Object> map = new HashMap<>();
+        /*Map<String, Object> map = new HashMap<>();
         Map<String, Object> mysqlResult = new HashMap<>();
         mysqlResult.put("isDeleted", isDeleted);
         map.put("mysql_result", mysqlResult);
@@ -232,9 +229,9 @@ public class PassageController {
             restTemplate.delete(ES_DELETE_PASSAGE_URL, urlValues);
             map.put("es_result", Result.BLANK);
 
-        }
+        }*/
 
-        return Result.neutral(map);
+        return isDeleted ? Result.success(null) : Result.failure(null);
 
     }
 

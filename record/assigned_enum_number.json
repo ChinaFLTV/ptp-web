@@ -123,5 +123,10 @@
     "start": 2400,
     "end": 2499,
     "enum": "EventRecord.EventType"
+  },
+  {
+    "start": 2500,
+    "end": 2599,
+    "enum": "ContentFormat"
   }
 ]

@@ -1,10 +1,15 @@
 package pfp.fltv.common.model.vo;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
+import pfp.fltv.common.enums.ContentFormat;
 import pfp.fltv.common.model.po.info.AddressInfo;
 
 import java.io.Serializable;
@@ -37,6 +42,11 @@ public class AnnouncementVo implements Serializable {
 
     @Schema(accessMode = Schema.AccessMode.READ_WRITE, description = "用户填写的公告内容")
     private String content;
+
+    @Field(type = FieldType.Keyword)
+    @Schema(description = "内容形式")
+    @TableField(typeHandler = JacksonTypeHandler.class)
+    private ContentFormat contentFormat;
 
     @Schema(description = "附加的其他类型的媒体内容(JSON格式)")
     private String accessary;

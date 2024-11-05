@@ -1,7 +1,6 @@
 package ptp.fltv.web.service;
 
 import jakarta.annotation.Nonnull;
-import org.springframework.stereotype.Service;
 import pfp.fltv.common.model.po.ws.GroupMessage;
 
 import java.util.List;
@@ -14,7 +13,6 @@ import java.util.List;
  * @filename GroupMessageService.java
  */
 
-@Service
 public interface GroupMessageService {
 
 

@@ -15,6 +15,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
+import pfp.fltv.common.enums.ContentFormat;
 import pfp.fltv.common.enums.ContentStatus;
 import pfp.fltv.common.enums.base.ConvertableEnum;
 import pfp.fltv.common.model.po.info.AddressInfo;
@@ -59,6 +60,11 @@ public class BaseEntity implements Serializable {
     @Transient
     @Schema(description = "内容", minLength = 8, maxLength = 1024)
     private String content;
+
+    @Field(type = FieldType.Keyword)
+    @Schema(description = "内容形式")
+    @TableField(typeHandler = JacksonTypeHandler.class)
+    private ContentFormat contentFormat;
 
     @Transient
     @Schema(description = "附加的其他类型的媒体内容(JSON格式)")

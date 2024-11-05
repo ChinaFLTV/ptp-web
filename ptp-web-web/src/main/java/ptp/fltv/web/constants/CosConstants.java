@@ -49,5 +49,7 @@ public class CosConstants {
     public static final String BUCKET_CHAT_ROOM_VOICE = "/voice";
     public static final String BUCKET_CHAT_ROOM_FILE = "/file";
 
+    public static final String BUCKET_CODAILY = "codaily-1309498949"; // 2024-11-5  16:26-Codaily应用程序产生的云端数据存放的存储桶的名称
+
 
 }
