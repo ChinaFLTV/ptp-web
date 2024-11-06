@@ -36,10 +36,10 @@ public class DeviceInfo implements Serializable {
     private String manufacturer;
 
     @Schema(description = "是否是平板")
-    private boolean isTablet;
+    private Boolean isTablet;
 
     @Schema(description = "是否是模拟器")
-    private boolean isEmulator;
+    private Boolean isEmulator;
 
     @Schema(description = "设备ABIs")
     private String[] ABIs;
@@ -48,10 +48,10 @@ public class DeviceInfo implements Serializable {
     private String AndroidID;
 
     @Schema(description = "设备是否rooted")
-    private boolean isRooted;
+    private Boolean isRooted;
 
     @Schema(description = "判断设备 ADB 是否可用")
-    private boolean isAdbEnabled;
+    private Boolean isAdbEnabled;
 
     @Schema(description = "获取设备系统版本号")
     private String SDKVersionName;

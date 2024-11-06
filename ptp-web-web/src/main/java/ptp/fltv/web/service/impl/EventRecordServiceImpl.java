@@ -9,6 +9,7 @@ import pfp.fltv.common.exceptions.PtpException;
 import pfp.fltv.common.model.base.content.BaseEntity;
 import pfp.fltv.common.model.po.content.*;
 import pfp.fltv.common.model.po.finance.Commodity;
+import pfp.fltv.common.model.po.info.UpdateInfo;
 import pfp.fltv.common.model.po.manage.User;
 import pfp.fltv.common.model.po.system.EventRecord;
 import ptp.fltv.web.mapper.EventRecordMapper;
@@ -37,6 +38,7 @@ public class EventRecordServiceImpl extends ServiceImpl<EventRecordMapper, Event
     private final BannerService bannerService;
     private final UserService userService;
     private final CommodityService commodityService;
+    private final UpdateInfoService updateInfoService;
 
 
     @Override
@@ -171,8 +173,8 @@ public class EventRecordServiceImpl extends ServiceImpl<EventRecordMapper, Event
 
         int delta = switch (eventType) {
 
-            case BROWSE, LIKE, STAR, COMMENT, SHARE, SUBSCRIBE -> 1;
-            case CANCEL_BROWSE, CANCEL_LIKE, CANCEL_STAR, CANCEL_COMMENT, CANCEL_SHARE, CANCEL_SUBSCRIBE -> -1;
+            case BROWSE, LIKE, STAR, COMMENT, SHARE, SUBSCRIBE, DOWNLOAD -> 1;
+            case CANCEL_BROWSE, CANCEL_LIKE, CANCEL_STAR, CANCEL_COMMENT, CANCEL_SHARE, CANCEL_SUBSCRIBE, CANCEL_DOWNLOAD -> -1;
             default -> 0;
 
         };
@@ -185,6 +187,7 @@ public class EventRecordServiceImpl extends ServiceImpl<EventRecordMapper, Event
             case SHARE, CANCEL_SHARE -> "shareNum";
             case UNLIKE, CANCEL_UNLIKE -> "unlikeNum";
             case COMMENT, CANCEL_COMMENT -> "commentNum";
+            case DOWNLOAD, CANCEL_DOWNLOAD -> "downloadNum";
             default -> null;
 
         };
@@ -270,6 +273,18 @@ public class EventRecordServiceImpl extends ServiceImpl<EventRecordMapper, Event
 
                     modifyNum(user, fieldName, delta);
                     return userService.updateById(user);
+
+                }
+
+            }
+
+            case UPDATE_INFO -> {
+
+                UpdateInfo updateInfo = updateInfoService.getById(contentId);
+                if(updateInfo!=null){
+
+                    modifyNum(updateInfo, fieldName, delta);
+                    return updateInfoService.updateById(updateInfo);
 
                 }
 

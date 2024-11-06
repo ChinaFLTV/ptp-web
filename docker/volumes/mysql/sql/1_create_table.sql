@@ -509,3 +509,37 @@ CREATE TABLE IF NOT EXISTS `event_record`
     ENGINE = InnoDB
     DEFAULT CHARSET = utf8mb4
     COMMENT ='事件记录数据实体(PO实体类)';
+
+
+# 2024-11-6  23:16-创建更新信息表
+CREATE TABLE IF NOT EXISTS `update_info`
+(
+    `id`              BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT NOT NULL COMMENT 'ID',
+    `uid`             BIGINT UNSIGNED                            NOT NULL COMMENT '应用更新发布者ID',
+    `version_code`    INT UNSIGNED                               NOT NULL COMMENT '版本号',
+    `version_name`    VARCHAR(255)                               NOT NULL COMMENT '版本名称',
+    `release_notes`   TEXT         DEFAULT NULL COMMENT '更新说明',
+    `file_size`       DOUBLE       DEFAULT 0 COMMENT '文件大小',
+    `update_url`      VARCHAR(255)                               NOT NULL COMMENT '更新链接',
+    `is_mandatory`    BOOLEAN      DEFAULT FALSE COMMENT '是否强制更新',
+    `is_available`    BOOLEAN      DEFAULT TRUE COMMENT '是否可用',
+    `min_sdk_version` INT UNSIGNED                               NOT NULL COMMENT '最小SDK版本',
+    `max_sdk_version` INT UNSIGNED                               NOT NULL COMMENT '最大SDK版本',
+    `apk_hash`        VARCHAR(255) DEFAULT NULL COMMENT 'APK哈希值',
+    `change_log`      TEXT         DEFAULT NULL COMMENT '变更日志',
+    `download_num`  INT UNSIGNED DEFAULT 0 COMMENT '下载次数',
+    `is_ignored`      BOOLEAN      DEFAULT FALSE COMMENT '是否忽略',
+    `update_type`     INT UNSIGNED DEFAULT 2605 COMMENT '更新类型',
+    `status`          INT UNSIGNED DEFAULT 200 COMMENT '实例状态',
+    `meta`            TEXT         DEFAULT NULL COMMENT '其他数据配置(JSON)',
+    `create_time`     TIMESTAMP    DEFAULT CURRENT_TIMESTAMP COMMENT '内容创建时间',
+    `update_time`     TIMESTAMP    DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '(最后)更新时间',
+    `is_deleted`      INT UNSIGNED DEFAULT 0 COMMENT '当前实体是否已被逻辑删除',
+    `version`         INT UNSIGNED DEFAULT 1 COMMENT '当前实体的版本(用于辅助实现乐观锁)',
+
+    FOREIGN KEY (uid) REFERENCES user (`id`)
+
+)
+    ENGINE = InnoDB
+    DEFAULT CHARSET = utf8mb4
+    COMMENT ='更新数据实体(PO实体类)';

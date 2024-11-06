@@ -175,7 +175,8 @@ public class Comment implements Serializable {
         LIKE_RECORD(2115, "点赞/取消点赞记录"),
         STAR_RECORD(2116, "收藏/取消收藏记录"),
         SHARED_RECORD(2116, "收藏/取消收藏记录"),
-        ALL(2117, "不区分类型");
+        UPDATE_INFO(2117, "更新信息"),
+        ALL(2118, "不区分类型");
 
 
         @EnumValue // 2024-10-13  21:33-解决 java.lang.IllegalArgumentException: No enum constant pfp.fltv.common.model.po.content.Comment.BelongType.XXXX 的问题
