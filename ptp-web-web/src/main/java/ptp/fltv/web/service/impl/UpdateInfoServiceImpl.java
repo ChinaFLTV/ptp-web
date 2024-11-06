@@ -1,5 +1,6 @@
 package ptp.fltv.web.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import pfp.fltv.common.model.po.info.UpdateInfo;
@@ -16,6 +17,18 @@ import ptp.fltv.web.service.UpdateInfoService;
 
 @Service
 public class UpdateInfoServiceImpl extends ServiceImpl<UpdateInfoMapper, UpdateInfo> implements UpdateInfoService {
+
+
+    @Override
+    public UpdateInfo queryLatestSingleUpdateInfo() {
+
+        QueryWrapper<UpdateInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.orderByDesc("id")
+                .last("LIMIT 1");
+
+        return baseMapper.selectOne(queryWrapper);
+
+    }
 
 
 }

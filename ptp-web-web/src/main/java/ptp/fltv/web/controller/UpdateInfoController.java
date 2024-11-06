@@ -49,6 +49,18 @@ public class UpdateInfoController {
     }
 
 
+    @LogRecord(description = "查询最新的单条更新信息数据")
+    @SentinelResource("web-info-update-controller")
+    @Operation(description = "查询最新的单条更新信息数据")
+    @GetMapping("/query/single/latest")
+    public Result<UpdateInfo> queryLatestSingleUpdateInfo() {
+
+        UpdateInfo updateInfo = updateInfoService.queryLatestSingleUpdateInfo();
+        return Result.success(updateInfo);
+
+    }
+
+
     @LogRecord(description = "批量(分页)查询多条更新信息数据(对实体可见状态不做限制)")
     @SentinelResource("web-info-update-controller")
     @Operation(description = "批量(分页)查询多条更新信息数据(对实体可见状态不做限制)")
