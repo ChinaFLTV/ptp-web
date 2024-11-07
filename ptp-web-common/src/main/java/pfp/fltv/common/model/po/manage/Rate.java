@@ -41,7 +41,7 @@ public class Rate extends BaseEntity {
     private Comment.BelongType contentType; // 2024-10-25  20:03-内容实体类型
 
     @Schema(description = "内容实体ID")
-    private Long contentId; // 2024-10-25  20:03-内容实体ID
+    private long contentId; // 2024-10-25  20:03-内容实体ID
 
     @Schema(description = "内容实体标题(如果有的话)")
     private String contentTitle; // 2024-10-25  20:08-内容实体标题(如果有的话)
@@ -52,16 +52,16 @@ public class Rate extends BaseEntity {
 
     // 2024-10-27  00:41-这里包括后续的评分均为10分制的 , 因此5分制以及100分制都需要经转换后将等效值存入其中
     @Schema(description = "平均评分")
-    private Double averageScore; // 2024-10-25  20:11-平均评分(评分统计类型的评分记录所需)
+    private double averageScore; // 2024-10-25  20:11-平均评分(评分统计类型的评分记录所需)
 
     @Schema(description = "最高评分")
-    private Double maxScore; // 2024-10-25  20:12-最高评分(评分统计类型的评分记录所需)
+    private double maxScore; // 2024-10-25  20:12-最高评分(评分统计类型的评分记录所需)
 
     @Schema(description = "最低评分")
-    private Double minScore; // 2024-10-25  20:13-最低评分(评分统计类型的评分记录所需)
+    private double minScore; // 2024-10-25  20:13-最低评分(评分统计类型的评分记录所需)
 
     @Schema(description = "评分人数")
-    private Long rateUserCount; // 2024-10-25  20:04-评分人数(评分统计类型的评分记录所需)
+    private long rateUserCount; // 2024-10-25  20:04-评分人数(评分统计类型的评分记录所需)
 
     // 2024-10-25  20:34-该Map中的Key为N.X(意为评分为1) , 值为该内容的总评分在该区间的人数
     @TableField(typeHandler = JacksonTypeHandler.class, jdbcType = JdbcType.LONGVARCHAR)
@@ -78,7 +78,7 @@ public class Rate extends BaseEntity {
     private RateType rateType; // 2024-10-27  17:07-评分记录的类型
 
     @Schema(description = "对应内容实体的评分统计记录的ID")
-    private Long statisticRateId; // 2024-10-27  17:33-对应内容实体的评分统计记录的ID(用户评分记录所需 , 评分统计记录此字段默认为null)
+    private long statisticRateId; // 2024-10-27  17:33-对应内容实体的评分统计记录的ID(用户评分记录所需 , 评分统计记录此字段默认为null)
 
 
     /**

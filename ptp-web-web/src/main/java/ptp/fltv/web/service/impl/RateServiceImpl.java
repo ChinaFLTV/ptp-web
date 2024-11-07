@@ -11,7 +11,9 @@ import pfp.fltv.common.model.po.manage.Rate;
 import ptp.fltv.web.mapper.RateMapper;
 import ptp.fltv.web.service.RateService;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Lenovo/LiGuanda
@@ -40,6 +42,8 @@ public class RateServiceImpl extends ServiceImpl<RateMapper, Rate> implements Ra
 
     @Override
     public boolean insertSingleRate(@Nonnull Rate rate) {
+
+        initializeRate(rate); // 2024-11-8  1:05-先填充一些值为null且可能会引发空指针异常的字段数据
 
         // 2024-10-27  17:17-首先先判断当前评分记录的类型
         switch (rate.getRateType()) {
@@ -90,7 +94,7 @@ public class RateServiceImpl extends ServiceImpl<RateMapper, Rate> implements Ra
 
                             statisticRate.setContentTags(rate.getContentTags());
                             // 2024-10-27  17:54-这里让用户平均评分参与到内容实体的最终评分累计中去
-                            Double newAverageScore = (statisticRate.getAverageScore() * statisticRate.getRateUserCount() + userAverageScore) / (statisticRate.getRateUserCount() + 1);
+                            double newAverageScore = (statisticRate.getAverageScore() * statisticRate.getRateUserCount() + userAverageScore) / (statisticRate.getRateUserCount() + 1);
                             statisticRate.setAverageScore(newAverageScore);
 
                             statisticRate.setMaxScore(Math.max(statisticRate.getMaxScore(), userMaxScore));
@@ -158,6 +162,50 @@ public class RateServiceImpl extends ServiceImpl<RateMapper, Rate> implements Ra
                 return false;
 
             }
+
+        }
+
+    }
+
+
+    /**
+     * @param rate 需要被进行字段初始化的评分统计记录
+     * @author Lenovo/LiGuanda
+     * @date 2024/11/8 AM 12:56:40
+     * @version 1.0.0
+     * @description 填充Rate中为null的可能会导致空指针异常的字段
+     * @filename RateServiceImpl.java
+     */
+    private void initializeRate(Rate rate) {
+
+        if (rate.getContentTags() == null) {
+
+            rate.setContentTags(new ArrayList<>());
+
+        }
+
+        if (rate.getRateUserCountMap() == null) {
+
+            Map<String, Integer> rateUserCountMap = new HashMap<>();
+            for (int i = 0; i <= 10; i++) {
+
+                rateUserCountMap.put(i + ".X", 0);
+
+            }
+            rate.setRateUserCountMap(rateUserCountMap);
+
+        }
+
+        if (rate.getRateMap() == null) {
+
+            Map<String, Double> rateMap = new HashMap<>();
+            rateMap.put(Passage.Standard.AUTHENTICITY.name(), 0.0);
+            rateMap.put(Passage.Standard.ACCURACY.name(), 0.0);
+            rateMap.put(Passage.Standard.OBJECTIVITY.name(), 0.0);
+            rateMap.put(Passage.Standard.DEPTH.name(), 0.0);
+            rateMap.put(Passage.Standard.LOGICALITY.name(), 0.0);
+            rateMap.put(Passage.Standard.TIMELINESS.name(), 0.0);
+            rate.setRateMap(rateMap);
 
         }
 

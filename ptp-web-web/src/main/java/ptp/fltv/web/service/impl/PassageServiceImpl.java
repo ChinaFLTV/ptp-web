@@ -215,6 +215,7 @@ public class PassageServiceImpl extends ServiceImpl<PassageMapper, Passage> impl
 
         boolean isDeleted = false;
 
+        //// 2024-11-8  00:13-这里不再去在业务层对关联的评分统计记录进行额外的删除了 , 因为这已经由数据库的外键的级联删除操作自动完成了
         Passage passage = getById(id);
         if (passage != null) {
 

@@ -219,7 +219,7 @@ CREATE TABLE IF NOT EXISTS `passage`
     `version`              INT UNSIGNED      DEFAULT 1 COMMENT '当前文章实体的版本(用于辅助实现乐观锁)',
 
     FOREIGN KEY (uid) REFERENCES user (id),
-    FOREIGN KEY (rate_id) REFERENCES rate (id)
+    FOREIGN KEY (rate_id) REFERENCES rate (id) ON DELETE CASCADE # 2024-11-8  00:06-删除文章的同时附加的评分统计记录删除掉
 
 )
     ENGINE = InnoDB
@@ -527,7 +527,7 @@ CREATE TABLE IF NOT EXISTS `update_info`
     `max_sdk_version` INT UNSIGNED                               NOT NULL COMMENT '最大SDK版本',
     `apk_hash`        VARCHAR(255) DEFAULT NULL COMMENT 'APK哈希值',
     `change_log`      TEXT         DEFAULT NULL COMMENT '变更日志',
-    `download_num`  INT UNSIGNED DEFAULT 0 COMMENT '下载次数',
+    `download_num`    INT UNSIGNED DEFAULT 0 COMMENT '下载次数',
     `is_ignored`      BOOLEAN      DEFAULT FALSE COMMENT '是否忽略',
     `update_type`     INT UNSIGNED DEFAULT 2605 COMMENT '更新类型',
     `status`          INT UNSIGNED DEFAULT 200 COMMENT '实例状态',
