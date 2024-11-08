@@ -2,6 +2,7 @@ package ptp.fltv.web.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import jakarta.annotation.Nonnull;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import org.springframework.web.multipart.MultipartFile;
 import pfp.fltv.common.enums.LoginClientType;
@@ -106,13 +107,14 @@ public interface UserService extends IService<User> {
     /**
      * @param userId     用户ID
      * @param clientType 当前需要进行登出操作的客户端类型(保证单端单登录/登出)
+     * @param response   HTTP响应
      * @author Lenovo/LiGuanda
      * @date 2024/8/7 PM 3:03:31
      * @version 1.0.0
      * @description 登出用户并移除用户云端数据信息
      * @filename UserService.java
      */
-    void logout(LoginClientType clientType, Long userId);
+    void logout(@Nonnull LoginClientType clientType, @Nonnull Long userId, @Nonnull HttpServletResponse response);
 
 
     /**

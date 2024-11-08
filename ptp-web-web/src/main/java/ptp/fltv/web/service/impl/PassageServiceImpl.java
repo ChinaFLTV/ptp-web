@@ -198,6 +198,7 @@ public class PassageServiceImpl extends ServiceImpl<PassageMapper, Passage> impl
             isSaved = save(passage); // 2024-10-26  1:51-即使文章插入失败也不再主动回滚刚刚创建好的评分记录了 , 顶多会产生冗余垃圾 , 不会产生其他副作用 , 可以定期排查删除掉
             if (isSaved) {
 
+                rate = rateService.getById(rate.getId()); // 2024-11-9  2:31-解决直接使用原始构建的rate导致部分字段意外为null从而导致将原先带有数据的部分字段覆盖为null的情况
                 rate.setContentId(passage.getId());
                 rateService.updateById(rate); // 2024-11-5  1:14-待文章成功插入后 , 再同步更新对应的评分统计记录的内容实体的ID字段
 

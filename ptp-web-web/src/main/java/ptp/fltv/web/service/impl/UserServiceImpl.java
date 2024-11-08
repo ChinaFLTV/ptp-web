@@ -13,6 +13,8 @@ import com.qcloud.cos.model.PutObjectRequest;
 import com.qcloud.cos.model.UploadResult;
 import com.qcloud.cos.transfer.TransferManager;
 import jakarta.annotation.Nonnull;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -402,7 +404,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
 
     @Override
-    public void logout(LoginClientType clientType, Long userId) {
+    public void logout(@Nonnull LoginClientType clientType, @Nonnull Long userId, @Nonnull HttpServletResponse response) {
 
         // 2024-8-7  15:11-移除用户在云端Redis的登录数据信息
         redisTemplate.delete(String.format("user:login:%d", userId));
@@ -417,6 +419,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 .detailedLocation("Invalid User Location Information")
                 .build();
         refreshGeolocation(userId, addressInfo);
+
+        // 2024-4-5  21:21-这边登出的时候，前端那边也要同步清除用户SESSION TOKEN信息，不需要清除登录信息
+        // SecurityContextHolder.clearContext();
+
+        // 2024-8-4  23:32-移除掉客户端浏览器的登录环境信息Cookie
+        Cookie cookie = new Cookie(WebConstants.USER_LOGIN_COOKIE_KEY, null);
+        cookie.setSecure(false);
+        cookie.setHttpOnly(false);
+        cookie.setMaxAge(0);
+        cookie.setDomain(ptp.fltv.web.constants.WebConstants.SERVER_IP);
+        cookie.setPath("/");
+        response.addCookie(cookie);
 
     }
 

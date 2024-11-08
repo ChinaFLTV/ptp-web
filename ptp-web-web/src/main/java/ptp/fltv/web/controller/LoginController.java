@@ -68,20 +68,7 @@ public class LoginController {
     @PostMapping("/logout")
     public Result<String> logout(@RequestParam("clientType") LoginClientType clientType, @RequestParam("userId") Long userId, HttpServletResponse response) {
 
-        userService.logout(clientType, userId);
-
-        // 2024-4-5  21:21-这边登出的时候，前端那边也要同步清除用户SESSION TOKEN信息，不需要清除登录信息
-        // SecurityContextHolder.clearContext();
-
-        // 2024-8-4  23:32-移除掉客户端浏览器的登录环境信息Cookie
-        Cookie cookie = new Cookie(WebConstants.USER_LOGIN_COOKIE_KEY, null);
-        cookie.setSecure(false);
-        cookie.setHttpOnly(false);
-        cookie.setMaxAge(0);
-        cookie.setDomain(ptp.fltv.web.constants.WebConstants.SERVER_IP);
-        cookie.setPath("/");
-        response.addCookie(cookie);
-
+        userService.logout(clientType, userId, response);
         return Result.success("期待与您的下一次相遇~");
 
     }
