@@ -48,3 +48,6 @@ docker/volumes/rocketmq/logs
 
 # 2024-10-9  1:01-忽略构建Docker镜像时无用的上下文文件
 docker/jars
+
+# 2024-11-8  22:42-忽略用户上传的文件
+docker/files
