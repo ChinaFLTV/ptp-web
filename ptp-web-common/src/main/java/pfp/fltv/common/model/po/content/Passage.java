@@ -42,7 +42,7 @@ public class Passage extends BaseEntity {
     private String coverImgUrl; // 2024-10-21  16:36-增加 文章封面图片资源URL 字段
 
     @Schema(description = "评分记录统计ID(建议在创建文章记录时 , 同步新增对应的评分统计记录)")
-    private Long rateId; // 2024-10-25  20:06-增加 评分记录统计ID 字段(建议在创建文章记录时 , 同步新增对应的评分统计记录)
+    private long rateId; // 2024-10-25  20:06-增加 评分记录统计ID 字段(建议在创建文章记录时 , 同步新增对应的评分统计记录)
 
 
     /**

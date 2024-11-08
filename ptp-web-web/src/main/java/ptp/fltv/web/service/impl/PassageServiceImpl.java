@@ -185,7 +185,7 @@ public class PassageServiceImpl extends ServiceImpl<PassageMapper, Passage> impl
         Rate rate = Rate.builder()
                 .uid(passage.getUid())
                 .contentType(Comment.BelongType.PASSAGE)
-                .contentId(passage.getId())
+                // .contentId(passage.getId())
                 .contentTitle(passage.getTitle())
                 .build();
 

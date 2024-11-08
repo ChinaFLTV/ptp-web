@@ -26,6 +26,7 @@ public class SecurityConstants {
         PERMIT_ALL_PATHS.add(String.format("%s/v3/api-docs", WebConstants.WEB_CONTEXT_PATH));
         PERMIT_ALL_PATHS.add(String.format("%s/test", WebConstants.WEB_CONTEXT_PATH)); // 2024-5-12  22:32-为了便于测试，test路径下的请求全部予以无条件放行
         PERMIT_ALL_PATHS.add(String.format("%s/content/user/chat/room", WebConstants.WEB_CONTEXT_PATH)); // 2024-8-23  20:38-由于WebSocket连接不方便携带Cookie等身份校验的材料 , 因此暂时无条件放行WebSocket路径上的请求
+        PERMIT_ALL_PATHS.add(String.format("%s/resource/file", WebConstants.WEB_CONTEXT_PATH)); // 2024-11-8  15:13-该路径下的请求将彻底暴露给客户端和前端 , 以进行直接地自由地文件读写操作
 
 
         URL_AUTHENTICATION_MAP.put(String.format("%s/content/announcement", WebConstants.WEB_CONTEXT_PATH), Set.of("content:announcement:add", "content:announcement:remove", "content:announcement:list", "content:announcement:update"));

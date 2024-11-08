@@ -64,6 +64,7 @@ services:
     # privileged: true
 
 
+  # 2024-11-8  21:17-该Redis的密码配置见 /docker/volumes/redis/config/redis.conf 中的 requirepass 配置 , 默认没有配置用户名
   # 2024-10-9  22:12-远程部署该容器实例时 , 请先清空 ./volumes/redis/data 目录和 ./volumes/redis/root 目录中的数据 , 否则会部署失败
   # 2024-4-10  16:46-创建Redis数据库
   redis:

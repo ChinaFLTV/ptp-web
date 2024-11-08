@@ -15,10 +15,12 @@ import com.qcloud.cos.transfer.TransferManager;
 import jakarta.annotation.Nonnull;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.geo.Point;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import pfp.fltv.common.constants.OAuth2LoginConstants;
 import pfp.fltv.common.constants.RedisConstants;
@@ -26,6 +28,7 @@ import pfp.fltv.common.constants.WebConstants;
 import pfp.fltv.common.enums.LoginClientType;
 import pfp.fltv.common.exceptions.PtpException;
 import pfp.fltv.common.model.po.info.AddressInfo;
+import pfp.fltv.common.model.po.info.LoginInfo;
 import pfp.fltv.common.model.po.manage.Role;
 import pfp.fltv.common.model.po.manage.SubscriberShip;
 import pfp.fltv.common.model.po.manage.User;
@@ -55,6 +58,7 @@ import java.util.concurrent.TimeUnit;
  * @filename UserServiceImpl.java
  */
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
@@ -129,15 +133,30 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 2024-4-7  9:39-缓存的超时时间暂定为24H
         redisTemplate.opsForValue().set("user:login:" + STORE_KEY, JSON.toJSONString(compactUser), RedisConstants.CACHE_TIMEOUT, TimeUnit.MILLISECONDS);
         redisTemplate.opsForValue().set("user:role:" + STORE_KEY, JSON.toJSONString(compactRole), RedisConstants.CACHE_TIMEOUT, TimeUnit.MILLISECONDS);
+
         // 2024-6-17  22:23-存储三端各自的登录环境信息
         Map<String, Object> env = new HashMap<>();
         env.put("client-type", loginClientType);
         env.put("device-id", deviceId);
         env.put("login-datetime", LocalDateTime.now());
         env.put("login-info-details", userLoginVo.getLoginInfo());
-        redisTemplate.opsForValue().set(String.format("user:login:env:%s:%d", loginClientType.name().toLowerCase(), STORE_KEY), JSON.toJSONString(env), RedisConstants.CACHE_TIMEOUT, TimeUnit.MILLISECONDS);
 
         Map<String, Object> result = new HashMap<>();
+        result.put("isLoginSafely", true); // 2024-11-8  22:31-默认登录环境是安全的(不过真正安不安全需要看后面的异地登录校验的结果)
+
+        String envKey = String.format("user:login:env:%s:%d", loginClientType.name().toLowerCase(), STORE_KEY);
+
+        String oldLoginEnvStr = redisTemplate.opsForValue().get(envKey);
+        if (StringUtils.hasLength(oldLoginEnvStr)) {
+
+            JSONObject oldLoginEnvJsonObj = JSON.parseObject(oldLoginEnvStr);
+
+            checkLoginSecurity(env, oldLoginEnvJsonObj, result); // 2024-11-8  21:32-检查当前账号是否存在异地登录的情况 , 如果存在 , 还需要将异地登录的证据存入响应结果中
+
+        }
+
+        redisTemplate.opsForValue().set(envKey, JSON.toJSONString(env), RedisConstants.CACHE_TIMEOUT, TimeUnit.MILLISECONDS);
+
         userLoginVo.setPassword(""); // 2024-4-3  20:51-清除用户敏感信息
         String jwt1 = JwtUtils.encode(userLoginVo);
         result.put(WebConstants.USER_LOGIN_COOKIE_KEY, jwt1);
@@ -150,6 +169,68 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 2024-6-17  22:32-登录客户端类型和设备码无需返回给前端，因为这些数据完全可以再次由前端计算出来，而且计算是幂等的，至于每一次请求是否需要重新计算一遍，这得看前端那边怎么处理了，与我们后端无关~
         // 2024-4-3  21:33-返回给前端，保存到LocalStorage那里，用的时候再让前端带过来
         return result;
+
+    }
+
+
+    /**
+     * @param newEnvMap     当前正在进行登录的登录环境
+     * @param oldEnvJsonObj 云端存储的上一次登录的环境信息
+     * @param result        即将要返回给用户的登录结果
+     * @author Lenovo/LiGuanda
+     * @date 2024/11/8 PM 9:40:54
+     * @version 1.0.0
+     * @description 查看当前账号是否存在异地登录的异常行为
+     * @filename UserServiceImpl.java
+     */
+    private void checkLoginSecurity(Map<String, Object> newEnvMap, JSONObject oldEnvJsonObj, Map<String, Object> result) {
+
+        try {
+
+            result.put("isLoginSafely", true);
+
+            if (newEnvMap != null && oldEnvJsonObj != null) {
+
+                // 2024-11-8  22:36-先按照登录的设备ID是否一致判断一下登录环境的安全性
+                if (newEnvMap.containsKey("device-id") && oldEnvJsonObj.containsKey("device-id") && !newEnvMap.get("device-id").equals(oldEnvJsonObj.getString("device-id"))) {
+
+                    result.put("isLoginSafely", false);
+                    result.put("oldEnvInfo", oldEnvJsonObj.toJSONString());
+
+                }
+
+                if (newEnvMap.containsKey("login-info-details") && oldEnvJsonObj.containsKey("login-info-details")) {
+
+                    LoginInfo newLoginInfo = (LoginInfo) newEnvMap.get("login-info-details");
+                    LoginInfo oldLoginInfo = JSON.parseObject(oldEnvJsonObj.get("login-info-details").toString(), LoginInfo.class);
+
+                    if (newLoginInfo != null && oldLoginInfo != null) {
+
+                        AddressInfo newAddressInfo = newLoginInfo.getAddressInfo();
+                        AddressInfo oldAddressInfo = oldLoginInfo.getAddressInfo();
+                        if (newAddressInfo != null && oldAddressInfo != null) {
+
+                            if (!newAddressInfo.getCityID().equals(oldAddressInfo.getCityID())) { // 2024-11-8  22:35-再按照城市ID是否一致判断登录安全性
+
+                                result.put("isLoginSafely", false);
+                                result.put("oldEnvInfo", oldEnvJsonObj.toJSONString());
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        } catch (Exception ex) {
+
+            // 2024-11-8  22:07-这里即使在解析数据包的过程中出现异常也不应阻断后续的代码的进行
+            log.error("[{}] : {} occurred : {}", "ptp-web-web : UserServiceImpl", ex.getClass().getName(), ex.getCause() == null ? ex.getLocalizedMessage() : ex.getCause().getMessage());
+
+        }
 
     }
 

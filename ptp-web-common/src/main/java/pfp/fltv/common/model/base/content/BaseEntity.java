@@ -47,11 +47,11 @@ public class BaseEntity implements Serializable {
     @Field(type = FieldType.Constant_Keyword)
     @TableId(type = IdType.ASSIGN_ID)
     @Schema(description = "ID")
-    private Long id;
+    private Long id; // 2024-11-8  1:36-主键ID请使用包装类 , 否则自动生成的ID总为0
 
     @Field(type = FieldType.Constant_Keyword)
     @Schema(description = "发布者ID")
-    private Long uid;
+    private long uid;
 
     @Field(type = FieldType.Text, analyzer = "analysis-ik")
     @Schema(description = "标题", minLength = 2, maxLength = 128)
@@ -82,27 +82,27 @@ public class BaseEntity implements Serializable {
 
     @Field(name = "browse_num", type = FieldType.Integer)
     @Schema(description = "浏览量")
-    private Integer browseNum = 0;
+    private int browseNum;
 
     @Field(name = "like_num", type = FieldType.Integer)
     @Schema(description = "点赞量")
-    private Integer likeNum = 0;
+    private int likeNum;
 
     @Field(name = "unlike_num", type = FieldType.Integer)
     @Schema(description = "倒赞量")
-    private Integer unlikeNum = 0;
+    private int unlikeNum;
 
     @Field(name = "comment_num", type = FieldType.Integer)
     @Schema(description = "评论量")
-    private Integer commentNum = 0;
+    private int commentNum;
 
     @Field(name = "star_num", type = FieldType.Integer)
     @Schema(description = "收藏量")
-    private Integer starNum = 0;
+    private int starNum;
 
     @Field(name = "share_num", type = FieldType.Integer)
     @Schema(description = "转发量")
-    private Integer shareNum = 0; // 2024-10-12  20:18-增加转发量字段
+    private int shareNum; // 2024-10-12  20:18-增加转发量字段
 
     @Transient
     @Schema(description = "发布时用户所在的地址信息")
@@ -131,12 +131,12 @@ public class BaseEntity implements Serializable {
     @Field(name = "is_deleted", type = FieldType.Keyword)
     @Schema(description = "当前实体是否已被逻辑删除", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     @TableLogic
-    private Integer isDeleted = 0;
+    private int isDeleted = 0;
 
     @Transient
     @Schema(description = "当前实体的版本(用于辅助实现乐观锁)")
     @Version
-    private Integer version = 1;
+    private int version = 1;
 
 
     /**
