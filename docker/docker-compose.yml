@@ -715,6 +715,8 @@ services:
       - 8180
       - 8210
       # - 9848
+    volumes:
+      - "./files:/app/files:rw"
     environment:
       REAL_MACHINE_IP: "192.168.1.10" # 2024-10-9  18:00-请务必将此值修改为容器实例所在宿主机的真实的物理IP , 后续你就无需再挨个去每个微服务模块的配置文件单独修改了
     restart: on-failure
