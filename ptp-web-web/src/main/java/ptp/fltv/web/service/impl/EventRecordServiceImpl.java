@@ -1,6 +1,7 @@
 package ptp.fltv.web.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import ptp.fltv.web.mapper.EventRecordMapper;
 import ptp.fltv.web.service.*;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -281,7 +283,7 @@ public class EventRecordServiceImpl extends ServiceImpl<EventRecordMapper, Event
             case UPDATE_INFO -> {
 
                 UpdateInfo updateInfo = updateInfoService.getById(contentId);
-                if(updateInfo!=null){
+                if (updateInfo != null) {
 
                     modifyNum(updateInfo, fieldName, delta);
                     return updateInfoService.updateById(updateInfo);
@@ -343,6 +345,23 @@ public class EventRecordServiceImpl extends ServiceImpl<EventRecordMapper, Event
             // 2024-10-29  20:39-忽略该异常并不会产生什么恶劣的影响 , 大不了就是因为找不到指定字段而抛出字段不存在的异常从而导致对象的指定字段的数值没有变化罢了
 
         }
+
+    }
+
+
+    @Override
+    public List<EventRecord> querySingleAssetEventRecordPage(EventRecord.EventType eventType, Long assetId, Long pageNum, Long pageSize) {
+
+        QueryWrapper<EventRecord> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("event_type", eventType.getCode())
+                .eq("content_type", Comment.BelongType.ASSET.getCode())
+                .eq("content_id", assetId)
+                .orderByDesc("id");
+
+        Page<EventRecord> eventRecordPage = new Page<>(pageNum, pageSize);
+        eventRecordPage = page(eventRecordPage, queryWrapper);
+
+        return eventRecordPage.getRecords() == null ? new ArrayList<>() : eventRecordPage.getRecords();
 
     }
 

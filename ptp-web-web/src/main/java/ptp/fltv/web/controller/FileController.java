@@ -35,7 +35,7 @@ public class FileController {
 
 
     @LogRecord(description = "下载指定相对路径上的单个文件")
-    @SentinelResource("web-content-event-record-controller")
+    @SentinelResource("web-resource-file-controller")
     @Operation(description = "下载指定相对路径上的单个文件")
     @RequestMapping(value = "/download/single/**", method = RequestMethod.GET)
     public void downloadSingleFile(
@@ -65,6 +65,19 @@ public class FileController {
 
         String fileAccessUri = fileService.uploadSingleFile(relativePath, file);
         return fileAccessUri != null ? Result.success(fileAccessUri) : Result.failure(null);
+
+    }
+
+
+    @GlobalTransactional(name = "delete-single-file", rollbackFor = Exception.class)
+    @LogRecord(description = "删除指定相对路径上的单个文件数据")
+    @SentinelResource("web-resource-file-controller")
+    @Operation(description = "删除指定相对路径上的单个文件数据")
+    @RequestMapping(value = "/delete/single/**", method = RequestMethod.DELETE)
+    public Result<?> deleteSingleFile(HttpServletRequest request) {
+
+        boolean isDeleted = fileService.deleteSingleFile(request.getRequestURL().toString().split("/resource/file/delete/single/")[1]);
+        return isDeleted ? Result.success(null) : Result.failure(null);
 
     }
 

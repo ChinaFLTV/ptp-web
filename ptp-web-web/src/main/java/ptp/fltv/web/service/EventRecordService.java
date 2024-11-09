@@ -5,6 +5,8 @@ import jakarta.annotation.Nonnull;
 import pfp.fltv.common.model.po.content.Comment;
 import pfp.fltv.common.model.po.system.EventRecord;
 
+import java.util.List;
+
 /**
  * @author Lenovo/LiGuanda
  * @version 1.0.0
@@ -72,6 +74,21 @@ public interface EventRecordService extends IService<EventRecord> {
      * @filename EventRecordService.java
      */
     boolean deleteSingleContentEventRecord(@Nonnull EventRecord.EventType eventType, @Nonnull Comment.BelongType contentType, @Nonnull Long contentId, @Nonnull Long uid);
+
+
+    /**
+     * @param eventType 财产事件的类型
+     * @param assetId   财产事件的目标财产实体的ID
+     * @param pageNum   查询的一页财产数据的数据页页码
+     * @param pageSize  查询的这一页财产数据的数量
+     * @return 查询到的符合条件的指定页数的指定页大小的财产记录列表(数据默认按照发布时间倒序排序)
+     * @author Lenovo/LiGuanda
+     * @date 2024/11/9 PM 8:26:12
+     * @version 1.0.0
+     * @description 根据事件分页查询财产事件记录数据
+     * @filename EventRecordService.java
+     */
+    List<EventRecord> querySingleAssetEventRecordPage(EventRecord.EventType eventType, Long assetId, Long pageNum, Long pageSize);
 
 
 }

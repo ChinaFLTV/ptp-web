@@ -43,4 +43,16 @@ public interface FileService {
     void downloadSingleFile(HttpServletResponse response, String relativePath) throws IOException;
 
 
+    /**
+     * @param relativePath 待删除的文件的云端相对路径(即该文件上传时选择的相对存放路径)(路径要求见上传文件时的相对路径的要求)
+     * @return 是否成功删除指定相对路径上的单个文件
+     * @author Lenovo/LiGuanda
+     * @date 2024/11/9 PM 7:10:49
+     * @version 1.0.0
+     * @description 删除指定相对路径上的单个文件数据
+     * @filename FileService.java
+     */
+    boolean deleteSingleFile(@Nonnull String relativePath);
+
+
 }

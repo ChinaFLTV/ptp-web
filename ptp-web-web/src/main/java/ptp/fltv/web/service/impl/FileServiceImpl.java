@@ -31,8 +31,8 @@ import java.nio.file.Path;
 public class FileServiceImpl implements FileService {
 
 
-    // private final String BASE_PATH = "D:\\JavaProjects\\ptp-web-backend\\docker\\files"; // 2024-11-8  15:34-所有上传文件被存放的路径的基础路径(开发环境)
-    private final String BASE_PATH = "/app/files"; // 2024-11-8  15:34-所有上传文件被存放的路径的基础路径(测试环境)
+    private final String BASE_PATH = "D:\\JavaProjects\\ptp-web-backend\\docker\\files"; // 2024-11-8  15:34-所有上传文件被存放的路径的基础路径(开发环境)
+    // private final String BASE_PATH = "/app/files"; // 2024-11-8  15:34-所有上传文件被存放的路径的基础路径(测试环境)
     // 2024-11-8  16:58-本机的真实物理IP
     @Value("${ip.physical.self-host:127.0.0.1}")
     private String SELF_HOST_IP;
@@ -139,10 +139,10 @@ public class FileServiceImpl implements FileService {
 
         if (StringUtils.hasLength(path)) {
 
-            String filename = path.substring(path.lastIndexOf(File.separator));
+            String filename = path.substring(path.lastIndexOf(File.separator) + 1);
             if (!StringUtils.hasLength(filename)) {
 
-                filename = path.substring(path.lastIndexOf("/")); // 2024-11-8  17:40-这里的操作主要用于解决URI中提取文件名称的情况
+                filename = path.substring(path.lastIndexOf("/") + 1); // 2024-11-8  17:40-这里的操作主要用于解决URI中提取文件名称的情况
 
             }
 
@@ -151,6 +151,33 @@ public class FileServiceImpl implements FileService {
         }
 
         return null;
+
+    }
+
+
+    @Override
+    public boolean deleteSingleFile(@Nonnull String relativePath) {
+
+        // 2024-11-9  19:13-解决通过API fox发送HTTP请求时 , relativePath字段总是以逗号结尾的问题
+        if (relativePath.endsWith(",")) {
+
+            relativePath = relativePath.substring(0, relativePath.length() - 1);
+
+        }
+
+        String absolutePath = (BASE_PATH + File.separator + relativePath).replace("/", File.separator)
+                .replace("\\", File.separator); // 2024-11-9  19:13-解决用户给出的路径中采用了可能与应用运行平台不一致的路径分隔符的问题以避免路径解析异常
+
+        File targetFile = new File(absolutePath);
+        if (targetFile.exists()) {
+
+            return targetFile.delete();
+
+        } else {
+
+            throw new PtpException(818, "不存在指定的文件资源!");
+
+        }
 
     }
 

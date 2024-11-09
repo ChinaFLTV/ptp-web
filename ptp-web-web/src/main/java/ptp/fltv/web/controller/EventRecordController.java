@@ -74,18 +74,37 @@ public class EventRecordController {
     }
 
 
-    @LogRecord(description = "批量(分页)查询多条事件记录数据")
+    @LogRecord(description = "根据事件类型分页查询财产事件记录数据")
     @SentinelResource("web-content-event-record-controller")
-    @Operation(description = "批量(分页)查询多条事件记录数据")
-    @GetMapping("/query/page/{offset}/{limit}")
-    public Result<List<EventRecord>> queryEventRecordPage(
+    @Operation(description = "根据事件分页查询财产事件记录数据")
+    @GetMapping("/querySingleAssetEventRecordPage")
+    public Result<List<EventRecord>> querySingleAssetEventRecordPage(
 
-            @Parameter(name = "offset", description = "查询的一页事件记录数据的起始偏移量", in = ParameterIn.PATH, required = true) @PathVariable("offset") Long offset,
-            @Parameter(name = "limit", description = "查询的这一页事件记录数据的数量", in = ParameterIn.PATH, required = true) @PathVariable("limit") Long limit
+            @Parameter(name = "eventType", description = "财产事件的类型", required = true) @RequestParam("eventType") EventRecord.EventType eventType,
+            @Parameter(name = "assetId", description = "财产事件的目标财产实体的ID", required = true) @RequestParam("assetId") Long assetId,
+            @Parameter(name = "pageNum", description = "查询的一页财产数据的数据页页码", required = true) @RequestParam("pageNum") Long pageNum,
+            @Parameter(name = "pageSize", description = "查询的这一页财产数据的数量", required = true) @RequestParam("pageSize") Long pageSize
 
     ) {
 
-        Page<EventRecord> eventRecordPage = new Page<>(offset, limit);
+        List<EventRecord> eventRecords = eventRecordService.querySingleAssetEventRecordPage(eventType, assetId, pageNum, pageSize);
+        return Result.success(eventRecords);
+
+    }
+
+
+    @LogRecord(description = "批量(分页)查询多条事件记录数据")
+    @SentinelResource("web-content-event-record-controller")
+    @Operation(description = "批量(分页)查询多条事件记录数据")
+    @GetMapping("/query/page")
+    public Result<List<EventRecord>> queryEventRecordPage(
+
+            @Parameter(name = "pageNum", description = "查询的一页财产数据的数据页页码", required = true) @RequestParam("pageNum") Long pageNum,
+            @Parameter(name = "pageSize", description = "查询的这一页财产数据的数量", required = true) @RequestParam("pageSize") Long pageSize
+
+    ) {
+
+        Page<EventRecord> eventRecordPage = new Page<>(pageNum, pageSize);
         eventRecordPage = eventRecordService.page(eventRecordPage);
 
         return Result.success(eventRecordPage.getRecords() == null ? new ArrayList<>() : eventRecordPage.getRecords());

@@ -9,9 +9,9 @@ CREATE TABLE IF NOT EXISTS `asset`
     `id`          BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT COMMENT '用户财产ID',
     `balance`     DECIMAL(65, 6) UNSIGNED DEFAULT 0 COMMENT '用户当前账户余额', -- 2024-6-23  16:48-采用DECIMAL数据类型存储用户余额 , 因为DECIMAL类型不存在精度损失 , 备注 : DECIMAL(M,D)占用16B , 其中M范围为1~65(默认为10) , 表示数字的总位数 , D范围为0~30(默认为0,值不得大于M) , 表示小数位数
     `accounts`    CHAR(255)               DEFAULT NULL COMMENT '用户绑定的银行卡',
-    `authorities` CHAR(255)               DEFAULT 'drawback,withdraw,view,update_password' COMMENT '当前账户所允许的操作',
+    `authorities` CHAR(255)               DEFAULT '["drawback","withdraw","view","update_password"]' COMMENT '当前账户所允许的操作',
     `credit`      DOUBLE UNSIGNED         DEFAULT 100 COMMENT '当前账户的信誉积分',
-    `status`      SMALLINT UNSIGNED       DEFAULT 300 COMMENT '当前账户状态',
+    `status`      SMALLINT UNSIGNED       DEFAULT 700 COMMENT '当前账户状态',
     `create_time` TIMESTAMP               DEFAULT CURRENT_TIMESTAMP COMMENT '资产创建时间',
     `update_time` TIMESTAMP               DEFAULT CURRENT_TIMESTAMP COMMENT '(最后)修改时间' ON UPDATE CURRENT_TIMESTAMP,
     `is_deleted`  INT UNSIGNED            DEFAULT 0 COMMENT '资产是否已被删除',
@@ -219,7 +219,7 @@ CREATE TABLE IF NOT EXISTS `passage`
     `version`              INT UNSIGNED      DEFAULT 1 COMMENT '当前文章实体的版本(用于辅助实现乐观锁)',
 
     FOREIGN KEY (uid) REFERENCES user (id),
-    FOREIGN KEY (rate_id) REFERENCES rate (id) ON DELETE CASCADE # 2024-11-8  00:06-删除文章的同时附加的评分统计记录删除掉
+    FOREIGN KEY (rate_id) REFERENCES rate (id) ON DELETE CASCADE                                                                 # 2024-11-8  00:06-删除文章的同时附加的评分统计记录删除掉
 
 )
     ENGINE = InnoDB
