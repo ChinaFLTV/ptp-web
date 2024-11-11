@@ -103,7 +103,13 @@ public class EventRecord extends BaseEntity {
         EARN(2433, "赚得"),
         CANCEL_EARN(2434, "取消赚得"),
         PAY(2435, "充值"),
-        CANCEL_PAY(2436, "取消充值");
+        CANCEL_PAY(2436, "取消充值"),
+        UPDATE(2437, "更新"),
+        CANCEL_UPDATE(2438, "取消更新"),
+        DELETE(2439, "删除"),
+        CANCEL_DELETE(2440, "取消删除"),
+        ADD(2441, "新增"),
+        CANCEL_ADD(2442, "取消新增");
 
 
         @JsonValue

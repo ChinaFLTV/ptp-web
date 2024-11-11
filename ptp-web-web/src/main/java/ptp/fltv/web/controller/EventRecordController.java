@@ -49,7 +49,6 @@ public class EventRecordController {
     ) {
 
         EventRecord eventRecord = eventRecordService.getById(id);
-
         return (eventRecord == null) ? Result.failure(null) : Result.success(eventRecord);
 
     }
@@ -87,8 +86,7 @@ public class EventRecordController {
 
     ) {
 
-        List<EventRecord> eventRecords = eventRecordService.querySingleAssetEventRecordPage(eventType, assetId, pageNum, pageSize);
-        return Result.success(eventRecords);
+        return Result.success(eventRecordService.querySingleAssetEventRecordPage(eventType, assetId, pageNum, pageSize));
 
     }
 

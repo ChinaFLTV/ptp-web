@@ -46,7 +46,7 @@ public interface DialogueService extends IService<Dialogue> {
      * @description 根据指定的排序规则分页查询指定页码、指定大小的数据页
      * @filename DialogueService.java
      */
-    List<DialogueVo> queryDialoguePageWithSorting(ContentQuerySortType sortType, Long pageNum, Long pageSize);
+    List<DialogueVo> queryDialogueVoPageWithSorting(ContentQuerySortType sortType, Long pageNum, Long pageSize);
 
 
     /**
@@ -59,6 +59,18 @@ public interface DialogueService extends IService<Dialogue> {
      * @filename DialogueService.java
      */
     DialogueVo querySingleDialogue(@Nonnull Long id);
+
+
+    /**
+     * @param dialogue 待添加的言论数据
+     * @return 言论是否添加成功(言论添加成功后会自动在传入的言论实体中设置其对应在数据库中的ID值)
+     * @author Lenovo/LiGuanda
+     * @date 2024/11/11 PM 4:19:59
+     * @version 1.0.0
+     * @description 添加单条对话数据
+     * @filename DialogueService.java
+     */
+    boolean insertSingleDialogue(Dialogue dialogue);
 
 
 }

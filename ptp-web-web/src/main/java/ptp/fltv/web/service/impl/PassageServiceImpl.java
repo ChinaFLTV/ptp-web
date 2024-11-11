@@ -1,6 +1,7 @@
 package ptp.fltv.web.service.impl;
 
 import cn.hutool.extra.spring.SpringUtil;
+import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -8,19 +9,19 @@ import jakarta.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pfp.fltv.common.enums.ContentQuerySortType;
 import pfp.fltv.common.enums.ContentRankType;
 import pfp.fltv.common.enums.ContentStatus;
 import pfp.fltv.common.model.po.content.Comment;
 import pfp.fltv.common.model.po.content.Passage;
+import pfp.fltv.common.model.po.manage.Asset;
 import pfp.fltv.common.model.po.manage.Rate;
 import pfp.fltv.common.model.po.manage.SubscriberShip;
+import pfp.fltv.common.model.po.manage.User;
 import pfp.fltv.common.model.po.system.EventRecord;
 import ptp.fltv.web.mapper.PassageMapper;
-import ptp.fltv.web.service.EventRecordService;
-import ptp.fltv.web.service.PassageService;
-import ptp.fltv.web.service.RateService;
-import ptp.fltv.web.service.SubscriberShipService;
+import ptp.fltv.web.service.*;
 
 import java.util.*;
 
@@ -202,11 +203,94 @@ public class PassageServiceImpl extends ServiceImpl<PassageMapper, Passage> impl
                 rate.setContentId(passage.getId());
                 rateService.updateById(rate); // 2024-11-5  1:14-待文章成功插入后 , 再同步更新对应的评分统计记录的内容实体的ID字段
 
+                // 2024-11-11  19:19-添加文章成功后自动给发布者用户增加0.4积分(该积分增加操作失败也不会告知用户 , 毕竟这几乎不会产生副作用(可能就用户自己少赚得一点积分...))
+                EventRecordService eventRecordService = SpringUtil.getBean(EventRecordService.class);
+                AssetService assetService = SpringUtil.getBean(AssetService.class);
+                UserService userService = SpringUtil.getBean(UserService.class);
+
+                User user = userService.getById(passage.getUid());
+                if (user != null) {
+
+                    EventRecord eventRecord = EventRecord.builder()
+                            .uid(user.getId())
+                            .nickname(user.getNickname())
+                            .avatarUrl(JSON.parseObject(user.getAvatar()).getString("uri"))
+                            .contentType(Comment.BelongType.ASSET)
+                            .contentId(user.getAssetId())
+                            .eventType(EventRecord.EventType.EARN)
+                            .remark("因 发表一篇文章(id = %d) 而 获得 0.4 积分".formatted(passage.getId()))
+                            .build();
+
+                    boolean isSavedEventRecord = eventRecordService.save(eventRecord);
+                    if (isSavedEventRecord) {
+
+                        Asset asset = assetService.getById(user.getAssetId());
+                        if (asset != null) {
+
+                            asset.setBalance(asset.getBalance() + 0.4);
+                            assetService.updateById(asset);
+
+                        }
+
+                    }
+
+                }
+
             }
 
         }
 
         return isSaved; // 2024-11-5  1:15-只要文章的rateId正确就行 , 评分统计记录的contentId准确与否不作要求(暂时)
+
+    }
+
+
+    @Transactional
+    @Override
+    public boolean updateSinglePassage(Passage passage) {
+
+        Passage oldPassage = getById(passage.getId());
+
+        // 2024-11-11  20:13-这里通过先删除后增加的方式去实现对文章的"更新" , 这样做能够保留修改前的文章副本
+        boolean isDeleted = removeById(passage.getId());
+
+        boolean isInserted = false;
+        if (isDeleted) {
+
+            passage.setId(null);
+            isInserted = save(passage);
+
+            // 2024-11-11  19:59-如果文章修改成功 , 则还需要同步增加一条文章修改操作的记录
+            if (isInserted) {
+
+                EventRecordService eventRecordService = SpringUtil.getBean(EventRecordService.class);
+                UserService userService = SpringUtil.getBean(UserService.class);
+
+                User user = userService.getById(passage.getUid());
+                if (user != null) {
+
+                    oldPassage.setContent(null); // 2024-11-11  20:46-由于事件记录需要记录历史文章的数据 , 而内容本体大多数情况下体积较大 , 而列表展示的时候又基本上用不到 , 因此这里不再额外存储旧文章的内容本体(况且 , 文章表也存放着历史文章数据 , 只不过是被逻辑删除了而已)
+
+                    EventRecord eventRecord = EventRecord.builder()
+                            .uid(user.getId())
+                            .nickname(user.getNickname())
+                            .avatarUrl(JSON.parseObject(user.getAvatar()).getString("uri"))
+                            .contentType(Comment.BelongType.PASSAGE)
+                            .contentId(passage.getId())
+                            .contentTitle(passage.getTitle())
+                            .eventType(EventRecord.EventType.UPDATE)
+                            .remark(JSON.toJSONString(oldPassage))
+                            .build();
+
+                    eventRecordService.save(eventRecord); // 2024-11-11  20:00-不关心文章修改记录有没有插入成功的结果 , 文章本身是否更新成功才是重中之重
+
+                }
+
+            }
+
+        }
+
+        return isInserted;
 
     }
 

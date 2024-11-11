@@ -1,5 +1,6 @@
 package ptp.fltv.web.service.impl;
 
+import cn.hutool.extra.spring.SpringUtil;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -10,13 +11,19 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pfp.fltv.common.enums.ContentQuerySortType;
 import pfp.fltv.common.enums.ContentRankType;
+import pfp.fltv.common.model.po.content.Comment;
 import pfp.fltv.common.model.po.content.Dialogue;
+import pfp.fltv.common.model.po.manage.Asset;
 import pfp.fltv.common.model.po.manage.User;
+import pfp.fltv.common.model.po.system.EventRecord;
 import pfp.fltv.common.model.vo.DialogueVo;
 import ptp.fltv.web.mapper.DialogueMapper;
+import ptp.fltv.web.service.AssetService;
 import ptp.fltv.web.service.DialogueService;
+import ptp.fltv.web.service.EventRecordService;
 import ptp.fltv.web.service.UserService;
 
 import java.util.*;
@@ -74,7 +81,7 @@ public class DialogueServiceImpl extends ServiceImpl<DialogueMapper, Dialogue> i
 
 
     @Override
-    public List<DialogueVo> queryDialoguePageWithSorting(ContentQuerySortType sortType, Long pageNum, Long pageSize) {
+    public List<DialogueVo> queryDialogueVoPageWithSorting(ContentQuerySortType sortType, Long pageNum, Long pageSize) {
 
         QueryWrapper<Dialogue> queryWrapper = new QueryWrapper<>();
 
@@ -144,6 +151,53 @@ public class DialogueServiceImpl extends ServiceImpl<DialogueMapper, Dialogue> i
         }
 
         return dialogueVo;
+
+    }
+
+
+    @Transactional(rollbackFor = RuntimeException.class)
+    @Override
+    public boolean insertSingleDialogue(Dialogue dialogue) {
+
+        boolean isSaved = save(dialogue);
+
+        // 2024-11-11  16:21-添加言论成功后自动给发布者用户增加0.1积分(该积分增加操作失败也不会告知用户 , 毕竟这几乎不会产生副作用(可能就用户自己少赚得一点积分...))
+        if (isSaved) {
+
+            EventRecordService eventRecordService = SpringUtil.getBean(EventRecordService.class);
+            AssetService assetService = SpringUtil.getBean(AssetService.class);
+
+            User user = userService.getById(dialogue.getUid());
+            if (user != null) {
+
+                EventRecord eventRecord = EventRecord.builder()
+                        .uid(user.getId())
+                        .nickname(user.getNickname())
+                        .avatarUrl(JSON.parseObject(user.getAvatar()).getString("uri"))
+                        .contentType(Comment.BelongType.ASSET)
+                        .contentId(user.getAssetId())
+                        .eventType(EventRecord.EventType.EARN)
+                        .remark("因 发布一条言论(id = %d) 而 获得 0.1 积分".formatted(dialogue.getId()))
+                        .build();
+
+                boolean isSavedEventRecord = eventRecordService.save(eventRecord);
+                if (isSavedEventRecord) {
+
+                    Asset asset = assetService.getById(user.getAssetId());
+                    if (asset != null) {
+
+                        asset.setBalance(asset.getBalance() + 0.1);
+                        assetService.updateById(asset);
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        return isSaved;
 
     }
 

@@ -1,6 +1,7 @@
 package ptp.fltv.web.service.impl;
 
 import cn.hutool.extra.spring.SpringUtil;
+import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -15,7 +16,9 @@ import pfp.fltv.common.model.po.content.Announcement;
 import pfp.fltv.common.model.po.content.Comment;
 import pfp.fltv.common.model.po.content.Dialogue;
 import pfp.fltv.common.model.po.content.Passage;
+import pfp.fltv.common.model.po.manage.Asset;
 import pfp.fltv.common.model.po.manage.Rate;
+import pfp.fltv.common.model.po.manage.User;
 import pfp.fltv.common.model.po.system.EventRecord;
 import pfp.fltv.common.model.vo.CommentVo;
 import ptp.fltv.web.mapper.CommentMapper;
@@ -230,6 +233,39 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
 
                 // 2024-11-2  23:18-其他类型的内容实体的更新则交由这里进行处理
                 updateContentCommentNum(EventRecord.EventType.COMMENT, comment.getBelongType(), comment.getContentId());
+
+            }
+
+            // 2024-11-11  19:35-添加评论成功后自动给发布者用户增加0.05积分(该积分增加操作失败也不会告知用户 , 毕竟这几乎不会产生副作用(可能就用户自己少赚得一点积分...))
+            EventRecordService eventRecordService = SpringUtil.getBean(EventRecordService.class);
+            AssetService assetService = SpringUtil.getBean(AssetService.class);
+            UserService userService = SpringUtil.getBean(UserService.class);
+
+            User user = userService.getById(comment.getFromUid());
+            if (user != null) {
+
+                EventRecord eventRecord = EventRecord.builder()
+                        .uid(user.getId())
+                        .nickname(user.getNickname())
+                        .avatarUrl(JSON.parseObject(user.getAvatar()).getString("uri"))
+                        .contentType(Comment.BelongType.ASSET)
+                        .contentId(user.getAssetId())
+                        .eventType(EventRecord.EventType.EARN)
+                        .remark("因 发布一条评论(id = %d) 而 获得 0.05 积分".formatted(comment.getId()))
+                        .build();
+
+                boolean isSavedEventRecord = eventRecordService.save(eventRecord);
+                if (isSavedEventRecord) {
+
+                    Asset asset = assetService.getById(user.getAssetId());
+                    if (asset != null) {
+
+                        asset.setBalance(asset.getBalance() + 0.05);
+                        assetService.updateById(asset);
+
+                    }
+
+                }
 
             }
 

@@ -1,15 +1,24 @@
 package ptp.fltv.web.service.impl;
 
+import cn.hutool.extra.spring.SpringUtil;
+import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pfp.fltv.common.exceptions.PtpException;
+import pfp.fltv.common.model.po.content.Comment;
 import pfp.fltv.common.model.po.content.Passage;
+import pfp.fltv.common.model.po.manage.Asset;
 import pfp.fltv.common.model.po.manage.Rate;
+import pfp.fltv.common.model.po.manage.User;
+import pfp.fltv.common.model.po.system.EventRecord;
 import ptp.fltv.web.mapper.RateMapper;
+import ptp.fltv.web.service.AssetService;
+import ptp.fltv.web.service.EventRecordService;
 import ptp.fltv.web.service.RateService;
+import ptp.fltv.web.service.UserService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,7 +60,42 @@ public class RateServiceImpl extends ServiceImpl<RateMapper, Rate> implements Ra
             case CONTENT_STATISTIC -> {
 
                 // 2024-10-27  17:18-如果是文章评分统计记录 , 那么这种情况最好处理 , 直接将该评分统计记录插入到数据库中返回即可
-                return save(rate);
+                boolean isSaved = save(rate);
+
+                // 2024-11-11  19:51-添加评分成功后自动给发布者用户增加0.1积分(该积分增加操作失败也不会告知用户 , 毕竟这几乎不会产生副作用(可能就用户自己少赚得一点积分...))
+                EventRecordService eventRecordService = SpringUtil.getBean(EventRecordService.class);
+                AssetService assetService = SpringUtil.getBean(AssetService.class);
+                UserService userService = SpringUtil.getBean(UserService.class);
+
+                User user = userService.getById(rate.getUid());
+                if (user != null) {
+
+                    EventRecord eventRecord = EventRecord.builder()
+                            .uid(user.getId())
+                            .nickname(user.getNickname())
+                            .avatarUrl(JSON.parseObject(user.getAvatar()).getString("uri"))
+                            .contentType(Comment.BelongType.ASSET)
+                            .contentId(user.getAssetId())
+                            .eventType(EventRecord.EventType.EARN)
+                            .remark("因 发布一条评分(id = %d) 而 获得 0.1 积分".formatted(rate.getId()))
+                            .build();
+
+                    boolean isSavedEventRecord = eventRecordService.save(eventRecord);
+                    if (isSavedEventRecord) {
+
+                        Asset asset = assetService.getById(user.getAssetId());
+                        if (asset != null) {
+
+                            asset.setBalance(asset.getBalance() + 0.1);
+                            assetService.updateById(asset);
+
+                        }
+
+                    }
+
+                }
+
+                return isSaved;
 
             }
 
@@ -138,6 +182,39 @@ public class RateServiceImpl extends ServiceImpl<RateMapper, Rate> implements Ra
                                 return false;
 
                             } else {
+
+                                // 2024-11-11  19:52-添加评分成功后自动给发布者用户增加0.1积分(该积分增加操作失败也不会告知用户 , 毕竟这几乎不会产生副作用(可能就用户自己少赚得一点积分...))
+                                EventRecordService eventRecordService = SpringUtil.getBean(EventRecordService.class);
+                                AssetService assetService = SpringUtil.getBean(AssetService.class);
+                                UserService userService = SpringUtil.getBean(UserService.class);
+
+                                User user = userService.getById(rate.getUid());
+                                if (user != null) {
+
+                                    EventRecord eventRecord = EventRecord.builder()
+                                            .uid(user.getId())
+                                            .nickname(user.getNickname())
+                                            .avatarUrl(JSON.parseObject(user.getAvatar()).getString("uri"))
+                                            .contentType(Comment.BelongType.ASSET)
+                                            .contentId(user.getAssetId())
+                                            .eventType(EventRecord.EventType.EARN)
+                                            .remark("因 发布一条评分(id = %d) 而 获得 0.1 积分".formatted(rate.getId()))
+                                            .build();
+
+                                    boolean isSavedEventRecord = eventRecordService.save(eventRecord);
+                                    if (isSavedEventRecord) {
+
+                                        Asset asset = assetService.getById(user.getAssetId());
+                                        if (asset != null) {
+
+                                            asset.setBalance(asset.getBalance() + 0.1);
+                                            assetService.updateById(asset);
+
+                                        }
+
+                                    }
+
+                                }
 
                                 return true;
 

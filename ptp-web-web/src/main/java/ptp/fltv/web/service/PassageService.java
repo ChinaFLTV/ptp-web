@@ -79,6 +79,18 @@ public interface PassageService extends IService<Passage> {
 
 
     /**
+     * @param passage 待修改的单条文章数据
+     * @return 文章是否修改成功
+     * @author Lenovo/LiGuanda
+     * @date 2024/11/11 PM 7:56:09
+     * @version 1.0.0
+     * @description 修改单条文章数据
+     * @filename PassageService.java
+     */
+    boolean updateSinglePassage(Passage passage);
+
+
+    /**
      * @return 是否删除文章成功
      * @author Lenovo/LiGuanda
      * @date 2024/10/26 AM 1:54:10

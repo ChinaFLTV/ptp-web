@@ -182,7 +182,7 @@ public class PassageController {
 
     ) {
 
-        boolean isUpdated = passageService.updateById(passage);
+        boolean isUpdated = passageService.updateSinglePassage(passage);
 
         /*Map<String, Object> map = new HashMap<>();
         Map<String, Object> mysqlResult = new HashMap<>();

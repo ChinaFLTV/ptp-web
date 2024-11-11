@@ -56,18 +56,18 @@ public class CommentController {
     @LogRecord(description = "批量(分页)查询多条内容评论数据")
     @SentinelResource("web-content-comment-controller")
     @Operation(description = "批量(分页)查询多条内容评论数据")
-    @GetMapping("/query/page/{offset}/{limit}")
+    @GetMapping("/query/page")
     public Result<List<Comment>> queryCommentPage(
 
-            @Parameter(name = "offset", description = "查询的一页内容评论数据的起始偏移量", in = ParameterIn.PATH, required = true) @PathVariable("offset") Long offset,
-            @Parameter(name = "limit", description = "查询的这一页内容评论数据的数量", in = ParameterIn.PATH, required = true) @PathVariable("limit") Long limit
+            @Parameter(name = "pageNum", description = "查询的一页评论数据的数据页页码", required = true) @RequestParam("pageNum") Long pageNum,
+            @Parameter(name = "pageSize", description = "查询的这一页评论数据的数量", required = true) @RequestParam("pageSize") Long pageSize
 
     ) {
 
-        Page<Comment> commentPage = new Page<>(offset, limit);
+        Page<Comment> commentPage = new Page<>(pageNum, pageSize);
         commentPage = commentService.page(commentPage);
 
-        return commentPage.getRecords() == null ? Result.failure(new ArrayList<>()) : Result.success(commentPage.getRecords());
+        return Result.success(commentPage.getRecords() == null ? new ArrayList<>() : commentPage.getRecords());
 
     }
 
@@ -75,17 +75,15 @@ public class CommentController {
     @LogRecord(description = "批量(分页)查询多条内容评论VO数据(相较于内容评论PO数据多了内容评分相关的内容)")
     @SentinelResource("web-content-comment-controller")
     @Operation(description = "批量(分页)查询多条内容评论VO数据(相较于内容评论PO数据多了内容评分相关的内容)")
-    @GetMapping("/query/page/vo/{offset}/{limit}")
+    @GetMapping("/query/page/vo")
     public Result<List<CommentVo>> queryCommentVoPage(
 
-            @Parameter(name = "offset", description = "查询的一页内容评论VO数据的起始偏移量", in = ParameterIn.PATH, required = true) @PathVariable("offset") Long offset,
-            @Parameter(name = "limit", description = "查询的这一页内容评论VO数据的数量", in = ParameterIn.PATH, required = true) @PathVariable("limit") Long limit
+            @Parameter(name = "pageNum", description = "查询的一页评论VO数据的数据页页码", required = true) @RequestParam("pageNum") Long pageNum,
+            @Parameter(name = "pageSize", description = "查询的这一页评论VO数据的数量", required = true) @RequestParam("pageSize") Long pageSize
 
     ) {
 
-        List<CommentVo> commentVos = commentService.queryCommentVoPage(offset, limit);
-
-        return commentVos == null ? Result.failure(new ArrayList<>()) : Result.success(commentVos);
+        return Result.success(commentService.queryCommentVoPage(pageNum, pageSize));
 
     }
 
@@ -93,7 +91,7 @@ public class CommentController {
     @LogRecord(description = "根据指定排序类型批量(分页)查询多条内容评论数据")
     @SentinelResource("web-content-dialogue-controller")
     @Operation(description = "根据指定排序类型批量(分页)查询多条内容评论数据")
-    @GetMapping("/query/page")
+    @GetMapping("/queryCommentPageWithSorting")
     public Result<List<Comment>> queryCommentPageWithSorting(
 
             @Parameter(name = "sortType", description = "排序规则", required = true) @RequestParam("sortType") ContentQuerySortType sortType,
@@ -113,7 +111,7 @@ public class CommentController {
     @LogRecord(description = "根据指定排序类型批量(分页)查询多条内容评论VO数据(相较于内容评论PO数据多了内容评分相关的内容)")
     @SentinelResource("web-content-dialogue-controller")
     @Operation(description = "根据指定排序类型批量(分页)查询多条内容评论VO数据(相较于内容评论PO数据多了内容评分相关的内容)")
-    @GetMapping("/query/page/vo")
+    @GetMapping("/queryCommentVoPageWithSorting")
     public Result<List<CommentVo>> queryCommentVoPageWithSorting(
 
             @Parameter(name = "sortType", description = "排序规则", required = true) @RequestParam("sortType") ContentQuerySortType sortType,

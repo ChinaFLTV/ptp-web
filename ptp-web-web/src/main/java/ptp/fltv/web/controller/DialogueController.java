@@ -60,18 +60,18 @@ public class DialogueController {
     }
 
 
-    @LogRecord(description = "批量(分页)查询多条对话数据")
+    @LogRecord(description = "批量(分页)查询多条对话VO数据")
     @SentinelResource("web-content-dialogue-controller")
-    @Operation(description = "批量(分页)查询多条对话数据")
-    @GetMapping("/query/page/{offset}/{limit}")
-    public Result<List<DialogueVo>> queryDialoguePage(
+    @Operation(description = "批量(分页)查询多条对话VO数据")
+    @GetMapping("/query/page/vo")
+    public Result<List<DialogueVo>> queryDialogueVoPage(
 
-            @Parameter(name = "offset", description = "查询的一页对话数据的起始偏移量", in = ParameterIn.PATH, required = true) @PathVariable("offset") Long offset,
-            @Parameter(name = "limit", description = "查询的这一页对话数据的数量", in = ParameterIn.PATH, required = true) @PathVariable("limit") Long limit
+            @Parameter(name = "pageNum", description = "查询的一页对话数据的数据页页码", required = true) @RequestParam("pageNum") Long pageNum,
+            @Parameter(name = "pageSize", description = "查询的这一页对话数据的数量", required = true) @RequestParam("pageSize") Long pageSize
 
     ) {
 
-        Page<Dialogue> dialoguePage = new Page<>(offset, limit);
+        Page<Dialogue> dialoguePage = new Page<>(pageNum, pageSize);
         dialoguePage = dialogueService.page(dialoguePage);
 
         List<DialogueVo> dialogueVos = new ArrayList<>();
@@ -88,11 +88,11 @@ public class DialogueController {
     }
 
 
-    @LogRecord(description = "根据指定排序类型批量(分页)查询多条对话数据")
+    @LogRecord(description = "根据指定排序类型批量(分页)查询多条对话VO数据")
     @SentinelResource("web-content-dialogue-controller")
-    @Operation(description = "根据指定排序类型批量(分页)查询多条对话数据")
-    @GetMapping("/query/page")
-    public Result<List<DialogueVo>> queryDialoguePageWithSorting(
+    @Operation(description = "根据指定排序类型批量(分页)查询多条对话VO数据")
+    @GetMapping("/queryDialogueVoPageWithSorting")
+    public Result<List<DialogueVo>> queryDialogueVoPageWithSorting(
 
             @Parameter(name = "sortType", description = "排序规则", required = true) @RequestParam("sortType") ContentQuerySortType sortType,
             @Parameter(name = "pageNum", description = "查询的一页对话数据的数据页页码", required = true) @RequestParam("pageNum") Long pageNum,
@@ -100,7 +100,7 @@ public class DialogueController {
 
     ) {
 
-        return Result.success(dialogueService.queryDialoguePageWithSorting(sortType, pageNum, pageSize));
+        return Result.success(dialogueService.queryDialogueVoPageWithSorting(sortType, pageNum, pageSize));
 
     }
 
@@ -112,11 +112,11 @@ public class DialogueController {
     @PostMapping("/insert/single")
     public Result<Long> insertSingleDialogue(
 
-            @Parameter(name = "dialogueVo", description = "待添加的单条对话数据", required = true) @RequestBody Dialogue dialogue
+            @Parameter(name = "dialogue", description = "待添加的单条对话数据", required = true) @RequestBody Dialogue dialogue
 
     ) {
 
-        boolean isSaved = dialogueService.save(dialogue);
+        boolean isSaved = dialogueService.insertSingleDialogue(dialogue);
 
         // 2024-10-15  13:23-非Passage实体将不再同步数据到ES中
         /*if (isSaved) {
