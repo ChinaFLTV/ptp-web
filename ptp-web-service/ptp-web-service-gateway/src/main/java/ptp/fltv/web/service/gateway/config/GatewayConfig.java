@@ -1,21 +1,17 @@
 package ptp.fltv.web.service.gateway.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.gateway.filter.ratelimit.RedisRateLimiter;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.web.servlet.function.RequestPredicates;
 import org.springframework.web.servlet.function.RouterFunction;
 import org.springframework.web.servlet.function.RouterFunctions;
-import ptp.fltv.web.service.gateway.filter.AuthenticationCheckFilter;
+import ptp.fltv.web.service.gateway.constants.WebConstants;
 import ptp.fltv.web.service.gateway.filter.IpKeyResolver;
 import ptp.fltv.web.service.gateway.handler.CircuitBreakerHandler;
-import reactor.core.publisher.Mono;
 
 /**
  * @author Lenovo/LiGuanda
@@ -25,18 +21,14 @@ import reactor.core.publisher.Mono;
  * @filename GatewayConfig.java
  */
 
+@RequiredArgsConstructor
 @Configuration
 public class GatewayConfig {
 
 
-    // 2024-10-8  19:59-本机的真实物理IP
-    @Value("${ip.physical.self-host:127.0.0.1}")
-    private String SELF_HOST_IP;
-
-    @Autowired
-    private IpKeyResolver ipKeyResolver;
-    @Autowired
-    private CircuitBreakerHandler circuitBreakerHandler;
+    private final IpKeyResolver ipKeyResolver;
+    private final CircuitBreakerHandler circuitBreakerHandler;
+    private final WebConstants webConstants;
 
 
     /**
@@ -53,7 +45,7 @@ public class GatewayConfig {
 
         return builder.routes()
                 // 2024-5-5  21:42-放行用户对web服务的直接访问
-                .route("ptp-web-web", r ->
+                /*.route("ptp-web-web", r ->
                         r.order(-1)
                                 .path("/api/v1/web/**")
                                 .filters(f -> {
@@ -71,12 +63,12 @@ public class GatewayConfig {
                                 })
                                 .metadata("response-timeout", 10_000)
                                 .metadata("connect-timeout", 10_000)
-                                .uri("http://" + SELF_HOST_IP + ":8080")
+                                .uri("http://" + webConstants.getPTP_WEB_WEB_SERVER_HOST() + ":8080")
                 )
                 // 2024-5-6  21:06-禁止普通用户访问其他微服务(访问需带有内部员工凭证)(无需单独对内部微服务模块相互调用作特殊处理，因为它们之间的RPC不走微服务网关(想拦你也拦不住啊哈哈))
                 .route("ptp-web-service", r ->
                         r.order(-1)
-                                /*.host(SELF_HOST_IP).negate().and()*/.path("/api/v1/service/**")
+                                .host("192.168.1.12").negate().and().path("/api/v1/service/**")
                                 .filters(f ->
                                         f.modifyRequestBody(String.class, String.class, MediaType.APPLICATION_JSON_VALUE,
                                                         (exchange, content) -> {
@@ -90,8 +82,8 @@ public class GatewayConfig {
                                 )
                                 .metadata("response-timeout", 10_000)
                                 .metadata("connect-timeout", 10_000)
-                                .uri("http://" + SELF_HOST_IP + ":8080")
-                )
+                                .uri("http://" + webConstants.getPTP_WEB_SERVICE_SERVER_HOST() + ":8080")
+                )*/
                 .build();
 
     }
@@ -102,6 +94,7 @@ public class GatewayConfig {
      * @author Lenovo/LiGuanda
      * @date 2024/5/9 PM 9:09:24
      * @version 1.0.0
+     * * @apiNote 该RedisRateLimiter的定义将会覆盖掉GatewayRedisAutoConfiguration的默认的RedisRateLimiter的定义
      * @description 根据实际运行情况产生适合的Redis限流器
      * @filename GatewayConfig.java
      */

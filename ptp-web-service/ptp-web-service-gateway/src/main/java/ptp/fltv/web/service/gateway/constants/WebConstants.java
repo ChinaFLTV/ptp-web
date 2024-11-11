@@ -1,5 +1,10 @@
 package ptp.fltv.web.service.gateway.constants;
 
+import lombok.Data;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.stereotype.Component;
+
 /**
  * @author Lenovo/LiGuanda
  * @version 1.0.0
@@ -8,6 +13,10 @@ package ptp.fltv.web.service.gateway.constants;
  * @filename WebConstants.java
  */
 
+@Data // 2024-11-10  00:54-将注解的代理模式调整为NO以解决类字段的@Value失效的问题
+// 2024-11-9  23:23-实现Nacos动态推送新配置所需的注解
+@RefreshScope/*(proxyMode = ScopedProxyMode.NO)*/ //// 2024-11-10  00:32-将注解的代理模式调整为NO以解决类字段的@Value失效的问题
+@Component
 public class WebConstants {
 
 
@@ -19,6 +28,7 @@ public class WebConstants {
      * @filename WebConstants.java
      */
     public static final String WEB_CONTEXT_PATH = "/api/v1/web";
+
     /**
      * @author Lenovo/LiGuanda
      * @date 2024/8/4 PM 9:54:16
@@ -27,6 +37,12 @@ public class WebConstants {
      * @filename WebConstants.java
      */
     public static final String GATEWAY_CONTEXT_PATH = "/api/v1/service/gateway";
+
+    @Value("${ip.physical.ptp-web-web-server-host:127.0.0.1}")
+    private String PTP_WEB_WEB_SERVER_HOST; // 2024-11-9  21:59-PTP-WEB服务的服务器的IP地址
+
+    @Value("${ip.physical.ptp-web-service-server-host:127.0.0.1}")
+    private String PTP_WEB_SERVICE_SERVER_HOST; // 2024-11-9  21:59-PTP-SERVICE服务的服务器的IP地址
 
 
 }

@@ -45,11 +45,16 @@ import java.util.Objects;
 public class CredentialCheckFilter implements GlobalFilter, Ordered {
 
     private StringRedisTemplate stringRedisTemplate;
+    private ptp.fltv.web.service.gateway.constants.WebConstants webConstants;
 
 
     @SuppressWarnings("unchecked")
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+
+        System.out.println("-------------------------------CredentialCheckFilter----------------------------------");
+        System.out.println(webConstants.getPTP_WEB_WEB_SERVER_HOST());
+        System.out.println(webConstants.getPTP_WEB_SERVICE_SERVER_HOST());
 
         // 2024-5-12  22:41-由于该过滤器优先级最高，最接近外界，也就最先接触到上一次请求的遗留内容，因此首要任务就是请求可能存在的遗留的上下文信息
         // 2024-5-5  21:05-不管之前有没有缓存信息，在这里拦截返回了都必须清理上下文信息，以便对后续请求造成干扰

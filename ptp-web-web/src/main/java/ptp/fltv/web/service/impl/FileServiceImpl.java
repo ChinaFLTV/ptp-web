@@ -31,8 +31,9 @@ import java.nio.file.Path;
 public class FileServiceImpl implements FileService {
 
 
-    private final String BASE_PATH = "D:\\JavaProjects\\ptp-web-backend\\docker\\files"; // 2024-11-8  15:34-所有上传文件被存放的路径的基础路径(开发环境)
-    // private final String BASE_PATH = "/app/files"; // 2024-11-8  15:34-所有上传文件被存放的路径的基础路径(测试环境)
+    // 2024-11-9  21:27-所有上传文件被存放的路径的基础路径
+    @Value("${upload.file.base-path}")
+    private String BASE_PATH;
     // 2024-11-8  16:58-本机的真实物理IP
     @Value("${ip.physical.self-host:127.0.0.1}")
     private String SELF_HOST_IP;

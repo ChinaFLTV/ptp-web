@@ -1,0 +1,44 @@
+# 2024-10-9  17:42-注意下面的IP配置大概率会被 java -jar xxx.jar 中的命令行参数指定的IP配置覆盖掉 , 而其参数来源可能是服务器启动脚本中定义的变量也可能是容器的环境变量
+# 总之 , 建议后续直接修改服务启动脚本或者容器的环境变量来统一设置IP参数 , 这里设置了一方面是由于历史原 , 另一方面则是起到一个占位和IDEA提示的作用(实际上大多使用脚本的参数或环境变量数据)
+# 2024-10-8  19:14-配置程序运行时可能用到的本机物理IP和其他服务的IP
+ip:
+  # 2024-10-8  19:16-物理IP
+  physical:
+    self-host: 192.168.1.12 # 2024-10-8  19:17-本机IP地址(除了修改此地方 , 还需要单独修改logback.xml中的IP配置)
+
+
+# 2024-3-25  21:02-MyBatisPlus配置
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 2024-3-25  21:03-生产环境下需要关闭
+
+
+spring:
+  security:
+    # 2024-4-7  20:20-配置开发环境下的OAuth2登录
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: 4900da741269901ec6ca
+            client-secret: 36133e1b6cf952a636cab52b78d1eba24e214fda
+  jackson:
+    time-zone: Asia/Shanghai # 2024-10-18  22:02-解决在群里消息中生成消息使用的LocalDateTime生成的时间晚8个小时的问题
+
+
+# 2024-5-30  22:26-设置RocketMQ的开发环境下的日志级别
+logging:
+  level:
+    com.alibaba.cloud.stream.binder.rocketmq: info
+
+
+
+# 2024-10-17  19:10-知晓云Codaily应用的ID和密钥信息
+minapp:
+  client-id: 0d9eba85f0081c2303d4
+  client-secret: 4e6ed6bcceec184de6102269090cbb86f7de5a15
+
+
+upload:
+  file:
+    base-path: /app/files # 2024-11-9  21:24--用户上传文件所存放的路径的基础路径(测试环境)

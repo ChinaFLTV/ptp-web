@@ -37,3 +37,8 @@ logging:
 minapp:
   client-id: 0d9eba85f0081c2303d4
   client-secret: 4e6ed6bcceec184de6102269090cbb86f7de5a15
+
+
+upload:
+  file:
+    base-path: D:\\JavaProjects\\ptp-web-backend\\docker\\files # 2024-11-9  21:25--用户上传文件所存放的路径的基础路径(开发环境)
