@@ -244,6 +244,9 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
             User user = userService.getById(comment.getFromUid());
             if (user != null) {
 
+                Map<String, Object> meta = new HashMap<>();
+                meta.put("quantity", 0.05);
+
                 EventRecord eventRecord = EventRecord.builder()
                         .uid(user.getId())
                         .nickname(user.getNickname())
@@ -252,6 +255,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
                         .contentId(user.getAssetId())
                         .eventType(EventRecord.EventType.EARN)
                         .remark("因 发布一条评论(id = %d) 而 获得 0.05 积分".formatted(comment.getId()))
+                        .meta(meta)
                         .build();
 
                 boolean isSavedEventRecord = eventRecordService.save(eventRecord);

@@ -141,9 +141,6 @@ public class CommoditySeckillConsumer implements RocketMQListener<HashMap<String
             // 2024-6-13  22:56-在补货数量不为0且发生了操作失败，那么一定是补货失败了，因此需要重新将商品补货数量的数据还原回去，因为我们先前是getAndDelete方式获取的库存数据
             /*if (newAddStockQuantity > 0) {
 
-                System.out.println("----------------------------------CommoditySeckillConsumer----------3---------------------");
-                System.out.println("newAddStockQuantity = " + newAddStockQuantity);
-
                 stringRedisTemplate.opsForValue().set(String.format("replenish:commodity:%d", commodityId), replenishmentQuantityStr);
 
             }*/

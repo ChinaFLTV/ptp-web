@@ -76,8 +76,8 @@ public class EventRecordController {
     @LogRecord(description = "根据事件类型分页查询财产事件记录数据")
     @SentinelResource("web-content-event-record-controller")
     @Operation(description = "根据事件分页查询财产事件记录数据")
-    @GetMapping("/querySingleAssetEventRecordPage")
-    public Result<List<EventRecord>> querySingleAssetEventRecordPage(
+    @GetMapping("/queryAssetEventRecordPage")
+    public Result<List<EventRecord>> queryAssetEventRecordPage(
 
             @Parameter(name = "eventType", description = "财产事件的类型", required = true) @RequestParam("eventType") EventRecord.EventType eventType,
             @Parameter(name = "assetId", description = "财产事件的目标财产实体的ID", required = true) @RequestParam("assetId") Long assetId,

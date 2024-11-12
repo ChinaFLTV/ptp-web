@@ -211,6 +211,9 @@ public class PassageServiceImpl extends ServiceImpl<PassageMapper, Passage> impl
                 User user = userService.getById(passage.getUid());
                 if (user != null) {
 
+                    Map<String, Object> meta = new HashMap<>();
+                    meta.put("quantity", 0.4);
+
                     EventRecord eventRecord = EventRecord.builder()
                             .uid(user.getId())
                             .nickname(user.getNickname())
@@ -219,6 +222,7 @@ public class PassageServiceImpl extends ServiceImpl<PassageMapper, Passage> impl
                             .contentId(user.getAssetId())
                             .eventType(EventRecord.EventType.EARN)
                             .remark("因 发表一篇文章(id = %d) 而 获得 0.4 积分".formatted(passage.getId()))
+                            .meta(meta)
                             .build();
 
                     boolean isSavedEventRecord = eventRecordService.save(eventRecord);

@@ -38,13 +38,29 @@ public class AssetController {
     private UserService userService;
 
 
-    @LogRecord(description = "根据财产ID查询财产信息")
-    @SentinelResource("web-content-asset-controller")
-    @Operation(description = "根据财产ID查询财产信息")
-    @GetMapping("/query/single/{userId}")
+    @LogRecord(description = "根据财产ID查询单条财产信息")
+    @SentinelResource("web-content-user-asset-controller")
+    @Operation(description = "根据财产ID查询单条财产信息")
+    @GetMapping("/query/single/{assetId}")
+    public Result<Asset> querySingleAsset(
+
+            @Parameter(name = "assetId", description = "待查询的财产ID", in = ParameterIn.PATH, required = true) @PathVariable("assetId") Long assetId
+
+    ) {
+
+        Asset asset = assetService.getById(assetId);
+        return (asset == null) ? Result.failure(null) : Result.success(asset);
+
+    }
+
+
+    @LogRecord(description = "根据用户ID查询其关联的财产信息")
+    @SentinelResource("web-content-user-asset-controller")
+    @Operation(description = "根据用户ID查询其关联的财产信息")
+    @GetMapping("/query/single")
     public Result<Asset> queryAssetByUserId(
 
-            @Parameter(name = "userId", description = "待查询的财产ID", in = ParameterIn.PATH, required = true) @PathVariable("userId") Long userId
+            @Parameter(name = "userId", description = "待查询的财产所归属的用户的ID", required = true) @RequestParam("userId") Long userId
 
     ) {
 
@@ -57,7 +73,7 @@ public class AssetController {
 
 
     @LogRecord(description = "批量(分页)查询多条财产数据")
-    @SentinelResource("web-content-asset-controller")
+    @SentinelResource("web-content-user-asset-controller")
     @Operation(description = "批量(分页)查询多条财产数据")
     @GetMapping("/query/page/{offset}/{limit}")
     public Result<List<Asset>> queryAssetPage(
@@ -76,7 +92,7 @@ public class AssetController {
 
 
     @LogRecord(description = "添加财产信息")
-    @SentinelResource("web-content-asset-controller")
+    @SentinelResource("web-content-user-asset-controller")
     @Operation(description = "添加财产信息")
     @PostMapping("/insert/single")
     public Result<Long> insertAsset(
@@ -92,7 +108,7 @@ public class AssetController {
 
 
     @LogRecord(description = "修改财产信息")
-    @SentinelResource("web-content-asset-controller")
+    @SentinelResource("web-content-user-asset-controller")
     @Operation(description = "修改财产信息")
     @PutMapping("/update/single")
     public Result<?> updateAsset(
@@ -108,7 +124,7 @@ public class AssetController {
 
 
     @LogRecord(description = "修改单个财产的余额信息")
-    @SentinelResource("web-content-asset-controller")
+    @SentinelResource("web-content-user-asset-controller")
     @Operation(description = "修改单个财产的余额信息")
     @PutMapping("/update/single/balance")
     public Result<?> changeSingleAssetBalance(
@@ -128,7 +144,7 @@ public class AssetController {
 
 
     @LogRecord(description = "删除财产信息")
-    @SentinelResource("web-content-asset-controller")
+    @SentinelResource("web-content-user-asset-controller")
     @Operation(description = "删除财产信息")
     @DeleteMapping("/delete/single/{id}")
     public Result<?> deleteAsset(

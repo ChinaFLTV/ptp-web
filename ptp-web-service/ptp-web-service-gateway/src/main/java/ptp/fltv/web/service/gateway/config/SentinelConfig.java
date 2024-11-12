@@ -67,7 +67,7 @@ public class SentinelConfig {
         rules.add(rule);
 
         DegradeRuleManager.loadRules(rules);
-        System.out.println("Degrade rule loaded: " + rules);
+
     }
 
 

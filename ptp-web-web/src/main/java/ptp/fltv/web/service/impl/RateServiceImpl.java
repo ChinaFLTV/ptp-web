@@ -70,6 +70,9 @@ public class RateServiceImpl extends ServiceImpl<RateMapper, Rate> implements Ra
                 User user = userService.getById(rate.getUid());
                 if (user != null) {
 
+                    Map<String, Object> meta = new HashMap<>();
+                    meta.put("quantity", 0.1);
+
                     EventRecord eventRecord = EventRecord.builder()
                             .uid(user.getId())
                             .nickname(user.getNickname())
@@ -78,6 +81,7 @@ public class RateServiceImpl extends ServiceImpl<RateMapper, Rate> implements Ra
                             .contentId(user.getAssetId())
                             .eventType(EventRecord.EventType.EARN)
                             .remark("因 发布一条评分(id = %d) 而 获得 0.1 积分".formatted(rate.getId()))
+                            .meta(meta)
                             .build();
 
                     boolean isSavedEventRecord = eventRecordService.save(eventRecord);
@@ -191,6 +195,9 @@ public class RateServiceImpl extends ServiceImpl<RateMapper, Rate> implements Ra
                                 User user = userService.getById(rate.getUid());
                                 if (user != null) {
 
+                                    Map<String, Object> meta = new HashMap<>();
+                                    meta.put("quantity", 0.1);
+
                                     EventRecord eventRecord = EventRecord.builder()
                                             .uid(user.getId())
                                             .nickname(user.getNickname())
@@ -199,6 +206,7 @@ public class RateServiceImpl extends ServiceImpl<RateMapper, Rate> implements Ra
                                             .contentId(user.getAssetId())
                                             .eventType(EventRecord.EventType.EARN)
                                             .remark("因 发布一条评分(id = %d) 而 获得 0.1 积分".formatted(rate.getId()))
+                                            .meta(meta)
                                             .build();
 
                                     boolean isSavedEventRecord = eventRecordService.save(eventRecord);

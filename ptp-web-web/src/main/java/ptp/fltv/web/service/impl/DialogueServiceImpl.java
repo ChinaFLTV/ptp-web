@@ -170,6 +170,9 @@ public class DialogueServiceImpl extends ServiceImpl<DialogueMapper, Dialogue> i
             User user = userService.getById(dialogue.getUid());
             if (user != null) {
 
+                Map<String, Object> meta = new HashMap<>();
+                meta.put("quantity", 0.1);
+
                 EventRecord eventRecord = EventRecord.builder()
                         .uid(user.getId())
                         .nickname(user.getNickname())
@@ -178,6 +181,7 @@ public class DialogueServiceImpl extends ServiceImpl<DialogueMapper, Dialogue> i
                         .contentId(user.getAssetId())
                         .eventType(EventRecord.EventType.EARN)
                         .remark("因 发布一条言论(id = %d) 而 获得 0.1 积分".formatted(dialogue.getId()))
+                        .meta(meta)
                         .build();
 
                 boolean isSavedEventRecord = eventRecordService.save(eventRecord);

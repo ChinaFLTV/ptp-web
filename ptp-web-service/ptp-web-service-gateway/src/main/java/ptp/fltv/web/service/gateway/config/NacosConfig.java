@@ -65,10 +65,7 @@ public class NacosConfig implements InitializingBean, ApplicationEventPublisherA
                     @Override
                     public void receiveConfigChange(ConfigChangeEvent event) {
 
-                        System.out.println("--------------------------------receiveConfigChange---------------------------------");
                         // 2024-11-10  1:58-在接收到云端配置发生变更的事件之后 , 便需要重新构造路由以达到动态刷新网关路由的目的
-
-
                         // 2024-11-11  15:59-这里之所以采用线程池通过其他线程异步等待五秒后才去更新路由规则 , 是因为直接在receiveConfigChange方法中更新相当于在配置更新前去刷新规则 , 显然这个时机刷新过后的规则数据是没有发生变化的
                         // 2024-11-11  2:35-这里仅仅是做了修改单个路由的URI参数(通过先删除后添加的方式) , 因为当前的业务需求有且仅有这个
                         threadPoolExecutor.submit(() -> {

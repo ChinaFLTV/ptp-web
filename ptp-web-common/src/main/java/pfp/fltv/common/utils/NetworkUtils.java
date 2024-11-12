@@ -55,7 +55,6 @@ public class NetworkUtils {
                 }
 
                 Enumeration<InetAddress> addresses = netInterface.getInetAddresses();
-                // System.out.println(netInterface.getDisplayName());
 
                 while (addresses.hasMoreElements()) {
 
@@ -65,7 +64,6 @@ public class NetworkUtils {
 
                         if (ip instanceof Inet4Address) {
 
-                            // System.out.println(ip.getHostName());
                             return ip.getHostAddress();
 
                         }
