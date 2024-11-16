@@ -15,6 +15,7 @@ import pfp.fltv.common.model.po.response.Result;
 import ptp.fltv.web.service.FileService;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @author Lenovo/LiGuanda
@@ -65,6 +66,24 @@ public class FileController {
 
         String fileAccessUri = fileService.uploadSingleFile(relativePath, file);
         return fileAccessUri != null ? Result.success(fileAccessUri) : Result.failure(null);
+
+    }
+
+
+    @GlobalTransactional(name = "insert-multiple-file", rollbackFor = Exception.class)
+    @LogRecord(description = "保存多个文件到指定相对路径上")
+    @SentinelResource("web-resource-file-controller")
+    @Operation(description = "保存多个文件到指定相对路径上")
+    @PostMapping("/upload/multiple")
+    public Result<List<String>> uploadMultipleFile(
+
+            @Parameter(name = "relativePaths", description = "用户期望上传的多个文件所保存的对应的相对路径(相对于当前Web程序运行所在的路径)(路径需要包含文件完整的名称)(不要以斜杠开头)", required = true) @RequestParam("relativePaths") List<String> relativePaths,
+            @Parameter(name = "file", description = "用户上传到服务器端的多个文件", required = true) @RequestParam("files") MultipartFile[] files
+
+    ) {
+
+        List<String> fileAccessUris = fileService.uploadMultipleFile(relativePaths, files);
+        return fileAccessUris != null ? Result.success(fileAccessUris) : Result.failure(null);
 
     }
 

@@ -19,6 +19,7 @@ import pfp.fltv.common.model.po.response.Result;
 import ptp.fltv.web.service.MediaService;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @author Lenovo/LiGuanda
@@ -54,6 +55,26 @@ public class MediaController {
 
         String mediaCosUrl = mediaService.insertSingleMedia(contentType, mediaType, uid, file);
         return StringUtils.hasLength(mediaCosUrl) ? Result.success(mediaCosUrl) : Result.failure(null);
+
+    }
+
+
+    @GlobalTransactional(name = "insert-multiple-media", rollbackFor = Exception.class)
+    @LogRecord(description = "添加多个多媒体数据")
+    @SentinelResource("web-resource-media-controller")
+    @Operation(description = "添加多个多媒体数据")
+    @PostMapping("/insert/multiple")
+    public Result<List<String>> insertMultipleMedia(
+
+            @Parameter(name = "contentType", description = "多媒体数据所附属的内容实体的类型", required = true) @RequestParam("contentType") Comment.BelongType contentType,
+            @Parameter(name = "mediaType", description = "多媒体数据的类型", required = true) @RequestParam("mediaType") ContentType mediaType,
+            @Parameter(name = "uid", description = "多媒体数据的提交者的ID", required = true) @RequestParam("uid") Long uid,
+            @Parameter(name = "files", description = "多个多媒体数据的数据本体", required = true) @RequestParam("files") MultipartFile[] files
+
+    ) throws IOException, InterruptedException {
+
+        List<String> mediaCosUrls = mediaService.insertMultipleMedia(contentType, mediaType, uid, files);
+        return mediaCosUrls != null ? Result.success(mediaCosUrls) : Result.failure(null);
 
     }
 

@@ -13,6 +13,8 @@ import ptp.fltv.web.constants.CosConstants;
 import ptp.fltv.web.service.MediaService;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -48,6 +50,22 @@ public class MediaServiceImpl implements MediaService {
         UploadResult uploadResult = transferManager.upload(request).waitForUploadResult();
 
         return String.format(CosConstants.PUBLIC_REQUEST_URL_PREFIX, CosConstants.BUCKET_CODAILY, "/" + key);
+
+    }
+
+
+    @Override
+    public List<String> insertMultipleMedia(@Nonnull Comment.BelongType contentType, @Nonnull ContentType mediaType, @Nonnull Long uid, @Nonnull MultipartFile[] files) throws IOException, InterruptedException {
+
+        List<String> urls = new ArrayList<>();
+
+        for (MultipartFile file : files) {
+
+            urls.add(insertSingleMedia(contentType, mediaType, uid, file)); // 2024-11-16  20:14-这里为了简化业务逻辑 , 便直接采用现成的上传多媒体文件的API接口
+
+        }
+
+        return urls;
 
     }
 

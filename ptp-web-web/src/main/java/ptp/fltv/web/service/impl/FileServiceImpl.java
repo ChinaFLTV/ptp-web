@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Lenovo/LiGuanda
@@ -40,7 +42,7 @@ public class FileServiceImpl implements FileService {
 
 
     @Override
-    public void downloadSingleFile(HttpServletResponse response, String relativePath) throws IOException {
+    public void downloadSingleFile(@Nonnull HttpServletResponse response, @Nonnull String relativePath) throws IOException {
 
         // 2024-11-8  19:02-解决通过API fox发送HTTP请求时 , relativePath字段总是以逗号结尾的问题
         if (relativePath.endsWith(",")) {
@@ -127,6 +129,25 @@ public class FileServiceImpl implements FileService {
     }
 
 
+    @Override
+    public List<String> uploadMultipleFile(@Nonnull List<String> relativePaths, @Nonnull MultipartFile[] files) {
+
+
+        int length = Math.min(relativePaths.size(), files.length); // 2024-11-16  19:32-如果真的出现用户上传的文件路径列表和文件列表数量不一致的情况 , 则取二者长度的较小值作为最终生产的直链列表的容量
+
+        List<String> urls = new ArrayList<>();
+
+        for (int i = 0; i < length; i++) {
+
+            urls.add(uploadSingleFile(relativePaths.get(i), files[i])); // 2024-11-16  19:34-这里为了简化业务逻辑 , 便直接采用现成的上传文件的API接口
+
+        }
+
+        return urls;
+
+    }
+
+
     /**
      * @param path 文件路径
      * @return 提取出来的文件名称 , 如果提取失败则返回null
@@ -136,7 +157,7 @@ public class FileServiceImpl implements FileService {
      * @description 从所给的文件路径中
      * @filename FileServiceImpl.java
      */
-    private String getFilenameFromPath(String path) {
+    private String getFilenameFromPath(@Nonnull String path) {
 
         if (StringUtils.hasLength(path)) {
 

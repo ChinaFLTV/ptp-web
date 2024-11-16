@@ -6,6 +6,7 @@ import pfp.fltv.common.enums.ContentType;
 import pfp.fltv.common.model.po.content.Comment;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @author Lenovo/LiGuanda
@@ -33,6 +34,23 @@ public interface MediaService {
      * @filename MediaService.java
      */
     String insertSingleMedia(@Nonnull Comment.BelongType contentType, @Nonnull ContentType mediaType, @Nonnull Long uid, @Nonnull MultipartFile file) throws IOException, InterruptedException;
+
+
+    /**
+     * @param contentType 多媒体数据所附属的内容实体的类型
+     * @param mediaType   多媒体数据的类型
+     * @param uid         多媒体数据的提交者的ID
+     * @param files       多个多媒体数据的数据本体
+     * @return 如果上传资源成功 , 则返回资源对应的云端COS资源直链列表 , 否则 , 上传失败则返回null
+     * @throws IOException          将用户传输上来的多媒体文件保存至服务端内部指定路径时失败可能会抛出此异常
+     * @throws InterruptedException 将多媒体文件上传到腾讯云对象存储COS的过程中遭到意外阻断时将会抛出此异常
+     * @author Lenovo/LiGuanda
+     * @date 2024/11/16 PM 8:04:58
+     * @version 1.0.0
+     * @description
+     * @filename MediaService.java
+     */
+    List<String> insertMultipleMedia(@Nonnull Comment.BelongType contentType, @Nonnull ContentType mediaType, @Nonnull Long uid, @Nonnull MultipartFile[] files) throws IOException, InterruptedException;
 
 
 }
