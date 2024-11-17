@@ -6,6 +6,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.fastjson2.JSONWriter;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.qcloud.cos.COSClient;
@@ -633,6 +634,25 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
 
         return new ArrayList<>();
+
+    }
+
+
+    @Override
+    public User updateSingleUserField(@Nonnull Long userId, @Nonnull String fieldName, @Nonnull Object fieldValue) {
+
+        UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("id", userId)
+                .set(fieldName, fieldValue);
+
+        boolean isUpdated = update(updateWrapper);
+        if (isUpdated) {
+
+            return getById(userId);
+
+        }
+
+        return null;
 
     }
 

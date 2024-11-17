@@ -188,4 +188,19 @@ public interface UserService extends IService<User> {
     List<UserVo> queryFolloweeVoPage(@Nonnull Long userId, @Nonnull Long pageNum, @Nonnull Long pageSize);
 
 
+    /**
+     * @param userId     待修改信息的用户ID
+     * @param fieldName  待修改信息的所属字段
+     * @param fieldValue 修改后的信息的字段值
+     * @return 如果修改用户成功 , 则返回修改后的用户数据实体 ; 否则 , 修改失败则返回null
+     * @author Lenovo/LiGuanda
+     * @apiNote 注意 : 这里的字段名必须填写为数据库中的字段名称而非JavaBean的字段名 , 字段值请尽可能地以字段类型对应的格式完成入参
+     * @date 2024/11/18 AM 1:04:15
+     * @version 1.0.0
+     * @description 修改用户单个字段的信息
+     * @filename UserService.java
+     */
+    User updateSingleUserField(@Nonnull Long userId, @Nonnull String fieldName, @Nonnull Object fieldValue);
+
+
 }

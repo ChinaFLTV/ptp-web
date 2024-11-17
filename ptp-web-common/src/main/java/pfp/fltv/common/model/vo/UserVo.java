@@ -14,6 +14,7 @@ import pfp.fltv.common.enums.Gender;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Lenovo/LiGuanda
@@ -86,7 +87,7 @@ public class UserVo implements Serializable {
 
     @Schema(description = "用户绑定的其他账号")
     @TableField(typeHandler = JacksonTypeHandler.class)
-    private List<String> bindAccounts;
+    private Map<String, String> bindAccounts; // 2024-11-18  00:53-账号绑定字段属性调整为Map , key为账号所属应用的唯一名称 , value为对应在该应用上的唯一账号/ID
 
     @Schema(description = "用户信誉积分")
     private Double credit;

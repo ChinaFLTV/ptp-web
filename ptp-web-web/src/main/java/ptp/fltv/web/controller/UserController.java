@@ -165,6 +165,25 @@ public class UserController {
     }
 
 
+    @GlobalTransactional(name = "update-single-user-field", rollbackFor = Exception.class)
+    @LogRecord(description = "修改用户单个字段的信息")
+    @SentinelResource("web-content-user-controller")
+    @Operation(description = "修改用户单个字段的信息")
+    @PatchMapping("/update/single/field")
+    public Result<User> updateSingleUserField(
+
+            @Parameter(name = "userId", description = "待修改信息的用户ID", required = true) @RequestParam("userId") Long userId,
+            @Parameter(name = "fieldName", description = "待修改信息的所属字段", required = true) @RequestParam("fieldName") String fieldName,
+            @Parameter(name = "fieldValue", description = "修改后的信息的字段值", required = true) @RequestParam("fieldValue") Object fieldValue
+
+    ) {
+
+        User updatedUser = userService.updateSingleUserField(userId, fieldName, fieldValue);
+        return updatedUser != null ? Result.success(updatedUser) : Result.failure(null);
+
+    }
+
+
     @GlobalTransactional(name = "delete-single-user", rollbackFor = Exception.class)
     @LogRecord(description = "删除用户信息")
     @SentinelResource("web-content-user-controller")
