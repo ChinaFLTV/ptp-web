@@ -2,7 +2,7 @@
   <configuration default="false" name="ptp-web-service-gateway" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
     <option name="ACTIVE_PROFILES" value="dev" />
     <module name="ptp-web-service-gateway" />
-    <option name="PROGRAM_PARAMETERS" value="--ip.physical.self-host=192.168.1.12" />
+    <option name="PROGRAM_PARAMETERS" value="--ip.physical.self-host=10.224.22.251" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="ptp.fltv.web.service.gateway.GatewayApplication" />
     <option name="VM_PARAMETERS" value="-javaagent:&quot;D:\Programming-Tools\apache-skywalking-java-agent-9.2.0\skywalking-agent\skywalking-agent.jar&quot; -Dskywalking.agent.service_name=ptp-web-service-gateway -Dskywalking.collector.backend_service=127.0.0.1:11800" />
     <method v="2">

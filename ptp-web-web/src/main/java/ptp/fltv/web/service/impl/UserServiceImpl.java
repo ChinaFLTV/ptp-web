@@ -23,6 +23,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.data.geo.Point;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import pfp.fltv.common.constants.OAuth2LoginConstants;
@@ -49,7 +50,9 @@ import redis.clients.jedis.params.GeoSearchParam;
 import redis.clients.jedis.resps.GeoRadiusResponse;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -638,12 +641,27 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
 
+    @Transactional
     @Override
     public User updateSingleUserField(@Nonnull Long userId, @Nonnull String fieldName, @Nonnull Object fieldValue) {
 
         UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("id", userId)
-                .set(fieldName, fieldValue);
+        updateWrapper.eq("id", userId);
+
+        // 2024-11-18  21:55-由于未知原因 , 导致fieldValue数据类型为LocalDateTime时 , 无控制器响应 , 因此这里规定 : 在更新birth_date字段时 , 要求其对应的字段值为LocalDateTime数据被JSON格式化后的字符串类型
+        // 2024-11-18  20:04-如果当前更新的字段为用户的出生日期((当然字段类型也必须为LocalDateTime)) , 则还需要额外的同步更新用户的年龄字段 , 以达到逻辑上的一致性
+        if ("birth_date".equals(fieldName)) {
+
+            LocalDateTime birthDate = JSON.parseObject((String) fieldValue, LocalDateTime.class);
+            int age = Period.between(birthDate.toLocalDate(), LocalDate.now()).getYears();
+            updateWrapper.set("age", age)
+                    .set("birth_date", birthDate);
+
+        } else {
+
+            updateWrapper.set(fieldName, fieldValue);
+
+        }
 
         boolean isUpdated = update(updateWrapper);
         if (isUpdated) {

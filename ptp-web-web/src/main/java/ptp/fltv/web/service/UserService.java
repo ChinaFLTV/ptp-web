@@ -195,6 +195,7 @@ public interface UserService extends IService<User> {
      * @return 如果修改用户成功 , 则返回修改后的用户数据实体 ; 否则 , 修改失败则返回null
      * @author Lenovo/LiGuanda
      * @apiNote 注意 : 这里的字段名必须填写为数据库中的字段名称而非JavaBean的字段名 , 字段值请尽可能地以字段类型对应的格式完成入参
+     * @apiNote 注意 : 如果单独修改用户的出生日期信息的话 , 将会同步更新用户的年龄信息
      * @date 2024/11/18 AM 1:04:15
      * @version 1.0.0
      * @description 修改用户单个字段的信息
