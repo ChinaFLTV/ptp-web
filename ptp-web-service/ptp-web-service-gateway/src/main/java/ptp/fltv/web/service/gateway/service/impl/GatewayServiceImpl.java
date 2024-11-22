@@ -104,8 +104,8 @@ public class GatewayServiceImpl implements GatewayService, ApplicationEventPubli
 
         route.setPredicates(List.of(pathPredicate));
         route.setFilters(Arrays.asList(authCheckFilter, rateLimiterFilter));
-        route.getMetadata().put("connect-timeout", 10_000);
-        route.getMetadata().put("response-timeout", 30_000); // 2024-11-22  9:56-将响应超时时间由10s调整为30s以以解决客户端在部分场景下偶发 Response took longer than timeout: PT10S 的异常情况
+        route.getMetadata().put("connect-timeout", 30_000);
+        route.getMetadata().put("response-timeout", 60_000); // 2024-11-22  9:56-将响应超时时间由10s调整为30s以以解决客户端在部分场景下偶发 Response took longer than timeout: PT10S 的异常情况
 
         return route;
 
@@ -146,8 +146,8 @@ public class GatewayServiceImpl implements GatewayService, ApplicationEventPubli
         route.setPredicates(List.of(pathPredicate));
         // route.setFilters(Arrays.asList(modifyRequestBodyFilter, rewritePathFilter));
         route.setFilters(List.of(rewritePathFilter));
-        route.getMetadata().put("connect-timeout", 10_000);
-        route.getMetadata().put("response-timeout", 30_000); // 2024-11-22  9:57-将响应超时时间由10s调整为30s以以解决客户端在部分场景下偶发 Response took longer than timeout: PT10S 的异常情况
+        route.getMetadata().put("connect-timeout", 30_000);
+        route.getMetadata().put("response-timeout", 60_000); // 2024-11-22  9:57-将响应超时时间由10s调整为30s以以解决客户端在部分场景下偶发 Response took longer than timeout: PT10S 的异常情况
 
         return route;
 

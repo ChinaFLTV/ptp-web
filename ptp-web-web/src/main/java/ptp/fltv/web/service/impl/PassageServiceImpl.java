@@ -80,6 +80,40 @@ public class PassageServiceImpl extends ServiceImpl<PassageMapper, Passage> impl
     @Override
     public List<Passage> queryPassagePageWithSorting(@Nonnull ContentQuerySortType sortType, @Nonnull Long pageNum, @Nonnull Long pageSize, @Nonnull Long uid) {
 
+        QueryWrapper<Passage> queryWrapper = sortType2QueryWrapper(sortType, uid);
+
+        List<Passage> passages = page(new Page<>(pageNum, pageSize), queryWrapper).getRecords();
+
+        return passages == null ? new ArrayList<>() : passages;
+
+    }
+
+
+    @Override
+    public List<Passage> queryPassagePageWithSortingFuzzily(@Nonnull ContentQuerySortType sortType, @Nonnull String title, @Nonnull Long pageNum, @Nonnull Long pageSize, @Nonnull Long uid) {
+
+        QueryWrapper<Passage> queryWrapper = sortType2QueryWrapper(sortType, uid);
+        queryWrapper.like("title", title);
+
+        List<Passage> passages = page(new Page<>(pageNum, pageSize), queryWrapper).getRecords();
+
+        return passages == null ? new ArrayList<>() : passages;
+
+    }
+
+
+    /**
+     * @param sortType 文章排序类型
+     * @param uid      当前请求发起用户的ID(非必需)(仅在排序类型为订阅类型下生效)
+     * @return 文章排序对应的查询包装器
+     * @author Lenovo/LiGuanda
+     * @date 2024/11/22 PM 8:50:10
+     * @version 1.0.0
+     * @description 根据输入的文章排序类型来生成对应的查询包装器
+     * @filename PassageServiceImpl.java
+     */
+    private QueryWrapper<Passage> sortType2QueryWrapper(ContentQuerySortType sortType, Long uid) {
+
         QueryWrapper<Passage> queryWrapper = new QueryWrapper<>();
 
         switch (sortType) {
@@ -123,9 +157,7 @@ public class PassageServiceImpl extends ServiceImpl<PassageMapper, Passage> impl
 
         queryWrapper.eq("status", ContentStatus.NORMAL.getCode()); // 2024-11-3  1:20-只筛选出当前处于公开状态的文章(后续将根据请求用户增加选择性展示部分可见性文章)
 
-        List<Passage> passages = page(new Page<>(pageNum, pageSize), queryWrapper).getRecords();
-
-        return passages == null ? new ArrayList<>() : passages;
+        return queryWrapper;
 
     }
 

@@ -141,6 +141,25 @@ public class PassageController {
     }
 
 
+    @LogRecord(description = "根据指定排序类型批量(分页)以文章标题模糊查询多条文章数据")
+    @SentinelResource("web-content-passage-controller")
+    @Operation(description = "根据指定排序类型批量(分页)以文章标题模糊查询多条文章数据")
+    @GetMapping("/query/page/fuzzy")
+    public Result<List<Passage>> queryPassagePageWithSortingFuzzily(
+
+            @Parameter(name = "sortType", description = "排序规则", required = true) @RequestParam("sortType") ContentQuerySortType sortType,
+            @Parameter(name = "title", description = "所要查询的文章的标题的部分内容", required = true) @RequestParam("title") String title,
+            @Parameter(name = "pageNum", description = "查询的一页文章数据的数据页页码", required = true) @RequestParam("pageNum") Long pageNum,
+            @Parameter(name = "pageSize", description = "查询的这一页文章数据的数量", required = true) @RequestParam("pageSize") Long pageSize,
+            @Parameter(name = "uid", description = "当前请求发起用户的ID(非必需)(仅在排序类型为订阅类型下生效)") @RequestParam(name = "uid", required = false) Long uid
+
+    ) {
+
+        return Result.success(passageService.queryPassagePageWithSortingFuzzily(sortType, title, pageNum, pageSize, uid));
+
+    }
+
+
     @GlobalTransactional(name = "insert-single-passage", rollbackFor = Exception.class)
     @LogRecord(description = "添加单条文章数据")
     @SentinelResource("web-content-passage-controller")

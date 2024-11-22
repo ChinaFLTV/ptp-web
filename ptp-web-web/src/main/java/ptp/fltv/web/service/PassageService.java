@@ -51,6 +51,21 @@ public interface PassageService extends IService<Passage> {
 
 
     /**
+     * @param sortType 排序规则
+     * @param uid      当前请求发起用户的ID(非必需)(仅在排序类型为订阅类型下生效)
+     * @param pageNum  页码(从1开始)
+     * @param pageSize 数据页大小
+     * @return 查询到的符合条件的指定数据页
+     * @author Lenovo/LiGuanda
+     * @date 2024/11/22 PM 8:47:29
+     * @version 1.0.0
+     * @description 根据指定排序类型批量(分页)以文章标题模糊查询多条文章数据
+     * @filename PassageService.java
+     */
+    List<Passage> queryPassagePageWithSortingFuzzily(@Nonnull ContentQuerySortType sortType, @Nonnull String title, @Nonnull Long pageNum, @Nonnull Long pageSize, @Nonnull Long uid);
+
+
+    /**
      * @param uid       当前请求发起用户的ID(非必需)(仅在排序类型为订阅类型下生效)
      * @param pageNum   查询的一页文章数据的数据页页码
      * @param pageSize  查询的这一页文章数据的数量
