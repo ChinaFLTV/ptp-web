@@ -150,14 +150,22 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
 
                     commentVo.setContentTags(userRate.getContentTags());
 
-                    double userAverageScore = userRate.getRateMap()
-                            .values()
-                            .stream()
-                            .mapToDouble(Double::doubleValue)
-                            .average()
-                            .orElse(-1D);
+                    if (userRate.getRateMap() != null) {
 
-                    commentVo.setAverageScore(userAverageScore);
+                        double userAverageScore = userRate.getRateMap()
+                                .values()
+                                .stream()
+                                .mapToDouble(Double::doubleValue)
+                                .average()
+                                .orElse(-1D);
+
+                        commentVo.setAverageScore(userAverageScore);
+
+                    } else {
+
+                        commentVo.setAverageScore(-1D);
+
+                    }
 
                 }
 
@@ -193,14 +201,22 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
 
                 commentVo.setContentTags(userRate.getContentTags());
 
-                double userAverageScore = userRate.getRateMap()
-                        .values()
-                        .stream()
-                        .mapToDouble(Double::doubleValue)
-                        .average()
-                        .orElse(-1D);
+                if (userRate.getRateMap() != null) {
 
-                commentVo.setAverageScore(userAverageScore);
+                    double userAverageScore = userRate.getRateMap()
+                            .values()
+                            .stream()
+                            .mapToDouble(Double::doubleValue)
+                            .average()
+                            .orElse(-1D);
+
+                    commentVo.setAverageScore(userAverageScore);
+
+                } else {
+
+                    commentVo.setAverageScore(-1D);
+
+                }
 
             }
 
