@@ -146,6 +146,11 @@
             <artifactId>spring-data-mongodb</artifactId>
             <version>4.3.3</version>
         </dependency>-->
+        <!--  2024-11-24  11:24-生成随机用户昵称等其他虚拟数据所需依赖  -->
+        <dependency>
+            <groupId>io.github.yindz</groupId>
+            <artifactId>common-random</artifactId>
+        </dependency>
 
     </dependencies>
 

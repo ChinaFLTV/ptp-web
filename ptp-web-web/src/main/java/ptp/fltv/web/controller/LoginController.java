@@ -41,11 +41,70 @@ public class LoginController {
     @Operation(description = "普通登录(用户名+密码)")
     @PermitAll
     @PostMapping("/login")
-    public Result<Map<String, Object>> login(@RequestBody UserLoginVo userLoginVo, HttpServletResponse response) throws PtpException {
+    public Result<Map<String, Object>> login(
+
+            @RequestBody UserLoginVo userLoginVo,
+            HttpServletResponse response
+
+    ) throws PtpException {
 
         // 2024-4-7  22:26-登录前，客户端一侧一定要将本地的登录数据清理干净
 
         Map<String, Object> userData = userService.loginByNicknameAndPassword(userLoginVo);
+
+        if (userData != null) {
+
+            response.addCookie(generateCookie(userData));
+            return Result.success(userData);
+
+        } else {
+
+            return Result.failure(null);
+
+        }
+
+    }
+
+
+    @LogRecord(description = "普通注册(用户名+密码)")
+    @SentinelResource("web-gate-controller")
+    @Operation(description = "普通注册(用户名+密码)")
+    @PermitAll
+    @PostMapping("/register")
+    public Result<Map<String, Object>> register(
+
+            @RequestBody UserLoginVo userLoginVo,
+            HttpServletResponse response
+
+    ) throws PtpException {
+
+
+        Map<String, Object> userData = userService.registerByNicknameAndPassword(userLoginVo);
+
+        if (userData != null) {
+
+            response.addCookie(generateCookie(userData));
+            return Result.success(userData);
+
+        } else {
+
+            return Result.failure(null);
+
+        }
+
+    }
+
+
+    /**
+     * @param userData 配置Cookie所需的用户登录数据包
+     * @return 需要回填给客户端/前端的Cookie
+     * @author Lenovo/LiGuanda
+     * @date 2024/11/24 PM 8:02:38
+     * @version 1.0.0
+     * @description 配置登录成功后回填的Cookie数据
+     * @filename LoginController.java
+     */
+    private Cookie generateCookie(Map<String, Object> userData) {
 
         // 2024-8-4  17:29-主动设置用户登录环境Cookie的数据到客户端浏览器中
         Cookie cookie = new Cookie(WebConstants.USER_LOGIN_COOKIE_KEY, (String) userData.getOrDefault(WebConstants.USER_LOGIN_COOKIE_KEY, "UNKNOWN"));
@@ -55,9 +114,7 @@ public class LoginController {
         cookie.setDomain(ptp.fltv.web.constants.WebConstants.SERVER_IP);
         cookie.setPath("/");
 
-        response.addCookie(cookie);
-
-        return Result.success(userData);
+        return cookie;
 
     }
 

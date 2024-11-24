@@ -1,5 +1,6 @@
 package ptp.fltv.web.service.impl;
 
+import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
@@ -29,10 +30,12 @@ import org.springframework.web.multipart.MultipartFile;
 import pfp.fltv.common.constants.OAuth2LoginConstants;
 import pfp.fltv.common.constants.RedisConstants;
 import pfp.fltv.common.constants.WebConstants;
+import pfp.fltv.common.enums.Gender;
 import pfp.fltv.common.enums.LoginClientType;
 import pfp.fltv.common.exceptions.PtpException;
 import pfp.fltv.common.model.po.info.AddressInfo;
 import pfp.fltv.common.model.po.info.LoginInfo;
+import pfp.fltv.common.model.po.manage.Asset;
 import pfp.fltv.common.model.po.manage.Role;
 import pfp.fltv.common.model.po.manage.SubscriberShip;
 import pfp.fltv.common.model.po.manage.User;
@@ -41,9 +44,11 @@ import pfp.fltv.common.model.vo.UserVo;
 import pfp.fltv.common.utils.JwtUtils;
 import ptp.fltv.web.constants.CosConstants;
 import ptp.fltv.web.mapper.UserMapper;
+import ptp.fltv.web.service.AssetService;
 import ptp.fltv.web.service.RoleService;
 import ptp.fltv.web.service.SubscriberShipService;
 import ptp.fltv.web.service.UserService;
+import ptp.fltv.web.utils.RandomUtils;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.args.GeoUnit;
 import redis.clients.jedis.params.GeoSearchParam;
@@ -667,6 +672,48 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (isUpdated) {
 
             return getById(userId);
+
+        }
+
+        return null;
+
+    }
+
+
+    @Override
+    public Map<String, Object> registerByNicknameAndPassword(@Nonnull UserLoginVo userLoginVo) {
+
+        AssetService assetService = SpringUtil.getBean(AssetService.class);
+
+        // 2024-11-24  11:32-需要为新创建的用户分配一个相关联的财产数据包
+        Asset asset = Asset.builder()
+                .balance(0.0)
+                .accounts(new ArrayList<>())
+                .authorities(List.of("drawback", "withdraw", "view", "update_password"))
+                .credit(100.0)
+                .build();
+
+        boolean isSaveAsset = assetService.save(asset);
+        if (isSaveAsset) {
+
+            User user = User.builder()
+                    .account(RandomUtils.generateAccount())
+                    .password(userLoginVo.getPassword())
+                    .nickname(userLoginVo.getNickname())
+                    .gender(Gender.SECRET)
+                    .idiograph("这个人很懒 , 什么信息也没有写~")
+                    .avatar(RandomUtils.generateAvatar())
+                    .background(RandomUtils.generateBackground())
+                    .roleId(1L) // 2024-11-24  11:30-还需要提前赋予该用户角色信息(目前暂定为具备全部权限的管理员角色)
+                    .assetId(asset.getId()) // 2024-11-24  11:34-还要关联上刚刚创建好的财产信息
+                    .build();
+
+            boolean isSaved = save(user);
+            if (isSaved) {
+
+                return loginByNicknameAndPassword(userLoginVo); // 2024-11-24  20:05-这里为了省事 , 直接调用现成的API
+
+            }
 
         }
 

@@ -204,4 +204,17 @@ public interface UserService extends IService<User> {
     User updateSingleUserField(@Nonnull Long userId, @Nonnull String fieldName, @Nonnull Object fieldValue);
 
 
+    /**
+     * @param userLoginVo 用户登录的数据
+     * @return 最终的登录结果(也可以看做注册成功与否的结果)，成功则为包含JWT的结果
+     * @author Lenovo/LiGuanda
+     * @date 2024/11/24 AM 10:56:40
+     * @version 1.0.0
+     * @apiNote 注意 : 该方法会给新创建好的用户的部分字段赋予默认值 , 此外 , 该API不会缓存用户登录令牌到Redis中 , 即需要客户端一侧创建完账号后再手动发起一次登录操作
+     * @description 根据用户昵称和账号密码来创建单个用户
+     * @filename UserService.java
+     */
+    Map<String, Object> registerByNicknameAndPassword(@Nonnull UserLoginVo userLoginVo);
+
+
 }
