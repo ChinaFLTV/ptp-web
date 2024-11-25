@@ -66,6 +66,34 @@ public class LoginController {
     }
 
 
+    @LogRecord(description = "QQ登录(OpenID)")
+    @SentinelResource("web-gate-controller")
+    @Operation(description = "QQ登录(OpenID)")
+    @PermitAll
+    @PostMapping("/loginByQQ")
+    public Result<Map<String, Object>> loginByQQ(
+
+            @RequestBody UserLoginVo userLoginVo,
+            HttpServletResponse response
+
+    ) throws PtpException {
+
+        Map<String, Object> userData = userService.loginByQQ(userLoginVo);
+
+        if (userData != null) {
+
+            response.addCookie(generateCookie(userData));
+            return Result.success(userData);
+
+        } else {
+
+            return Result.failure(null);
+
+        }
+
+    }
+
+
     @LogRecord(description = "普通注册(用户名+密码)")
     @SentinelResource("web-gate-controller")
     @Operation(description = "普通注册(用户名+密码)")

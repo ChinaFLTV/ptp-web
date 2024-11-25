@@ -129,6 +129,18 @@ public class User implements Serializable {
     @TableField(typeHandler = JacksonTypeHandler.class)
     private Map<String, String> bindAccounts; // 2024-11-18  00:52-账号绑定字段属性调整为Map , key为账号所属应用的唯一名称 , value为对应在该应用上的唯一账号/ID
 
+    @Field(name = "qq_account", type = FieldType.Text)
+    @Schema(description = "QQ账号(准确来说是OpenID)")
+    private String qqAccount;
+
+    @Field(name = "wechat_account", type = FieldType.Text)
+    @Schema(description = "微信账号")
+    private String wechatAccount;
+
+    @Field(name = "weibo_account", type = FieldType.Text)
+    @Schema(description = "微博账号")
+    private String weiboAccount;
+
     @Field(type = FieldType.Double)
     @Schema(description = "用户信誉积分")
     private Double credit = 100D;

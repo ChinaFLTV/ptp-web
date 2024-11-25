@@ -7,12 +7,14 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.annotation.Nonnull;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pfp.fltv.common.enums.ContentQuerySortType;
 import pfp.fltv.common.enums.ContentRankType;
 import pfp.fltv.common.enums.ContentStatus;
+import pfp.fltv.common.exceptions.PtpException;
 import pfp.fltv.common.model.po.content.Comment;
 import pfp.fltv.common.model.po.content.Passage;
 import pfp.fltv.common.model.po.manage.Asset;
@@ -33,6 +35,7 @@ import java.util.*;
  * @filename PassageServiceImpl.java
  */
 
+@Slf4j
 @AllArgsConstructor
 @Service
 public class PassageServiceImpl extends ServiceImpl<PassageMapper, Passage> implements PassageService {
@@ -80,7 +83,19 @@ public class PassageServiceImpl extends ServiceImpl<PassageMapper, Passage> impl
     @Override
     public List<Passage> queryPassagePageWithSorting(@Nonnull ContentQuerySortType sortType, @Nonnull Long pageNum, @Nonnull Long pageSize, @Nonnull Long uid) {
 
-        QueryWrapper<Passage> queryWrapper = sortType2QueryWrapper(sortType, uid);
+        QueryWrapper<Passage> queryWrapper;
+        try {
+
+            queryWrapper = sortType2QueryWrapper(sortType, uid);
+
+        } catch (PtpException ex) {
+
+            log.error("根据关注用户类型进行分页查询失败 : 用户没有关注任何其他用户({})", ex.getCause() == null ? ex.getLocalizedMessage() : ex.getCause().getMessage());
+
+            // 2024-11-25  14:53-这里捕获排序类型为用户关注且用户没有任何关注对象的情况 , 因此 , 既然用户没有关注任何其他用户 , 那么自然也就不会拉取到任何其他文章 , 因此这里出现这种情况直接进行返回
+            return new ArrayList<>();
+
+        }
 
         List<Passage> passages = page(new Page<>(pageNum, pageSize), queryWrapper).getRecords();
 
@@ -92,7 +107,20 @@ public class PassageServiceImpl extends ServiceImpl<PassageMapper, Passage> impl
     @Override
     public List<Passage> queryPassagePageWithSortingFuzzily(@Nonnull ContentQuerySortType sortType, @Nonnull String title, @Nonnull Long pageNum, @Nonnull Long pageSize, @Nonnull Long uid) {
 
-        QueryWrapper<Passage> queryWrapper = sortType2QueryWrapper(sortType, uid);
+        QueryWrapper<Passage> queryWrapper;
+        try {
+
+            queryWrapper = sortType2QueryWrapper(sortType, uid);
+
+        } catch (PtpException ex) {
+
+            log.error("根据关注用户类型进行分页查询失败 : {}", ex.getCause() == null ? ex.getLocalizedMessage() : ex.getCause().getMessage());
+
+            // 2024-11-25  14:53-这里捕获排序类型为用户关注且用户没有任何关注对象的情况 , 因此 , 既然用户没有关注任何其他用户 , 那么自然也就不会拉取到任何其他文章 , 因此这里出现这种情况直接进行返回
+            return new ArrayList<>();
+
+        }
+
         queryWrapper.like("title", title);
 
         List<Passage> passages = page(new Page<>(pageNum, pageSize), queryWrapper).getRecords();
@@ -138,6 +166,13 @@ public class PassageServiceImpl extends ServiceImpl<PassageMapper, Passage> impl
                         .stream()
                         .map(SubscriberShip::getFolloweeId)
                         .toList();
+
+                // 2024-11-25  14:50-这里主要解决当用户没有关注任何其他用户时 , 此时再去套用IN语法就会出错的情况
+                if (followeeIds.isEmpty()) {
+
+                    throw new PtpException(-1, "用户没有关注任何其他用户!");
+
+                }
 
                 queryWrapper.in("uid", followeeIds);
 

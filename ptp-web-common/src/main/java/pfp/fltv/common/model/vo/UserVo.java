@@ -13,7 +13,6 @@ import pfp.fltv.common.enums.Gender;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -88,6 +87,15 @@ public class UserVo implements Serializable {
     @Schema(description = "用户绑定的其他账号")
     @TableField(typeHandler = JacksonTypeHandler.class)
     private Map<String, String> bindAccounts; // 2024-11-18  00:53-账号绑定字段属性调整为Map , key为账号所属应用的唯一名称 , value为对应在该应用上的唯一账号/ID
+
+    @Schema(description = "QQ账号(准确来说是OpenID)")
+    private String qqAccount;
+
+    @Schema(description = "微信账号")
+    private String wechatAccount;
+
+    @Schema(description = "微博账号")
+    private String weiboAccount;
 
     @Schema(description = "用户信誉积分")
     private Double credit;

@@ -31,6 +31,9 @@ public class UserLoginVo implements Serializable {
     @Schema(description = "用户密码")
     private String password;
 
+    @Schema(description = "账号(也可以是ID , 该字段专门用于第三方登录)")
+    private String account;
+
     @Schema(description = "用户登录的其他信息")
     private LoginInfo loginInfo;
 

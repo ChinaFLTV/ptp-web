@@ -62,6 +62,19 @@ public interface UserService extends IService<User> {
 
 
     /**
+     * @param userLoginVo 用户登录的数据
+     * @return 最终的登录结果，成功则为包含JWT的结果
+     * @author Lenovo/LiGuanda
+     * @date 2024/11/25 PM 3:30:07
+     * @version 1.0.0
+     * @apiNote 该登录方式是借助QQ方提供的OpenId进行登录 , 如果存在用户关联到该OpenId , 则允许登录 ; 否则 , 则不允许登录
+     * @description QQ登录(OpenID)
+     * @filename UserService.java
+     */
+    Map<String, Object> loginByQQ(UserLoginVo userLoginVo);
+
+
+    /**
      * @param code 用户同意使用Github登录后返回的登录码
      * @return 获取到的用户的Github数据，不存在则为null
      * @author Lenovo/LiGuanda

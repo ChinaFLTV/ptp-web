@@ -184,6 +184,36 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
 
+    @Override
+    public Map<String, Object> loginByQQ(UserLoginVo userLoginVo) {
+
+        // 2024-11-25  15:8-先根据用户方提供的OpenId去查询是否存在关联的用户 , 如果存在则执行正常的登录流程 , 否则 , 则拒绝登录
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("qq_account", userLoginVo.getAccount());
+
+        List<User> users = list(queryWrapper);
+        if (users.isEmpty()) {
+
+            // 2024-11-25  15:50-如果查询不到关联的用户 , 则说明当前QQ尚未绑定其他现有的PTP账号 , 因此拒绝本次用户登录
+            throw new PtpException(808, "当前QQ尚未关联任何PTP账号!");
+
+        } else {
+
+            // 2024-11-25  15:56-如果存在 , 则选中第一个候选用户进行登录(按理说 , 一个QQ和一个PTP账号是1:1关联的关系才对)
+            User candidateUser = users.get(0);
+
+            // 2024-11-25  15:57-重新装配userLoginInfo进行正常化登录(这里为了方便直接调用现有的普通登录API)
+            userLoginVo.setNickname(candidateUser.getNickname());
+            userLoginVo.setPassword(candidateUser.getPassword());
+            userLoginVo.setAccount(null);
+
+            return loginByNicknameAndPassword(userLoginVo);
+
+        }
+
+    }
+
+
     /**
      * @param newEnvMap     当前正在进行登录的登录环境
      * @param oldEnvJsonObj 云端存储的上一次登录的环境信息
