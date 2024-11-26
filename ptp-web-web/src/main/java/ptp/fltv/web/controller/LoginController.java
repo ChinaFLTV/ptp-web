@@ -66,19 +66,19 @@ public class LoginController {
     }
 
 
-    @LogRecord(description = "QQ登录(OpenID)")
+    @LogRecord(description = "通过第三方应用(如QQ、微博等)的唯一ID进行登录")
     @SentinelResource("web-gate-controller")
-    @Operation(description = "QQ登录(OpenID)")
+    @Operation(description = "通过第三方应用(如QQ、微博等)的唯一ID进行登录")
     @PermitAll
-    @PostMapping("/loginByQQ")
-    public Result<Map<String, Object>> loginByQQ(
+    @PostMapping("/loginBy3rdUid")
+    public Result<Map<String, Object>> loginBy3rdUid(
 
             @RequestBody UserLoginVo userLoginVo,
             HttpServletResponse response
 
     ) throws PtpException {
 
-        Map<String, Object> userData = userService.loginByQQ(userLoginVo);
+        Map<String, Object> userData = userService.loginBy3rdUid(userLoginVo);
 
         if (userData != null) {
 

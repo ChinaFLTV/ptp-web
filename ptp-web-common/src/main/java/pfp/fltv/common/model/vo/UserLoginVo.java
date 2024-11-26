@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pfp.fltv.common.enums.LoginType;
 import pfp.fltv.common.model.po.info.LoginInfo;
 
 import java.io.Serializable;
@@ -36,6 +37,9 @@ public class UserLoginVo implements Serializable {
 
     @Schema(description = "用户登录的其他信息")
     private LoginInfo loginInfo;
+
+    @Schema(description = "用户登录的方式")
+    private LoginType loginType;
 
 
 }

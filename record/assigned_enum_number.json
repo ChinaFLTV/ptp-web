@@ -138,5 +138,10 @@
     "start": 2700,
     "end": 2799,
     "enum": "AccessaryType"
+  },
+  {
+    "start": 2800,
+    "end": 2899,
+    "enum": "LoginType"
   }
 ]

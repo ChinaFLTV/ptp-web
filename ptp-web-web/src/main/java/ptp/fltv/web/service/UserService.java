@@ -68,10 +68,10 @@ public interface UserService extends IService<User> {
      * @date 2024/11/25 PM 3:30:07
      * @version 1.0.0
      * @apiNote 该登录方式是借助QQ方提供的OpenId进行登录 , 如果存在用户关联到该OpenId , 则允许登录 ; 否则 , 则不允许登录
-     * @description QQ登录(OpenID)
+     * @description 通过第三方应用(如QQ、微博等)的唯一ID进行登录
      * @filename UserService.java
      */
-    Map<String, Object> loginByQQ(UserLoginVo userLoginVo);
+    Map<String, Object> loginBy3rdUid(UserLoginVo userLoginVo);
 
 
     /**

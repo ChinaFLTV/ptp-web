@@ -185,11 +185,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
 
     @Override
-    public Map<String, Object> loginByQQ(UserLoginVo userLoginVo) {
+    public Map<String, Object> loginBy3rdUid(UserLoginVo userLoginVo) {
 
         // 2024-11-25  15:8-先根据用户方提供的OpenId去查询是否存在关联的用户 , 如果存在则执行正常的登录流程 , 否则 , 则拒绝登录
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("qq_account", userLoginVo.getAccount());
+
+        switch (userLoginVo.getLoginType()) {
+
+            case QQ -> queryWrapper.eq("qq_account", userLoginVo.getAccount());
+            case WECHAT -> queryWrapper.eq("wechat_account", userLoginVo.getAccount());
+            case WEIBO -> queryWrapper.eq("weibo_account", userLoginVo.getAccount());
+            default -> throw new PtpException(808, "未知的第三方登录方式!");
+
+        }
+
 
         List<User> users = list(queryWrapper);
         if (users.isEmpty()) {
