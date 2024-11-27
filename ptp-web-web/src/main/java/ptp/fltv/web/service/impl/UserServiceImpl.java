@@ -689,6 +689,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public User updateSingleUserField(@Nonnull Long userId, @Nonnull String fieldName, @Nonnull Object fieldValue) {
 
+        // 2024-11-27  10:43-解决用户视图将某个字段重置(将值置空) , 但传null过来时会丢失fieldValue参数 , 因此这里规定 : 一旦用户传递的字段值为空串(仅包含空格的字符串也将被视为空串) , 那么表明用户想清除该字段的值(将字段的值置为null)(当然not null 字段置为空将会自动抛出异常 , 导致本次字段更新终止)
+        if (fieldValue instanceof String fieldVStringValue) {
+
+            if (!StringUtils.hasLength(fieldVStringValue.trim())) {
+
+                fieldValue = null;
+
+            }
+
+        }
+
         UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("id", userId);
 
@@ -696,6 +707,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 2024-11-18  20:04-如果当前更新的字段为用户的出生日期((当然字段类型也必须为LocalDateTime)) , 则还需要额外的同步更新用户的年龄字段 , 以达到逻辑上的一致性
         if ("birth_date".equals(fieldName)) {
 
+            if (fieldValue == null) {
+
+                throw new PtpException(807, "时间日期类型的字段的值不能为空!");
+
+            }
+
+            @SuppressWarnings("DataFlowIssue")
             LocalDateTime birthDate = JSON.parseObject((String) fieldValue, LocalDateTime.class);
             int age = Period.between(birthDate.toLocalDate(), LocalDate.now()).getYears();
             updateWrapper.set("age", age)
