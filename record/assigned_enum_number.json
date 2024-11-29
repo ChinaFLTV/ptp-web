@@ -143,5 +143,10 @@
     "start": 2800,
     "end": 2899,
     "enum": "LoginType"
+  },
+  {
+    "start": 2900,
+    "end": 2999,
+    "enum": "AgricultureEnvironment.SortType"
   }
 ]

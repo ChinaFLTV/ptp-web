@@ -1,6 +1,7 @@
 package ptp.fltv.web.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
 import pfp.fltv.common.model.po.manage.User;
 
 /**
@@ -11,6 +12,7 @@ import pfp.fltv.common.model.po.manage.User;
  * @filename UserMapper.java
  */
 
+@Mapper
 public interface UserMapper extends BaseMapper<User> {
 
 

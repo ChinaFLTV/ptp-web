@@ -1,6 +1,7 @@
 package ptp.fltv.web.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
 import pfp.fltv.common.model.po.content.Comment;
 
 /**
@@ -11,6 +12,7 @@ import pfp.fltv.common.model.po.content.Comment;
  * @filename CommentMapper.java
  */
 
+@Mapper
 public interface CommentMapper extends BaseMapper<Comment> {
 
 

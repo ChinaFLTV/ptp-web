@@ -546,3 +546,34 @@ CREATE TABLE IF NOT EXISTS `update_info`
     ENGINE = InnoDB
     DEFAULT CHARSET = utf8mb4
     COMMENT ='更新数据实体(PO实体类)';
+
+
+# 2024-11-29  20:13-创建农业生产环境数据表(物联网在农业中的应用创新课程设计所需数据)
+CREATE TABLE IF NOT EXISTS `agriculture_environment`
+(
+    `id`                BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT NOT NULL COMMENT 'ID',
+    `uid`               BIGINT UNSIGNED                            NOT NULL COMMENT '状态数据发布者ID',
+    `light`             DECIMAL(10, 2)      DEFAULT 0 COMMENT '光照强度(单位为勒克斯(Lux) , <300时 , 为低光照强度 , 此时植物生长缓慢 ; 300-1000时 , 为中等光照强度 , 此时适合大多数植物的生长 ; >1000时 , 为高光照强度 , 对某些植物来说可能有益 , 但过于强烈的光照也可能会灼伤叶片)',
+    `co2_concentration` DECIMAL(10, 4)      DEFAULT 0 COMMENT '二氧化碳浓度(单位为ppm , 百万分之一 , <350时 , 植物的光合作用效率较低 , 将会影响植物的生长 ; 350-1000时 , 这是大多数植物进行光合作用的合理范围 ; >1000时 , 过高的二氧化碳浓度可能会导致植物出现生理问题)',
+    `temperature`       DECIMAL(10, 2)      DEFAULT 0 COMMENT '温度(单位为摄氏度)',
+    `humidity`          DECIMAL(10, 2)      DEFAULT 0 COMMENT '湿度(单位为百分比 , <30时 , 为低湿度 , 可能会导致植物水分蒸发过快 ; 40-60时 , 为适宜湿度 , 有助于植物的正常生理功能 ; >80时 , 为高湿度 , 可能会导致病害的发生)',
+    `node_id`           BIGINT UNSIGNED UNIQUE                     NOT NULL COMMENT '节点ID',
+    `node_name`         VARCHAR(128) UNIQUE DEFAULT NULL COMMENT '节点名称',
+    `node_status`       TEXT                DEFAULT NULL COMMENT '节点状态(JSON)',
+    `status`            INT UNSIGNED        DEFAULT 200 COMMENT '实例状态',
+    `meta`              TEXT                DEFAULT NULL COMMENT '其他数据配置(JSON)',
+    `create_time`       TIMESTAMP           DEFAULT CURRENT_TIMESTAMP COMMENT '内容创建时间',
+    `update_time`       TIMESTAMP           DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '(最后)更新时间',
+    `is_deleted`        INT UNSIGNED        DEFAULT 0 COMMENT '当前实体是否已被逻辑删除',
+    `version`           INT UNSIGNED        DEFAULT 1 COMMENT '当前实体的版本(用于辅助实现乐观锁)',
+
+    FOREIGN KEY (uid) REFERENCES user (`id`),
+
+    INDEX `idx_node_id` (`node_id`),        # 2024-11-29  21:40-存在分组查询某个节点的多条状态数据情况 , 因此需要通过构建索引来加速查询
+    INDEX `idx_node_name` (`node_name`),
+    INDEX `idx_create_time` (`create_time`) # 2024-11-29  21:39-存在倒序查询最新一条某个节点的状态数据的情况 , 因此需要通过构建索引来加速查询
+
+)
+    ENGINE = InnoDB
+    DEFAULT CHARSET = utf8mb4
+    COMMENT ='农业生产环境数据实体(PO实体类)';

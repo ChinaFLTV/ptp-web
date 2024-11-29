@@ -42,6 +42,7 @@ public class SecurityConstants {
         URL_AUTHENTICATION_MAP.put(String.format("%s/manage/event/record", WebConstants.WEB_CONTEXT_PATH), Set.of("manage:event:record:add", "manage:event:record:remove", "manage:event:record:list", "manage:event:record:update"));
         URL_AUTHENTICATION_MAP.put(String.format("%s/resource/media", WebConstants.WEB_CONTEXT_PATH), Set.of("manage:media:add", "manage:media:remove", "manage:media:list", "manage:media:update"));
         URL_AUTHENTICATION_MAP.put(String.format("%s/info/update", WebConstants.WEB_CONTEXT_PATH), Set.of("manage:info:update:add", "manage:info:update:remove", "manage:info:update:list", "manage:info:update:update"));
+        URL_AUTHENTICATION_MAP.put(String.format("%s/agriculture/environment", WebConstants.WEB_CONTEXT_PATH), Set.of("agriculture:environment:add", "agriculture:environment:remove", "agriculture:environment:list", "agriculture:environment:update"));
 
     }
 

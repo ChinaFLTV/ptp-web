@@ -1,6 +1,7 @@
 package ptp.fltv.web.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
 import pfp.fltv.common.model.po.content.Announcement;
 
 /**
@@ -11,6 +12,7 @@ import pfp.fltv.common.model.po.content.Announcement;
  * @filename AnnouncementMapper.java
  */
 
+@Mapper
 public interface AnnouncementMapper extends BaseMapper<Announcement> {
 
 

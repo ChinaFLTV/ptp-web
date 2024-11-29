@@ -59,15 +59,15 @@ public class AnnouncementController {
     @LogRecord(description = "批量(分页)查询多条公告数据")
     @SentinelResource("web-content-announcement-controller")
     @Operation(description = "批量(分页)查询多条公告数据")
-    @GetMapping("/query/page/{offset}/{limit}")
+    @GetMapping("/query/page/{pageNum}/{pageSize}")
     public Result<List<Announcement>> queryAnnouncementPage(
 
-            @Parameter(name = "offset", description = "查询的一页公告数据的起始偏移量", in = ParameterIn.PATH, required = true) @PathVariable("offset") Long offset,
-            @Parameter(name = "limit", description = "查询的这一页公告数据的数量", in = ParameterIn.PATH, required = true) @PathVariable("limit") Long limit
+            @Parameter(name = "pageNum", description = "查询的一页文章数据的数据页页码", in = ParameterIn.PATH, required = true) @PathVariable("pageNum") Long pageNum,
+            @Parameter(name = "pageSize", description = "查询的这一页文章数据的数量", in = ParameterIn.PATH, required = true) @PathVariable("pageSize") Long pageSize
 
     ) {
 
-        Page<Announcement> announcementPage = new Page<>(offset, limit);
+        Page<Announcement> announcementPage = new Page<>(pageNum, pageSize);
         announcementPage = announcementService.page(announcementPage);
 
         return Result.success(announcementPage.getRecords() == null ? new ArrayList<>() : announcementPage.getRecords());

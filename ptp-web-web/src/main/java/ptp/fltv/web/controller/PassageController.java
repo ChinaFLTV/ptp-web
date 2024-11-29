@@ -70,15 +70,15 @@ public class PassageController {
     @LogRecord(description = "批量(分页)查询多条文章数据")
     @SentinelResource("web-content-passage-controller")
     @Operation(description = "批量(分页)查询多条文章数据")
-    @GetMapping("/query/page/{offset}/{limit}")
+    @GetMapping("/query/page/{pageNum}/{pageSize}")
     public Result<List<Passage>> queryPassagePage(
 
-            @Parameter(name = "offset", description = "查询的一页文章数据的起始偏移量", in = ParameterIn.PATH, required = true) @PathVariable("offset") Long offset,
-            @Parameter(name = "limit", description = "查询的这一页文章数据的数量", in = ParameterIn.PATH, required = true) @PathVariable("limit") Long limit
+            @Parameter(name = "pageNum", description = "查询的一页文章数据的数据页页码", in = ParameterIn.PATH, required = true) @PathVariable("pageNum") Long pageNum,
+            @Parameter(name = "pageSize", description = "查询的这一页文章数据的数量", in = ParameterIn.PATH, required = true) @PathVariable("pageSize") Long pageSize
 
     ) {
 
-        Page<Passage> passagePage = new Page<>(offset, limit);
+        Page<Passage> passagePage = new Page<>(pageNum, pageSize);
         passagePage = passageService.page(passagePage);
 
         return Result.success(passagePage.getRecords() == null ? new ArrayList<>() : passagePage.getRecords());

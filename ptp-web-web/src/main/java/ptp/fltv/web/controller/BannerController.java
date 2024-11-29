@@ -41,7 +41,11 @@ public class BannerController {
     @SentinelResource("web-content-banner-controller")
     @Operation(description = "根据ID查询单条轮播数据")
     @GetMapping("/query/single/{id}")
-    public Result<Banner> querySingleBanner(@PathVariable("id") Long id) {
+    public Result<Banner> querySingleBanner(
+
+            @Parameter(name = "id", description = "待查询的单条轮播数据ID", in = ParameterIn.PATH, required = true) @PathVariable("id") Long id
+
+    ) {
 
         Banner banner = bannerService.getById(id);
         return (banner == null) ? Result.failure(null) : Result.success(banner);
@@ -52,15 +56,15 @@ public class BannerController {
     @LogRecord(description = "批量(分页)查询多条轮播数据(对实体可见状态不做限制)")
     @SentinelResource("web-content-banner-controller")
     @Operation(description = "批量(分页)查询多条轮播数据(对实体可见状态不做限制)")
-    @GetMapping("/query/page/{offset}/{limit}")
+    @GetMapping("/query/page/{pageNum}/{pageSize}")
     public Result<List<Banner>> queryBannerPage(
 
-            @Parameter(name = "offset", description = "查询的一页轮播数据的起始偏移量", in = ParameterIn.PATH, required = true) @PathVariable("offset") Long offset,
-            @Parameter(name = "limit", description = "查询的这一页轮播数据的数量", in = ParameterIn.PATH, required = true) @PathVariable("limit") Long limit
+            @Parameter(name = "pageNum", description = "查询的一页轮播数据的数据页页码", in = ParameterIn.PATH, required = true) @PathVariable("pageNum") Long pageNum,
+            @Parameter(name = "pageSize", description = "查询的这一页轮播数据的数量", in = ParameterIn.PATH, required = true) @PathVariable("pageSize") Long pageSize
 
     ) {
 
-        Page<Banner> bannerPage = new Page<>(offset, limit);
+        Page<Banner> bannerPage = new Page<>(pageNum, pageSize);
         bannerPage = bannerService.page(bannerPage);
 
         return Result.success(bannerPage.getRecords() == null ? new ArrayList<>() : bannerPage.getRecords());
