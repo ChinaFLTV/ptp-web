@@ -16,7 +16,7 @@ import java.util.Random;
 public class RandomUtils {
 
 
-    private static final Random random = new Random(666L);
+    private static final Random random = new Random(); // 2024-12-1  23:35-请不要使用固定的种子数 , 否则极有可能在账号生成初期发生大量碰撞(你也可以设置 , 但请务必保证每次的种子数不一致(在随机器初始化的时候))
 
 
     /**

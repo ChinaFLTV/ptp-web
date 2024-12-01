@@ -81,11 +81,11 @@ CREATE TABLE IF NOT EXISTS `user`
     FOREIGN KEY (role_id) REFERENCES role (id),
     FOREIGN KEY (asset_id) REFERENCES asset (id),
 
-    UNIQUE KEY un_idx_account (account),
-    UNIQUE KEY un_idx_nickname (nickname),
+    UNIQUE INDEX un_idx_account (account),
+    UNIQUE INDEX un_idx_nickname (nickname),
     INDEX idx_realname (realname),
-    UNIQUE KEY un_idx_phone (phone),
-    UNIQUE KEY un_idx_email (email)
+    UNIQUE INDEX un_idx_phone (phone),
+    UNIQUE INDEX un_idx_email (email)
 
 )
     ENGINE = InnoDB
