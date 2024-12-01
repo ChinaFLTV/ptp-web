@@ -35,6 +35,23 @@ public class FileController {
     private final FileService fileService;
 
 
+    @LogRecord(description = "预览指定相对路径上的单个文件")
+    @SentinelResource("web-resource-file-controller")
+    @Operation(description = "预览指定相对路径上的单个文件")
+    @RequestMapping(value = "/preview/single/**", method = RequestMethod.GET)
+    public void previewSingleFile(
+
+            HttpServletRequest request,
+            HttpServletResponse response
+            // @Parameter(name = "relativePath", description = "待预览的文件的云端相对路径(即该文件上传时选择的相对存放路径)(路径要求见上传文件时的相对路径的要求)", in = ParameterIn.PATH, required = true) @PathVariable("relativePath") String relativePath
+
+    ) throws IOException {
+
+        fileService.previewSingleFile(response, request.getRequestURL().toString().split("/resource/file/preview/single/")[1]);
+
+    }
+
+
     @LogRecord(description = "下载指定相对路径上的单个文件")
     @SentinelResource("web-resource-file-controller")
     @Operation(description = "下载指定相对路径上的单个文件")

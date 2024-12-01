@@ -50,6 +50,18 @@ public interface FileService {
      * @param response     HTTP响应
      * @param relativePath 待下载的文件的云端相对路径(即该文件上传时选择的相对存放路径)(路径要求见上传文件时的相对路径的要求)
      * @author Lenovo/LiGuanda
+     * @date 2024/12/1 PM 10:40:53
+     * @version 1.0.0
+     * @description 预览指定相对路径上的单个文件
+     * @filename FileService.java
+     */
+    void previewSingleFile(HttpServletResponse response, String relativePath) throws IOException;
+
+
+    /**
+     * @param response     HTTP响应
+     * @param relativePath 待下载的文件的云端相对路径(即该文件上传时选择的相对存放路径)(路径要求见上传文件时的相对路径的要求)
+     * @author Lenovo/LiGuanda
      * @date 2024/11/8 PM 5:15:37
      * @version 1.0.0
      * @description 下载指定相对路径上的单个文件

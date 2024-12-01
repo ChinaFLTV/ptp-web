@@ -42,6 +42,40 @@ public class FileServiceImpl implements FileService {
 
 
     @Override
+    public void previewSingleFile(HttpServletResponse response, String relativePath) throws IOException {
+
+        // 2024-12-1  22:42-解决通过API fox发送HTTP请求时 , relativePath字段总是以逗号结尾的问题
+        if (relativePath.endsWith(",")) {
+
+            relativePath = relativePath.substring(0, relativePath.length() - 1);
+
+        }
+
+        String absolutePath = (BASE_PATH + File.separator + relativePath).replace("/", File.separator)
+                .replace("\\", File.separator); // 2024-12-1  22:42-解决用户给出的路径中采用了可能与应用运行平台不一致的路径分隔符的问题以避免路径解析异常
+        String extension = absolutePath.substring(absolutePath.lastIndexOf(".") + 1).toLowerCase();
+        String contentType = extension2ContentType(extension);
+
+        File targetFile = new File(absolutePath);
+        if (targetFile.exists()) {
+
+            response.setContentType(contentType);
+            response.setHeader("Content-Disposition", "inline;filename=" + URLEncodeUtil.encode(getFilenameFromPath(absolutePath), StandardCharsets.UTF_8));
+            ServletOutputStream outputStream = response.getOutputStream();
+            outputStream.write(Files.readAllBytes(Path.of(absolutePath)));
+            outputStream.flush();
+            outputStream.close();
+
+        } else {
+
+            throw new PtpException(818, "不存在指定的文件资源!");
+
+        }
+
+    }
+
+
+    @Override
     public void downloadSingleFile(@Nonnull HttpServletResponse response, @Nonnull String relativePath) throws IOException {
 
         // 2024-11-8  19:02-解决通过API fox发送HTTP请求时 , relativePath字段总是以逗号结尾的问题
@@ -58,7 +92,7 @@ public class FileServiceImpl implements FileService {
         if (targetFile.exists()) {
 
             response.setContentType("application/octet-stream");
-            response.setHeader("Content-Disposition", "inline;filename=" + URLEncodeUtil.encode(getFilenameFromPath(absolutePath), StandardCharsets.UTF_8));
+            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncodeUtil.encode(getFilenameFromPath(absolutePath), StandardCharsets.UTF_8));
             ServletOutputStream outputStream = response.getOutputStream();
             outputStream.write(Files.readAllBytes(Path.of(absolutePath)));
             outputStream.flush();
@@ -203,5 +237,40 @@ public class FileServiceImpl implements FileService {
 
     }
 
+
+    /**
+     * @param extension 文件的后缀名
+     * @return 与该后缀名对应的内容类型
+     * @author Lenovo/LiGuanda
+     * @date 2024/12/1 PM 10:46:05
+     * @version 1.0.0
+     * @description 根据文件后缀名转换为对应的响应内容类型
+     * @filename FileServiceImpl.java
+     */
+    private String extension2ContentType(String extension) {
+
+        if (!StringUtils.hasLength(extension)) {
+
+            return "application/octet-stream";
+
+        }
+
+        return switch (extension.toLowerCase()) {
+
+            case "html", "htm" -> "text/html";
+            case "jpg", "jpeg", "png", "webp" -> "image/jpeg";
+            case "mp3" -> "audio/mpeg";
+            case "mp4", "avi" -> "video/mp4";
+            case "xml", "xhtml" -> "application/xhtml+xml";
+            case "json" -> "application/json";
+            case "txt", "md" -> "text/plain";
+            case "zip" -> "application/zip";
+            case "gz" -> "application/x-gzip";
+            case "bz2" -> "application/x-bzip2";
+            default -> "application/octet-stream";
+
+        };
+
+    }
 
 }

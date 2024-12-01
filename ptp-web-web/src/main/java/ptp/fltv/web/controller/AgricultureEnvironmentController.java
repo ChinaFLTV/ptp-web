@@ -59,7 +59,7 @@ public class AgricultureEnvironmentController {
     @GetMapping("/queryLatestSingleAgricultureEnvironmentByNodeId")
     public Result<AgricultureEnvironment> queryLatestSingleAgricultureEnvironmentByNodeId(
 
-            @Parameter(name = "nodeId", description = "需要查询最新一条农业生产环境数据的节点ID(-1则表示查询全部节点的状态数据)", required = true) @RequestParam("nodeId") Long nodeId
+            @Parameter(name = "nodeId", description = "需要查询最新一条农业生产环境数据的节点ID", required = true) @RequestParam("nodeId") Long nodeId
 
     ) {
 
@@ -94,7 +94,7 @@ public class AgricultureEnvironmentController {
     @GetMapping("/queryAgricultureEnvironmentPageByNodeIdWithSorting")
     public Result<List<AgricultureEnvironment>> queryAgricultureEnvironmentPageByNodeIdWithSorting(
 
-            @Parameter(name = "nodeId", description = "分组查询的一页农业生产环境数据的数据页页码", required = true) @RequestParam("nodeId") Long nodeId,
+            @Parameter(name = "nodeId", description = "需要查询最新一条农业生产环境数据的节点ID(-1则表示查询全部节点的状态数据)", required = true) @RequestParam("nodeId") Long nodeId,
             @Parameter(name = "sortType", description = "分组查询的一页农业生产环境数据的排序规则", required = true) @RequestParam("sortType") AgricultureEnvironment.SortType sortType,
             @Parameter(name = "pageNum", description = "查询的一页农业生产环境数据的数据页页码", required = true) @RequestParam("pageNum") Long pageNum,
             @Parameter(name = "pageSize", description = "查询的这一页农业生产环境数据的数量", required = true) @RequestParam("pageSize") Long pageSize
