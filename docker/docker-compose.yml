@@ -627,6 +627,7 @@ services:
       - mysql
 
 
+  # 2024-12-2  17:18-当你二次启动MongoDB容器实例时 , 如果报 Failed to open /var/log/mongodb/mongod.log 错误 , 则请清空docker/volumes/mongodb/data和logs目录中的全部文件后 并在logs目录下新建一个空的mongod.log文件 , 然后重新构建并启动该容器实例
   # 2024-10-9  22:42-远程部署该容器实例时 , 请先对 ./volumes/mongodb/docker-entrypoint.sh 文件做个无副作用的写操作(比如 , 你可以对空行处做个回车等操作使该文件变成被修改过的文件即可) , 否则部署容器实例将失败
   # 2024-9-8  22:22-每次重新构建该容器时 , 记得清除该容器对应的映射目录中的data目录以正常执行初始化docker-entrypoint-initdb.d目录下的JS/Shell脚本
   # 2024-9-7  21:51-安装MongoDB数据库
