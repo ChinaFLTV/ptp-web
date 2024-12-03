@@ -1,7 +1,6 @@
 package ptp.fltv.web.service.gateway.config;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.cloud.gateway.filter.ratelimit.RedisRateLimiter;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
@@ -94,16 +93,16 @@ public class GatewayConfig {
      * @author Lenovo/LiGuanda
      * @date 2024/5/9 PM 9:09:24
      * @version 1.0.0
-     * * @apiNote 该RedisRateLimiter的定义将会覆盖掉GatewayRedisAutoConfiguration的默认的RedisRateLimiter的定义
+     * @apiNote 该RedisRateLimiter的定义将会覆盖掉GatewayRedisAutoConfiguration的默认的RedisRateLimiter的定义
      * @description 根据实际运行情况产生适合的Redis限流器
      * @filename GatewayConfig.java
      */
-    @Bean
+    /*@Bean
     public RedisRateLimiter redisRateLimiter() {
 
         return new RedisRateLimiter(200, 1000);
 
-    }
+    }*/
 
 
     /**
