@@ -133,7 +133,7 @@ public class RandomUtils {
 
         for (int i = 1; i <= 6; i++) {
 
-            builder.append(random.nextInt(0, 10));
+            builder.append(random.nextInt(10));
 
         }
 
