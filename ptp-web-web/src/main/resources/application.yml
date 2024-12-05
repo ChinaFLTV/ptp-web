@@ -197,6 +197,24 @@ seata:
 # 建议推送完该文件之后再将其打开 , 这是一个很有用的保护机制
 # 2024-8-11  17:30-腾讯云对象存储COS密钥相关的配置
 cos:
+  # noinspection SpellCheckingInspection
   secretId: AKIDRkAmPsT0mF7zpTG4nDo2KvNm6MRM4iLx
+  # noinspection SpellCheckingInspection
   secretKey: ccffoqmzDMUWURMAqeMsBey56De5Qd0O
   regionName: ap-nanjing
+
+
+# 2024-12-5  13:50-Hutool相关参数的配置
+hutool:
+  # 2024-12-5  17:49-QQ邮箱的校验码文档 : https://wx.mail.qq.com/list/readtemplate?name=app_intro.html#/agreement/authorizationCode
+  # 2024-12-5  13:55-通过Hutool的邮箱工具类发送邮件所需配置
+  email:
+    host: smtp.qq.com # 2024-12-5  14:27-邮件服务器的SMTP地址 , 可选 , 默认为smtp.<发件人邮箱后缀>
+    port: 587 # 2024-12-5  14:27-邮件服务器的SMTP端口 , 可选 , 默认25
+    auth: true
+    ssl-enable: false # 202412-5  14:29-使用SSL加密方式发送邮件 , 在使用QQ或Gmail邮箱时 , 需要强制开启SSL支持 , 需要设置为false , 否则QQ邮箱测试邮件发送报错
+    starttls-enable: true # 2024-12-5  16:52-使用STARTTLS安全链接 , STARTTLS是对纯文本通信协议的扩展
+    from: 3242742226@qq.com # 2024-12-5  14:28-发件人(必须正确 , 否则发送失败)
+    user: 3242742226@qq.com # 2024-12-5  14:28-用户名 , 默认为发件人邮箱前缀
+    # noinspection SpellCheckingInspection
+    pass: gemqhvfwcjuzdbhe # 2024-12-5  14:28-密码(注意 , 某些邮箱需要为SMTP服务单独设置授权码 , 详情查看相关帮助)

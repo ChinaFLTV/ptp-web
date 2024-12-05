@@ -60,8 +60,8 @@ public class GatewayConfig {
                                     return f;
 
                                 })
-                                .metadata("response-timeout", 10_000)
-                                .metadata("connect-timeout", 10_000)
+                                .metadata("connect-timeout", 30_000)
+                                .metadata("response-timeout", 60_000)
                                 .uri("http://" + webConstants.getPTP_WEB_WEB_SERVER_HOST() + ":8080")
                 )
                 // 2024-5-6  21:06-禁止普通用户访问其他微服务(访问需带有内部员工凭证)(无需单独对内部微服务模块相互调用作特殊处理，因为它们之间的RPC不走微服务网关(想拦你也拦不住啊哈哈))
@@ -79,8 +79,8 @@ public class GatewayConfig {
                                                         })
                                                 .rewritePath("/.*", "/api/v1/web/exception/authentication/fail")
                                 )
-                                .metadata("response-timeout", 10_000)
-                                .metadata("connect-timeout", 10_000)
+                                .metadata("connect-timeout", 30_000)
+                                .metadata("response-timeout", 60_000)
                                 .uri("http://" + webConstants.getPTP_WEB_SERVICE_SERVER_HOST() + ":8080")
                 )*/
                 .build();

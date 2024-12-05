@@ -2,7 +2,7 @@
   <configuration default="false" name="ptp-web-web" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
     <option name="ACTIVE_PROFILES" value="dev" />
     <module name="ptp-web-web" />
-    <option name="PROGRAM_PARAMETERS" value="--ip.physical.self-host=192.168.1.5" />
+    <option name="PROGRAM_PARAMETERS" value="--ip.physical.self-host=192.168.1.12" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="ptp.fltv.web.WebApplication" />
     <extension name="coverage">
       <pattern>

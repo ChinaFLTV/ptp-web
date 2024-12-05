@@ -151,6 +151,16 @@
             <groupId>io.github.yindz</groupId>
             <artifactId>common-random</artifactId>
         </dependency>
+        <!--  2024-12-4  23:45-通过Hutool提供发送邮件功能所需依赖(Hutool工具包本身并没有主动引入该依赖 , 需要自己根据需要进行选择性引入)(文档见 https://doc.hutool.cn/pages/MailUtil/#%E6%A6%82%E8%BF%B0)  -->
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+        </dependency>
+        <!--  2024-12-5  14:12-通过Thymeleaf模板渲染引擎来渲染验证码邮件HTML内容所需依赖  -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
 
     </dependencies>
 

@@ -885,11 +885,13 @@ values (101, 1, 100, 'Apple', 0.226, '160.8 x 78.1 x 7.65 mm', '深空灰色', '
 
 
 # 2024-10-20  1:40-往banner表中插入数据
-INSERT INTO `banner`(`id`, `uid`, `title`, `img_url`)
-VALUES (1, 5, '能不能给我一首歌的时间', 'https://d35kvm5iuwjt9t.cloudfront.net/dbimages/sfx293837.jpg'),
-       (2, 8, '鞠婧祎 么么叽', 'https://img.win3000.com/m00/e1/57/0272abb760114f889b3e79c3042ace54.jpg'),
-       (3, 1, '李知恩I Love You', 'https://cdn.i-scmp.com/sites/default/files/d8/images/canvas/2023/09/20/7bbf6337-8997-46f2-9616-ca6c4da9a112_70fdfdcb.jpg'),
-       (4, 2, 'StarShip第五次测试取得圆满成功', 'https://www.ascend.events/wp-content/uploads/2024/03/SpaceX-Launch-14Mar2024-banner.jpg');
+INSERT INTO `banner`(`id`, `uid`, `title`, `img_url`, ptp_web.banner.`content`, ptp_web.banner.`content_format`)
+VALUES (1, 5, '能不能给我一首歌的时间', 'https://d35kvm5iuwjt9t.cloudfront.net/dbimages/sfx293837.jpg', '当然可以，一首歌的时间大约是3到5分钟，让我们在这个时间里享受一段音乐吧。不过，我不能直接播放音乐，但我可以推荐你一些歌曲或者陪你聊聊天。你有什么喜欢的歌曲或者音乐风格吗？我们可以一起讨论。', 2501),
+       (2, 8, '鞠婧祎 么么叽', 'https://img.win3000.com/m00/e1/57/0272abb760114f889b3e79c3042ace54.jpg', 'https://www.iqiyi.com/lib/s_223740805.html', 2503),
+       (3, 1, '李知恩I Love You', 'https://cdn.i-scmp.com/sites/default/files/d8/images/canvas/2023/09/20/7bbf6337-8997-46f2-9616-ca6c4da9a112_70fdfdcb.jpg',
+        '李知恩（IU），1993年5月16日出生于韩国首尔特别市，毕业于同德女子高等学校，韩国流行乐女歌手、影视演员、节目主持人。 [118]2008年9月，在音乐节目《M! Countdown》中演唱歌曲《迷儿》，由此正式出道。随后，发行首张迷你专辑《Lost And Found》。 [140]2009年4月，发行首张正规专辑《Growing Up》。 [1]2010年末，迷你专辑《Real》主打歌《好日子》连续五周位居韩国Gaon榜榜首。2011年1月，首次出演校园剧《dream high》。 [86]2012年-2017年，担任SBS歌谣大战节目主持人。 [128] [178] [180]2013年10月，凭借周末剧《最佳李顺心》获得了KBS演技大赏新人女演员奖。 [9]2014年5月，发行翻唱专辑《花书签》 [37]，并获得Mnet亚洲音乐大奖最佳女歌手奖。 [124]2015年10月，发行第四张迷你专辑《CHAT-SHIRE》，同时被“Billboard”认可为韩国流行音乐百强榜领跑者。 [4-7]2016年8月，主演古装剧《步步惊心：丽》。 [174]2017年，获得Mnet亚洲音乐大奖最佳女歌手奖。 [10]2018年1月，获得韩国金唱片奖音源部门大奖。 [11]2019年7月，主演奇幻爱情剧《德鲁纳酒店》。 [13]2022年6月，主演的电影《掮客》在韩国上映。 [99]2023年4月，主演的运动题材喜剧片《梦想》上映。 [109]',
+        2501),
+       (4, 2, 'StarShip第五次测试取得圆满成功', 'https://www.ascend.events/wp-content/uploads/2024/03/SpaceX-Launch-14Mar2024-banner.jpg', 'https://www.news.cn/milpro/20241022/08f6e1fcf70047a9a3272dd98e9e1022/c.html', 2503);
 
 
 # 2024-10-21  18:16-往subscriber_ship表中插入数据

@@ -119,4 +119,27 @@ public class RandomUtils {
     }
 
 
+    /**
+     * @return 随机生成的六位纯数字的验证码字符串
+     * @author Lenovo/LiGuanda
+     * @date 2024/12/4 PM 11:22:42
+     * @version 1.0.0
+     * @description 用于随机生成六位纯数字的验证码字符串
+     * @filename RandomUtils.java
+     */
+    public static String generateRandomVerificationCode() {
+
+        StringBuilder builder = new StringBuilder();
+
+        for (int i = 1; i <= 6; i++) {
+
+            builder.append(random.nextInt(0, 10));
+
+        }
+
+        return builder.toString();
+
+    }
+
+
 }

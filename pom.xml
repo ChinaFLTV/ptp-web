@@ -109,6 +109,7 @@
         <!--  2024-10-8  6:07-SpringBoot的Maven构建插件的版本号  -->
         <spring.boot.maven.plugin.version>${spring.cloud.framework.version}</spring.boot.maven.plugin.version>
         <common-random.version>1.1.0</common-random.version>
+        <javax.mail.version>1.5.0-b01</javax.mail.version>
 
     </properties>
 
@@ -279,6 +280,12 @@
                 <groupId>io.github.yindz</groupId>
                 <artifactId>common-random</artifactId>
                 <version>${common-random.version}</version>
+            </dependency>
+            <!--  2024-12-4  23:44-通过Hutool提供发送邮件功能所需依赖(Hutool工具包本身并没有主动引入该依赖 , 需要自己根据需要进行选择性引入)(文档见 https://doc.hutool.cn/pages/MailUtil/#%E6%A6%82%E8%BF%B0)  -->
+            <dependency>
+                <groupId>javax.mail</groupId>
+                <artifactId>mail</artifactId>
+                <version>${javax.mail.version}</version>
             </dependency>
 
         </dependencies>

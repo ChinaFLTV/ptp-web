@@ -55,6 +55,6 @@ db.GroupMessage.insertOne({
 // 2024-9-9  20:22-插入一条默认聊天房间信息数据
 db.ChatRoom.insertOne({
 
-    _id: 666, name: "达达利亚和他的朋友们", avatarUrl: "https://m.qqkw.com/d/tx/titlepic/c263a882a7ed7f099e6b48961af58b0b.jpg", rank: 6.0, onlineUsers: [], totalUsers: []
+    _id: 666, name: "达达利亚和他的朋友们", avatarUrl: "http://www.lhms.net/touxiangtu/202212101670654335742753.jpg", rank: 6.0, onlineUsers: [], totalUsers: []
 
 });
