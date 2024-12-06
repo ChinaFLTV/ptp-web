@@ -26,6 +26,7 @@ import pfp.fltv.common.utils.JwtUtils;
 import ptp.fltv.web.service.gateway.constants.SecurityConstants;
 import ptp.fltv.web.service.gateway.model.ApplicationContext;
 import reactor.core.publisher.Mono;
+import reactor.netty.http.server.HttpServerRequest;
 
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -258,6 +259,20 @@ public class CredentialCheckFilter implements GlobalFilter, Ordered {
         }
 
         return false;
+
+    }
+
+
+    /**
+     * @author Lenovo/LiGuanda
+     * @date 2024/12/6 PM 4:51:58
+     * @version 1.0.0
+     * @description 从HTTP请求中查询请求用户的真实IP地址
+     * @filename CredentialCheckFilter.java
+     */
+    private String findUserIpFromHttpRequest(HttpServerRequest request) {
+
+        return "";
 
     }
 

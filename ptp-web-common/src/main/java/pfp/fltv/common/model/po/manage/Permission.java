@@ -36,7 +36,6 @@ public class Permission implements Serializable {
     private Long id;
 
     @Schema(description = "角色权限所属的角色ID")
-    @TableId(type = IdType.INPUT)
     private Long roleId;
 
     @Schema(description = "角色权限的内容表达式")
