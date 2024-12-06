@@ -9,6 +9,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpCookie;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -26,10 +27,11 @@ import pfp.fltv.common.utils.JwtUtils;
 import ptp.fltv.web.service.gateway.constants.SecurityConstants;
 import ptp.fltv.web.service.gateway.model.ApplicationContext;
 import reactor.core.publisher.Mono;
-import reactor.netty.http.server.HttpServerRequest;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -61,7 +63,7 @@ public class CredentialCheckFilter implements GlobalFilter, Ordered {
         ServerHttpResponse response = exchange.getResponse();
 
         log.info("=========================================================================");
-        log.info(String.format("IP为 %s 的用户访问了 %s 路径上运行的服务提供的API", request.getRemoteAddress(), request.getPath()));
+        log.info(String.format("IP为 %s 的用户访问了 %s 路径上运行的服务提供的API", findUserIpFromHttpRequest(request), request.getPath()));
         log.info("============请求头信息============");
         request.getHeaders().forEach((k, v) -> log.info(String.format("%s : %s", k, v.toString())));
         log.info("============请求Cookies信息============");
@@ -270,9 +272,41 @@ public class CredentialCheckFilter implements GlobalFilter, Ordered {
      * @description 从HTTP请求中查询请求用户的真实IP地址
      * @filename CredentialCheckFilter.java
      */
-    private String findUserIpFromHttpRequest(HttpServerRequest request) {
+    private String findUserIpFromHttpRequest(ServerHttpRequest request) {
 
-        return "";
+
+        String ip = null;
+
+        HttpHeaders headers = request.getHeaders();
+        List<String> xForwardedFor = headers.getOrDefault("X-Forwarded-For", new ArrayList<>());
+        if (xForwardedFor != null && !xForwardedFor.isEmpty() && StringUtils.hasLength(xForwardedFor.get(0))) {
+
+            ip = xForwardedFor.get(0);
+
+        }
+
+        List<String> xRealIp = headers.getOrDefault("X-Real-IP", new ArrayList<>());
+        if (xRealIp != null && !xRealIp.isEmpty() && StringUtils.hasLength(xRealIp.get(0))) {
+
+            ip = xRealIp.get(0);
+
+        }
+
+        if (!StringUtils.hasLength(ip)) {
+
+            if (request.getRemoteAddress() != null) {
+
+                ip = Objects.requireNonNull(request.getRemoteAddress()).getAddress().getHostAddress();
+
+            } else {
+
+                ip = "未知IP地址";
+
+            }
+
+        }
+
+        return ip;
 
     }
 
