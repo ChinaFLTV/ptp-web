@@ -22,6 +22,7 @@ public class ApplicationContext {
      * @filename ApplicationContext.java
      */
     public static final ThreadLocal<User> USER = new ThreadLocal<>();
+
     /**
      * @author Lenovo/LiGuanda
      * @date 2024/5/5 PM 8:50:38
@@ -30,7 +31,6 @@ public class ApplicationContext {
      * @filename ApplicationContext.java
      */
     public static final ThreadLocal<Role> ROLE = new ThreadLocal<>();
-
 
     /**
      * @author Lenovo/LiGuanda

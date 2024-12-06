@@ -35,19 +35,13 @@ import pfp.fltv.common.enums.LoginClientType;
 import pfp.fltv.common.exceptions.PtpException;
 import pfp.fltv.common.model.po.info.AddressInfo;
 import pfp.fltv.common.model.po.info.LoginInfo;
-import pfp.fltv.common.model.po.manage.Asset;
-import pfp.fltv.common.model.po.manage.Role;
-import pfp.fltv.common.model.po.manage.SubscriberShip;
-import pfp.fltv.common.model.po.manage.User;
+import pfp.fltv.common.model.po.manage.*;
 import pfp.fltv.common.model.vo.UserLoginVo;
 import pfp.fltv.common.model.vo.UserVo;
 import pfp.fltv.common.utils.JwtUtils;
 import ptp.fltv.web.constants.CosConstants;
 import ptp.fltv.web.mapper.UserMapper;
-import ptp.fltv.web.service.AssetService;
-import ptp.fltv.web.service.RoleService;
-import ptp.fltv.web.service.SubscriberShipService;
-import ptp.fltv.web.service.UserService;
+import ptp.fltv.web.service.*;
 import ptp.fltv.web.utils.RandomUtils;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.args.GeoUnit;
@@ -81,6 +75,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     private final TransferManager transferManager;
     private final COSClient cosClient;
     private final SubscriberShipService subscriberShipService;
+    private final PermissionService permissionService;
 
 
     @Override
@@ -121,11 +116,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         Role role = roleService.getRoleByUser(user);
 
+        // 2024-12-6  16:11-由于采用RBAC权限模型后 , 由于权限不再和角色一起存储而是分开存放 , 因此仅仅获取用户角色信息还是不够 , 还需要继续凭借用户的角色信息去获取对应的权限信息才可以
+        List<String> permissionExpressions = permissionService.findPermissionsByRoleId(role.getId())
+                .stream()
+                .map(Permission::getExpression)
+                .toList();
+
         Role compactRole = Role.builder()
                 .id(role.getId())
                 .name(role.getName())
-                .authorities(role.getAuthorities())
-                .prohibition(role.getProhibition())
+                .authorities(permissionExpressions)
+                // .authorities(role.getAuthorities())
+                // .prohibition(role.getProhibition())
                 .build();
 
         // 2024-4-4  21:10-为避免user数据过大，将适当地对一些非必要字段进行赋空值操作

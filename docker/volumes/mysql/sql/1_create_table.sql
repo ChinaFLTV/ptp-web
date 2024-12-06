@@ -26,22 +26,39 @@ CREATE TABLE IF NOT EXISTS `asset`
 CREATE TABLE `role`
 (
     `id`          BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT COMMENT '用户角色ID',
-    `code`        INT UNSIGNED NOT NULL COMMENT '角色对应的序号',
-    `name`        CHAR(255)    NOT NULL COMMENT '角色对应的名称',
-    `authorities` VARCHAR(1024) DEFAULT 'content_list,content_add,content_remove,content_update' COMMENT '当前角色所允许的操作',
-    `prohibition` CHAR(255)     DEFAULT 'user_add,user_remove,role_add,role_remove,role_list,role_update' COMMENT '当前角色所禁止的操作',
-    `create_time` TIMESTAMP     DEFAULT CURRENT_TIMESTAMP COMMENT '角色创建时间',
-    `update_time` TIMESTAMP     DEFAULT CURRENT_TIMESTAMP COMMENT '(最后)修改时间' ON UPDATE CURRENT_TIMESTAMP,
-    `is_deleted`  INT UNSIGNED  DEFAULT 0 COMMENT '角色是否已被删除',
-    `version`     INT UNSIGNED  DEFAULT 1 COMMENT '当前角色实体的版本(用于辅助实现乐观锁)',
+    `name`        CHAR(255) NOT NULL COMMENT '角色对应的名称',
+    # `authorities` VARCHAR(1024) DEFAULT 'content_list,content_add,content_remove,content_update' COMMENT '当前角色所允许的操作',
+    # `prohibition` CHAR(255)     DEFAULT 'user_add,user_remove,role_add,role_remove,role_list,role_update' COMMENT '当前角色所禁止的操作',
+    `create_time` TIMESTAMP    DEFAULT CURRENT_TIMESTAMP COMMENT '角色创建时间',
+    `update_time` TIMESTAMP    DEFAULT CURRENT_TIMESTAMP COMMENT '(最后)修改时间' ON UPDATE CURRENT_TIMESTAMP,
+    `is_deleted`  INT UNSIGNED DEFAULT 0 COMMENT '角色是否已被删除',
+    `version`     INT UNSIGNED DEFAULT 1 COMMENT '当前角色实体的版本(用于辅助实现乐观锁)',
 
-    UNIQUE KEY ix_code (code),
-    UNIQUE KEY ix_name (name)
+    UNIQUE KEY `ix_name` (name)
 
 )
     ENGINE = InnoDB
     DEFAULT CHARSET = utf8mb4
     COMMENT = '角色';
+
+
+# 2024-12-6  14:20-创建角色权限表
+CREATE TABLE `permission`
+(
+    `id`          BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT COMMENT '用户角色ID',
+    `role_id`     BIGINT UNSIGNED NOT NULL COMMENT '角色权限所属的角色ID',
+    `expression`  CHAR(255)       NOT NULL COMMENT '角色权限的内容表达式',
+    `create_time` TIMESTAMP    DEFAULT CURRENT_TIMESTAMP COMMENT '角色创建时间',
+    `update_time` TIMESTAMP    DEFAULT CURRENT_TIMESTAMP COMMENT '(最后)修改时间' ON UPDATE CURRENT_TIMESTAMP,
+    `is_deleted`  INT UNSIGNED DEFAULT 0 COMMENT '角色是否已被删除',
+    `version`     INT UNSIGNED DEFAULT 1 COMMENT '当前角色实体的版本(用于辅助实现乐观锁)',
+
+    FOREIGN KEY (`role_id`) REFERENCES `role` (`id`) ON DELETE CASCADE
+
+)
+    ENGINE = InnoDB
+    DEFAULT CHARSET = utf8mb4
+    COMMENT = '角色权限';
 
 
 # 2024-3-22  19:33-创建user表
@@ -78,14 +95,14 @@ CREATE TABLE IF NOT EXISTS `user`
     `is_deleted`     INT UNSIGNED      DEFAULT 0 COMMENT '用户是否已被删除',
     `version`        INT UNSIGNED      DEFAULT 1 COMMENT '当前用户实体的版本(用于辅助实现乐观锁)',
 
-    FOREIGN KEY (role_id) REFERENCES role (id),
-    FOREIGN KEY (asset_id) REFERENCES asset (id),
+    FOREIGN KEY (`role_id`) REFERENCES `role` (`id`),
+    FOREIGN KEY (`asset_id`) REFERENCES `asset` (`id`),
 
-    UNIQUE INDEX un_idx_account (account),
-    UNIQUE INDEX un_idx_nickname (nickname),
-    INDEX idx_realname (realname),
-    UNIQUE INDEX un_idx_phone (phone),
-    UNIQUE INDEX un_idx_email (email)
+    UNIQUE INDEX `un_idx_account` (`account`),
+    UNIQUE INDEX `un_idx_nickname` (`nickname`),
+    INDEX `idx_realname` (`realname`),
+    UNIQUE INDEX `un_idx_phone` (`phone`),
+    UNIQUE INDEX `un_idx_email` (`email`)
 
 )
     ENGINE = InnoDB
@@ -118,7 +135,7 @@ CREATE TABLE IF NOT EXISTS `dialogue`
     `is_deleted`     INT UNSIGNED      DEFAULT 0 COMMENT '当前实体是否已被逻辑删除',
     `version`        INT UNSIGNED      DEFAULT 1 COMMENT '当前对话实体的版本(用于辅助实现乐观锁)',
 
-    FOREIGN KEY (uid) REFERENCES user (id)
+    FOREIGN KEY (`uid`) REFERENCES `user` (`id`)
 
 )
     ENGINE = InnoDB
@@ -151,7 +168,7 @@ CREATE TABLE IF NOT EXISTS `announcement`
     `is_deleted`     INT UNSIGNED      DEFAULT 0 COMMENT '当前实体是否已被逻辑删除',
     `version`        INT UNSIGNED      DEFAULT 1 COMMENT '当前公告实体的版本(用于辅助实现乐观锁)',
 
-    FOREIGN KEY (uid) REFERENCES user (id)
+    FOREIGN KEY (`uid`) REFERENCES `user` (`id`)
 
 )
     ENGINE = InnoDB
@@ -183,7 +200,7 @@ CREATE TABLE IF NOT EXISTS `rate`
     `is_deleted`          INT UNSIGNED    DEFAULT 0 COMMENT '当前实体是否已被逻辑删除',
     `version`             INT UNSIGNED    DEFAULT 1 COMMENT '当前实体的版本(用于辅助实现乐观锁)',
 
-    FOREIGN KEY (uid) REFERENCES user (`id`)
+    FOREIGN KEY (`uid`) REFERENCES `user` (`id`)
 
 )
     ENGINE = InnoDB
@@ -221,8 +238,8 @@ CREATE TABLE IF NOT EXISTS `passage`
     `is_deleted`           INT UNSIGNED      DEFAULT 0 COMMENT '当前实体是否已被逻辑删除',
     `version`              INT UNSIGNED      DEFAULT 1 COMMENT '当前文章实体的版本(用于辅助实现乐观锁)',
 
-    FOREIGN KEY (uid) REFERENCES user (id),
-    FOREIGN KEY (rate_id) REFERENCES rate (id) ON DELETE CASCADE                                                                 # 2024-11-8  00:06-删除文章的同时附加的评分统计记录删除掉
+    FOREIGN KEY (`uid`) REFERENCES `user` (`id`),
+    FOREIGN KEY (`rate_id`) REFERENCES `rate` (`id`) ON DELETE CASCADE                                                           # 2024-11-8  00:06-删除文章的同时附加的评分统计记录删除掉
 
 )
     ENGINE = InnoDB
@@ -264,9 +281,9 @@ CREATE TABLE IF NOT EXISTS `comment`
     `version`         INT UNSIGNED      DEFAULT 1 COMMENT '当前文章评论实体的版本(用于辅助实现乐观锁)',
 
     # FOREIGN KEY (passage_id) REFERENCES passage (id),
-    FOREIGN KEY (from_uid) REFERENCES user (id),
-    FOREIGN KEY (to_uid) REFERENCES user (id),
-    FOREIGN KEY (parent_id) REFERENCES comment (id)
+    FOREIGN KEY (`from_uid`) REFERENCES `user` (`id`),
+    FOREIGN KEY (`to_uid`) REFERENCES `user` (`id`),
+    FOREIGN KEY (`parent_id`) REFERENCES `comment` (`id`)
 
 )
     ENGINE = InnoDB
@@ -298,7 +315,7 @@ CREATE TABLE IF NOT EXISTS `commodity`
     `is_deleted`   INT UNSIGNED            DEFAULT 0 COMMENT '当前实体是否已被逻辑删除',
     `version`      INT UNSIGNED            DEFAULT 1 COMMENT '当前商品实体的版本(用于辅助实现乐观锁)',
 
-    FOREIGN KEY (user_id) REFERENCES user (id)
+    FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
         ON UPDATE CASCADE -- 2024-5-21  23:08-级联删除都设置了，这个更新也一起设置得了
         ON DELETE CASCADE -- 2024-5-21  23:08-我们采用级联删除的方式解决需要同时在两个表中删除同一个商品信息的情况，这样做是最简单的，既不需要动用事务，也不需要自己编写触发器、存储过程或者业务逻辑啥的
 
@@ -325,7 +342,7 @@ CREATE TABLE IF NOT EXISTS `commodity_details`
     `barcode`        VARCHAR(255) COMMENT '商品条形码',
     `version`        INT UNSIGNED DEFAULT 1 COMMENT '当前商品详情实体的版本(用于辅助实现乐观锁)',
 
-    FOREIGN KEY (commodity_id) REFERENCES commodity (id)
+    FOREIGN KEY (`commodity_id`) REFERENCES `commodity` (`id`)
 
 )
     ENGINE = InnoDB
@@ -361,8 +378,8 @@ CREATE TABLE `transaction_record`
     `is_deleted`   INT UNSIGNED    DEFAULT 0 COMMENT '当前实体是否已被逻辑删除',
     `version`      INT UNSIGNED    DEFAULT 1 COMMENT '当前商品交易记录实体的版本(用于辅助实现乐观锁)',
 
-    FOREIGN KEY (uid) REFERENCES user (id),
-    FOREIGN KEY (commodity_id) REFERENCES commodity (id)
+    FOREIGN KEY (`uid`) REFERENCES `user` (`id`),
+    FOREIGN KEY (`commodity_id`) REFERENCES `commodity` (`id`)
 
 )
     ENGINE = InnoDB
@@ -383,8 +400,8 @@ CREATE TABLE `undo_log`
     `log_created`   DATETIME                                                      NOT NULL,
     `log_modified`  DATETIME                                                      NOT NULL,
 
-    PRIMARY KEY (id) USING BTREE,
-    UNIQUE KEY `ux_undo_log` (xid, branch_id) USING BTREE
+    PRIMARY KEY (`id`) USING BTREE,
+    UNIQUE KEY `ux_undo_log` (`xid`, `branch_id`) USING BTREE
 
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 15
@@ -421,7 +438,7 @@ CREATE TABLE IF NOT EXISTS `report`
     `is_deleted`     INT UNSIGNED DEFAULT 0 COMMENT '当前实体是否已被逻辑删除',
     `version`        INT UNSIGNED DEFAULT 1 COMMENT '当前实体的版本(用于辅助实现乐观锁)',
 
-    FOREIGN KEY (uid) REFERENCES user (`id`)
+    FOREIGN KEY (`uid`) REFERENCES `user` (`id`)
 
 )
     ENGINE = InnoDB
@@ -455,7 +472,7 @@ CREATE TABLE IF NOT EXISTS `banner`
     `is_deleted`     INT UNSIGNED DEFAULT 0 COMMENT '当前实体是否已被逻辑删除',
     `version`        INT UNSIGNED DEFAULT 1 COMMENT '当前实体的版本(用于辅助实现乐观锁)',
 
-    FOREIGN KEY (uid) REFERENCES user (`id`)
+    FOREIGN KEY (`uid`) REFERENCES `user` (`id`)
 
 )
     ENGINE = InnoDB
@@ -477,9 +494,9 @@ CREATE TABLE IF NOT EXISTS `subscriber_ship`
     `is_deleted`  INT UNSIGNED DEFAULT 0 COMMENT '当前实体是否已被逻辑删除',
     `version`     INT UNSIGNED DEFAULT 1 COMMENT '当前实体的版本(用于辅助实现乐观锁)',
 
-    FOREIGN KEY (uid) REFERENCES user (`id`),
-    FOREIGN KEY (follower_id) REFERENCES user (`id`),
-    FOREIGN KEY (followee_id) REFERENCES user (`id`)
+    FOREIGN KEY (`uid`) REFERENCES `user` (`id`),
+    FOREIGN KEY (`follower_id`) REFERENCES `user` (`id`),
+    FOREIGN KEY (`followee_id`) REFERENCES `user` (`id`)
 
 )
     ENGINE = InnoDB
@@ -506,7 +523,7 @@ CREATE TABLE IF NOT EXISTS `event_record`
     `is_deleted`    INT UNSIGNED DEFAULT 0 COMMENT '当前实体是否已被逻辑删除',
     `version`       INT UNSIGNED DEFAULT 1 COMMENT '当前实体的版本(用于辅助实现乐观锁)',
 
-    FOREIGN KEY (uid) REFERENCES user (`id`)
+    FOREIGN KEY (`uid`) REFERENCES `user` (`id`)
 
 )
     ENGINE = InnoDB
@@ -540,7 +557,7 @@ CREATE TABLE IF NOT EXISTS `update_info`
     `is_deleted`      INT UNSIGNED DEFAULT 0 COMMENT '当前实体是否已被逻辑删除',
     `version`         INT UNSIGNED DEFAULT 1 COMMENT '当前实体的版本(用于辅助实现乐观锁)',
 
-    FOREIGN KEY (uid) REFERENCES user (`id`)
+    FOREIGN KEY (`uid`) REFERENCES `user` (`id`)
 
 )
     ENGINE = InnoDB
@@ -567,7 +584,7 @@ CREATE TABLE IF NOT EXISTS `agriculture_environment`
     `is_deleted`        INT UNSIGNED   DEFAULT 0 COMMENT '当前实体是否已被逻辑删除',
     `version`           INT UNSIGNED   DEFAULT 1 COMMENT '当前实体的版本(用于辅助实现乐观锁)',
 
-    FOREIGN KEY (uid) REFERENCES user (`id`),
+    FOREIGN KEY (`uid`) REFERENCES `user` (`id`),
 
     INDEX `idx_node_id` (`node_id`),        # 2024-11-29  21:40-存在分组查询某个节点的多条状态数据情况 , 因此需要通过构建索引来加速查询
     INDEX `idx_node_name` (`node_name`),

@@ -15,32 +15,130 @@ VALUES (1, 1000.00, '["7758521","1212121"]'),
 
 
 # 2024-3-25  9:18-往role表中插入模拟数据
-INSERT INTO `role` (`id`, `code`, `name`, `authorities`, `prohibition`)
-VALUES (1, 801, 'administrator',
-        '["all","content:list","content:add","content:remove","content:update","content:user:add", "content:user:remove", "content:user:list", "content:user:update","role:add","role:remove","role:list","role:update"]',
-        '[]'),
-       (2, 802, 'manager', '["content:list","content:add","content:remove","content:user:add","content:user:remove"]',
-        '["role:add","role:remove","role:list","role:update"]'),
-       (3, 803, 'normal:user', '["content:list","content:add","content:update"]',
-        '["user:add","user:remove","role:add","role:remove","role:list","role:update"]'),
-       (4, 804, 'limit:user', '["content:list"]',
-        '["content:remove","content:update","user:add","content:user:remove","role:add","role:remove","role:list","role:update"]'),
-       (5, 805, 'blocked:user', '[]',
-        '["content:add","content:remove","content:update","content:user:add","content:user:remove","role:add","role:remove","role:list","role:update"]'),
-       (6, 806, 'publisher', '["content:list","content:add"]',
-        '["user:add","content:user:remove","role:add","role:remove","role:list","role:update"]'),
-       (7, 807, 'monitor', '["content:list","content:remove"]',
-        '["user:add","content:user:remove","role:add","role:remove","role:list","role:update"]'),
-       (8, 808, 'developer', '["content:user:add","content:user:remove"]',
-        '["content:list","content:update","role:add","role:remove","role:list","role:update"]'),
-       (9, 809, 'DevOps', '["role:add","role:remove","role:list","role:update"]',
-        '["user:add","content:user:remove","content:add","content:update"]'),
-       (10, 810, 'else', '["content:remove","content:update"]',
-        '["content:user:add","content:user:remove","role:add","role:remove","role:list","role:update"]')
-on duplicate key update code        = values(code),
-                        name        = values(name),
-                        authorities = values(authorities),
-                        prohibition = values(prohibition);
+INSERT INTO `role` (`id`, `name`)
+VALUES (1, 'administrator'),
+       (2, 'user'),
+       (3, 'vip_user'),
+       (4, 'monitor')
+on duplicate key update name = values(name);
+
+
+# 2024-12-6  14:39-往permission表中插入模拟数据
+INSERT INTO `permission`(`id`, `role_id`, `expression`)
+VALUES (1, 1, 'all'),
+       (2, 2, 'content:announcement:add'),
+       (3, 2, 'content:announcement:remove'),
+       (4, 2, 'content:announcement:list'),
+       (5, 2, 'content:announcement:update'),
+       (6, 2, 'content:dialogue:add'),
+       (7, 2, 'content:dialogue:remove'),
+       (8, 2, 'content:dialogue:list'),
+       (9, 2, 'content:dialogue:update'),
+       (10, 2, 'content:passage:add'),
+       (11, 2, 'content:passage:remove'),
+       (12, 2, 'content:passage:list'),
+       (13, 2, 'content:passage:update'),
+       (14, 2, 'content:passage:comment:add'),
+       (15, 2, 'content:passage:comment:remove'),
+       (16, 2, 'content:passage:comment:list'),
+       (17, 2, 'content:passage:comment:update'),
+       (18, 2, 'content:user:add'),
+       (19, 2, 'content:user:remove'),
+       (20, 2, 'content:user:list'),
+       (21, 2, 'content:user:update'),
+       (22, 2, 'content:user:role:add'),
+       (23, 2, 'content:user:role:remove'),
+       (24, 2, 'content:user:role:list'),
+       (25, 2, 'content:user:role:update'),
+       (26, 2, 'manage:report:add'),
+       (27, 2, 'manage:report:remove'),
+       (28, 2, 'manage:report:list'),
+       (29, 2, 'manage:report:update'),
+       (30, 2, 'content:banner:add'),
+       (31, 2, 'content:banner:remove'),
+       (32, 2, 'content:banner:list'),
+       (33, 2, 'content:banner:update'),
+       (34, 2, 'user:subscriberShip:add'),
+       (35, 2, 'user:subscriberShip:remove'),
+       (36, 2, 'user:subscriberShip:list'),
+       (37, 2, 'user:subscriberShip:update'),
+       (38, 2, 'manage:rate:add'),
+       (39, 2, 'manage:rate:remove'),
+       (40, 2, 'manage:rate:list'),
+       (41, 2, 'manage:rate:update'),
+       (42, 2, 'manage:event:record:add'),
+       (43, 2, 'manage:event:record:remove'),
+       (44, 2, 'manage:event:record:list'),
+       (45, 2, 'manage:event:record:update'),
+       (46, 2, 'manage:media:add'),
+       (47, 2, 'manage:media:remove'),
+       (48, 2, 'manage:media:list'),
+       (49, 2, 'manage:media:update'),
+       (50, 2, 'manage:info:update:add'),
+       (51, 2, 'manage:info:update:remove'),
+       (52, 2, 'manage:info:update:list'),
+       (53, 2, 'manage:info:update:update'),
+       (54, 2, 'agriculture:environment:add'),
+       (55, 2, 'agriculture:environment:remove'),
+       (56, 2, 'agriculture:environment:list'),
+       (57, 2, 'agriculture:environment:update'),
+       (58, 3, 'content:announcement:add'),
+       (59, 3, 'content:announcement:remove'),
+       (60, 3, 'content:announcement:list'),
+       (61, 3, 'content:announcement:update'),
+       (62, 3, 'content:dialogue:add'),
+       (63, 3, 'content:dialogue:remove'),
+       (64, 3, 'content:dialogue:list'),
+       (65, 3, 'content:dialogue:update'),
+       (66, 3, 'content:passage:add'),
+       (67, 3, 'content:passage:remove'),
+       (68, 3, 'content:passage:list'),
+       (69, 3, 'content:passage:update'),
+       (70, 3, 'content:passage:comment:add'),
+       (71, 3, 'content:passage:comment:remove'),
+       (72, 3, 'content:passage:comment:list'),
+       (73, 3, 'content:passage:comment:update'),
+       (74, 3, 'content:user:add'),
+       (75, 3, 'content:user:remove'),
+       (76, 3, 'content:user:list'),
+       (77, 3, 'content:user:update'),
+       (78, 3, 'content:user:role:add'),
+       (79, 3, 'content:user:role:remove'),
+       (80, 3, 'content:user:role:list'),
+       (81, 3, 'content:user:role:update'),
+       (82, 3, 'manage:report:add'),
+       (83, 3, 'manage:report:remove'),
+       (84, 3, 'manage:report:list'),
+       (85, 3, 'manage:report:update'),
+       (86, 3, 'content:banner:add'),
+       (87, 3, 'content:banner:remove'),
+       (88, 3, 'content:banner:list'),
+       (89, 3, 'content:banner:update'),
+       (90, 3, 'user:subscriberShip:add'),
+       (91, 3, 'user:subscriberShip:remove'),
+       (92, 3, 'user:subscriberShip:list'),
+       (93, 3, 'user:subscriberShip:update'),
+       (94, 3, 'manage:rate:add'),
+       (95, 3, 'manage:rate:remove'),
+       (96, 3, 'manage:rate:list'),
+       (97, 3, 'manage:rate:update'),
+       (98, 3, 'manage:event:record:add'),
+       (99, 3, 'manage:event:record:remove'),
+       (100, 3, 'manage:event:record:list'),
+       (101, 3, 'manage:event:record:update'),
+       (102, 3, 'manage:media:add'),
+       (103, 3, 'manage:media:remove'),
+       (104, 3, 'manage:media:list'),
+       (105, 3, 'manage:media:update'),
+       (106, 3, 'manage:info:update:add'),
+       (107, 3, 'manage:info:update:remove'),
+       (108, 3, 'manage:info:update:list'),
+       (109, 3, 'manage:info:update:update'),
+       (110, 3, 'agriculture:environment:add'),
+       (111, 3, 'agriculture:environment:remove'),
+       (112, 3, 'agriculture:environment:list'),
+       (113, 3, 'agriculture:environment:update'),
+       (114, 4, 'all');
 
 
 # 2024-3-25  10:49-往user表中插入模拟数据
@@ -55,8 +153,8 @@ VALUES (1, '3599758685', '22851316', '13537484671',
 }', '{
     "type": "url",
     "uri": "https://img.tukuppt.com/bg_grid/00/03/45/0aQwB9cbps.jpg!/fh/350"
-}', '71049', 1515, '2', '2020-06-17 22:02:05', '["山东省","临沂市","蒙阴县"]', '63',
-        '5', '7')
+}', '71049', 1515, 2, '2020-06-17 22:02:05', '["山东省","临沂市","蒙阴县"]', 63,
+        1, 5)
      , (2, '3503619143', '07814566', '13287644133',
         't.idbdscth@lshsiu.cy', '焦糖布丁',
         '贺秀兰', 1, 31, '没有期待的日子反而顺顺利利', '{
@@ -65,8 +163,8 @@ VALUES (1, '3599758685', '22851316', '13537484671',
 }', '{
     "type": "url",
     "uri": "https://img.tukuppt.com/bg_grid/00/17/18/v6cXZ0iGp7.jpg!/fh/350"
-}', '46508', 154, '0', '2006-02-09 20:15:06', '["北京市","北京市","东城区"]',
-        '67', '7', '5')
+}', 46508, 154, 0, '2006-02-09 20:15:06', '["北京市","北京市","东城区"]',
+        67, 2, 5)
      , (3, '3516168164', '53874642', '18315661882',
         '3242742226@qq.com', '爱吃香芋派',
         '罗军', 0, 26, '山行野宿，孤身万里', '{
@@ -75,8 +173,8 @@ VALUES (1, '3599758685', '22851316', '13537484671',
 }', '{
     "type": "url",
     "uri": "https://img.tukuppt.com/bg_grid/00/03/71/LtH3VlTOqf.jpg!/fh/350"
-}', '94245', 6616, '4', '2000-03-31 04:16:50', '["广东省","广州市","天河区"]',
-        '82', '2', '6')
+}', '94245', 6616, 4, '2000-03-31 04:16:50', '["广东省","广州市","天河区"]',
+        82, 2, 6)
      , (4, '513246526', '55436628', '18912719149',
         't.bipmfy@gthgyhn.bi', 'Laura Allen', '龚艳', 1, 48,
         '慢慢体会我的极端与浪漫吧', '{
@@ -85,8 +183,8 @@ VALUES (1, '3599758685', '22851316', '13537484671',
 }', '{
     "type": "url",
     "uri": "https://img.tukuppt.com/bg_grid/00/06/62/qGrtrfyBtQ.jpg!/fh/350"
-}', '49784', 451, '1', '1975-08-13 05:32:43', '["江苏省","南京市","鼓楼区"]', '67',
-        '7', '6')
+}', 49718, 451, 1, '1975-08-13 05:32:43', '["江苏省","南京市","鼓楼区"]', 67,
+        2, 6)
      , (5, '215696542', '66361897', '18689841823',
         '236010069@qq.com', '小鱼偶偶泡',
         '孟伟', 0, 67, '白天有说有笑，晚上睡个好觉', '{
@@ -95,7 +193,7 @@ VALUES (1, '3599758685', '22851316', '13537484671',
 }', '{
     "type": "url",
     "uri": "https://img.tukuppt.com/bg_grid/00/03/35/zcLyqiXIpY.jpg!/fh/350"
-}', '93138', 864, '0', '2003-12-04 09:43:51', '["浙江省","杭州市","西湖区"]', '72', '1', '5')
+}', 93138, 864, 0, '2003-12-04 09:43:51', '["浙江省","杭州市","西湖区"]', 72, 1, 5)
      , (6, '8939546763', '93719365', '18992484290',
         'dage3242742226@gmail.com', '树上有只熊', '乔洋', 2, 9, '我出售故事，谋杀，艳情 ，小道消息', '{
     "type": "url",
@@ -103,7 +201,7 @@ VALUES (1, '3599758685', '22851316', '13537484671',
 }', '{
     "type": "url",
     "uri": "https://img.tukuppt.com/bg_grid/00/04/99/qel1H6beV0.jpg!/fh/350"
-}', '40361', 231, '6', '2015-01-29 01:42:38', '["山东省","青岛市","市南区"]', '86', '10', '6')
+}', 40361, 231, 6, '2015-01-29 01:42:38', '["山东省","青岛市","市南区"]', 86, 2, 6)
      , (7, '3521156476', '52802884', '18955647333',
         'q.rmjw@agep.sj', '银河投递员', '吕丽', 1, 22, '把自己流放到世界上的某个角落', '{
     "type": "url",
@@ -111,7 +209,7 @@ VALUES (1, '3599758685', '22851316', '13537484671',
 }', '{
     "type": "url",
     "uri": "https://img.tukuppt.com/bg_grid/00/12/38/nYHRr2MgWc.jpg!/fh/350"
-}', '42529', 784, '4', '1973-01-02 08:51:20', '["四川省","成都市","锦江区"]', '65', '8', '8')
+}', 42529, 784, 4, '1973-01-02 08:51:20', '["四川省","成都市","锦江区"]', 65, 3, 8)
      , (8, '3528123755', '32553084', '18982578235',
         'z.amkn@hqzoo.al', '春天禁止入内', '高涛', 0, 37, '放松点，不用和每个人都好，也不用被每个人喜欢', '{
     "type": "url",
@@ -119,7 +217,7 @@ VALUES (1, '3599758685', '22851316', '13537484671',
 }', '{
     "type": "url",
     "uri": "https://img.tukuppt.com/bg_grid/00/09/41/qOxDlfbzDo.jpg!/fh/350"
-}', '33603', 186, '0', '1994-12-23 08:53:52', '["陕西省","西安市","雁塔区"]', '62', '2', '7')
+}', 3360, 186, 0, '1994-12-23 08:53:52', '["陕西省","西安市","雁塔区"]', 38, 2, 7)
      , (9, '8933864275', '68433956', '13262114721',
         'v.wvakehp@julprwh.kp', '海盐幻想',
         '罗强', 0, 14, '这座城市每个角落，都填满若有所思的生活', '{
@@ -128,7 +226,7 @@ VALUES (1, '3599758685', '22851316', '13537484671',
 }', '{
     "type": "url",
     "uri": "https://img.tukuppt.com/bg_grid/00/07/24/bG7xs5TbEb.jpg!/fh/350"
-}', '7477', 223, '3', '2005-01-19 04:49:08', '["湖北省","武汉市","洪山区"]', '85', '9', '3')
+}', 18, 223, 3, '2005-01-19 04:49:08', '["湖北省","武汉市","洪山区"]', 25, 3, 3)
      , (10, '3590511491', '01583241', '18987740346', 'j.qkeq@xykngv.cl', '落日飛機', '方平', 0, 42,
         '一定要周而复始的快快乐乐', '{
     "type": "url",
@@ -136,7 +234,7 @@ VALUES (1, '3599758685', '22851316', '13537484671',
 }', '{
     "type": "url",
     "uri": "https://img.tukuppt.com/bg_grid/00/05/30/TnG3M9TXyi.jpg!/fh/350"
-}', '38165', 135, '1', '1984-03-13 14:12:53', '["福建省","福州市","鼓楼区"]', '73', '9', '6');
+}', 452, 135, 1, '1984-03-13 14:12:53', '["福建省","福州市","鼓楼区"]', 96, 2, 6);
 
 
 # 2024-3-27  20:17-往announcement表中插入数据
