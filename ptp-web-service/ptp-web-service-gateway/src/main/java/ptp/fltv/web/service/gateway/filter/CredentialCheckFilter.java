@@ -144,11 +144,11 @@ public class CredentialCheckFilter implements GlobalFilter, Ordered {
 
                                 // 2024-6-18  20:45-再补充一点请求异常的信息
                                 cloudEnvMap.put("message", "请求用户云端登录信息与本地登录信息不符(可能存在异地登录的危险情况)");
-                                // DataBuffer dataBuffer = response.bufferFactory().wrap(JSON.toJSONString(Result.failure(cloudEnvMap)).getBytes(StandardCharsets.UTF_8));
-                                DataBuffer dataBuffer = response.bufferFactory().wrap(JSON.toJSONString(Result.failure("当前登录已过期 , 请重新登录")).getBytes(StandardCharsets.UTF_8));
+                                DataBuffer dataBuffer = response.bufferFactory().wrap(JSON.toJSONString(Result.failure(cloudEnvMap)).getBytes(StandardCharsets.UTF_8));
+                                // DataBuffer dataBuffer = response.bufferFactory().wrap(JSON.toJSONString(Result.failure("当前登录已过期 , 请重新登录")).getBytes(StandardCharsets.UTF_8));
 
                                 response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
-                                response.setStatusCode(HttpStatus.OK);
+                                response.setStatusCode(HttpStatus.UNAUTHORIZED);
                                 return response.writeWith(Mono.just(dataBuffer));
 
                             } else {

@@ -38,11 +38,11 @@ public class Role implements Serializable {
     private String name;
 
     @Schema(description = "角色所具有的权限(该字段不会持久化到数据库表中 , 仅用于临时存储用户登录后的权限信息所使用)")
-    @TableField(typeHandler = JacksonTypeHandler.class)
+    @TableField(typeHandler = JacksonTypeHandler.class, exist = false)
     private List<String> authorities = new ArrayList<>();
 
     @Schema(description = "角色所不被允许的权限(该字段不会持久化到数据库表中 , 仅用于临时存储用户登录后的权限信息所使用)")
-    @TableField(typeHandler = JacksonTypeHandler.class)
+    @TableField(typeHandler = JacksonTypeHandler.class, exist = false)
     private List<String> prohibition = new ArrayList<>();
 
     @Schema(description = "角色建立时间")
