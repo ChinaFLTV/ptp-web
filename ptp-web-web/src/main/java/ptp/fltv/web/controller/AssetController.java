@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import pfp.fltv.common.annotation.LogRecord;
 import pfp.fltv.common.model.po.manage.Asset;
@@ -27,15 +27,15 @@ import java.util.List;
  * @filename AssetController.java
  */
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Tag(name = "财产操作接口")
 @RestController
 @RequestMapping("/content/user/asset")
 public class AssetController {
 
 
-    private AssetService assetService;
-    private UserService userService;
+    private final AssetService assetService;
+    private final UserService userService;
 
 
     @LogRecord(description = "根据财产ID查询单条财产信息")

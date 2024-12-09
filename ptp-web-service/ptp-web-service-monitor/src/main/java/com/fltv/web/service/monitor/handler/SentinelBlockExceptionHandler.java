@@ -1,4 +1,4 @@
-package ptp.fltv.web.handler;
+package com.fltv.web.service.monitor.handler;
 
 import com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.BlockExceptionHandler;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
@@ -28,7 +28,7 @@ public class SentinelBlockExceptionHandler implements BlockExceptionHandler {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.setStatus(503);
-        response.getWriter().write(JSON.toJSONString(Result.failure(String.format("The service %s is current unavailable , please try again later !", "ptp-web-web"))));
+        response.getWriter().write(JSON.toJSONString(Result.failure(String.format("The service %s is current unavailable , please try again later !", "ptp-web-service-monitor"))));
 
     }
 

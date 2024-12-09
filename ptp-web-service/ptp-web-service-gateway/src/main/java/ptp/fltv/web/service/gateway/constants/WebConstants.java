@@ -38,6 +38,15 @@ public class WebConstants {
      */
     public static final String GATEWAY_CONTEXT_PATH = "/api/v1/service/gateway";
 
+    /**
+     * @author Lenovo/LiGuanda
+     * @date 2024/12/9 PM 3:23:21
+     * @version 1.0.0
+     * @description 监控微服务模块的上下文基础路径
+     * @filename WebConstants.java
+     */
+    public static final String MONITOR_CONTEXT_PATH = "/api/v1/service/monitor";
+
     @Value("${ip.physical.ptp-web-web-server-host:127.0.0.1}")
     private String PTP_WEB_WEB_SERVER_HOST; // 2024-11-9  21:59-PTP-WEB服务的服务器的IP地址
 

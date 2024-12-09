@@ -103,7 +103,7 @@
         <!--<logback.version>1.5.6</logback.version>-->
         <logstash.logback.encoder.version>7.4</logstash.logback.encoder.version>
         <xxl-job.version>2.4.1</xxl-job.version>
-        <jedis.version>5.2.0-beta3</jedis.version>
+        <jedis.version>5.2.0</jedis.version>
         <skywalking.version>9.2.0</skywalking.version>
         <qcloud.cos.version>5.6.225</qcloud.cos.version>
         <!--  2024-10-8  6:07-SpringBoot的Maven构建插件的版本号  -->
