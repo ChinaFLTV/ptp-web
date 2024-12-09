@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="ptp-web-test" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <option name="ACTIVE_PROFILES" value="dev" />
+    <module name="ptp-web-test.main" />
+    <option name="PROGRAM_PARAMETERS" value="--ip.physical.self-host=192.168.1.12" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="ptp.fltv.web.test.TestApplication" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

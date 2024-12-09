@@ -1,0 +1,4 @@
+# 2024-12-9  14:18-设置RocketMQ的生产环境下的日志级别
+logging:
+  level:
+    com.alibaba.cloud.stream.binder.rocketmq: warn

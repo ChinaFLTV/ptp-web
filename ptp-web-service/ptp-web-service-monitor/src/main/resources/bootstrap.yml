@@ -1,0 +1,15 @@
+# 2024-12-9  14:18-配置nacos服务发现和配置中心所需配置
+spring:
+  application:
+    name: ptp-web-service-monitor
+    # profiles:
+    # active: dev
+
+
+  cloud:
+    nacos:
+      server-addr: ${ip.physical.self-host:127.0.0.1}:8848
+      config:
+        file-extension: yaml
+      discovery:
+        server-addr: ${ip.physical.self-host:127.0.0.1}:8848

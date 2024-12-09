@@ -1,6 +1,7 @@
 package pfp.fltv.common.model.po.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.annotation.Nullable;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -168,6 +169,46 @@ public class Result<T> implements Serializable {
     public static <U> Result<U> failure(U data, String remark) {
 
         return new Result<>(ResponseStatus.FAILURE, LocalDateTime.now(), data, remark);
+
+    }
+
+
+    /**
+     * @param result 需要被提取异常消息的Result响应数据包
+     * @return 提取到的异常信息/消息(若不存在异常信息则返回空字符串)
+     * @author Lenovo/LiGuanda
+     * @date 2024/12/7 PM 4:00:47
+     * @version 1.0.0
+     * @description 从给定的Result响应数据包中提取出可能存在的异常信息
+     * @filename Result.java
+     */
+    public static String extractErrorMsg(@Nullable Result<?> result) {
+
+        String errorMsg = "";
+
+        if (result != null) {
+
+            if (result.getStatus() == ResponseStatus.FAILURE) {
+
+                if (result.getRemark() != null) {
+
+                    errorMsg = result.getRemark();
+
+                } else {
+
+                    if (result.getData() != null) {
+
+                        errorMsg = result.getData().toString();
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        return errorMsg;
 
     }
 

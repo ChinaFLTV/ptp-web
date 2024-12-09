@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  2024-12-9  14:19-默认每60s检测一次配置文件的变动，设置重新设置为10s  -->
+<configuration debug="false" scan="true" scanPeriod="10 seconds">
+
+
+    <!--获取springboot的yml配置信息-->
+    <springProperty scope="context" name="applicationName" source="spring.application.name" defaultValue="default"/>
+    <!--  2024-12-9  14:19-本机物理IP信息  -->
+    <springProperty scope="context" name="selfHost" source="ip.physical.self-host" defaultValue="127.0.0.1"/>
+    <!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径-->
+    <property name="LOG_HOME" value="D:/JavaProjects/ptp-web-backend/logs/logback/service/es"/>
+
+
+    <!-- 2024-12-9  14:19-控制台财色输出 -->
+    <!--<conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter"/>-->
+    <!-- 2024-12-9  14:19-spring 美化异常输出 -->
+    <!--<conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter"/>
+    <conversionRule conversionWord="wEx" converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter"/>-->
+
+    <!--  2024-12-9  14:19-引入的springboot文件中已经给我们制定好clr对应的转换器类了  -->
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+    <!--输出到控制台-->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+
+        <withJansi>false</withJansi>
+
+        <encoder>
+
+            <!--<pattern>%d %p (%file:%line)- %m%n</pattern>-->
+            <!--  2024-12-9  14:19-源码位置的格式应遵循 at 类名.方法名(文件名:行号) 这种常见的模式 , 只有这样写IDE才会识别到这种模式后会自动将其转换为可点击的链接  -->
+            <!--  2024-12-9  14:19-打印方法名、行号可能会比较消耗性能 , 请谨慎使用  -->
+            <!--  2024-12-9  14:19-相关的格式化字符请参阅 : https://www.cnblogs.com/sxdcgaq8080/p/7886251.html  -->
+            <!--  2024-12-9  14:19- %colorName(...) 可以给...的控制台字样设置字体颜色 -->
+            <!--格式化输出：%d:表示日期    %thread:表示线程名     %-5level:级别从左显示5个字符宽度  %msg:日志消息    %n:是换行符-->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %highlight(%-5level) -- %boldMagenta([%-50thread]) %green(at %class.%method) \(%file:%line\) %cyan(--) %msg%n</pattern>
+            <charset>UTF-8</charset>
+
+        </encoder>
+
+    </appender>
+
+
+    <!--  日志发送至logstash  -->
+    <appender name="logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+
+        <!-- logstash的服务器地址和通信端口 -->
+        <destination>${selfHost:127.0.0.1}:5043</destination>
+        <!-- encoder is required -->
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+
+            <!-- 在elasticsearch的index中追加applicationName字段  -->
+            <customFields>{"applicationName":"${applicationName}"}</customFields>
+
+        </encoder>
+
+
+        <!--  2024-12-9  14:19-将通过MDC设置的自定义字段值添加到日志元数据中  -->
+        <includeCallerData>true</includeCallerData>
+        <includeMdc>true</includeMdc>
+
+        <!-- 要添加的MDC字段名称 -->
+        <includeMdcKeyName>method-description</includeMdcKeyName>
+
+    </appender>
+
+
+    <!-- 按照每天生成日志文件 -->
+    <!--<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+
+            &lt;!&ndash;日志文件输出的文件名&ndash;&gt;
+            <FileNamePattern>${LOG_HOME}/ptp-web-web.log.%d{yyyy-MM-dd}.log</FileNamePattern>
+            &lt;!&ndash;日志文件保留天数&ndash;&gt;
+            <MaxHistory>30</MaxHistory>
+
+        </rollingPolicy>
+
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+
+            &lt;!&ndash;格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符&ndash;&gt;
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+
+        </encoder>
+
+        &lt;!&ndash;日志文件最大的大小&ndash;&gt;
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+
+            <MaxFileSize>10MB</MaxFileSize>
+
+        </triggeringPolicy>
+
+    </appender>-->
+
+
+    <!--  2024-12-9  14:19-使用skywalking提供的appender  -->
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.TraceIdPatternLogbackLayout">
+                <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%tid] [%thread] %-5level %logger{36} -%msg%n</Pattern>
+            </layout>
+        </encoder>
+    </appender>
+
+    <appender name="grpc" class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.log.GRPCLogClientAppender">
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.mdc.TraceIdMDCPatternLogbackLayout">
+                <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%X{tid}] [%thread] %-5level %logger{36} -%msg%n</Pattern>
+            </layout>
+        </encoder>
+    </appender>
+
+
+    <!-- 日志输出级别 -->
+    <root level="INFO">
+
+        <!--<appender-ref ref="logstash"/>-->
+        <appender-ref ref="console"/>
+
+    </root>
+
+
+    <!-- 2024-12-9  14:19-如果暂时不需要将日志数据推送到ELK平台上 , 那就将下面的配置注释掉 -->
+    <!--<logger name="ptp.fltv.web.service.monitor" level="INFO" additivity="false">
+
+        <appender-ref ref="console"/>
+        <appender-ref ref="logstash"/>
+
+    </logger>-->
+
+
+    <!-- 2024-12-9  14:19-如果暂时不需要将日志数据推送到skywalking平台上 , 那就将下面的配置注释掉 -->
+    <logger name="ptp.fltv.web.service.monitor" level="INFO">
+
+        <!--<appender-ref ref="stdout"/>-->
+        <appender-ref ref="grpc"/>
+
+    </logger>
+
+
+</configuration>
