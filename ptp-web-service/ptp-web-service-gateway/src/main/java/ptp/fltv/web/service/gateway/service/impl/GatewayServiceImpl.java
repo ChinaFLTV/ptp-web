@@ -51,6 +51,7 @@ public class GatewayServiceImpl implements GatewayService, ApplicationEventPubli
 
         routeDefinitionWriter.save(Mono.just(createWebWebRoute())).subscribe();
         // routeDefinitionWriter.save(Mono.just(createWebServiceRoute())).subscribe();
+        routeDefinitionWriter.save(Mono.just(createWebServiceMonitorRoute())).subscribe();
         applicationEventPublisher.publishEvent(new RefreshRoutesEvent(routeDefinitionWriter));
 
     }
