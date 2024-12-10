@@ -707,6 +707,7 @@ services:
       - "8150:8150"
       - "8180:8180"
       - "8210:8210"
+      - "8240:8240"
       # - "9848:9848" # 2024-10-9  00:56-解决Docker运行微服务实例时nacos报  Server check fail, please check server 127.0.0.1 ,port 9848 is available 的错误
     expose:
       - 8080
