@@ -64,4 +64,20 @@ public class RedisController {
     }
 
 
+    @LogRecord(description = "查询指定ID的Redis数据库的全部键值对数据")
+    @SentinelResource("web-monitor-redis-controller")
+    @Operation(description = "查询指定ID的Redis数据库的全部键值对数据")
+    @PostMapping("/query/keyValues/all/{id}")
+    public Result<Map<String, Object>> queryAllKeyValuePairsById(
+
+            @Parameter(name = "id", description = "待查询的Redis数据库的ID", in = ParameterIn.PATH, required = true) @PathVariable("id") Long id
+
+    ) {
+
+        Map<String, Object> keyValuePairs = redisService.queryAllKeyValuePairsById(id);
+        return (keyValuePairs == null) ? Result.failure(new HashMap<>()) : Result.success(keyValuePairs);
+
+    }
+
+
 }

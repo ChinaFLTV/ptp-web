@@ -40,4 +40,17 @@ public interface RedisService {
     Object runSingleCommand(@Nonnull Long id, @Nonnull String command);
 
 
+    /**
+     * @param id 待查询的Redis数据库的ID
+     * @return 指定ID的Redis数据库的全部键值对数据
+     * @author Lenovo/LiGuanda
+     * @date 2024/12/10 PM 3:36:00
+     * @apiNote 注意 : 由于该API需要一次性阻塞式获取指定Redis数据库中现存的全部key-value信息 , 因此执行会比较耗时 , 同时还会阻塞住目标Redis数据库一段时间
+     * @version 1.0.0
+     * @description 查询指定ID的Redis数据库的全部键值对数据
+     * @filename RedisService.java
+     */
+    Map<String, Object> queryAllKeyValuePairsById(@Nonnull Long id);
+
+
 }

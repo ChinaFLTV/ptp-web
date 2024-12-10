@@ -33,6 +33,9 @@ echo "正在启动Web服务..."
 # 2024-10-8  2:50-shell命令结尾加&意为后台启动/执行命令 , 不会同步阻塞住后续指令的执行(但是当前脚本被杀死后 , 其附属的后台进程可能也会被同步杀死)
 java -jar "${BASE_PATH}/ptp-web-web-1.0.jar" --spring.profiles.active=${START_MODE} --ip.physical.self-host="${SELF_IP}" &
 echo "启动Web服务成功!"
+echo "正在启动监控服务..."
+java -jar "${BASE_PATH}/ptp-web-service-monitor-1.0.jar" --spring.profiles.active=${START_MODE} --ip.physical.self-host="${SELF_IP}" &
+echo "启动监控服务成功!"
 echo "全部的PTP后台服务启动成功!!!"
 
 # 2024-10-8  4:12-无限阻塞shell以防止容器过早退出

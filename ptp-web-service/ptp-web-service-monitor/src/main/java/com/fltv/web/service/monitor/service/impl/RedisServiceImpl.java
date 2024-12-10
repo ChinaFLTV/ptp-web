@@ -1,16 +1,19 @@
 package com.fltv.web.service.monitor.service.impl;
 
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.fltv.web.service.monitor.service.RedisService;
 import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.args.GeoUnit;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Lenovo/LiGuanda
@@ -20,6 +23,7 @@ import java.util.Map;
  * @filename RedisServiceImpl.java
  */
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class RedisServiceImpl implements RedisService {
@@ -90,6 +94,93 @@ public class RedisServiceImpl implements RedisService {
         builder.append(");");
 
         return jedis.eval(builder.toString());
+
+    }
+
+
+    @Override
+    public Map<String, Object> queryAllKeyValuePairsById(@Nonnull Long id) {
+
+        Map<String, Object> map = new HashMap<>();
+
+        Jedis jedis = jedisPool.getResource();
+        Set<String> keys = jedis.keys("*");
+
+        if (keys != null && !keys.isEmpty()) {
+
+            for (String key : keys) {
+
+                String type = jedis.type(key);
+                switch (type) {
+
+                    case "string" -> {
+
+                        String string = jedis.get(key);
+                        map.put(key, string == null ? null : JSON.parseObject(string));
+
+                    }
+
+                    case "list" -> {
+
+                        List<JSONObject> list = jedis.lrange(key, 0, -1)
+                                .stream()
+                                .filter(StringUtils::hasLength)
+                                .map(JSON::parseObject)
+                                .toList();
+                        map.put(key, list);
+
+                    }
+
+                    case "hash" -> {
+
+                        Map<String, JSONObject> hash = new HashMap<>();
+                        jedis.hgetAll(key).forEach((key1, value) -> map.put(key1, JSON.parseObject(value)));
+                        map.put(key, hash);
+
+                    }
+
+                    case "set" -> {
+
+                        Set<JSONObject> set = jedis.smembers(key)
+                                .stream()
+                                .filter(StringUtils::hasLength)
+                                .map(JSON::parseObject)
+                                .collect(Collectors.toSet());
+                        map.put(key, set);
+
+                    }
+
+                    case "zset" -> {
+
+                        List<JSONObject> zset = jedis.zrange(key, 0, -1)
+                                .stream()
+                                .filter(StringUtils::hasLength)
+                                .map(JSON::parseObject)
+                                .toList();
+                        map.put(key, zset);
+
+                    }
+
+                    case "geo" -> {
+
+                        List<String> geo = jedis.georadius(key, 0, 0, Double.MAX_VALUE, GeoUnit.KM)
+                                .stream()
+                                .map(JSON::toJSONString)
+                                .toList();
+                        map.put(key, geo);
+
+                    }
+
+                    default -> log.warn("获取指定Redis数据库(ID = {})的全部 key-value 键值对时出现跳过情况 : 跳过了 key = {} , value = {}", id, key, type);
+
+
+                }
+
+            }
+
+        }
+
+        return map;
 
     }
 

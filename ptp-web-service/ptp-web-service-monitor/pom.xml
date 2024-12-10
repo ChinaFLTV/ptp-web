@@ -74,6 +74,11 @@
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>
         </dependency>
+        <!--  2024-12-10  16:10-由于采用Jedis获取全部的key时需要先对key的类型进行判断 , 然后再采取相应的方法去获取 , 比较繁琐 , 因此这里直接采用StringRedisTemplate直接获取序列化好的任意类型的value值  -->
+        <!--<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>-->
 
     </dependencies>
 
@@ -89,7 +94,7 @@
                     <!--  2024-12-9  13:50-配置构建出来的jar包的存放位置  -->
                     <outputDirectory>${jar.output.path}</outputDirectory>
                     <!--  2024-12-9  13:50-解决通过 java -jar ... 的方式运行jar包时报 no main manifest attribute, in ... 的错误  -->
-                    <mainClass>ptp.fltv.web.service.</mainClass>
+                    <mainClass>com.fltv.web.service.monitor.MonitorApplication</mainClass>
                 </configuration>
                 <executions>
                     <execution>
