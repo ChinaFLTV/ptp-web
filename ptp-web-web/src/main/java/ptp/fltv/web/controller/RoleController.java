@@ -54,7 +54,7 @@ public class RoleController {
     @SentinelResource("web-content-user-role-controller")
     @Operation(description = "批量(分页)查询多条角色数据")
     @GetMapping("/query/page/{offset}/{limit}")
-    public Result<List<Role>> queryPassagePage(
+    public Result<List<Role>> queryRolePage(
 
             @Parameter(name = "offset", description = "查询的一页角色数据的起始偏移量", in = ParameterIn.PATH, required = true) @PathVariable("offset") Long offset,
             @Parameter(name = "limit", description = "查询的这一页角色数据的数量", in = ParameterIn.PATH, required = true) @PathVariable("limit") Long limit

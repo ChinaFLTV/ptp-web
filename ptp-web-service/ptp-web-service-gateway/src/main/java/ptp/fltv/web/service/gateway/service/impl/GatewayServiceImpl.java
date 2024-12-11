@@ -102,10 +102,10 @@ public class GatewayServiceImpl implements GatewayService, ApplicationEventPubli
         FilterDefinition rateLimiterFilter = new FilterDefinition();
         rateLimiterFilter.setName("RequestRateLimiter");
         rateLimiterFilter.addArg("key-resolver", "#{@ipKeyResolver}"); // 2024-12-3  19:18-对应的限流路由判断
-        // rateLimiterFilter.addArg("rate-limiter", "#{@redisRateLimiter}"); // 2024-12-3  19:35-这里不再以SpringBean的方式注入令牌桶参数 , 而是直接进行手动配置(因为我们发现此时注入的redisRateLimiter的参数配置为空 , 因此这也是可能导致后续用户侧仅仅发送几个请求就容易导致429 too many requests 响应的原因吧)
-        rateLimiterFilter.addArg("redis-rate-limiter.replenishRate", "200"); // 2024-12-3  19:19-每秒生成的令牌数
-        rateLimiterFilter.addArg("redis-rate-limiter.burstCapacity", "800"); // 2024-12-3  19:20-高并发情况下将每秒生成的令牌数增加的个数 即 replenishRate + burstCapacity
-        rateLimiterFilter.addArg("redis-rate-limiter.requestedTokens", "1"); // 2024-12-3  19:20-每个请求消耗的令牌个数
+        rateLimiterFilter.addArg("rate-limiter", "#{@redisRateLimiter}"); // 2024-12-3  19:35-这里不再以SpringBean的方式注入令牌桶参数 , 而是直接进行手动配置(因为我们发现此时注入的redisRateLimiter的参数配置为空 , 因此这也是可能导致后续用户侧仅仅发送几个请求就容易导致429 too many requests 响应的原因吧)
+        // rateLimiterFilter.addArg("redis-rate-limiter.replenishRate", "200"); // 2024-12-3  19:19-每秒生成的令牌数
+        // rateLimiterFilter.addArg("redis-rate-limiter.burstCapacity", "800"); // 2024-12-3  19:20-高并发情况下将每秒生成的令牌数增加的个数 即 replenishRate + burstCapacity
+        // rateLimiterFilter.addArg("redis-rate-limiter.requestedTokens", "1"); // 2024-12-3  19:20-每个请求消耗的令牌个数
 
         route.setPredicates(List.of(pathPredicate));
         route.setFilters(Arrays.asList(authCheckFilter, rateLimiterFilter));
@@ -184,10 +184,10 @@ public class GatewayServiceImpl implements GatewayService, ApplicationEventPubli
         FilterDefinition rateLimiterFilter = new FilterDefinition();
         rateLimiterFilter.setName("RequestRateLimiter");
         rateLimiterFilter.addArg("key-resolver", "#{@ipKeyResolver}"); // 2024-12-10  15:56-对应的限流路由判断
-        // rateLimiterFilter.addArg("rate-limiter", "#{@redisRateLimiter}"); // 2024-12-10  15:56-这里不再以SpringBean的方式注入令牌桶参数 , 而是直接进行手动配置(因为我们发现此时注入的redisRateLimiter的参数配置为空 , 因此这也是可能导致后续用户侧仅仅发送几个请求就容易导致429 too many requests 响应的原因吧)
-        rateLimiterFilter.addArg("redis-rate-limiter.replenishRate", "200"); // 2024-12-10  15:56-每秒生成的令牌数
-        rateLimiterFilter.addArg("redis-rate-limiter.burstCapacity", "800"); // 2024-12-10  15:56-高并发情况下将每秒生成的令牌数增加的个数 即 replenishRate + burstCapacity
-        rateLimiterFilter.addArg("redis-rate-limiter.requestedTokens", "1"); // 2024-12-10  15:56-每个请求消耗的令牌个数
+        rateLimiterFilter.addArg("rate-limiter", "#{@redisRateLimiter}"); // 2024-12-10  15:56-这里不再以SpringBean的方式注入令牌桶参数 , 而是直接进行手动配置(因为我们发现此时注入的redisRateLimiter的参数配置为空 , 因此这也是可能导致后续用户侧仅仅发送几个请求就容易导致429 too many requests 响应的原因吧)
+        // rateLimiterFilter.addArg("redis-rate-limiter.replenishRate", "200"); // 2024-12-10  15:56-每秒生成的令牌数
+        // rateLimiterFilter.addArg("redis-rate-limiter.burstCapacity", "800"); // 2024-12-10  15:56-高并发情况下将每秒生成的令牌数增加的个数 即 replenishRate + burstCapacity
+        // rateLimiterFilter.addArg("redis-rate-limiter.requestedTokens", "1"); // 2024-12-10  15:56-每个请求消耗的令牌个数
 
         route.setPredicates(List.of(pathPredicate));
         route.setFilters(Arrays.asList(authCheckFilter, rateLimiterFilter));
