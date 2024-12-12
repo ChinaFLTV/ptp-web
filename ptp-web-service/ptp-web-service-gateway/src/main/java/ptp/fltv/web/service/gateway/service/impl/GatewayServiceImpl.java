@@ -176,7 +176,7 @@ public class GatewayServiceImpl implements GatewayService, ApplicationEventPubli
 
         PredicateDefinition pathPredicate = new PredicateDefinition();
         pathPredicate.setName("Path");
-        pathPredicate.addArg(RoutePredicateFactory.PATTERN_KEY, "/api/v1/service/monitor");
+        pathPredicate.addArg(RoutePredicateFactory.PATTERN_KEY, "/api/v1/service/monitor/**");
 
         FilterDefinition authCheckFilter = new FilterDefinition();
         authCheckFilter.setName("AuthenticationCheck");

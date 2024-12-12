@@ -35,7 +35,7 @@ public class RedisServiceImpl implements RedisService {
     @Override
     public Map<String, Object> queryInfoById(@Nonnull Long id) {
 
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new LinkedHashMap<>(); // 2024-12-12  15:25-保证返回的数据在交由前端进行遍历时 , 能够保证与现有的配置数据的顺序保持一致
 
         Jedis jedis = jedisPool.getResource();
         String infoStr = jedis.info();
@@ -69,6 +69,19 @@ public class RedisServiceImpl implements RedisService {
 
     @Override
     public Object runSingleCommand(@Nonnull Long id, @Nonnull String command) {
+
+        if ("\"\"".equals(command.trim())) {
+
+            return null;
+
+        }
+
+        // 2024-12-12  13:53-如果你使用API fox进行测试时 , 这里传入的命令是不会加引号的 , 因此这里需要根据具体情况进行选择性去除
+        if (command.startsWith("\"") && command.endsWith("\"")) {
+
+            command = command.trim().substring(1, command.length() - 1); // 2024-12-12  13:49-由于传递过来的命令会被自动在头部和尾部加了引号 , 因此这里需要去掉两端的双引号
+
+        }
 
         Jedis jedis = jedisPool.getResource();
 
