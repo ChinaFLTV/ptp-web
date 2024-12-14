@@ -5,3 +5,4 @@ ip:
     self-host: 192.168.1.10 # 2024-10-8  19:37-本机IP地址(除了修改此地方 , 还需要单独修改logback.xml中的IP配置)
     ptp-web-web-server-host: ${ip.physical.self-host} # 2024-11-9  21:55-PTP-WEB服务的服务器的IP地址
     ptp-web-service-server-host: ${ip.physical.self-host} # 2024-11-9  21:55-PTP-SERVICE服务的服务器的IP地址
+    ptp-web-service-monitor-server-host: ${ip.physical.self-host} # 2024-12-13  13:26-PTP-SERVICE-MONITOR服务的服务器的IP地址

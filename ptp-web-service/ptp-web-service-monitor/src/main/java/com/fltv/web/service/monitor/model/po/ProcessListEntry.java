@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 /**
  * @author Lenovo/LiGuanda
  * @version 1.0.0
@@ -19,7 +21,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ProcessListEntry {
+public class ProcessListEntry implements Serializable {
 
 
     private Long id; // 2024-12-9  17:58-该进程程序登录MySQL时 , 系统分配的连接id , 即为connection_id

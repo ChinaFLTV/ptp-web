@@ -1,6 +1,7 @@
 package com.fltv.web.service.monitor.controller;
 
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
+import com.fltv.web.service.monitor.model.po.RedisKeyValueInfo;
 import com.fltv.web.service.monitor.service.RedisService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -76,6 +77,76 @@ public class RedisController {
 
         Map<String, Object> keyValuePairs = redisService.queryAllKeyValuePairsById(id);
         return (keyValuePairs == null) ? Result.failure(new HashMap<>()) : Result.success(keyValuePairs);
+
+    }
+
+
+    @LogRecord(description = "查询指定ID的Redis数据库的单个键值对的详细信息")
+    @SentinelResource("web-monitor-redis-controller")
+    @Operation(description = "查询指定ID的Redis数据库的单个键值对的详细信息")
+    @GetMapping("/query/keyValues/single")
+    public Result<RedisKeyValueInfo> querySingleKeyValuePairInfo(
+
+            @Parameter(name = "id", description = "待查询的Redis数据库的ID", required = true) @RequestParam("id") Long id,
+            @Parameter(name = "key", description = "待查询的单个Redis键", required = true) @RequestParam("key") String key
+
+    ) {
+
+        RedisKeyValueInfo info = redisService.querySingleKeyValuePairInfo(id, key);
+        return (info == null) ? Result.failure(null) : Result.success(info);
+
+    }
+
+
+    @LogRecord(description = "添加指定ID的Redis数据库指定的单个键值对")
+    @SentinelResource("web-monitor-redis-controller")
+    @Operation(description = "添加指定ID的Redis数据库指定的单个键值对")
+    @PostMapping("/insert/keyValues/single")
+    public Result<Boolean> insertSingleKeyValuePair(
+
+            @Parameter(name = "id", description = "待操作的Redis数据库的ID", required = true) @RequestParam("id") Long id,
+            @Parameter(name = "info", description = "添加后的单个键值对信息数据包(key、value、ttl字段必须填写)", required = true) @RequestBody RedisKeyValueInfo info
+
+    ) {
+
+        boolean isInserted = redisService.insertSingleKeyValuePair(id, info);
+        return isInserted ? Result.success(true) : Result.failure(null);
+
+    }
+
+
+    @LogRecord(description = "更新指定ID的Redis数据库指定的单个键值对")
+    @SentinelResource("web-monitor-redis-controller")
+    @Operation(description = "更新指定ID的Redis数据库指定的单个键值对")
+    @PutMapping("/update/keyValues/single")
+    public Result<Boolean> updateSingleKeyValuePair(
+
+            @Parameter(name = "id", description = "待操作的Redis数据库的ID", required = true) @RequestParam("id") Long id,
+            @Parameter(name = "oldKey", description = "待更新的单个Redis键(旧键名)", required = true) @RequestParam("oldKey") String oldKey,
+            @Parameter(name = "info", description = "更新后的单个键值对信息数据包(key、value、ttl字段必须填写)", required = true) @RequestBody RedisKeyValueInfo info
+
+
+    ) {
+
+        boolean isUpdated = redisService.updateSingleKeyValuePair(id, oldKey, info);
+        return isUpdated ? Result.success(true) : Result.failure(null);
+
+    }
+
+
+    @LogRecord(description = "删除指定ID的Redis数据库指定的单个键值对")
+    @SentinelResource("web-monitor-redis-controller")
+    @Operation(description = "删除指定ID的Redis数据库指定的单个键值对")
+    @DeleteMapping("/delete/keyValues/single")
+    public Result<Long> deleteSingleKeyValuePair(
+
+            @Parameter(name = "id", description = "待操作的Redis数据库的ID", required = true) @RequestParam("id") Long id,
+            @Parameter(name = "key", description = "待删除的单个Redis键", required = true) @RequestParam("key") String key
+
+    ) {
+
+        long res = redisService.deleteSingleKeyValuePair(id, key);
+        return res > 0 ? Result.success(res) : Result.failure(res);
 
     }
 

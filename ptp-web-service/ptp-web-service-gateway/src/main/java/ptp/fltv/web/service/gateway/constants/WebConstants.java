@@ -53,5 +53,8 @@ public class WebConstants {
     @Value("${ip.physical.ptp-web-service-server-host:127.0.0.1}")
     private String PTP_WEB_SERVICE_SERVER_HOST; // 2024-11-9  21:59-PTP-SERVICE服务的服务器的IP地址
 
+    @Value("${ip.physical.ptp-web-service-monitor-server-host:127.0.0.1}")
+    private String PTP_WEB_SERVICE_MONITOR_SERVER_HOST; // 2024-12-13  13:25-PTP-SERVICE-MONITOR服务的服务器的IP地址
+
 
 }

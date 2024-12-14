@@ -763,7 +763,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                     .idiograph("这个人很懒 , 什么信息也没有写~")
                     .avatar(RandomUtils.generateAvatar())
                     .background(RandomUtils.generateBackground())
-                    .roleId(1L) // 2024-11-24  11:30-还需要提前赋予该用户角色信息(目前暂定为具备全部权限的管理员角色)
+                    // .roleId(1L) //// 2024-11-24  11:30-还需要提前赋予该用户角色信息(目前暂定为具备全部权限的管理员角色)
+                    .roleId(2L) // 2024-12-14  13:14-还需要提前赋予该用户角色信息(默认授予新用户为普通用户角色)
                     .assetId(asset.getId()) // 2024-11-24  11:34-还要关联上刚刚创建好的财产信息
                     .build();
 

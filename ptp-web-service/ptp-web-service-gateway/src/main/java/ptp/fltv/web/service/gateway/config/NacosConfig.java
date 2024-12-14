@@ -85,7 +85,7 @@ public class NacosConfig implements InitializingBean, ApplicationEventPublisherA
 
                                         // case "ptp-web-service" -> oldRouteDefinition.setUri(URI.create("http://" + webConstants.getPTP_WEB_SERVICE_SERVER_HOST() + ":8080"));
 
-                                        case "ptp-web-service-monitor" -> oldRouteDefinition.setUri(URI.create("http://" + webConstants.getPTP_WEB_SERVICE_SERVER_HOST() + ":8240"));
+                                        case "ptp-web-service-monitor" -> oldRouteDefinition.setUri(URI.create("http://" + webConstants.getPTP_WEB_SERVICE_MONITOR_SERVER_HOST() + ":8240"));
 
                                     }
 

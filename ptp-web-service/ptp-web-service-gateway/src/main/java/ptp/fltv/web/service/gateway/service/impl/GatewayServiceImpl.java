@@ -172,7 +172,7 @@ public class GatewayServiceImpl implements GatewayService, ApplicationEventPubli
         RouteDefinition route = new RouteDefinition();
         route.setId("ptp-web-service-monitor");
         route.setOrder(-1);
-        route.setUri(URI.create("http://" + webConstants.getPTP_WEB_SERVICE_SERVER_HOST() + ":8240"));
+        route.setUri(URI.create("http://" + webConstants.getPTP_WEB_SERVICE_MONITOR_SERVER_HOST() + ":8240"));
 
         PredicateDefinition pathPredicate = new PredicateDefinition();
         pathPredicate.setName("Path");

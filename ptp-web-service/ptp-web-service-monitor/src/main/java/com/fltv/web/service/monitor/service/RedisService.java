@@ -1,6 +1,8 @@
 package com.fltv.web.service.monitor.service;
 
+import com.fltv.web.service.monitor.model.po.RedisKeyValueInfo;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 import java.util.Map;
 
@@ -51,6 +53,60 @@ public interface RedisService {
      * @filename RedisService.java
      */
     Map<String, Object> queryAllKeyValuePairsById(@Nonnull Long id);
+
+
+    /**
+     * @param id  待查询的Redis数据库的ID
+     * @param key 待查询的单个Redis键
+     * @return 查询到的指定key-value键值对的详细信息
+     * @author Lenovo/LiGuanda
+     * @date 2024/12/14 PM 2:07:37
+     * @version 1.0.0
+     * @description 查询指定ID的Redis数据库的单个键值对的详细信息
+     * @apiNote 这里返回的映射的主要构成 : key(键名) , value(值内容) , ttl(过期时间) , count(值的长度 , 主要对于集合而言 , 标识集合的长度) , size(值内容的大小 , 主要对于字符串类型的value而言 , 单位是Byte) , type(值类型)
+     * @filename RedisService.java
+     */
+    RedisKeyValueInfo querySingleKeyValuePairInfo(@Nonnull Long id, @Nonnull String key);
+
+
+    /**
+     * @param id   待操作的Redis数据库的ID
+     * @param info 添加后的单个键值对信息数据包(key、value、ttl字段必须填写)
+     * @return 是否添加键值对成功
+     * @author Lenovo/LiGuanda
+     * @date 2024/12/14 PM 5:01:11
+     * @version 1.0.0
+     * @description 添加指定ID的Redis数据库指定的单个键值对
+     * @filename RedisService.java
+     */
+    boolean insertSingleKeyValuePair(Long id, RedisKeyValueInfo info);
+
+
+    /**
+     * @param id     待操作的Redis数据库的ID
+     * @param oldKey 待更新的单个Redis键(旧键名)(该字段可为空 , 主要为了后面搭建 添加键值对 API接口复用此API所需)
+     * @param info   更新后的单个键值对信息数据包(key、value、ttl字段必须填写)
+     * @return 是否更新键值对成功
+     * @author Lenovo/LiGuanda
+     * @date 2024/12/14 PM 3:58:51
+     * @version 1.0.0
+     * @description 更新指定ID的Redis数据库指定的单个键值对
+     * @filename RedisService.java
+     */
+    boolean updateSingleKeyValuePair(@Nonnull Long id, @Nullable String oldKey, @Nonnull RedisKeyValueInfo info);
+
+
+    /**
+     * @param id  待操作的Redis数据库的ID
+     * @param key 待删除的单个Redis键
+     * @return 被删除的键值对的数量
+     * @author Lenovo/LiGuanda
+     * @date 2024/12/14 PM 3:47:22
+     * @version 1.0.0
+     * @description 删除指定ID的Redis数据库指定的单个键值对
+     * @filename RedisService.java
+     */
+    long deleteSingleKeyValuePair(@Nonnull Long id, @Nonnull String key);
 
 
 }

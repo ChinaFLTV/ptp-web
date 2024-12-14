@@ -2,8 +2,10 @@ package com.fltv.web.service.monitor.service.impl;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
+import com.fltv.web.service.monitor.model.po.RedisKeyValueInfo;
 import com.fltv.web.service.monitor.service.RedisService;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -11,6 +13,7 @@ import org.springframework.util.StringUtils;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.args.GeoUnit;
+import redis.clients.jedis.resps.GeoRadiusResponse;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -129,7 +132,18 @@ public class RedisServiceImpl implements RedisService {
                     case "string" -> {
 
                         String string = jedis.get(key);
-                        map.put(key, string == null ? null : JSON.parseObject(string));
+
+                        try {
+
+                            map.put(key, string == null ? null : JSON.parseObject(string));
+
+                        } catch (Exception ex) {
+
+                            // 2024-12-13  13:30-这里出现反序列化失败大概率是因为字符串本身的value值就不是对象的序列化字符串 , 很可能就是基本数据类型的转换的字符串 , 所以出现这种情况 , 直接可以将此键值对存入映射中即可
+                            log.error("反序列化指定Redis数据库(ID = {})的 key( = {}) 对应的 value( = {}) 为对象时出现异常 , 将调整插入策略为 直接插入 : {}", id, key, string, ex.getCause() == null ? ex.getLocalizedMessage() : ex.getCause().getMessage());
+                            map.put(key, string);
+
+                        }
 
                     }
 
@@ -194,6 +208,151 @@ public class RedisServiceImpl implements RedisService {
         }
 
         return map;
+
+    }
+
+
+    @Override
+    public RedisKeyValueInfo querySingleKeyValuePairInfo(@Nonnull Long id, @Nonnull String key) {
+
+        RedisKeyValueInfo info = new RedisKeyValueInfo();
+        info.setKey(key);
+
+        if (!StringUtils.hasLength(key)) {
+
+            return info;
+
+        }
+
+        Jedis jedis = jedisPool.getResource();
+
+        boolean isExist = jedis.exists(key);
+        info.setExist(isExist);
+
+        if (isExist) {
+
+            String type = jedis.type(key);
+            info.setType(type);
+            info.setTtl(jedis.ttl(key)); // 2024-12-14  14:16-ttl 方法返回的数值的单位为秒 , 数值为-1则表示永不过期 , 数值为-2则表示值不存在
+
+            switch (type) {
+
+                case "string" -> {
+
+                    info.setValue(jedis.get(key));
+                    info.setCount(1L);
+                    info.setSize(jedis.strlen(key)); // 2024-12-14  14:31-数值的单位为Byte
+
+                }
+
+                case "list" -> {
+
+                    info.setValue(jedis.lrange(key, 0, -1));
+                    info.setCount(jedis.llen(key));
+
+                }
+
+                case "hash" -> {
+
+                    info.setValue(jedis.hgetAll(key));
+                    info.setCount(jedis.hlen(key));
+
+                }
+
+                case "set" -> {
+
+                    info.setValue(jedis.smembers(key));
+                    info.setCount(jedis.scard(key));
+
+                }
+
+                case "zset" -> {
+
+                    info.setValue(jedis.zrange(key, 0, -1));
+                    info.setCount(jedis.zcard(key));
+
+                }
+
+                case "geo" -> {
+
+                    List<GeoRadiusResponse> geo = jedis.georadius(key, 0, 0, Double.MAX_VALUE, GeoUnit.KM);
+
+                    info.setValue(geo);
+                    info.setCount(geo.size());
+
+                }
+
+            }
+
+
+        }
+
+        return info;
+
+    }
+
+
+    @Override
+    public boolean insertSingleKeyValuePair(Long id, RedisKeyValueInfo info) {
+
+        return updateSingleKeyValuePair(id, null, info);
+
+    }
+
+
+    @Override
+    public boolean updateSingleKeyValuePair(@Nonnull Long id, @Nullable String oldKey, @Nonnull RedisKeyValueInfo info) {
+
+        Jedis jedis = jedisPool.getResource();
+
+        // 2024-12-14  16:01-我们更新键值对的思路 : 添加新的key-value -> 验证key-value是否存在 -> 设置TTL -> 删除旧key-value
+        if (StringUtils.hasLength(info.getKey()) && info.getValue() != null) {
+
+            jedis.set(info.getKey(), info.getValue().toString());
+
+            if (jedis.exists(info.getKey())) {
+
+                if (/*info.getTtl() == -1 ||*/ info.getTtl() > 0) { // 2024-12-14  16:23-如果用户指定键值对为永不过期(-1) , 则这里可以直接跳过设置 , 因为刚插入的键值对的默认过期时间就为-1(永不过期)
+
+                    jedis.expire(info.getKey(), info.getTtl());
+                    if (oldKey != null && !oldKey.equals(info.getKey())) { // 2024-12-14  16:49-只有在新key与旧key不一致的情况下才去单独的移除旧key , 若二者一致 , 则旧key直接被新key覆盖掉了 , 这里就没必要再专门删除了
+
+                        jedis.del(oldKey);
+
+                    }
+                    return true;
+
+                } else if (info.getTtl() == -1) {
+
+                    if (oldKey != null && !oldKey.equals(info.getKey())) { // 2024-12-14  16:53-只有在新key与旧key不一致的情况下才去单独的移除旧key , 若二者一致 , 则旧key直接被新key覆盖掉了 , 这里就没必要再专门删除了
+
+                        jedis.del(oldKey);
+
+                    }
+                    return true;
+
+                }
+
+            }
+
+        }
+
+        return false;
+
+    }
+
+
+    @Override
+    public long deleteSingleKeyValuePair(@Nonnull Long id, @Nonnull String key) {
+
+        if (!StringUtils.hasLength(key)) {
+
+            return 0;
+
+        }
+
+        Jedis jedis = jedisPool.getResource();
+        return jedis.del(key);
 
     }
 
