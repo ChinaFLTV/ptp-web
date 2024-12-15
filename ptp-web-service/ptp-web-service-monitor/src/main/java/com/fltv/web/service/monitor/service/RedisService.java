@@ -109,4 +109,16 @@ public interface RedisService {
     long deleteSingleKeyValuePair(@Nonnull Long id, @Nonnull String key);
 
 
+    /**
+     * @param id 待执行清空操作的Redis数据库的ID(若想清空全部 , 则请置此字段的值为-1)
+     * @return 是否成功清空指定数据库/全部数据库的全部键值对
+     * @author Lenovo/LiGuanda
+     * @date 2024/12/15 PM 2:22:20
+     * @version 1.0.0
+     * @description 删除指定ID/或全部ID的Redis数据库的全部键值对
+     * @filename RedisService.java
+     */
+    String flushDB(@Nonnull Long id);
+
+
 }

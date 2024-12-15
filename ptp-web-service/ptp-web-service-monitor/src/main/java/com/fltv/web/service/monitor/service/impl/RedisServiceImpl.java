@@ -357,4 +357,36 @@ public class RedisServiceImpl implements RedisService {
     }
 
 
+    @Override
+    public String flushDB(@Nonnull Long id) {
+
+        try {
+
+            Jedis jedis = jedisPool.getResource();
+
+            if (id == -1L) {
+
+                return jedis.flushAll();
+
+            } else if (id > 0) {
+
+                jedis.select(Math.toIntExact(id));
+                return jedis.flushDB();
+
+            } else {
+
+                return null;
+
+            }
+
+        } catch (Exception ex) {
+
+            log.error("清空指定ID/全部ID的Redis数据库(ID = {})的全部键值对数据时出现异常 : {}", id, ex.getCause() == null ? ex.getLocalizedMessage() : ex.getCause().getMessage());
+            return null;
+
+        }
+
+    }
+
+
 }

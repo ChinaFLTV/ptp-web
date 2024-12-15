@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import pfp.fltv.common.annotation.LogRecord;
 import pfp.fltv.common.model.po.response.Result;
@@ -147,6 +148,22 @@ public class RedisController {
 
         long res = redisService.deleteSingleKeyValuePair(id, key);
         return res > 0 ? Result.success(res) : Result.failure(res);
+
+    }
+
+
+    @LogRecord(description = "删除指定ID/或全部ID的Redis数据库的全部键值对")
+    @SentinelResource("web-monitor-redis-controller")
+    @Operation(description = "删除指定ID/或全部ID的Redis数据库的全部键值对")
+    @DeleteMapping("/delete/db/singleOrAll")
+    public Result<String> flushDB(
+
+            @Parameter(name = "id", description = "待执行清空操作的Redis数据库的ID(若想清空全部 , 则请置此字段的值为-1)", required = true) @RequestParam("id") Long id
+
+    ) {
+
+        String res = redisService.flushDB(id);
+        return StringUtils.hasLength(res) ? Result.success(res) : Result.failure(null);
 
     }
 
