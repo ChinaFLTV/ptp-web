@@ -96,3 +96,12 @@ springdoc:
     csrf:
       enabled: true
     path: /swagger-ui.html
+
+
+# 2024-12-16  13:47-Docker客户端的相关配置
+docker:
+  host: tcp://${ip.physical.docker-ip}:2375
+  api-version: 1.47
+  # 2024-12-16  15:14-下面的配置为容器名以及其对应的容器ID的映射
+  containers:
+    ptp-backend-mysql-1: ca8129bec3d5

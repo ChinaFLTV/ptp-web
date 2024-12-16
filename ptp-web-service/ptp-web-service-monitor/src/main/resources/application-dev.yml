@@ -3,6 +3,7 @@ ip:
   # 2024-12-9  14:18-物理IP
   physical:
     self-host: 192.168.1.10 # 2024-10-8  23:55-本机IP地址(除了修改此地方 , 还需要单独修改logback.xml中的IP配置)
+    docker-ip: ${ip.physical.self-host:127.0.0.1} # 2024-12-16  14:59-Docker容器所在的宿主机的物理IP地址
 
 
 # 2024-12-9  14:18-设置RocketMQ的开发环境下的日志级别

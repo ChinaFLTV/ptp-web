@@ -2,6 +2,7 @@ package com.fltv.web.service.monitor.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.fltv.web.service.monitor.model.po.ProcessListEntry;
+import com.fltv.web.service.monitor.model.po.TableInfo;
 import jakarta.annotation.Nonnull;
 import pfp.fltv.common.model.po.manage.Asset;
 
@@ -65,6 +66,32 @@ public interface MySqlService extends IService<Asset> {
      * @filename MySqlService.java
      */
     Map<String, Object> getVariablesById(@Nonnull Long id);
+
+
+    /**
+     * @param id 待查询的MySQL数据库的ID
+     * @return 指定ID的MySQL数据库的基本状态信息
+     * @author Lenovo/LiGuanda
+     * @date 2024/12/16 PM 1:01:42
+     * @version 1.0.0
+     * @description 查询指定ID的MySQL数据库的基本状态信息
+     * @filename MySqlService.java
+     */
+    Map<String, Object> getBaseStatusById(@Nonnull Long id);
+
+
+    /**
+     * @param id       待查询的MySQL数据库的ID
+     * @param database 待查询的数据库名
+     * @return 查询到的指定数据库下的全部表的信息构成的集合
+     * @apiNote 该API返回的列表默认按照表数据大小&索引数据大小之和进行倒序排序的(若相等 , 则继续按照表创建时间倒序排序)
+     * @author Lenovo/LiGuanda
+     * @date 2024/12/16 PM 9:43:24
+     * @version 1.0.0
+     * @description 查询指定ID的MySQL数据库的指定数据库的全部表的信息
+     * @filename MySqlService.java
+     */
+    List<TableInfo> queryAllTableInfoInTargetDatabase(@Nonnull Long id, @Nonnull String database);
 
 
 }

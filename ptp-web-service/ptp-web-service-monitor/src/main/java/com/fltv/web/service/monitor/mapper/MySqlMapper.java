@@ -3,7 +3,10 @@ package com.fltv.web.service.monitor.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.fltv.web.service.monitor.model.po.DatabaseStatus;
 import com.fltv.web.service.monitor.model.po.ProcessListEntry;
+import com.fltv.web.service.monitor.model.po.TableInfo;
+import jakarta.annotation.Nonnull;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import pfp.fltv.common.model.po.manage.Asset;
 
@@ -80,6 +83,45 @@ public interface MySqlMapper extends BaseMapper<Asset> {
      */
     @Select("show variables")
     List<DatabaseStatus> getVariables();
+
+
+    /**
+     * @return 指定ID的MySQL数据库的连接数
+     * @author Lenovo/LiGuanda
+     * @date 2024/12/15 PM 10:39:55
+     * @version 1.0.0
+     * @description 获取指定ID的MySQL数据库的连接数
+     * @filename MySqlMapper.java
+     */
+    @Select("show status where `Variable_name` = 'Threads_connected'")
+    DatabaseStatus getConnectionNum();
+
+
+    /**
+     * @return 指定ID的MySQL数据库的查询数
+     * @apiNote 该查询到的值为 自数据库启动以来执行的查询总数
+     * @author Lenovo/LiGuanda
+     * @date 2024/12/16 PM 6:18:46
+     * @version 1.0.0
+     * @description 获取指定ID的MySQL数据库的查询数
+     * @filename MySqlMapper.java
+     */
+    @Select("show status like 'Questions'")
+    DatabaseStatus getQueryNum();
+
+
+    /**
+     * @return 指定ID的MySQL数据库中2的指定数据库下的全部表的内存占用大小(单位为字节)
+     * @author Lenovo/LiGuanda
+     * @date 2024/12/16 PM 9:20:49
+     * @version 1.0.0
+     * @description 获取指定ID的MySQL数据库中2的指定数据库下的全部表的内存占用大小
+     * @filename MySqlMapper.java
+     */
+    @Select("select * " +
+            "from information_schema.TABLES " +
+            "where table_schema = #{database}")
+    List<TableInfo> getAllTableSizeInTargetDatabase(@Nonnull @Param("database") String database);
 
 
 }
