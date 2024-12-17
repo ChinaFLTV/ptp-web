@@ -108,7 +108,7 @@ public class MySqlController {
 
             @Parameter(name = "id", description = "待查询的MySQL数据库的ID", in = ParameterIn.PATH, required = true) @PathVariable("id") Long id
 
-    ) {
+    ) throws InterruptedException {
 
         Map<String, Object> status = mySqlService.getBaseStatusById(id);
         return (status == null) ? Result.failure(new HashMap<>()) : Result.success(status);

@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import pfp.fltv.common.model.po.manage.Asset;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -103,17 +104,26 @@ public class MySqlServiceImpl extends ServiceImpl<MySqlMapper, Asset> implements
 
 
     @Override
-    public Map<String, Object> getBaseStatusById(@Nonnull Long id) {
+    public Map<String, Object> getBaseStatusById(@Nonnull Long id) throws InterruptedException {
 
         Map<String, Object> map = new HashMap<>();
 
         // 2024-12-16  18:06-获取当前指定ID的MySQL数据库的数据库磁盘占用数据(数值单位为Byte)
         InspectContainerResponse response = dockerClient.inspectContainerCmd(dockerContainerConstants.getPtpBackendMySql1ContainerId()).exec();
-        if (response != null) {
+        if (response == null || response.getSizeRw() == null) {
+
+            // map.put("db_disk_usage", response.getSizeRw() == null ? 0 : response.getSizeRw());
+            // 2024-12-17  12:32-由于目前无法审查MySQL容器中的各个挂载数据块的大小总和 , 因此这里取近似值 , 即直接统计当前指定ID的MySQL数据库中的全部数据库表&索引的内存占用大小之和
+            Long allTablesTotalSize = baseMapper.getAllTablesTotalSize();
+            map.put("db_disk_usage", allTablesTotalSize == null ? 0L : allTablesTotalSize);
+
+        } else {
 
             map.put("db_disk_usage", response.getSizeRw() == null ? 0 : response.getSizeRw());
 
         }
+        map.put("status", response == null ? "unknown" : response.getState().getStatus()); // 2024-12-17  12:59-记录当前的MySQL数据库容器的健康状态
+        map.put("start_at", response == null ? LocalDateTime.now().toString() : response.getState().getStartedAt());
 
         // 2024-12-16  18:06-获取当前指定ID的MySQL数据库的当前活跃的连接的数量
         map.put("db_connections", Integer.parseInt(baseMapper.getConnectionNum().getValue()));
@@ -121,25 +131,34 @@ public class MySqlServiceImpl extends ServiceImpl<MySqlMapper, Asset> implements
         // 2024-12-16  18:21-获取当前指定ID的MySQL数据库的查询总数
         map.put("queries", Integer.parseInt(baseMapper.getQueryNum().getValue()));
 
-        Statistics statistics = dockerClient.statsCmd(dockerContainerConstants.getPtpBackendMySql1ContainerId())
+        Statistics statistics1 = dockerClient.statsCmd(dockerContainerConstants.getPtpBackendMySql1ContainerId())
                 .exec(new InvocationBuilder.AsyncResultCallback<>())
                 .awaitResult();
-        if (statistics != null) {
+
+        Thread.sleep(1000L); // 2024-12-17  11:50-这里之所以需要休眠一秒然后再获取一次数据 , 是因为我们需要根据前后的网络累计接收/发送数据作差以求出网络接收/发送速率
+
+        Statistics statistics2 = dockerClient.statsCmd(dockerContainerConstants.getPtpBackendMySql1ContainerId())
+                .exec(new InvocationBuilder.AsyncResultCallback<>())
+                .awaitResult();
+
+        if (statistics1 != null) {
 
             // 2024-12-16  18:14-获取当前指定ID的MySQL数据库的CPU占用情况(数值单位为Byte)
-            if (statistics.getCpuStats() != null) {
+            CpuStatsConfig cpuStats = statistics1.getCpuStats();
+            if (cpuStats != null) {
 
-                Long onlineCpus = statistics.getCpuStats().getOnlineCpus();
-                CpuUsageConfig cpuUsageConfig = statistics.getCpuStats().getCpuUsage();
+                Long onlineCpus = cpuStats.getOnlineCpus();
+                CpuUsageConfig cpuUsageConfig = cpuStats.getCpuUsage();
 
                 map.put("online_cpus", onlineCpus == null ? 0 : onlineCpus);
                 map.put("per_cpu_usage", cpuUsageConfig == null || cpuUsageConfig.getPercpuUsage() == null ? new ArrayList<>() : cpuUsageConfig.getPercpuUsage());
                 map.put("cpu_usage", cpuUsageConfig == null || cpuUsageConfig.getTotalUsage() == null ? 0 : cpuUsageConfig.getTotalUsage());
+                map.put("system_cpu_usage", cpuStats.getSystemCpuUsage() == null ? 0 : cpuStats.getSystemCpuUsage());
 
             }
 
             // 2024-12-16  18:24-获取当前指定ID的MySQL数据库的内存占用情况(数值单位为Byte)
-            MemoryStatsConfig memoryStats = statistics.getMemoryStats();
+            MemoryStatsConfig memoryStats = statistics1.getMemoryStats();
             if (memoryStats != null) {
 
                 map.put("memory_usage", memoryStats.getUsage() == null ? 0 : memoryStats.getUsage());
@@ -149,7 +168,7 @@ public class MySqlServiceImpl extends ServiceImpl<MySqlMapper, Asset> implements
             }
 
             // 2024-12-16  19:59-获取当前指定ID的MySQL数据库的磁盘读/写速率(数值单位为Byte)
-            BlkioStatsConfig blkioStats = statistics.getBlkioStats();
+            BlkioStatsConfig blkioStats = statistics1.getBlkioStats();
             if (blkioStats != null) {
 
                 Long readBytes = 0L;
@@ -179,26 +198,46 @@ public class MySqlServiceImpl extends ServiceImpl<MySqlMapper, Asset> implements
             }
 
             // 2024-12-16  18:09-获取当前指定ID的MySQL数据库的网络发送/接收速率(数值单位为Byte)
-            if (statistics.getNetworks() != null && !statistics.getNetworks().isEmpty()) {
+            if (statistics1.getNetworks() != null && !statistics1.getNetworks().isEmpty()) {
 
-                long rxBytes = 0L;
-                long txBytes = 0L;
+                long rxBytes1 = 0L;
+                long txBytes1 = 0L;
 
-                for (Map.Entry<String, StatisticNetworksConfig> entry : statistics.getNetworks().entrySet()) {
+                for (Map.Entry<String, StatisticNetworksConfig> entry : statistics1.getNetworks().entrySet()) {
 
                     if (entry.getValue() != null) {
 
                         StatisticNetworksConfig network = entry.getValue();
 
-                        rxBytes += network.getRxBytes() == null ? 0L : network.getRxBytes();
-                        txBytes += network.getTxBytes() == null ? 0L : network.getTxBytes();
+                        rxBytes1 += network.getRxBytes() == null ? 0L : network.getRxBytes();
+                        txBytes1 += network.getTxBytes() == null ? 0L : network.getTxBytes();
 
                     }
 
                 }
 
-                map.put("rx_bytes", rxBytes);
-                map.put("tx_bytes", txBytes);
+                long rxBytes2 = 0L;
+                long txBytes2 = 0L;
+
+                if (statistics2.getNetworks() != null && !statistics2.getNetworks().isEmpty()) {
+
+                    for (Map.Entry<String, StatisticNetworksConfig> entry : statistics2.getNetworks().entrySet()) {
+
+                        if (entry.getValue() != null) {
+
+                            StatisticNetworksConfig network = entry.getValue();
+
+                            rxBytes2 += network.getRxBytes() == null ? 0L : network.getRxBytes();
+                            txBytes2 += network.getTxBytes() == null ? 0L : network.getTxBytes();
+
+                        }
+
+                    }
+
+                }
+
+                map.put("rx_bytes", rxBytes2 - rxBytes1);
+                map.put("tx_bytes", txBytes2 - txBytes1);
 
             }
 

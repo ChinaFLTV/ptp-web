@@ -124,4 +124,17 @@ public interface MySqlMapper extends BaseMapper<Asset> {
     List<TableInfo> getAllTableSizeInTargetDatabase(@Nonnull @Param("database") String database);
 
 
+    /**
+     * @return 当前指定ID的MySQL数据库中的全部表及其索引的总大小(单位是字节)
+     * @author Lenovo/LiGuanda
+     * @date 2024/12/17 下午 12:28:59
+     * @version 1.0.0
+     * @description 获取全部数据库的全部表及其索引的总大小
+     * @filename MySqlMapper.java
+     */
+    @Select("select sum(DATA_LENGTH + INDEX_LENGTH) as total_size " +
+            "from information_schema.TABLES")
+    Long getAllTablesTotalSize();
+
+
 }

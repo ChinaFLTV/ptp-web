@@ -71,13 +71,15 @@ public interface MySqlService extends IService<Asset> {
     /**
      * @param id 待查询的MySQL数据库的ID
      * @return 指定ID的MySQL数据库的基本状态信息
+     * @throws InterruptedException 当前线程休眠过程中发生错误时将抛出该异常
+     * @apiNote 注意 : 该方法需要休眠1s , 因此该方法会比较耗时 , 请前端酌情请求
      * @author Lenovo/LiGuanda
      * @date 2024/12/16 PM 1:01:42
      * @version 1.0.0
      * @description 查询指定ID的MySQL数据库的基本状态信息
      * @filename MySqlService.java
      */
-    Map<String, Object> getBaseStatusById(@Nonnull Long id);
+    Map<String, Object> getBaseStatusById(@Nonnull Long id) throws InterruptedException;
 
 
     /**
