@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import pfp.fltv.common.model.po.manage.Asset;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -132,12 +134,14 @@ public class MySqlServiceImpl extends ServiceImpl<MySqlMapper, Asset> implements
         map.put("queries", Integer.parseInt(baseMapper.getQueryNum().getValue()));
 
         Statistics statistics1 = dockerClient.statsCmd(dockerContainerConstants.getPtpBackendMySql1ContainerId())
+                .withNoStream(true) // 2024-12-19  20:11-如果不添加此配置 , 则执行会抛出 java.lang.IllegalStateException: Result has already been set 异常 , 虽然这个异常并不会影响到业务逻辑的进行 , 但挺碍眼的
                 .exec(new InvocationBuilder.AsyncResultCallback<>())
                 .awaitResult();
 
         Thread.sleep(1000L); // 2024-12-17  11:50-这里之所以需要休眠一秒然后再获取一次数据 , 是因为我们需要根据前后的网络累计接收/发送数据作差以求出网络接收/发送速率
 
         Statistics statistics2 = dockerClient.statsCmd(dockerContainerConstants.getPtpBackendMySql1ContainerId())
+                .withNoStream(true) // 2024-12-19  20:12-如果不添加此配置 , 则执行会抛出 java.lang.IllegalStateException: Result has already been set 异常 , 虽然这个异常并不会影响到业务逻辑的进行 , 但挺碍眼的
                 .exec(new InvocationBuilder.AsyncResultCallback<>())
                 .awaitResult();
 
@@ -283,6 +287,94 @@ public class MySqlServiceImpl extends ServiceImpl<MySqlMapper, Asset> implements
         } else {
 
             return new ArrayList<>();
+
+        }
+
+    }
+
+
+    @Override
+    public Map<String, Long> queryAllDatabaseSizes(@Nonnull Long id, @Nonnull Long count) {
+
+        if (count <= 0) {
+
+            return new HashMap<>();
+
+        }
+
+        List<Map<String, Object>> databaseSizes = baseMapper.getAllDatabaseSizes(count);
+        if (databaseSizes != null && !databaseSizes.isEmpty()) {
+
+            Map<String, Long> resultMap = new LinkedHashMap<>();
+            for (Map<String, Object> databaseSizeMap : databaseSizes) {
+
+                String dbName = (String) databaseSizeMap.getOrDefault("db_name", "未知数据库");
+                BigDecimal dbSize = (BigDecimal) databaseSizeMap.getOrDefault("db_size", new BigDecimal(0L));
+                resultMap.put(dbName, dbSize.longValue());
+
+            }
+            return resultMap;
+
+        } else {
+
+            return new HashMap<>();
+
+        }
+
+    }
+
+
+    @Override
+    public Map<String, Long> queryAllTableSizes(@Nonnull Long id, @Nonnull String dbName, @Nonnull Long count) {
+
+        if (count <= 0L) {
+
+            return new HashMap<>();
+
+        }
+
+        // 2024-12-19  14:10-若数据库名称字段不为空 , 则查询该数据库下的表大小情况 ; 否则 , 则以全部数据库为查询范围展开全面的排名比较
+        if (StringUtils.hasLength(dbName)) {
+
+            List<Map<String, Object>> tableSizes = baseMapper.getAllTableSizesInTargetDatabase(dbName, count);
+            if (tableSizes != null && !tableSizes.isEmpty()) {
+
+                Map<String, Long> resultMap = new LinkedHashMap<>();
+                for (Map<String, Object> tableSizeMap : tableSizes) {
+
+                    String tableName = (String) tableSizeMap.getOrDefault("table_name", "未知表");
+                    BigInteger tableSize = (BigInteger) tableSizeMap.getOrDefault("table_size", new BigDecimal(0L));
+                    resultMap.put(tableName, tableSize.longValue());
+
+                }
+                return resultMap;
+
+            } else {
+
+                return new HashMap<>();
+
+            }
+
+        } else {
+
+            List<Map<String, Object>> tableSizes = baseMapper.getAllTableSizesInAllDatabase(count);
+            if (tableSizes != null && !tableSizes.isEmpty()) {
+
+                Map<String, Long> resultMap = new LinkedHashMap<>();
+                for (Map<String, Object> tableSizeMap : tableSizes) {
+
+                    String tableName = (String) tableSizeMap.getOrDefault("table_name", "未知表");
+                    BigInteger tableSize = (BigInteger) tableSizeMap.getOrDefault("table_size", new BigDecimal(0L));
+                    resultMap.put(tableName, tableSize.longValue());
+
+                }
+                return resultMap;
+
+            } else {
+
+                return new HashMap<>();
+
+            }
 
         }
 

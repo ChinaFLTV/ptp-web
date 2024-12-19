@@ -96,4 +96,31 @@ public interface MySqlService extends IService<Asset> {
     List<TableInfo> queryAllTableInfoInTargetDatabase(@Nonnull Long id, @Nonnull String database);
 
 
+    /**
+     * @param id    待查询的MySQL数据库的ID
+     * @param count 所要查询的数据库的数量
+     * @return 按照占用磁盘空间大小倒序排序后的数据库名与其所占磁盘空间大小(单位是Byte)的映射
+     * @author Lenovo/LiGuanda
+     * @date 2024/12/19 下午 12:57:03
+     * @version 1.0.0
+     * @description 查询指定ID的MySQL数据库的各个数据库的占用磁盘空间大小
+     * @filename MySqlService.java
+     */
+    Map<String, Long> queryAllDatabaseSizes(@Nonnull Long id, @Nonnull Long count);
+
+
+    /**
+     * @param id     待查询的MySQL数据库的ID
+     * @param dbName 待查询的数据库名(若想查询全部数据库的表 , 则请将此字段置空)
+     * @param count  所要查询的表的数量
+     * @return 指定ID的MySQL数据库下的指定/全部数据库的指定数量的表按照占用磁盘空间大小倒序排序后的表名与其所占磁盘空间大小(单位是Byte)的映射
+     * @author Lenovo/LiGuanda
+     * @date 2024/12/19 下午 1:54:31
+     * @version 1.0.0
+     * @description 查询指定ID的MySQL数据库的指定/全部数据库下的各张表的占用磁盘空间大小
+     * @filename MySqlService.java
+     */
+    Map<String, Long> queryAllTableSizes(@Nonnull Long id, @Nonnull String dbName, @Nonnull Long count);
+
+
 }

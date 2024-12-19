@@ -11,6 +11,7 @@ import org.apache.ibatis.annotations.Select;
 import pfp.fltv.common.model.po.manage.Asset;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Lenovo/LiGuanda
@@ -135,6 +136,58 @@ public interface MySqlMapper extends BaseMapper<Asset> {
     @Select("select sum(DATA_LENGTH + INDEX_LENGTH) as total_size " +
             "from information_schema.TABLES")
     Long getAllTablesTotalSize();
+
+
+    /**
+     * @return 根据数据大小&索引数据大小之和倒序排序的以数据库名称&及其所占磁盘大小(单位是Byte)映射为元素的列表
+     * @author Lenovo/LiGuanda
+     * @date 2024/12/19 下午 1:12:38
+     * @version 1.0.0
+     * @description 获取指定ID的MySQL数据库的各个数据库的占用磁盘空间大小
+     * @filename MySqlMapper.java
+     */
+    @Select("select TABLE_SCHEMA as db_name, sum(DATA_LENGTH + INDEX_LENGTH) as db_size " +
+            "from information_schema.TABLES " +
+            "group by TABLE_SCHEMA " +
+            "order by db_size desc " +
+            "limit #{count} ")
+    List<Map<String, Object>> getAllDatabaseSizes(@Nonnull @Param("count") Long count);
+
+
+    /**
+     * @param dbName 待查询的数据库名
+     * @param count  所要查询的表的数量
+     * @return 从指定数据库中查询到的根据数据大小&索引数据大小之和倒序排序的以表名&及其所占磁盘大小(单位是Byte)映射为元素的列表
+     * @author Lenovo/LiGuanda
+     * @date 2024/12/19 下午 1:56:27
+     * @version 1.0.0
+     * @description 查询指定数据库下的指定数量表的占用磁盘空间大小
+     * @filename MySqlMapper.java
+     */
+    @Select("select table_name                   as table_name, " +
+            "       (data_length + index_length) as table_size " +
+            "from information_schema.TABLES " +
+            "where table_schema = #{dbName} " +
+            "order by (data_length + index_length) desc " +
+            "limit #{count} ")
+    List<Map<String, Object>> getAllTableSizesInTargetDatabase(@Nonnull @Param("dbName") String dbName, @Nonnull @Param("count") Long count);
+
+
+    /**
+     * @param count 所要查询的表的数量
+     * @return 从全部数据库中查询到的根据数据大小&索引数据大小之和倒序排序的以表名&及其所占磁盘大小(单位是Byte)映射为元素的列表
+     * @author Lenovo/LiGuanda
+     * @date 2024/12/19 下午 2:17:18
+     * @version 1.0.0
+     * @description 查询全部数据库下的指定数量表的占用磁盘空间大小
+     * @filename MySqlMapper.java
+     */
+    @Select("select table_name                   as table_name, " +
+            "       (data_length + index_length) as table_size " +
+            "from information_schema.TABLES " +
+            "order by (data_length + index_length) desc " +
+            "limit #{count} ")
+    List<Map<String, Object>> getAllTableSizesInAllDatabase(@Nonnull @Param("count") Long count);
 
 
 }

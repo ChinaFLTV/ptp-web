@@ -133,4 +133,39 @@ public class MySqlController {
     }
 
 
+    @LogRecord(description = "查询指定ID的MySQL数据库的各个数据库的占用磁盘空间大小")
+    @SentinelResource("web-monitor-mysql-controller")
+    @Operation(description = "查询指定ID的MySQL数据库的各个数据库的占用磁盘空间大小")
+    @GetMapping("/query/database/size/all")
+    public Result<Map<String, Long>> queryAllDatabaseSizes(
+
+            @Parameter(name = "id", description = "待查询的MySQL数据库的ID", required = true) @RequestParam("id") Long id,
+            @Parameter(name = "count", description = "所要查询的数据库的数量", required = true) @RequestParam("count") Long count
+
+    ) {
+
+        Map<String, Long> sizes = mySqlService.queryAllDatabaseSizes(id, count);
+        return (sizes == null) ? Result.failure(new HashMap<>()) : Result.success(sizes);
+
+    }
+
+
+    @LogRecord(description = "查询指定ID的MySQL数据库的指定/全部数据库下的各张表的占用磁盘空间大小")
+    @SentinelResource("web-monitor-mysql-controller")
+    @Operation(description = "查询指定ID的MySQL数据库的指定/全部数据库下的各张表的占用磁盘空间大小")
+    @GetMapping("/query/table/size")
+    public Result<Map<String, Long>> queryAllTableSizes(
+
+            @Parameter(name = "id", description = "待查询的MySQL数据库的ID", required = true) @RequestParam("id") Long id,
+            @Parameter(name = "dbName", description = "待查询的数据库名(若想查询全部数据库的表 , 则请将此字段置空)", required = true) @RequestParam("dbName") String dbName,
+            @Parameter(name = "count", description = "所要查询的表的数量", required = true) @RequestParam("count") Long count
+
+    ) {
+
+        Map<String, Long> sizes = mySqlService.queryAllTableSizes(id, dbName, count);
+        return (sizes == null) ? Result.failure(new HashMap<>()) : Result.success(sizes);
+
+    }
+
+
 }
