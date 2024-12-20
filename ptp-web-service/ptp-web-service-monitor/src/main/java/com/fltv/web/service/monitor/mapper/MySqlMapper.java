@@ -1,13 +1,9 @@
 package com.fltv.web.service.monitor.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.fltv.web.service.monitor.model.po.DatabaseStatus;
-import com.fltv.web.service.monitor.model.po.ProcessListEntry;
-import com.fltv.web.service.monitor.model.po.TableInfo;
+import com.fltv.web.service.monitor.model.po.*;
 import jakarta.annotation.Nonnull;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 import pfp.fltv.common.model.po.manage.Asset;
 
 import java.util.List;
@@ -188,6 +184,77 @@ public interface MySqlMapper extends BaseMapper<Asset> {
             "order by (data_length + index_length) desc " +
             "limit #{count} ")
     List<Map<String, Object>> getAllTableSizesInAllDatabase(@Nonnull @Param("count") Long count);
+
+
+    /**
+     * @param tableName 待查询的数据表的表名
+     * @return 查询到的该数据表所包含的全部列的各项完整信息
+     * @author Lenovo/LiGuanda
+     * @date 2024/12/20 下午 1:25:51
+     * @version 1.0.0
+     * @description 查询指定数据表的所有列信息
+     * @filename MySqlMapper.java
+     */
+    @Select("select * " +
+            "from information_schema.COLUMNS " +
+            "where TABLE_NAME = #{tableName} " +
+            "order by ORDINAL_POSITION")
+    List<MysqlColumn> getColumnsByTableName(@Nonnull @Param("tableName") String tableName);
+
+
+    /**
+     * @param tableName 待需要查询状态的数据表的表名
+     * @return 对应数据表的表状态信息
+     * @author Lenovo/LiGuanda
+     * @date 2024/12/20 下午 1:34:29
+     * @version 1.0.0
+     * @description 查询指定数据表的状态信息
+     * @filename MySqlMapper.java
+     */
+    @Select("show table status where Name = #{tableName} ")
+    MysqlTableStatus getTableStatusByName(@Nonnull @Param("tableName") String tableName);
+
+    /**
+     * @param databaseName 待操作的数据库名
+     * @param tableName    待操作的数据表名
+     * @param modelId      待更新的条目的主键ID(请确保该ID能唯一标识一个条目)
+     * @param fieldName    待更新的字段名
+     * @param fieldValue   待更新的字段值(可为空值)
+     * @return 受影响的行数
+     * @author Lenovo/LiGuanda
+     * @date 2024/12/20 下午 10:40:54
+     * @version 1.0.0
+     * @description 更新指定表的指定条目的指定字段
+     * @filename MySqlMapper.java
+     */
+    // 2024-12-20  23:53-这里的数据库名/表名/字段名请用${}进行动态替换 , #{}仅用来进行参数替换 , 由于${}是将值直接插入到SQL语句中去的 , 因此需要提前对使用${}的参数进行安全检查
+    @Update("update ${databaseName}.${tableName} SET ${fieldName} = #{fieldValue} where id = #{modelId} ")
+    int updateSingleField(
+            @Param("databaseName") String databaseName,
+            @Param("tableName") String tableName,
+            @Param("modelId") Long modelId,
+            @Param("fieldName") String fieldName,
+            @Param("fieldValue") Object fieldValue
+    );
+
+
+    /**
+     * @param databaseName 待操作的数据库名
+     * @param tableName    待操作的数据表名
+     * @param modelId      待删除的条目的主键ID(请确保该ID能唯一标识一个条目)
+     * @return 受影响的行数
+     * @author Lenovo/LiGuanda
+     * @date 2024/12/20 下午 11:30:23
+     * @version 1.0.0
+     * @description 删除指定表的指定条目
+     * @filename MySqlMapper.java
+     */
+    @Delete("delete from ${databaseName}.${tableName} where id = #{modelId} ")
+    int deleteSingleData(
+            @Param("databaseName") String databaseName,
+            @Param("tableName") String tableName,
+            @Param("modelId") Long modelId
+    );
 
 
 }

@@ -1,17 +1,17 @@
 package com.fltv.web.service.monitor.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.toolkit.SqlRunner;
 import com.fltv.web.service.monitor.constants.DockerContainerConstants;
 import com.fltv.web.service.monitor.mapper.MySqlMapper;
-import com.fltv.web.service.monitor.model.po.DatabaseStatus;
-import com.fltv.web.service.monitor.model.po.ProcessListEntry;
-import com.fltv.web.service.monitor.model.po.TableInfo;
+import com.fltv.web.service.monitor.model.po.*;
 import com.fltv.web.service.monitor.service.MySqlService;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.model.*;
 import com.github.dockerjava.core.InvocationBuilder;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -377,6 +377,86 @@ public class MySqlServiceImpl extends ServiceImpl<MySqlMapper, Asset> implements
             }
 
         }
+
+    }
+
+
+    @Override
+    public List<MysqlColumn> querySingleTableStructure(@Nonnull Long id, @Nonnull String tableName) {
+
+        if (StringUtils.hasLength(tableName)) {
+
+            return baseMapper.getColumnsByTableName(tableName);
+
+        } else {
+
+            return new ArrayList<>();
+
+        }
+
+    }
+
+
+    @Override
+    public MysqlTableStatus querySingleTableStatus(@Nonnull Long id, @Nonnull String tableName) {
+
+        if (StringUtils.hasLength(tableName)) {
+
+            return baseMapper.getTableStatusByName(tableName);
+
+        } else {
+
+            return null;
+
+        }
+
+    }
+
+
+    @Override
+    public List<Map<String, Object>> querySingleTableData(@Nonnull Long id, @Nonnull String databaseName, @Nonnull String tableName, @Nullable String sortField, @Nullable Boolean asc, @Nonnull Long offset, @Nonnull Long count) {
+
+
+        // 2024-12-20  17:13-这里直接采取构造原生SQL语句然后直接在service层执行
+        StringBuilder sql = new StringBuilder();
+        sql.append("select * from ").append(databaseName).append(".").append(tableName);
+
+        // 2024-12-20  16:58-如果有排序字段 , 则添加排序条件
+        if (StringUtils.hasLength(sortField)) {
+
+            sql.append(" order by ").append(sortField);
+
+            if (asc != null && asc) {
+
+                sql.append(" asc");
+
+            } else {
+
+                sql.append(" desc");
+
+            }
+
+        }
+
+        sql.append(" limit ").append(offset).append(", ").append(count);
+
+        return SqlRunner.db().selectList(sql.toString());
+
+    }
+
+
+    @Override
+    public boolean updateSingleTableFieldData(@Nonnull Long id, @Nonnull String databaseName, @Nonnull String tableName, @Nonnull Long modelId, @Nonnull String fieldName, @Nullable String fieldValue) {
+
+        return baseMapper.updateSingleField(databaseName, tableName, modelId, fieldName, fieldValue) > 0;
+
+    }
+
+
+    @Override
+    public boolean deleteSingleTableData(@Nonnull Long id, @Nonnull String databaseName, @Nonnull String tableName, @Nonnull Long modelId) {
+
+        return baseMapper.deleteSingleData(databaseName, tableName, modelId) > 0;
 
     }
 

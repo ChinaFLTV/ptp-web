@@ -1,9 +1,12 @@
 package com.fltv.web.service.monitor.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.fltv.web.service.monitor.model.po.MysqlColumn;
+import com.fltv.web.service.monitor.model.po.MysqlTableStatus;
 import com.fltv.web.service.monitor.model.po.ProcessListEntry;
 import com.fltv.web.service.monitor.model.po.TableInfo;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import pfp.fltv.common.model.po.manage.Asset;
 
 import java.util.List;
@@ -121,6 +124,82 @@ public interface MySqlService extends IService<Asset> {
      * @filename MySqlService.java
      */
     Map<String, Long> queryAllTableSizes(@Nonnull Long id, @Nonnull String dbName, @Nonnull Long count);
+
+
+    /**
+     * @param id        待查询的MySQL数据库的ID
+     * @param tableName 待查询的数据表名
+     * @return 查询到的指定数据表的全部列的完整信息
+     * @author Lenovo/LiGuanda
+     * @date 2024/12/20 下午 1:41:19
+     * @version 1.0.0
+     * @description 查询指定ID的MySQL数据库的单个表的结构信息
+     * @filename MySqlService.java
+     */
+    List<MysqlColumn> querySingleTableStructure(@Nonnull Long id, @Nonnull String tableName);
+
+
+    /**
+     * @param id        待查询的MySQL数据库的ID
+     * @param tableName 待查询的数据表名
+     * @return 查询到的指定数据表的状态信息
+     * @author Lenovo/LiGuanda
+     * @date 2024/12/20 下午 1:45:05
+     * @version 1.0.0
+     * @description 查询指定ID的MySQL数据库的单个表的状态信息
+     * @filename MySqlService.java
+     */
+    MysqlTableStatus querySingleTableStatus(@Nonnull Long id, @Nonnull String tableName);
+
+
+    /**
+     * @param id           待查询的MySQL数据库的ID
+     * @param databaseName 待查询的数据库名
+     * @param tableName    待查询的数据表名
+     * @param sortField    用于排序的字段名(不排序请留空)
+     * @param asc          是否按照给定的排序字段升序排序(若没有提供排序字段 , 则此参数无效)
+     * @param offset       数据截取的起始偏移量
+     * @param count        数据截取的数量
+     * @return 查询到的符合条件的指定实体的映射构成的列表集合
+     * @author Lenovo/LiGuanda
+     * @date 2024/12/20 下午 4:43:30
+     * @version 1.0.0
+     * @description 按照指定的排序规则批量查询指定ID的MySQL数据库的指定表的指定区域的数据
+     * @filename MySqlService.java
+     */
+    List<Map<String, Object>> querySingleTableData(@Nonnull Long id, @Nonnull String databaseName, @Nonnull String tableName, @Nullable String sortField, @Nullable Boolean asc, @Nonnull Long offset, @Nonnull Long count);
+
+
+    /**
+     * @param id           待查询的MySQL数据库的ID
+     * @param databaseName 待操作的数据库名
+     * @param tableName    待操作的数据表名
+     * @param modelId      待更新的条目的主键ID(请确保该ID能唯一标识一个条目)
+     * @param fieldName    待更新的字段名
+     * @param fieldValue   待更新的字段值(可为空值)
+     * @return 是否成功更新了指定条目的指定字段为指定值
+     * @author Lenovo/LiGuanda
+     * @date 2024/12/20 下午 10:25:48
+     * @version 1.0.0
+     * @description 更新指定ID的MySQL数据库的指定表的指定单个条目的单个字段的数据
+     * @filename MySqlService.java
+     */
+    boolean updateSingleTableFieldData(@Nonnull Long id, @Nonnull String databaseName, @Nonnull String tableName, @Nonnull Long modelId, @Nonnull String fieldName, @Nullable String fieldValue);
+
+
+    /**
+     * @param id           待操作的MySQL数据库的ID
+     * @param databaseName 待操作的数据库名
+     * @param tableName    待操作的数据表名
+     * @param modelId      待删除的条目的主键ID(请确保该ID能唯一标识一个条目)
+     * @return 是否成功删除了指定条目
+     * @author Lenovo/LiGuanda
+     * @date 2024/12/20 下午 11:05:59
+     * @version 1.0.0
+     * @description 删除指定ID的MySQL数据库的指定表的指定单个条目
+     * @filename MySqlService.java
+     */
+    boolean deleteSingleTableData(@Nonnull Long id, @Nonnull String databaseName, @Nonnull String tableName, @Nonnull Long modelId);
 
 
 }

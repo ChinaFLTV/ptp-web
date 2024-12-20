@@ -105,3 +105,8 @@ docker:
   # 2024-12-16  15:14-下面的配置为容器名以及其对应的容器ID的映射
   containers:
     ptp-backend-mysql-1: ca8129bec3d5
+
+
+mybatis-plus:
+  global-config:
+    enable-sql-runner: true # 2024-12-20  17:06-需要在service执行运行原生SQL语句所需配置
